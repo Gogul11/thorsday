@@ -4,28 +4,24 @@ from tools.tool_registry import A1_TOOLS
 
 
 class AgentA1:
+    name = "Agent A1"
+    description = """
+    A1 is responsible for gathering information about the system
+    and analyzing the current system state.
 
+    A1 should:
+    - Gather information about the system
+    - Inspect system resources and configuration
+    - Check running processes and services
+    - Check system status and environment
+    - Retrieve hardware and software information
+    - Analyze system-level information
+    - Report relevant system information clearly
+
+    A1 should use its available system tools whenever
+    additional information about the system is required.
+    """
     def __init__(self, model):
-
-        self.name = "Agent A1"
-
-        self.description = """
-        A1 is responsible for gathering information about the system
-        and analyzing the current system state.
-
-        A1 should:
-        - Gather information about the system
-        - Inspect system resources and configuration
-        - Check running processes and services
-        - Check system status and environment
-        - Retrieve hardware and software information
-        - Analyze system-level information
-        - Report relevant system information clearly
-
-        A1 should use its available system tools whenever
-        additional information about the system is required.
-        """
-
         self.agent = create_agent(
             model=model,
             tools=A1_TOOLS

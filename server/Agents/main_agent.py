@@ -1,3 +1,4 @@
+from Agents.agent_manager import AgentManager
 from Agents.agent_registry import AgentRegistry
 from graphs.main_agent_graph import MainAgentGraph
 from models.model import Models
@@ -12,13 +13,13 @@ class Main_Agent:
         self.model  = llm.model
         self.context = Context()
 
-        self.registry = AgentRegistry(
-            self.model
-        )
+        self.registry = AgentRegistry(self.model)
+
+        self.agent_manager = AgentManager(self.registry)
 
         self.graph = MainAgentGraph(
             self.llm,
-            self.registry
+            self.agent_manager
         )
 
     #Chat member function for the main agent
@@ -31,10 +32,12 @@ class Main_Agent:
         
         result = await self.graph.graph.ainvoke({
             "messages" : self.context.get_context(),
+            "task_id" : "",
             "task" : message,
             "plan" : [],
             "current_agent" : 0,
-            "results" : {}
+            "results" : {},
+            "response" : ""
         })
         
         logger.info(
@@ -44,9 +47,9 @@ class Main_Agent:
 
         logger.info(
             "Agent results: %s",
-            result["results"]
+            result["response"]
         )
-        # self.context.add_system_message(result["results"])
+        self.context.add_system_message(result["response"])
 
         # logger.info("Returned response : %s", plan)
-        return result["results"]
+        return result["response"]

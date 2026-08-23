@@ -6,10 +6,12 @@ from pydantic import BaseModel, Field
 
 class MainAgentState(TypedDict):
     messages : Annotated[list[BaseMessage],add_messages]
+    task_id : str
     task : str
     plan : list[str]
     current_agent : int
     results : dict[str, str]
+    response : str
 
 class ExecutionPlan(BaseModel):
     agents : list[str] = Field(
