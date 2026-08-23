@@ -8,6 +8,7 @@ class MainAgentGraph:
     def __init__(self, llm, manager : AgentManager):
         self.llm = llm
         self.agent_manager = manager
+        self.event_callback = None
 
         graph = StateGraph(MainAgentState)
 
@@ -41,9 +42,13 @@ class MainAgentGraph:
             "planner"
         )
 
-        graph.add_edge(
+        graph.add_conditional_edges(
             "planner",
-            "executor"
+            self.should_execute_plan,
+            {
+                "execute": "executor",
+                "respond": "response_node",
+            },
         )
 
         graph.add_conditional_edges(
@@ -62,9 +67,27 @@ class MainAgentGraph:
 
         self.graph = graph.compile()
 
+    async def run(self, state, event_callback=None):
+        self.event_callback = event_callback
+        try:
+            return await self.graph.ainvoke(state)
+        finally:
+            self.event_callback = None
+
+    def emit_event(
+        self,
+        stage: str,
+        status: str,
+        message: str,
+        agent_id: str | None = None,
+    ):
+        if self.event_callback is not None:
+            self.event_callback(stage, status, message, agent_id)
+
     def create_task(self, state):
         task_id = state.get("task_id") or str(uuid.uuid4())
         logger.info("Graph task created: %s", task_id)
+        self.emit_event("graph", "running", "Graph execution started.")
 
         return {
             "task_id" : task_id
@@ -72,6 +95,7 @@ class MainAgentGraph:
         
     async def planner_node(self, state):
         logger.info("Planning task: %s", state["task_id"])
+        self.emit_event("planner", "running", "Selecting the required agents.")
         task = state["task"]
         descriptions = self.agent_manager.get_agent_descriptions()
         prompt = f"""
@@ -101,6 +125,12 @@ Rules:
         )
 
         plan : ExecutionPlan = await planner.ainvoke(prompt)
+        selected_agents = ", ".join(plan.agents) or "no agents"
+        self.emit_event(
+            "planner",
+            "completed",
+            f"Selected: {selected_agents}.",
+        )
 
         return {
             "plan" : plan.agents,
@@ -118,6 +148,12 @@ Rules:
             "Executing agent %s for task %s",
             agent_name,
             task_id,
+        )
+        self.emit_event(
+            agent_name,
+            "running",
+            f"{agent_name} is processing the task.",
+            agent_id,
         )
 
         runtime = self.agent_manager.create_agent(
@@ -140,6 +176,12 @@ Rules:
             updated_results[agent_name] = result
 
             self.agent_manager.set_status(agent_id, "COMPLETED")
+            self.emit_event(
+                agent_name,
+                "completed",
+                f"{agent_name} completed its work.",
+                agent_id,
+            )
 
             return {
                 "results": updated_results,
@@ -148,12 +190,23 @@ Rules:
             
         except Exception:
             self.agent_manager.set_status(agent_id, "FAILED")
+            self.emit_event(
+                agent_name,
+                "failed",
+                f"{agent_name} failed while processing the task.",
+                agent_id,
+            )
             raise
         finally:
             self.agent_manager.destroy_agent(agent_id)
 
     async def response_node(self, state):
         logger.info("Generating response for task: %s", state["task_id"])
+        self.emit_event(
+            "response",
+            "running",
+            "Preparing the final response.",
+        )
 
         results = state["results"]
     
@@ -178,6 +231,12 @@ Rules:
     """
     
         result = await self.llm.model.ainvoke(prompt)
+        self.emit_event(
+            "response",
+            "completed",
+            "Final response is ready.",
+        )
+        self.emit_event("graph", "completed", "Graph execution completed.")
     
         return {
             "response": result.content
@@ -189,3 +248,9 @@ Rules:
             return "execute"
 
         return "end"
+
+    def should_execute_plan(self, state):
+        if state["plan"]:
+            return "execute"
+
+        return "respond"

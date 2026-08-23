@@ -12,8 +12,17 @@ class TaskResponse(BaseModel):
     status: str
 
 
+class TaskEventResponse(BaseModel):
+    stage: str
+    status: str
+    message: str
+    occurred_at: str
+    agent_id: str | None = None
+
+
 class TaskStatusResponse(BaseModel):
     task_id: UUID
     status: str
     response: str | None = None
     error: str | None = None
+    events: list[TaskEventResponse] = Field(default_factory=list)

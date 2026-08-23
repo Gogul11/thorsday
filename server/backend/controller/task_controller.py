@@ -32,4 +32,5 @@ class TaskController:
             status=task["status"],
             response=task["response"],
             error=task["error"],
+            events=task["events"],
         )
