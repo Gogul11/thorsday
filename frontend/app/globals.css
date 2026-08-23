@@ -5,6 +5,8 @@
   --text: #1e1e1c;
   --muted: #74746f;
   --subtle: #f0f0ec;
+  --user-message: #eef2f7;
+  --agent-message: #fafaf8;
   --red: #b84343;
 }
 
@@ -14,7 +16,9 @@
 
 html,
 body {
+  height: 100%;
   min-height: 100%;
+  overflow: hidden;
 }
 
 body {
@@ -40,7 +44,9 @@ button:disabled {
 .workspace {
   display: grid;
   grid-template-columns: 228px minmax(420px, 1fr) 310px;
+  height: 100dvh;
   min-height: 100vh;
+  overflow: hidden;
 }
 
 .workspace.sidebar-collapsed {
@@ -51,6 +57,8 @@ button:disabled {
 .activity-panel {
   background: var(--surface);
   padding: 22px 16px;
+  height: 100dvh;
+  overflow-y: auto;
 }
 
 .sidebar {
@@ -61,6 +69,7 @@ button:disabled {
 
 .activity-panel {
   border-left: 1px solid var(--border);
+  min-width: 0;
 }
 
 .sidebar-top {
@@ -213,7 +222,9 @@ button:disabled {
 .chat-panel {
   display: grid;
   grid-template-rows: auto 1fr auto;
+  height: 100dvh;
   min-height: 100vh;
+  min-width: 0;
 }
 
 .chat-header {
@@ -249,8 +260,10 @@ h1 {
 
 .conversation {
   width: min(760px, 100%);
+  height: 100%;
   margin: 0 auto;
   padding: 38px 30px;
+  overflow-y: auto;
 }
 
 .empty-conversation {
@@ -272,6 +285,17 @@ h1 {
 
 .message {
   margin-bottom: 28px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 15px 16px;
+}
+
+.user-message {
+  background: var(--user-message);
+}
+
+.agent-message {
+  background: var(--agent-message);
 }
 
 .message > span {
@@ -332,8 +356,7 @@ h1 {
 }
 
 .user-message p {
-  border-left: 2px solid #292927;
-  padding-left: 12px;
+  padding-left: 0;
 }
 
 .working-message {
@@ -449,16 +472,40 @@ code {
 
 .activity-list {
   display: grid;
-  gap: 17px;
+  position: relative;
+  gap: 0;
   margin: 0;
-  padding: 0 8px;
+  padding: 0 8px 0 7px;
   list-style: none;
+}
+
+.activity-list::before {
+  position: absolute;
+  top: 5px;
+  bottom: 10px;
+  left: 11px;
+  width: 1px;
+  background: var(--border);
+  content: "";
 }
 
 .activity-event {
   display: grid;
+  position: relative;
   grid-template-columns: 8px minmax(0, 1fr) auto;
   gap: 8px;
+  padding-bottom: 18px;
+}
+
+.activity-event:last-child {
+  padding-bottom: 0;
+}
+
+.activity-mark {
+  z-index: 1;
+  border: 2px solid var(--surface);
+  box-sizing: content-box;
+  margin-top: 2px;
 }
 
 .activity-title {
@@ -506,12 +553,22 @@ code {
 }
 
 @media (max-width: 680px) {
+  html,
+  body {
+    height: auto;
+    overflow: auto;
+  }
+
   .workspace {
     display: block;
+    height: auto;
+    overflow: visible;
   }
 
   .sidebar,
   .activity-panel {
+    height: auto;
+    overflow: visible;
     border: 0;
     border-bottom: 1px solid var(--border);
   }
@@ -525,6 +582,7 @@ code {
   }
 
   .chat-panel {
+    height: auto;
     min-height: 72vh;
   }
 
@@ -533,6 +591,8 @@ code {
   }
 
   .conversation {
+    height: auto;
+    overflow: visible;
     padding: 28px 18px;
   }
 
