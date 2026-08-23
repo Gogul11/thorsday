@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import { ChatComposer } from "@/components/chat-composer";
 import { TaskActivity } from "@/components/task-activity";
@@ -14,6 +16,7 @@ export default function Home() {
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const selectedTask = tasks.find((task) => task.task_id === selectedTaskId);
   const activeTaskIds = useMemo(
@@ -77,12 +80,17 @@ export default function Home() {
   }
 
   return (
-    <main className="workspace">
+    <main className={`workspace ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
       <TaskList
         tasks={tasks}
         selectedTaskId={selectedTaskId}
         onSelect={setSelectedTaskId}
-        onNewTask={() => setSelectedTaskId(null)}
+        onNewTask={() => {
+          setSelectedTaskId(null);
+          setSidebarCollapsed(false);
+        }}
+        collapsed={sidebarCollapsed}
+        onToggle={() => setSidebarCollapsed((current) => !current)}
       />
 
       <section className="chat-panel">
@@ -110,7 +118,11 @@ export default function Home() {
               <article className="message agent-message">
                 <span>AgentOS</span>
                 {selectedTask.response ? (
-                  <p>{selectedTask.response}</p>
+                  <div className="markdown">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {selectedTask.response}
+                    </ReactMarkdown>
+                  </div>
                 ) : selectedTask.error ? (
                   <p className="error-message">{selectedTask.error}</p>
                 ) : (

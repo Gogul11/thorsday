@@ -5,8 +5,6 @@
   --text: #1e1e1c;
   --muted: #74746f;
   --subtle: #f0f0ec;
-  --green: #2f7b50;
-  --yellow: #a26912;
   --red: #b84343;
 }
 
@@ -45,6 +43,10 @@ button:disabled {
   min-height: 100vh;
 }
 
+.workspace.sidebar-collapsed {
+  grid-template-columns: 64px minmax(420px, 1fr) 310px;
+}
+
 .sidebar,
 .activity-panel {
   background: var(--surface);
@@ -53,17 +55,46 @@ button:disabled {
 
 .sidebar {
   border-right: 1px solid var(--border);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .activity-panel {
   border-left: 1px solid var(--border);
 }
 
-.product-name {
+.sidebar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin: 2px 8px 22px;
+}
+
+.product-name {
   font-size: 17px;
   font-weight: 700;
   letter-spacing: -0.02em;
+}
+
+.sidebar-toggle {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 3px 5px;
+  font-size: 14px;
+}
+
+.sidebar-toggle:hover {
+  color: var(--text);
+}
+
+.sidebar.collapsed {
+  padding: 22px 12px;
+}
+
+.sidebar.collapsed .sidebar-top {
+  margin-right: 2px;
+  margin-left: 2px;
 }
 
 .new-task-button {
@@ -75,6 +106,11 @@ button:disabled {
   padding: 9px 11px;
   text-align: left;
   font-size: 14px;
+}
+
+.sidebar.collapsed .new-task-button {
+  padding: 9px 0;
+  text-align: center;
 }
 
 .new-task-button:hover,
@@ -95,6 +131,7 @@ button:disabled {
 .task-list {
   display: grid;
   gap: 3px;
+  min-width: 0;
 }
 
 .task-item {
@@ -107,6 +144,17 @@ button:disabled {
   padding: 8px;
   color: inherit;
   text-align: left;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.sidebar.collapsed .task-item {
+  justify-content: center;
+  padding: 9px 0;
+}
+
+.sidebar.collapsed .task-item-content {
+  display: none;
 }
 
 .task-item:hover,
@@ -149,12 +197,12 @@ button:disabled {
 
 .status-dot.running,
 .activity-mark.running {
-  background: var(--yellow);
+  background: #5e5e58;
 }
 
 .status-dot.completed,
 .activity-mark.completed {
-  background: var(--green);
+  background: #242422;
 }
 
 .status-dot.failed,
@@ -241,6 +289,48 @@ h1 {
   line-height: 1.65;
 }
 
+.markdown > :first-child {
+  margin-top: 0;
+}
+
+.markdown > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3 {
+  margin: 22px 0 9px;
+  font-size: 16px;
+}
+
+.markdown ul,
+.markdown ol {
+  margin: 10px 0;
+  padding-left: 22px;
+  line-height: 1.65;
+}
+
+.markdown li + li {
+  margin-top: 3px;
+}
+
+.markdown pre,
+.markdown code {
+  background: var(--subtle);
+}
+
+.markdown pre {
+  overflow-x: auto;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.markdown :not(pre) > code {
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
 .user-message p {
   border-left: 2px solid #292927;
   padding-left: 12px;
@@ -319,6 +409,37 @@ h1 {
   text-transform: capitalize;
 }
 
+.task-facts {
+  display: grid;
+  gap: 11px;
+  margin: 0 8px 21px;
+}
+
+.task-facts div {
+  border-bottom: 1px solid var(--subtle);
+  padding-bottom: 9px;
+}
+
+.task-facts dt {
+  margin-bottom: 3px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.task-facts dd {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.timeline-heading {
+  margin-top: 0;
+}
+
 code {
   color: #5a5a54;
   font-family: "Courier New", monospace;
@@ -371,6 +492,10 @@ code {
 @media (max-width: 1000px) {
   .workspace {
     grid-template-columns: 200px minmax(0, 1fr);
+  }
+
+  .workspace.sidebar-collapsed {
+    grid-template-columns: 64px minmax(0, 1fr);
   }
 
   .activity-panel {
