@@ -18,6 +18,22 @@ class TaskController:
         task_id = self.service.submit(request.prompt)
         return TaskResponse(task_id=task_id, status="queued")
 
+    async def follow_up(self, task_id: UUID, request: TaskRequest) -> TaskResponse:
+        try:
+            self.service.follow_up(str(task_id), request.prompt)
+        except KeyError:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Task not found",
+            ) from None
+        except ValueError:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Task is still running",
+            ) from None
+
+        return TaskResponse(task_id=task_id, status="queued")
+
     async def get_status(self, task_id: UUID) -> TaskStatusResponse:
         task = self.service.get(str(task_id))
 
@@ -33,4 +49,5 @@ class TaskController:
             response=task["response"],
             error=task["error"],
             events=task["events"],
+            messages=task["messages"],
         )

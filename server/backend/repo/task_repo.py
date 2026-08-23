@@ -12,13 +12,15 @@ class TaskRepository:
     def __init__(self):
         self._tasks: dict[str, dict[str, Any]] = {}
 
-    def create(self, task_id: str) -> None:
+    def create(self, task_id: str, prompt: str) -> None:
         self._tasks[task_id] = {
             "status": "queued",
             "response": None,
             "error": None,
             "events": [],
+            "messages": [],
         }
+        self.add_message(task_id, role="user", content=prompt)
         self.add_event(
             task_id,
             stage="task",
@@ -54,5 +56,18 @@ class TaskRepository:
                 "message": message,
                 "occurred_at": datetime.now(timezone.utc).isoformat(),
                 "agent_id": agent_id,
+            }
+        )
+
+    def add_message(self, task_id: str, role: str, content: str) -> None:
+        task = self._tasks.get(task_id)
+        if task is None:
+            raise KeyError(f"Task not found: {task_id}")
+
+        task["messages"].append(
+            {
+                "role": role,
+                "content": content,
+                "occurred_at": datetime.now(timezone.utc).isoformat(),
             }
         )

@@ -7,7 +7,7 @@ import remarkGfm from "remark-gfm";
 import { ChatComposer } from "@/components/chat-composer";
 import { TaskActivity } from "@/components/task-activity";
 import { TaskList, TaskRecord } from "@/components/task-list";
-import { createTask, getTaskStatus } from "@/lib/api";
+import { createTask, followUpTask, getTaskStatus } from "@/lib/api";
 
 const activeStatuses = new Set(["queued", "running"]);
 
@@ -19,6 +19,9 @@ export default function Home() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const selectedTask = tasks.find((task) => task.task_id === selectedTaskId);
+  const selectedTaskIsActive = Boolean(
+    selectedTask && activeStatuses.has(selectedTask.status),
+  );
   const activeTaskIds = useMemo(
     () =>
       tasks
@@ -58,22 +61,47 @@ export default function Home() {
     setSubmitError(null);
 
     try {
-      const createdTask = await createTask(prompt);
-      const task: TaskRecord = {
-        task_id: createdTask.task_id,
-        status: createdTask.status,
-        prompt,
-        submittedAt: new Date().toISOString(),
-        response: null,
-        error: null,
-        events: [],
-      };
+      if (selectedTask) {
+        const updatedTask = await followUpTask(selectedTask.task_id, prompt);
+        const occurredAt = new Date().toISOString();
 
-      setTasks((current) => [task, ...current]);
-      setSelectedTaskId(task.task_id);
-      void refreshTask(task.task_id).catch(() => undefined);
+        setTasks((current) =>
+          current.map((task) =>
+            task.task_id === selectedTask.task_id
+              ? {
+                  ...task,
+                  status: updatedTask.status,
+                  response: null,
+                  error: null,
+                  messages: [
+                    ...task.messages,
+                    { role: "user", content: prompt, occurred_at: occurredAt },
+                  ],
+                }
+              : task,
+          ),
+        );
+        void refreshTask(selectedTask.task_id).catch(() => undefined);
+      } else {
+        const createdTask = await createTask(prompt);
+        const occurredAt = new Date().toISOString();
+        const task: TaskRecord = {
+          task_id: createdTask.task_id,
+          status: createdTask.status,
+          prompt,
+          submittedAt: occurredAt,
+          response: null,
+          error: null,
+          events: [],
+          messages: [{ role: "user", content: prompt, occurred_at: occurredAt }],
+        };
+
+        setTasks((current) => [task, ...current]);
+        setSelectedTaskId(task.task_id);
+        void refreshTask(task.task_id).catch(() => undefined);
+      }
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "Could not create task.");
+      setSubmitError(error instanceof Error ? error.message : "Could not send message.");
     } finally {
       setIsSubmitting(false);
     }
@@ -110,31 +138,44 @@ export default function Home() {
             </div>
           ) : (
             <>
-              <article className="message user-message">
-                <span>You</span>
-                <p>{selectedTask.prompt}</p>
-              </article>
+              {selectedTask.messages.map((message, index) => (
+                <article
+                  className={`message ${message.role === "user" ? "user-message" : "agent-message"}`}
+                  key={`${message.occurred_at}-${index}`}
+                >
+                  <span>{message.role === "user" ? "You" : "AgentOS"}</span>
+                  {message.role === "assistant" ? (
+                    <div className="markdown">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {message.content}
+                      </ReactMarkdown>
+                    </div>
+                  ) : (
+                    <p>{message.content}</p>
+                  )}
+                </article>
+              ))}
 
-              <article className="message agent-message">
-                <span>AgentOS</span>
-                {selectedTask.response ? (
-                  <div className="markdown">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {selectedTask.response}
-                    </ReactMarkdown>
-                  </div>
-                ) : selectedTask.error ? (
+              {selectedTask.error ? (
+                <article className="message agent-message">
+                  <span>AgentOS</span>
                   <p className="error-message">{selectedTask.error}</p>
-                ) : (
-                  <p className="working-message">Working on this task…</p>
-                )}
-              </article>
+                </article>
+              ) : selectedTaskIsActive ? (
+                <article className="message agent-message">
+                  <span>AgentOS</span>
+                  <p className="working-message">Working on this task...</p>
+                </article>
+              ) : null}
             </>
           )}
         </div>
 
         {submitError ? <p className="submit-error">{submitError}</p> : null}
-        <ChatComposer disabled={isSubmitting} onSubmit={submitTask} />
+        <ChatComposer
+          disabled={isSubmitting || selectedTaskIsActive}
+          onSubmit={submitTask}
+        />
       </section>
 
       <TaskActivity task={selectedTask} />

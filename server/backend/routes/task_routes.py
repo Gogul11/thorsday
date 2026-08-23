@@ -21,6 +21,14 @@ def create_task_router(controller: TaskController) -> APIRouter:
     async def create_task(request: TaskRequest) -> TaskResponse:
         return await controller.create_task(request)
 
+    @router.post(
+        "/task/{task_id}/follow-up",
+        response_model=TaskResponse,
+        status_code=status.HTTP_202_ACCEPTED,
+    )
+    async def follow_up(task_id: UUID, request: TaskRequest) -> TaskResponse:
+        return await controller.follow_up(task_id, request)
+
     @router.get(
         "/status/{task_id}",
         response_model=TaskStatusResponse,
