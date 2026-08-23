@@ -1,12 +1,17 @@
 import logging
-import os
+from pathlib import Path
 
-os.makedirs("logs", exist_ok=True)
+LOG_DIR = Path(__file__).resolve().parent / "logs"
+LOG_DIR.mkdir(exist_ok=True)
 
 logger = logging.getLogger("AOS")
 logger.setLevel(logging.INFO)
 
-file_handler = logging.FileHandler("logs/app.log")
+file_handler = logging.FileHandler(
+    LOG_DIR / "app.log",
+    encoding="utf-8",
+    errors="replace",
+)
 
 formatter = logging.Formatter(
     "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
@@ -14,4 +19,5 @@ formatter = logging.Formatter(
 
 file_handler.setFormatter(formatter)
 
-logger.addHandler(file_handler)
+if not logger.handlers:
+    logger.addHandler(file_handler)
