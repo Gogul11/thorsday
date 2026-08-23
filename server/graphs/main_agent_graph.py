@@ -63,11 +63,15 @@ class MainAgentGraph:
         self.graph = graph.compile()
 
     def create_task(self, state):
+        task_id = state.get("task_id") or str(uuid.uuid4())
+        logger.info("Graph task created: %s", task_id)
+
         return {
-            "task_id" : str(uuid.uuid4())
+            "task_id" : task_id
         }
         
     async def planner_node(self, state):
+        logger.info("Planning task: %s", state["task_id"])
         task = state["task"]
         descriptions = self.agent_manager.get_agent_descriptions()
         prompt = f"""
@@ -107,8 +111,14 @@ Rules:
         index = state["current_agent"]
 
         agent_name = plan[index]
-        task_id = state.get('task_id', 'default-task')
+        task_id = state["task_id"]
         agent_id = f'{task_id}-{agent_name}'
+
+        logger.info(
+            "Executing agent %s for task %s",
+            agent_name,
+            task_id,
+        )
 
         runtime = self.agent_manager.create_agent(
             agent_id=agent_id,
@@ -143,7 +153,8 @@ Rules:
             self.agent_manager.destroy_agent(agent_id)
 
     async def response_node(self, state):
-    
+        logger.info("Generating response for task: %s", state["task_id"])
+
         results = state["results"]
     
         prompt = f"""

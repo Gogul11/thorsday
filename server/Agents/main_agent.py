@@ -4,6 +4,7 @@ from graphs.main_agent_graph import MainAgentGraph
 from models.model import Models
 from services.context import Context
 from logger import logger
+from uuid import uuid4
 
 class Main_Agent:
     def __init__(self, llm : Models):
@@ -23,8 +24,10 @@ class Main_Agent:
         )
 
     #Chat member function for the main agent
-    async def chat(self, message : str):
-        logger.info("Main agent chat is called!")
+    async def chat(self, message: str, task_id: str | None = None):
+        task_id = task_id or str(uuid4())
+
+        logger.info("Main agent chat started: %s", task_id)
         logger.info("Current context %s: ", self.context.get_context())
         
         self.context.add_user_message(message)
@@ -32,7 +35,7 @@ class Main_Agent:
         
         result = await self.graph.graph.ainvoke({
             "messages" : self.context.get_context(),
-            "task_id" : "",
+            "task_id" : task_id,
             "task" : message,
             "plan" : [],
             "current_agent" : 0,
@@ -41,12 +44,14 @@ class Main_Agent:
         })
         
         logger.info(
-            "Execution plan: %s",
+            "Task %s execution plan: %s",
+            task_id,
             result["plan"]
         )
 
         logger.info(
-            "Agent results: %s",
+            "Task %s agent results: %s",
+            task_id,
             result["response"]
         )
         self.context.add_system_message(result["response"])

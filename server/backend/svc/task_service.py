@@ -22,7 +22,7 @@ class TaskService:
         self.repository.update(task_id, status="running")
 
         try:
-            response = await self.agent.chat(prompt)
+            response = await self.agent.chat(prompt, task_id=task_id)
             self.repository.update(
                 task_id,
                 status="completed",
