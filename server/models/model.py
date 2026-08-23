@@ -3,7 +3,6 @@ from langchain_ollama import ChatOllama
 from dotenv import load_dotenv
 import os
 
-from tools.tool_registry import TOOLS
 from logger import logger
 
 load_dotenv()
@@ -22,13 +21,13 @@ class Models:
 
         self.current_model = LLAMA
 
-        llm = ChatOllama(
+        self.model = ChatOllama(
             model=self.current_model,
             temperature=0.2
         )
 
         logger.info("%s is successfully configured!", self.current_model)
-        self.model = llm.bind_tools(TOOLS) if len(TOOLS) > 0 else llm
+        
 
     async def chat(self, context):
         response = await self.model.ainvoke(context)

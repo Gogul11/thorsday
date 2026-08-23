@@ -1,9 +1,9 @@
-from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, AnyMessage
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, BaseMessage
 
 class Context:
     def __init__(self):
-        self.messages : list[AnyMessage] = []
-        self.system_message : AnyMessage = SystemMessage(content=   
+        self.messages : list[BaseMessage] = []
+        self.system_message : BaseMessage = SystemMessage(content=   
             """You are the Main Agent of AgentOS.
             
             Understand the user's intent, use the provided context, reason about tasks, and use available tools when necessary.
@@ -21,10 +21,10 @@ class Context:
     def add_user_message(self, message : str):
         self.messages.append(HumanMessage(content=message))
 
-    def add_system_message(self, message : str):
+    def add_system_message(self, message):
         self.messages.append(AIMessage(content=message))
 
-    def get_context(self) -> list[AnyMessage]:
+    def get_context(self) -> list[BaseMessage]:
         return [
             self.system_message,
             *self.messages

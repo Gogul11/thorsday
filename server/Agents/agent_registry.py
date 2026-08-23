@@ -1,11 +1,29 @@
-AGENTS = {
-    "A1": {
-        "name": "Code Analyzer",
-        "description": "Analyzes source code and identifies bugs and implementation issues."
-    },
+from .agents.a1 import AgentA1
+from .agents.a2 import AgentA2
 
-    "A2": {
-        "name": "Explanation Agent",
-        "description": "Explains technical concepts and produces clear explanations based on analysis."
-    }
-}
+class AgentRegistry:
+
+    def __init__(self, model):
+        self.model = model
+
+        self.agents = {
+            "a1": AgentA1,
+            "a2": AgentA2,
+        }
+
+    def create(self, agent_id :str):
+        agent = self.agents[agent_id]
+        return agent(self.model)
+
+    # def destroy(self, agent_id : str):
+    #     agent = self.agents[agent_id]
+    #     del agent
+
+    def get(self, agent_id: str):
+        return self.agents.get(agent_id)
+
+    def get_descriptions(self):
+        return {
+              name: agent.description
+              for name, agent in self.agents.items()
+          }
