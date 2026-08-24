@@ -57,8 +57,3 @@ class ResearchAgent:
         })
 
         return result["messages"][-1].content
-
-
-# Backward compatibility alias
-AgentA3 = ResearchAgent
-

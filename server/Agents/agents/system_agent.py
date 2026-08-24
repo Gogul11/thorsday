@@ -51,8 +51,3 @@ class SystemAgent:
         })
 
         return result["messages"][-1].content
-
-
-# Backward compatibility alias
-AgentA1 = SystemAgent
-

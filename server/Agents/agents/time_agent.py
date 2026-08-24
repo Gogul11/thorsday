@@ -50,8 +50,3 @@ class TimeAgent:
         })
 
         return result["messages"][-1].content
-
-
-# Backward compatibility alias
-AgentA2 = TimeAgent
-
