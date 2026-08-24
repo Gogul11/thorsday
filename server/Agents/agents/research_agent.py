@@ -1,14 +1,14 @@
 from langchain.agents import create_agent
-from tools.tool_registry import A3_TOOLS
+from tools.tool_registry import RESEARCH_TOOLS
 
 
-class AgentA3:
-    name = "Agent A3"
+class ResearchAgent:
+    name = "Research Agent"
     description = """
-    A3 is a specialized Research Agent responsible for gathering factual,
-    academic, scientific, and verified information.
+    Research Agent is responsible for gathering factual, academic, scientific,
+    and verified information.
 
-    Use A3 when the task requires:
+    Use Research Agent when the task requires:
     - Academic, scientific, or technical literature research
     - Finding verified facts, historical records, and encyclopedic data
     - Searching Wikipedia for concepts, biographies, definitions, and overviews
@@ -16,7 +16,7 @@ class AgentA3:
       (e.g., arXiv, Nature, ScienceDirect, IEEE, Springer, NIH, ACM)
     - Fact-checking claims and summarizing verified sources with citations
 
-    A3 should strictly gather and report factual information using its provided
+    Research Agent strictly gathers and reports factual information using its provided
     research tools (Wikipedia Search and Trusted Web Search). It must never
     fabricate information, citations, or URLs.
     """
@@ -24,12 +24,12 @@ class AgentA3:
     def __init__(self, model):
         self.agent = create_agent(
             model=model,
-            tools=A3_TOOLS,
+            tools=RESEARCH_TOOLS,
         )
 
     async def run(self, task: str, context: str = ""):
         prompt = f"""
-    You are {self.name} (Research Agent).
+    You are {self.name}.
 
     Your responsibility:
     {self.description}
@@ -57,4 +57,8 @@ class AgentA3:
         })
 
         return result["messages"][-1].content
+
+
+# Backward compatibility alias
+AgentA3 = ResearchAgent
 
