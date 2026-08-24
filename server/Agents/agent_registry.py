@@ -1,5 +1,7 @@
 from .agents.a1 import AgentA1
 from .agents.a2 import AgentA2
+from .agents.a3 import AgentA3
+
 
 class AgentRegistry:
 
@@ -9,9 +11,10 @@ class AgentRegistry:
         self.agents = {
             "a1": AgentA1,
             "a2": AgentA2,
+            "a3": AgentA3,
         }
 
-    def create(self, agent_id :str):
+    def create(self, agent_id: str):
         agent = self.agents[agent_id]
         return agent(self.model)
 
@@ -23,7 +26,4 @@ class AgentRegistry:
         return self.agents.get(agent_id)
 
     def get_descriptions(self):
-        return {
-              name: agent.description
-              for name, agent in self.agents.items()
-          }
+        return {name: agent.description for name, agent in self.agents.items()}
