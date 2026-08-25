@@ -65,10 +65,14 @@ class MainAgentGraph:
 
         self.graph = graph.compile()
 
+    async def run(self, state):
+        return await self.graph.ainvoke(state)
+
     async def create_task(self, state):
         task_id = str(uuid.uuid4())
 
         new_state = {
+            **state,
             "task_id" : task_id
         }
 
@@ -231,7 +235,7 @@ Rules:
 
         return "end"
 
-    async def emit(self, event: str, state: dict, **data):
+    async def emit(self, event: str, state, **data):
         await self.redis_client.publish(
             "kernel_events",
             {
