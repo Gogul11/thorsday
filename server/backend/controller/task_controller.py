@@ -1,13 +1,13 @@
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from fastapi import HTTPException, status
 
-from backend.schemas.task import (
+from schemas.task import (
     TaskRequest,
     TaskResponse,
     TaskStatusResponse,
 )
-from backend.svc.task_service import TaskService
+from svc.task_service import TaskService
 
 
 class TaskController:
@@ -15,8 +15,17 @@ class TaskController:
         self.service = service
 
     async def create_task(self, request: TaskRequest) -> TaskResponse:
-        task_id = self.service.submit(request.prompt)
-        return TaskResponse(task_id=task_id, status="queued")
+        req_id = str(uuid4())
+    
+        await self.service.submit(
+            request.prompt,
+            req_id
+        )
+    
+        return TaskResponse(
+            task_id=req_id,
+            status="queued"
+        )
 
     async def get_status(self, task_id: UUID) -> TaskStatusResponse:
         task = self.service.get(str(task_id))

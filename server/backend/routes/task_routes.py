@@ -2,8 +2,8 @@ from uuid import UUID
 
 from fastapi import APIRouter, status
 
-from backend.controller.task_controller import TaskController
-from backend.schemas.task import (
+from controller.task_controller import TaskController
+from schemas.task import (
     TaskRequest,
     TaskResponse,
     TaskStatusResponse,

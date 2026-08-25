@@ -2,14 +2,15 @@ from collections.abc import Callable
 
 from Agents.agent_manager import AgentManager
 from Agents.agent_registry import AgentRegistry
+from Redis.redis_connection import RedisPubSub
 from graphs.main_agent_graph import MainAgentGraph
 from models.model import Models
 from services.context import Context
 from logger import logger
-from uuid import uuid4
+import uuid
 
 class Main_Agent:
-    def __init__(self, llm : Models):
+    def __init__(self, llm : Models, redis_client : RedisPubSub):
         logger.info("Main Agent is successfully instantiated!")
 
         self.llm = llm
@@ -22,19 +23,18 @@ class Main_Agent:
 
         self.graph = MainAgentGraph(
             self.llm,
-            self.agent_manager
+            self.agent_manager,
+            redis_client
         )
 
     #Chat member function for the main agent
     async def chat(
         self,
         message: str,
-        task_id: str | None = None,
-        event_callback: Callable[[str, str, str, str | None], None] | None = None,
+        req_id
     ):
-        task_id = task_id or str(uuid4())
 
-        logger.info("Main agent chat started: %s", task_id)
+        logger.info("Main agent chat started: %s")
         logger.info("Current context %s: ", self.context.get_context())
         
         self.context.add_user_message(message)
@@ -42,26 +42,26 @@ class Main_Agent:
         
         result = await self.graph.run(
             {
+            "req_id" : str(req_id),
             "messages" : self.context.get_context(),
-            "task_id" : task_id,
+            "task_id" : "",
             "task" : message,
             "plan" : [],
             "current_agent" : 0,
             "results" : {},
-                "response" : ""
+            "response" : ""
             },
-            event_callback=event_callback,
         )
         
         logger.info(
             "Task %s execution plan: %s",
-            task_id,
+            result['task_id'],
             result["plan"]
         )
 
         logger.info(
             "Task %s agent results: %s",
-            task_id,
+            result['task_id'],
             result["response"]
         )
         self.context.add_system_message(result["response"])

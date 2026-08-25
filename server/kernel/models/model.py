@@ -36,7 +36,7 @@ class Models:
             model=self.current_model,
             temperature=0.2
         )
-
+        print("Model successfully Configured")
         logger.info("%s is successfully configured!", self.current_model)
         
 
