@@ -1,5 +1,7 @@
 from .agents.a1 import AgentA1
 from .agents.a2 import AgentA2
+from .agents.content_creator import ContentCreatorAgent
+from .agents.email_agent import EmailAgent
 
 class AgentRegistry:
 
@@ -9,7 +11,10 @@ class AgentRegistry:
         self.agents = {
             "a1": AgentA1,
             "a2": AgentA2,
+            "content_creator": ContentCreatorAgent,
+            "email_agent": EmailAgent,
         }
+
 
     def create(self, agent_id :str):
         agent = self.agents[agent_id]
