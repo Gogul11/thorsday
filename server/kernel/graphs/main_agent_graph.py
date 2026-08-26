@@ -4,7 +4,7 @@ from typing import Any
 from langgraph.graph import StateGraph, START, END
 from langchain_core.callbacks import BaseCallbackHandler
 from Agents.agent_manager import AgentManager
-from Redis.redis_connection import RedisPubSub
+from Redis.redis_connection import publish, subscribe
 from .states.main_agent_state import MainAgentState, ExecutionPlan
 from logger import logger
 from repository.task_repo import DB_create_task, DB_update_task, DB_add_task_event
@@ -75,10 +75,9 @@ class ToolEventCallbackHandler(BaseCallbackHandler):
 
 
 class MainAgentGraph:
-    def __init__(self, llm, manager: AgentManager, redis_client: RedisPubSub):
+    def __init__(self, llm, manager: AgentManager):
         self.llm = llm
         self.agent_manager = manager
-        self.redis_client = redis_client
 
         graph = StateGraph(MainAgentState)
 
@@ -298,5 +297,5 @@ Rules:
             "task_id": state["task_id"],
             **data,
         }
-        await self.redis_client.publish("kernel_events", temp)
+        await publish("kernel_events", temp)
         await DB_add_task_event(state["task_id"], temp)

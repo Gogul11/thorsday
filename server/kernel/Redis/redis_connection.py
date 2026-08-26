@@ -1,40 +1,41 @@
 import json
 import redis.asyncio as redis
-from typing import Callable, Awaitable
+from typing import Any, Callable, Awaitable
 
-class RedisPubSub:
-    def __init__(
-        self,
-        host: str = "localhost",
-        port: int = 6379,
-    ):
-        self.redis = redis.Redis(
-            host=host,
-            port=port,
-            decode_responses=True,
-        )
-        print("Redis Connection is established")
+redis_client = redis.Redis(
+    host="localhost",
+    port=6379,
+    decode_responses=True,
+)
 
-    async def publish(self, channel: str, data: dict[any, any]):
-        await self.redis.publish(
-            channel,
-            json.dumps(data),
-        )
 
-    async def subscribe(
-        self,
-        channel: str,
-        handler: Callable[[dict], Awaitable[None]],
-    ):
-        pubsub = self.redis.pubsub()
-        await pubsub.subscribe(channel)
+async def publish(
+    channel: str,
+    data: dict[str, Any],
+):
+    await redis_client.publish(
+        channel,
+        json.dumps(data),
+    )
 
-        async for message in pubsub.listen():
-            if message["type"] != "message":
-                continue
 
-            data = json.loads(message["data"])
-            await handler(data)
+async def subscribe(
+    channel: str,
+    handler: Callable[[dict[str, Any]], Awaitable[None]],
+):
+    pubsub = redis_client.pubsub()
 
-    async def close(self):
-        await self.redis.aclose()
+    await pubsub.subscribe(channel)
+
+    async for message in pubsub.listen():
+
+        if message["type"] != "message":
+            continue
+
+        data = json.loads(message["data"])
+
+        await handler(data)
+
+
+async def close():
+    await redis_client.aclose()

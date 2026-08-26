@@ -2,7 +2,6 @@ from collections.abc import Callable
 
 from Agents.agent_manager import AgentManager
 from Agents.agent_registry import AgentRegistry
-from Redis.redis_connection import RedisPubSub
 from graphs.main_agent_graph import MainAgentGraph
 from models.model import Models
 from services.context import Context
@@ -10,7 +9,7 @@ from logger import logger
 import uuid
 
 class Main_Agent:
-    def __init__(self, llm : Models, redis_client : RedisPubSub):
+    def __init__(self, llm : Models):
         logger.info("Main Agent is successfully instantiated!")
 
         self.llm = llm
@@ -23,8 +22,7 @@ class Main_Agent:
 
         self.graph = MainAgentGraph(
             self.llm,
-            self.agent_manager,
-            redis_client
+            self.agent_manager
         )
 
     #Chat member function for the main agent
@@ -35,12 +33,12 @@ class Main_Agent:
     ):
 
         logger.info("Main agent chat started: %s")
-        logger.info("Current context %s: ", self.context.get_context(str(req_id)))
+        logger.info("Current context %s: ", await self.context.get_context(str(req_id)))
                 
         result = await self.graph.run(
             {
             "req_id" : str(req_id),
-            "messages" : self.context.get_context(str(req_id)),
+            "messages" : await self.context.get_context(str(req_id)),
             "task_id" : "",
             "task" : message,
             "plan" : [],
@@ -62,8 +60,8 @@ class Main_Agent:
             result["response"]
         )
 
-        self.context.add_user_message(result["task_id"], message)
-        self.context.add_system_message(result["task_id"], result["response"])
+        await self.context.add_user_message(result["task_id"], message)
+        await self.context.add_system_message(result["task_id"], result["response"])
 
         # logger.info("Returned response : %s", plan)
         return result["response"]
