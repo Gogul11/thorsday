@@ -63,7 +63,7 @@ function ActivityEvent({ event }: { event: TaskEvent }) {
       />
       <div>
         <p className={`activity-title ${isTool ? "tool-title" : ""}`}>
-          {isTool ? "🔧 tool" : event.stage}
+          {isTool ? "tool" : event.stage}
         </p>
         <p className="activity-message">{event.message}</p>
         {event.agent_id ? (
