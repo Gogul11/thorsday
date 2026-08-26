@@ -205,8 +205,17 @@ button:disabled {
 }
 
 .status-dot.running,
-.activity-mark.running {
+.activity-mark.running,
+.activity-mark.started {
   background: #5e5e58;
+}
+
+.activity-mark.tool {
+  background: #3b82f6;
+}
+
+.activity-mark.tool.completed {
+  background: #10b981;
 }
 
 .status-dot.completed,
@@ -513,6 +522,21 @@ code {
   font-size: 12px;
   font-weight: 700;
   text-transform: capitalize;
+}
+
+.activity-title.tool-title {
+  color: #2563eb;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+.tool-agent-badge {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--subtle);
+  color: #4b5563;
+  font-size: 10px;
 }
 
 .activity-message {
