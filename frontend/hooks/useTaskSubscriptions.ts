@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
-import type { KernelMessage, TaskRecord } from "@/lib/types";
-import { subscribeToTask } from "@/lib/ws";
+import type { KernelMessage, TaskRecord } from "@/types";
+import { subscribeToTask } from "@/api/websocket";
 
 /** Task statuses that can still receive kernel events. */
 const ACTIVE_STATUSES = new Set(["queued", "running"]);
@@ -19,7 +19,7 @@ export function useTaskSubscriptions(
   tasks: TaskRecord[],
   setTasks: React.Dispatch<React.SetStateAction<TaskRecord[]>>,
 ): void {
-  // Map of task_id → cleanup function.  Held in a ref so it survives
+  // Map of task_id → cleanup function. Held in a ref so it survives
   // re-renders without triggering new effects.
   const subscriptions = useRef<Map<string, () => void>>(new Map());
 

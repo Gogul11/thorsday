@@ -1,4 +1,4 @@
-import type { KernelMessage } from "./types";
+import type { KernelMessage } from "@/types";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
 
@@ -6,7 +6,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
 const wsBase = apiUrl.replace(/^http/, "ws");
 
 /**
- * Open a WebSocket to `/ws/<reqId>` and call `onMessage` for every kernel
+ * Opens a WebSocket to `/ws/<reqId>` and calls `onMessage` for every kernel
  * event that arrives.  Returns a cleanup function that closes the socket.
  *
  * Reconnects automatically with exponential back-off on unexpected closes

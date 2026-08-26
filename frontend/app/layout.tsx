@@ -11,7 +11,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="bg-[#f7f7f5] text-[#1e1e1c] h-full min-h-full overflow-hidden">
+        {children}
+      </body>
     </html>
   );
 }
