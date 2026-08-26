@@ -35,15 +35,12 @@ class Main_Agent:
     ):
 
         logger.info("Main agent chat started: %s")
-        logger.info("Current context %s: ", self.context.get_context())
-        
-        self.context.add_user_message(message)
-        logger.info("Main agent : %s", self.context.get_context())
-        
+        logger.info("Current context %s: ", self.context.get_context(str(req_id)))
+                
         result = await self.graph.run(
             {
             "req_id" : str(req_id),
-            "messages" : self.context.get_context(),
+            "messages" : self.context.get_context(str(req_id)),
             "task_id" : "",
             "task" : message,
             "plan" : [],
@@ -64,7 +61,9 @@ class Main_Agent:
             result['task_id'],
             result["response"]
         )
-        self.context.add_system_message(result["response"])
+
+        self.context.add_user_message(result["task_id"], message)
+        self.context.add_system_message(result["task_id"], result["response"])
 
         # logger.info("Returned response : %s", plan)
         return result["response"]

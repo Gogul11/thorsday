@@ -7,7 +7,7 @@ from Agents.agent_manager import AgentManager
 from Redis.redis_connection import RedisPubSub
 from .states.main_agent_state import MainAgentState, ExecutionPlan
 from logger import logger
-
+from repository.task_repo import DB_create_task, DB_update_task, DB_add_task_event
 
 class ToolEventCallbackHandler(BaseCallbackHandler):
     def __init__(
@@ -118,13 +118,16 @@ class MainAgentGraph:
     async def create_task(self, state):
         task_id = str(uuid.uuid4())
         new_state = {**state, "task_id": task_id}
+        
         await self.emit("task.CREATED", new_state)
+        await DB_create_task(req_id=state["req_id"], task_id=task_id)
         return new_state
 
     async def planner_node(self, state):
         await self.emit("task.PLANNING", state)
         task = state["task"]
         descriptions = self.agent_manager.get_agent_descriptions()
+        
         prompt = f"""
 You are the Main Agent and task planner of AgentOS.
 
@@ -150,6 +153,7 @@ Rules:
             plan: ExecutionPlan = await planner.ainvoke(prompt)
             valid_agents = set(self.agent_manager.registry.agents.keys())
             plan_agents = [a for a in plan.agents if a in valid_agents]
+
         except Exception as e:
             logger.warning(
                 "Planner failed to generate structured plan: %s. Defaulting to empty plan.",
@@ -158,6 +162,12 @@ Rules:
             plan_agents = []
 
         await self.emit("task.PLANNED", state, plan=plan_agents)
+        
+        temp_data = {
+            "agents" : plan_agents
+        }
+        await DB_update_task(state["task_id"], values=temp_data)
+        
         return {
             "plan": plan_agents,
         }
@@ -268,7 +278,12 @@ Rules:
         result = await self.llm.model.ainvoke(prompt)
 
         await self.emit("task.COMPLETED", state, response=result.content)
-
+        
+        temp_data = {
+            "response" : result.content
+        }
+        await DB_update_task(state["task_id"], values=temp_data)
+        
         return {"response": result.content}
 
     def should_continue(self, state):
@@ -277,12 +292,11 @@ Rules:
         return "end"
 
     async def emit(self, event: str, state, **data):
-        await self.redis_client.publish(
-            "kernel_events",
-            {
-                "event": event,
-                "req_id": state["req_id"],
-                "task_id": state["task_id"],
-                **data,
-            },
-        )
+        temp =  {
+            "event": event,
+            "req_id": state["req_id"],
+            "task_id": state["task_id"],
+            **data,
+        }
+        await self.redis_client.publish("kernel_events", temp)
+        await DB_add_task_event(state["task_id"], temp)
