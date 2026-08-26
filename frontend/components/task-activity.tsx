@@ -1,5 +1,4 @@
-import { TaskEvent } from "@/lib/api";
-import { TaskRecord } from "./task-list";
+import type { TaskEvent, TaskRecord } from "@/lib/types";
 
 type TaskActivityProps = {
   task: TaskRecord | undefined;
@@ -13,7 +12,7 @@ function formatTime(value: string) {
   }).format(new Date(value));
 }
 
-function getAgentNames(task: TaskRecord) {
+function getAgentNames(task: TaskRecord): string[] {
   return [
     ...new Set(
       task.events
@@ -56,6 +55,7 @@ export function TaskActivity({ task }: TaskActivityProps) {
               <code>{task.task_id}</code>
             </div>
           </div>
+
           <dl className="task-facts">
             <div>
               <dt>Current step</dt>
@@ -74,6 +74,7 @@ export function TaskActivity({ task }: TaskActivityProps) {
               <dd>{formatTime(task.submittedAt)}</dd>
             </div>
           </dl>
+
           <div className="panel-heading timeline-heading">Timeline</div>
           <ol className="activity-list">
             {task.events.length === 0 ? (

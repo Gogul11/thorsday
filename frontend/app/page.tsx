@@ -1,15 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import { useState } from "react";
 
-import { ChatComposer } from "@/components/chat-composer";
+import { ChatPanel } from "@/components/chat-panel";
 import { TaskActivity } from "@/components/task-activity";
-import { TaskList, TaskRecord } from "@/components/task-list";
-import { createTask, getTaskStatus } from "@/lib/api";
-
-const activeStatuses = new Set(["queued", "running"]);
+import { TaskList } from "@/components/task-list";
+import { useTaskSubscriptions } from "@/hooks/use-task-subscriptions";
+import { createTask } from "@/lib/http";
+import type { TaskRecord } from "@/lib/types";
 
 export default function Home() {
   const [tasks, setTasks] = useState<TaskRecord[]>([]);
@@ -18,50 +16,19 @@ export default function Home() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  const selectedTask = tasks.find((task) => task.task_id === selectedTaskId);
-  const activeTaskIds = useMemo(
-    () =>
-      tasks
-        .filter((task) => activeStatuses.has(task.status))
-        .map((task) => task.task_id),
-    [tasks],
-  );
-  const activeTaskKey = activeTaskIds.join(",");
+  useTaskSubscriptions(tasks, setTasks);
 
-  const refreshTask = useCallback(async (taskId: string) => {
-    const status = await getTaskStatus(taskId);
-    setTasks((current) =>
-      current.map((task) =>
-        task.task_id === taskId ? { ...task, ...status } : task,
-      ),
-    );
-  }, []);
-
-  useEffect(() => {
-    if (!activeTaskKey) {
-      return;
-    }
-
-    const refreshActiveTasks = () => {
-      activeTaskKey.split(",").forEach((taskId) => {
-        void refreshTask(taskId).catch(() => undefined);
-      });
-    };
-
-    refreshActiveTasks();
-    const timer = window.setInterval(refreshActiveTasks, 1200);
-    return () => window.clearInterval(timer);
-  }, [activeTaskKey, refreshTask]);
+  const selectedTask = tasks.find((t) => t.task_id === selectedTaskId);
 
   async function submitTask(prompt: string) {
     setIsSubmitting(true);
     setSubmitError(null);
 
     try {
-      const createdTask = await createTask(prompt);
+      const created = await createTask(prompt);
       const task: TaskRecord = {
-        task_id: createdTask.task_id,
-        status: createdTask.status,
+        task_id: created.task_id,
+        status: created.status,
         prompt,
         submittedAt: new Date().toISOString(),
         response: null,
@@ -71,9 +38,10 @@ export default function Home() {
 
       setTasks((current) => [task, ...current]);
       setSelectedTaskId(task.task_id);
-      void refreshTask(task.task_id).catch(() => undefined);
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "Could not create task.");
+      setSubmitError(
+        error instanceof Error ? error.message : "Could not create task.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -90,52 +58,15 @@ export default function Home() {
           setSidebarCollapsed(false);
         }}
         collapsed={sidebarCollapsed}
-        onToggle={() => setSidebarCollapsed((current) => !current)}
+        onToggle={() => setSidebarCollapsed((c) => !c)}
       />
 
-      <section className="chat-panel">
-        <header className="chat-header">
-          <div>
-            <p className="eyebrow">Agent workspace</p>
-            <h1>{selectedTask ? "Task" : "New task"}</h1>
-          </div>
-          {selectedTask ? <span className="plain-status">{selectedTask.status}</span> : null}
-        </header>
-
-        <div className="conversation">
-          {!selectedTask ? (
-            <div className="empty-conversation">
-              <h2>Send a task</h2>
-              <p>Use the chat box to start an agent task. Its progress will appear on the right.</p>
-            </div>
-          ) : (
-            <>
-              <article className="message user-message">
-                <span>You</span>
-                <p>{selectedTask.prompt}</p>
-              </article>
-
-              <article className="message agent-message">
-                <span>AgentOS</span>
-                {selectedTask.response ? (
-                  <div className="markdown">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {selectedTask.response}
-                    </ReactMarkdown>
-                  </div>
-                ) : selectedTask.error ? (
-                  <p className="error-message">{selectedTask.error}</p>
-                ) : (
-                  <p className="working-message">Working on this task…</p>
-                )}
-              </article>
-            </>
-          )}
-        </div>
-
-        {submitError ? <p className="submit-error">{submitError}</p> : null}
-        <ChatComposer disabled={isSubmitting} onSubmit={submitTask} />
-      </section>
+      <ChatPanel
+        selectedTask={selectedTask}
+        isSubmitting={isSubmitting}
+        submitError={submitError}
+        onSubmit={submitTask}
+      />
 
       <TaskActivity task={selectedTask} />
     </main>

@@ -1,9 +1,6 @@
-import { TaskStatus } from "@/lib/api";
+import type { TaskRecord } from "@/lib/types";
 
-export type TaskRecord = TaskStatus & {
-  prompt: string;
-  submittedAt: string;
-};
+export type { TaskRecord };
 
 type TaskListProps = {
   tasks: TaskRecord[];
@@ -40,6 +37,7 @@ export function TaskList({
           {collapsed ? ">" : "<"}
         </button>
       </div>
+
       <button
         className="new-task-button"
         type="button"
@@ -51,9 +49,12 @@ export function TaskList({
       </button>
 
       {!collapsed ? <div className="sidebar-heading">Tasks</div> : null}
+
       <div className="task-list">
         {tasks.length === 0 ? (
-          !collapsed ? <p className="empty-sidebar">Tasks you send will appear here.</p> : null
+          !collapsed ? (
+            <p className="empty-sidebar">Tasks you send will appear here.</p>
+          ) : null
         ) : (
           tasks.map((task) => (
             <button

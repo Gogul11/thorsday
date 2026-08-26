@@ -7,7 +7,7 @@ from Redis.redis_connection import RedisPubSub
 from controller.task_controller import TaskController
 from repo.task_repo import TaskRepository
 from routes.task_routes import create_task_router
-from svc.redis_service import create_lifespan
+from svc.redis_service import WebSocketManager, create_lifespan
 from svc.task_service import TaskService
 
 
@@ -17,6 +17,7 @@ redis_client = RedisPubSub()
 def create_app() -> FastAPI:
 
     repository = TaskRepository()
+    ws_manager = WebSocketManager()
 
     service = TaskService(
         redis_client,
@@ -28,7 +29,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="AgentOS API",
         description="Asynchronous API for running AgentOS tasks.",
-        lifespan=create_lifespan(redis_client)
+        lifespan=create_lifespan(redis_client, repository, ws_manager)
     )
 
     allowed_origins = os.getenv(
@@ -48,7 +49,7 @@ def create_app() -> FastAPI:
     )
 
     app.include_router(
-        create_task_router(controller)
+        create_task_router(controller, ws_manager)
     )
 
     return app
