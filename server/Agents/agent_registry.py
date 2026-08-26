@@ -1,5 +1,6 @@
 from .agents.a1 import AgentA1
 from .agents.a2 import AgentA2
+from .agents.a7 import AgentA7
 
 class AgentRegistry:
 
@@ -9,6 +10,7 @@ class AgentRegistry:
         self.agents = {
             "a1": AgentA1,
             "a2": AgentA2,
+            "a7": AgentA7,
         }
 
     def create(self, agent_id :str):
