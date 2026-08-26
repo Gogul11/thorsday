@@ -56,19 +56,27 @@ def build_event_from_kernel(data: dict) -> dict:
         "agent.COMPLETED": ("agent", "completed"),
         "agent.FAILED": ("agent", "failed"),
         "agent.DESTROYED": ("agent", "destroyed"),
+        "tool.STARTED": ("tool", "started"),
+        "tool.COMPLETED": ("tool", "completed"),
+        "tool.FAILED": ("tool", "failed"),
     }
 
     stage, status = stage_map.get(event, ("task", event.lower()))
+    agent_name = data.get("agent_name") or data.get("agent_id")
+    tool_name = data.get("tool_name", "tool")
 
     messages: dict[str, str] = {
         "task.CREATED": "Task created.",
         "task.PLANNING": "Planning execution steps…",
-        "task.PLANNED": f"Plan ready: {data.get('plan') or ''}",
-        "task.COMPLETED": f"Task completed.",
-        "agent.STARTED": f"Agent {data.get('agent_name', '')} started.",
-        "agent.COMPLETED": f"Agent {data.get('agent_name', '')} completed.",
-        "agent.FAILED": f"Agent {data.get('agent_name', '')} failed: {data.get('error', '')}",
-        "agent.DESTROYED": f"Agent {data.get('agent_name', '')} destroyed.",
+        "task.PLANNED": f"Plan ready: {data.get('plan') or []}",
+        "task.COMPLETED": "Task completed.",
+        "agent.STARTED": f"Agent {agent_name or ''} started.",
+        "agent.COMPLETED": f"Agent {agent_name or ''} completed.",
+        "agent.FAILED": f"Agent {agent_name or ''} failed: {data.get('error', '')}",
+        "agent.DESTROYED": f"Agent {agent_name or ''} destroyed.",
+        "tool.STARTED": f"Tool started: {tool_name}",
+        "tool.COMPLETED": f"Tool completed: {tool_name}",
+        "tool.FAILED": f"Tool {tool_name} failed: {data.get('error', '')}",
     }
 
     return {
@@ -76,7 +84,7 @@ def build_event_from_kernel(data: dict) -> dict:
         "status": status,
         "message": messages.get(event, event),
         "occurred_at": datetime.now(timezone.utc).isoformat(),
-        "agent_id": data.get("agent_id"),
+        "agent_id": agent_name,
     }
 
 
@@ -144,7 +152,9 @@ def create_handle_kernel_event(
     return handle_kernel_event
 
 
-def create_lifespan(redis_client: RedisPubSub, repository: TaskRepository, ws_manager: WebSocketManager):
+def create_lifespan(
+    redis_client: RedisPubSub, repository: TaskRepository, ws_manager: WebSocketManager
+):
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):

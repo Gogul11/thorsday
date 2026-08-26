@@ -27,7 +27,7 @@ class AgentA2:
             tools=A2_TOOLS
         )
 
-    async def run(self, task: str, context: str = ""):
+    async def run(self, task: str, context: str = "", callbacks: list | None = None):
     
         prompt = f"""
     You are {self.name}.
@@ -45,13 +45,16 @@ class AgentA2:
     Return the final result clearly.
     """
     
-        result = await self.agent.ainvoke({
-            "messages": [
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ]
-        })
+        result = await self.agent.ainvoke(
+            {
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ]
+            },
+            config={"callbacks": callbacks} if callbacks else None
+        )
     
         return result["messages"][-1].content
