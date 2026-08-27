@@ -1,1 +1,1 @@
-"""Backend API package."""
+"""AgentOS Backend package."""

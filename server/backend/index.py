@@ -1,35 +1,26 @@
+"""AgentOS Backend — application entry point.
+
+Creates and configures the FastAPI app. No class instantiation required;
+all state lives in module-level stores inside each subpackage.
+
+Run with:
+    uvicorn backend.index:app --reload
+"""
+
 import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from Redis.redis_connection import RedisPubSub
-from controller.task_controller import TaskController
-from repo.task_repo import TaskRepository
-from routes.task_routes import create_task_router
-from svc.redis_service import WebSocketManager, create_lifespan
-from svc.task_service import TaskService
-
-
-redis_client = RedisPubSub()
+from routes.task_routes import router as task_router
+from svc.redis_service import lifespan
 
 
 def create_app() -> FastAPI:
-
-    repository = TaskRepository()
-    ws_manager = WebSocketManager()
-
-    service = TaskService(
-        redis_client,
-        repository
-    )
-
-    controller = TaskController(service)
-
     app = FastAPI(
         title="AgentOS API",
         description="Asynchronous API for running AgentOS tasks.",
-        lifespan=create_lifespan(redis_client, repository, ws_manager)
+        lifespan=lifespan,
     )
 
     allowed_origins = os.getenv(
@@ -39,18 +30,13 @@ def create_app() -> FastAPI:
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[
-            origin.strip()
-            for origin in allowed_origins
-        ],
+        allow_origins=[origin.strip() for origin in allowed_origins],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
 
-    app.include_router(
-        create_task_router(controller, ws_manager)
-    )
+    app.include_router(task_router)
 
     return app
 

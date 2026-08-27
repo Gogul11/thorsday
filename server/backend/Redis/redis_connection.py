@@ -1,40 +1,64 @@
-import json
-import redis.asyncio as redis
-from typing import Callable, Awaitable
+"""Redis pub/sub connection — function-based interface.
 
-class RedisPubSub:
-    def __init__(
-        self,
-        host: str = "localhost",
-        port: int = 6379,
-    ):
-        self.redis = redis.Redis(
-            host=host,
-            port=port,
+Module-level client is created lazily on first use.
+Call redis_close() during app shutdown.
+"""
+
+import json
+from typing import Awaitable, Callable
+
+import redis.asyncio as redis
+
+# ---------------------------------------------------------------------------
+# Module-level client (created once, reused everywhere)
+# ---------------------------------------------------------------------------
+_client: redis.Redis | None = None
+
+
+def _get_client() -> redis.Redis:
+    """Return the shared Redis client, creating it on first call."""
+    global _client
+    if _client is None:
+        _client = redis.Redis(
+            host="localhost",
+            port=6379,
             decode_responses=True,
         )
-        print("Redis Connection is established")
+        print("Redis connection established.")
+    return _client
 
-    async def publish(self, channel: str, data: dict[any, any]):
-        await self.redis.publish(
-            channel,
-            json.dumps(data),
-        )
 
-    async def subscribe(
-        self,
-        channel: str,
-        handler: Callable[[dict], Awaitable[None]],
-    ):
-        pubsub = self.redis.pubsub()
-        await pubsub.subscribe(channel)
+# ---------------------------------------------------------------------------
+# Public API
+# ---------------------------------------------------------------------------
 
-        async for message in pubsub.listen():
-            if message["type"] != "message":
-                continue
+async def redis_publish(channel: str, data: dict) -> None:
+    """Publish a JSON-serialised *data* dict to *channel*."""
+    await _get_client().publish(channel, json.dumps(data))
 
-            data = json.loads(message["data"])
-            await handler(data)
 
-    async def close(self):
-        await self.redis.aclose()
+async def redis_subscribe(
+    channel: str,
+    handler: Callable[[dict], Awaitable[None]],
+) -> None:
+    """Subscribe to *channel* and call *handler* for every message.
+
+    This coroutine runs indefinitely; cancel the task to stop it.
+    """
+    client = _get_client()
+    pubsub = client.pubsub()
+    await pubsub.subscribe(channel)
+
+    async for message in pubsub.listen():
+        if message["type"] != "message":
+            continue
+        data = json.loads(message["data"])
+        await handler(data)
+
+
+async def redis_close() -> None:
+    """Close the shared Redis connection."""
+    global _client
+    if _client is not None:
+        await _client.aclose()
+        _client = None
