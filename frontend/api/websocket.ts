@@ -1,49 +1,53 @@
-import type { KernelMessage } from "@/types";
+import type { KernelEvent } from "@/types";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
-
-// Derive ws:// / wss:// from the HTTP API URL
 const wsBase = apiUrl.replace(/^http/, "ws");
 
 /**
- * Opens a WebSocket to `/ws/<reqId>` and calls `onMessage` for every kernel
- * event that arrives.  Returns a cleanup function that closes the socket.
+ * Opens a WebSocket to `/ws/{reqId}` and calls `onMessage` for every raw
+ * kernel event that arrives.  Returns a cleanup function that closes the
+ * socket cleanly.
  *
- * Reconnects automatically with exponential back-off on unexpected closes
- * (code !== 1000).
+ * On unexpected disconnects (code !== 1000) the socket is reconnected with
+ * exponential back-off up to 30 s.
  */
 export function subscribeToTask(
   reqId: string,
-  onMessage: (msg: KernelMessage) => void,
+  onMessage: (event: KernelEvent) => void,
 ): () => void {
-  const ws = new WebSocket(`${wsBase}/ws/${reqId}`);
-
-  ws.onmessage = (event) => {
-    try {
-      const msg = JSON.parse(event.data as string) as KernelMessage;
-      onMessage(msg);
-    } catch {
-      // malformed frame – ignore
-    }
-  };
-
-  let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   let closed = false;
   let delay = 1_000;
+  let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+  let ws: WebSocket;
 
-  ws.onclose = (ev) => {
-    if (closed) return;
-    // 1000 = normal closure (task done / navigated away); don't reconnect
-    if (ev.code === 1000) return;
-    reconnectTimer = setTimeout(() => {
-      if (!closed) subscribeToTask(reqId, onMessage);
-    }, delay);
-    delay = Math.min(delay * 2, 30_000);
-  };
+  function connect() {
+    ws = new WebSocket(`${wsBase}/ws/${reqId}`);
+
+    ws.onmessage = (frame) => {
+      try {
+        const event = JSON.parse(frame.data as string) as KernelEvent;
+        onMessage(event);
+      } catch {
+        // malformed frame — ignore
+      }
+    };
+
+    ws.onclose = (ev) => {
+      if (closed) return;
+      // 1000 = normal closure (caller called cleanup or task is done)
+      if (ev.code === 1000) return;
+      reconnectTimer = setTimeout(() => {
+        if (!closed) connect();
+      }, delay);
+      delay = Math.min(delay * 2, 30_000);
+    };
+  }
+
+  connect();
 
   return () => {
     closed = true;
     if (reconnectTimer !== null) clearTimeout(reconnectTimer);
-    ws.close(1000, "cleanup");
+    ws?.close(1000, "cleanup");
   };
 }

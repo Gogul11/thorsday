@@ -1,41 +1,19 @@
-"""AgentOS Backend — application entry point.
+"""AgentOS — top-level entry point.
 
-Run with (from the server/ directory):
+Run from the server/ directory:
     uvicorn main:app --reload
+
+This file just adds backend/ to the Python path and re-exports the
+FastAPI app that lives in backend/index.py. All routing, middleware,
+and lifespan logic is defined there.
 """
 
+import sys
 import os
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+# Make bare imports inside backend/ work when running from server/
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "backend"))
 
-from backend.routes.task_routes import router as task_router
-from backend.services.task_service import lifespan
+from backend.index import app  # noqa: E402  (must come after sys.path mutation)
 
-
-def create_app() -> FastAPI:
-    app = FastAPI(
-        title="AgentOS API",
-        description="Asynchronous API for running AgentOS tasks.",
-        lifespan=lifespan,
-    )
-
-    allowed_origins = os.getenv(
-        "CORS_ORIGINS",
-        "http://localhost:3000,http://127.0.0.1:3000",
-    ).split(",")
-
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=[origin.strip() for origin in allowed_origins],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
-
-    app.include_router(task_router)
-
-    return app
-
-
-app = create_app()
+__all__ = ["app"]

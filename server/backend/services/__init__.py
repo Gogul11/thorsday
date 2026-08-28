@@ -1,19 +1,9 @@
-"""Backend services package."""
-
-from .task_service import (
-    handle_kernel_event,
-    lifespan,
-    redis_publish,
-    ws_broadcast,
-    ws_connect,
-    ws_disconnect,
-)
+from .ws_service import ws_broadcast, ws_connect, ws_disconnect
+from .kernel_listener import start_kernel_listener
 
 __all__ = [
-    "lifespan",
-    "redis_publish",
     "ws_connect",
     "ws_disconnect",
     "ws_broadcast",
-    "handle_kernel_event",
+    "start_kernel_listener",
 ]

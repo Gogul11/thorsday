@@ -11,14 +11,15 @@ import type { TaskRecord } from "@/types";
 
 export default function ChatPage() {
   const [tasks, setTasks] = useState<TaskRecord[]>([]);
-  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  // The selected task is identified by req_id
+  const [selectedReqId, setSelectedReqId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useTaskSubscriptions(tasks, setTasks);
 
-  const selectedTask = tasks.find((t) => t.task_id === selectedTaskId);
+  const selectedTask = tasks.find((t) => t.req_id === selectedReqId);
 
   async function submitTask(prompt: string) {
     setIsSubmitting(true);
@@ -26,18 +27,21 @@ export default function ChatPage() {
 
     try {
       const created = await createTask(prompt);
+
       const task: TaskRecord = {
-        task_id: created.task_id,
+        req_id: created.req_id,
+        task_id: "",           // filled in by the kernel's first WS event
         status: created.status,
         prompt,
         submittedAt: new Date().toISOString(),
         response: null,
         error: null,
         events: [],
+        plan: [],
       };
 
       setTasks((current) => [task, ...current]);
-      setSelectedTaskId(task.task_id);
+      setSelectedReqId(task.req_id);
     } catch (error) {
       setSubmitError(
         error instanceof Error ? error.message : "Could not create task.",
@@ -57,10 +61,10 @@ export default function ChatPage() {
     >
       <TaskList
         tasks={tasks}
-        selectedTaskId={selectedTaskId}
-        onSelect={setSelectedTaskId}
+        selectedReqId={selectedReqId}
+        onSelect={setSelectedReqId}
         onNewTask={() => {
-          setSelectedTaskId(null);
+          setSelectedReqId(null);
           setSidebarCollapsed(false);
         }}
         collapsed={sidebarCollapsed}

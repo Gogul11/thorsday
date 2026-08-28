@@ -1,38 +1,32 @@
-"""Task controller — function-based request handlers.
+"""Task controller — HTTP request handlers.
 
-Each function maps directly to one HTTP route. It validates input,
-calls the service layer, and returns the appropriate Pydantic response model.
+Keeps HTTP concerns (request parsing, response shaping) separated from
+the service layer (Redis publish).
 """
 
-from uuid import UUID, uuid4
+from uuid import uuid4
 
-from fastapi import HTTPException, status
-
-from schemas.task import TaskRequest, TaskResponse, TaskStatusResponse
-from svc.task_service import get_task_status, submit_task
+from schemas.task import TaskRequest, TaskResponse
+from Redis.redis_connection import redis_publish
 
 
 async def create_task_handler(request: TaskRequest) -> TaskResponse:
-    """Handle POST /task — publish a new task to the kernel."""
+    """Handle POST /task.
+
+    1. Generate a unique req_id.
+    2. Publish a task.REQUESTED event to the kernel via Redis.
+    3. Return the req_id immediately — the client opens WS /ws/{req_id}
+       to receive live progress from the kernel.
+    """
     req_id = str(uuid4())
-    await submit_task(request.prompt, req_id)
-    return TaskResponse(task_id=req_id, status="queued")
 
-
-async def get_status_handler(task_id: UUID) -> TaskStatusResponse:
-    """Handle GET /status/{task_id} — return current task state."""
-    task = get_task_status(str(task_id))
-
-    if task is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Task not found",
-        )
-
-    return TaskStatusResponse(
-        task_id=task_id,
-        status=task["status"],
-        response=task["response"],
-        error=task["error"],
-        events=task["events"],
+    await redis_publish(
+        "backend_tasks",
+        {
+            "event": "task.REQUESTED",
+            "req_id": req_id,
+            "prompt": request.prompt,
+        },
     )
+
+    return TaskResponse(req_id=req_id, status="queued")

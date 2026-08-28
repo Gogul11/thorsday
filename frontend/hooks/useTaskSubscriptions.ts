@@ -1,81 +1,142 @@
 import { useEffect, useRef } from "react";
 
-import type { KernelMessage, TaskRecord } from "@/types";
+import type { DisplayEvent, KernelEvent, TaskRecord } from "@/types";
 import { subscribeToTask } from "@/api/websocket";
+
+// ---------------------------------------------------------------------------
+// Kernel event → DisplayEvent translation
+// ---------------------------------------------------------------------------
+
+/** Maps a raw kernel event to a human-readable message. */
+function buildMessage(ev: KernelEvent): string {
+  const agent = ev.agent_name ?? ev.agent_id ?? "";
+  const tool = ev.tool_name ?? "tool";
+
+  const map: Record<string, string> = {
+    "task.CREATED": "Task created.",
+    "task.PLANNING": "Planning execution steps…",
+    "task.PLANNED": `Plan ready: [${(ev.plan ?? []).join(", ")}]`,
+    "task.COMPLETED": "Task completed.",
+    "agent.STARTED": `Agent ${agent} started.`,
+    "agent.COMPLETED": `Agent ${agent} completed.`,
+    "agent.FAILED": `Agent ${agent} failed: ${ev.error ?? ""}`,
+    "agent.DESTROYED": `Agent ${agent} destroyed.`,
+    "tool.STARTED": `Tool started: ${tool}`,
+    "tool.COMPLETED": `Tool completed: ${tool}`,
+    "tool.FAILED": `Tool ${tool} failed: ${ev.error ?? ""}`,
+  };
+
+  return map[ev.event] ?? ev.event;
+}
+
+/** Derive [stage, status] from the raw event string. */
+function stageAndStatus(eventType: string): [string, string] {
+  const [prefix, suffix] = eventType.split(".");
+  return [
+    (prefix ?? "task").toLowerCase(),
+    (suffix ?? eventType).toLowerCase(),
+  ];
+}
+
+/** Convert a raw KernelEvent to a DisplayEvent ready for the timeline. */
+function toDisplayEvent(ev: KernelEvent): DisplayEvent {
+  const [stage, status] = stageAndStatus(ev.event);
+  return {
+    stage,
+    status,
+    message: buildMessage(ev),
+    occurred_at: new Date().toISOString(),
+    agent_id: ev.agent_name ?? ev.agent_id ?? null,
+    raw_event: ev.event,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Status / response / plan derivation
+// ---------------------------------------------------------------------------
+
+function deriveStatus(ev: KernelEvent, current: string): string {
+  if (ev.event === "task.CREATED" || ev.event === "task.PLANNING" || ev.event === "task.PLANNED")
+    return "running";
+  if (ev.event === "task.COMPLETED") return "completed";
+  if (ev.event === "agent.FAILED") return "failed";
+  return current;
+}
+
+// ---------------------------------------------------------------------------
+// Hook
+// ---------------------------------------------------------------------------
 
 /** Task statuses that can still receive kernel events. */
 const ACTIVE_STATUSES = new Set(["queued", "running"]);
 
 /**
- * Opens one WebSocket per active task and merges incoming kernel messages
- * into the shared `tasks` state via `setTasks`.
+ * Opens one WebSocket per active task (keyed by req_id) and merges incoming
+ * kernel events into the shared `tasks` state.
  *
- * Subscription lifecycle:
- * - A socket is opened the first time a task appears with an active status.
- * - The socket is closed as soon as the backend sends a terminal status
- *   ("completed" | "failed"), or when the component unmounts.
+ * - Subscribes as soon as a task appears with an active status.
+ * - Translates raw KernelEvents to DisplayEvents for the timeline.
+ * - Derives `status`, `response`, `error`, `task_id`, and `plan` from events.
+ * - Closes the socket when the task reaches a terminal state or on unmount.
  */
 export function useTaskSubscriptions(
   tasks: TaskRecord[],
   setTasks: React.Dispatch<React.SetStateAction<TaskRecord[]>>,
 ): void {
-  // Map of task_id → cleanup function. Held in a ref so it survives
-  // re-renders without triggering new effects.
+  // req_id → cleanup fn — held in a ref so it outlives re-renders
   const subscriptions = useRef<Map<string, () => void>>(new Map());
 
   useEffect(() => {
     for (const task of tasks) {
       if (!ACTIVE_STATUSES.has(task.status)) continue;
-      if (subscriptions.current.has(task.task_id)) continue;
+      if (subscriptions.current.has(task.req_id)) continue;
 
-      const cleanup = subscribeToTask(task.task_id, (msg: KernelMessage) => {
+      const cleanup = subscribeToTask(task.req_id, (ev: KernelEvent) => {
         setTasks((current) =>
           current.map((t) => {
-            if (t.task_id !== task.task_id) return t;
+            if (t.req_id !== task.req_id) return t;
 
-            // Deduplicate: skip if we already have this exact event
-            const alreadyExists = t.events.some(
-              (e) =>
-                e.occurred_at === msg.latest_event.occurred_at &&
-                e.message === msg.latest_event.message,
-            );
+            const displayEvent = toDisplayEvent(ev);
 
-            const updatedTask: TaskRecord = {
+            // Build updated task record
+            const updated: TaskRecord = {
               ...t,
-              events: alreadyExists
-                ? t.events
-                : [...t.events, msg.latest_event],
-              status: msg.status ?? t.status,
-              response: msg.response ?? t.response,
-              error: msg.error ?? t.error,
+              // Capture the kernel-assigned task_id as soon as it arrives
+              task_id: ev.task_id || t.task_id,
+              events: [...t.events, displayEvent],
+              status: deriveStatus(ev, t.status),
+              response: ev.event === "task.COMPLETED" ? (ev.response ?? t.response) : t.response,
+              error: (ev.event === "agent.FAILED" || ev.event === "tool.FAILED")
+                ? (ev.error ?? t.error)
+                : t.error,
+              // Capture plan from task.PLANNED
+              plan: ev.event === "task.PLANNED" ? (ev.plan ?? t.plan) : t.plan,
             };
 
-            // Unsubscribe once the task reaches a terminal state
-            if (msg.status === "completed" || msg.status === "failed") {
+            // Close the socket once the task is terminal
+            if (updated.status === "completed" || updated.status === "failed") {
               setTimeout(() => {
-                const unsub = subscriptions.current.get(task.task_id);
+                const unsub = subscriptions.current.get(task.req_id);
                 if (unsub) {
                   unsub();
-                  subscriptions.current.delete(task.task_id);
+                  subscriptions.current.delete(task.req_id);
                 }
               }, 0);
             }
 
-            return updatedTask;
+            return updated;
           }),
         );
       });
 
-      subscriptions.current.set(task.task_id, cleanup);
+      subscriptions.current.set(task.req_id, cleanup);
     }
   }, [tasks, setTasks]);
 
   // Tear down every open socket on unmount
   useEffect(() => {
     return () => {
-      for (const cleanup of subscriptions.current.values()) {
-        cleanup();
-      }
+      for (const cleanup of subscriptions.current.values()) cleanup();
       subscriptions.current.clear();
     };
   }, []);

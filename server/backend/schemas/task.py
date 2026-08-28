@@ -1,28 +1,25 @@
-from uuid import UUID
+"""Request/response schemas for the task API."""
 
 from pydantic import BaseModel, Field
 
 
 class TaskRequest(BaseModel):
-    prompt: str = Field(..., min_length=1)
+    """Body for POST /task."""
+    prompt: str = Field(..., min_length=1, description="The user's task prompt")
 
 
 class TaskResponse(BaseModel):
-    task_id: UUID
-    status: str
+    """Immediate response from POST /task."""
+    req_id: str = Field(..., description="Unique request ID — use this to open the WebSocket")
+    status: str = Field(default="queued", description="Always 'queued' on creation")
 
 
-class TaskEventResponse(BaseModel):
-    stage: str
-    status: str
-    message: str
-    occurred_at: str
-    agent_id: str | None = None
+class KernelEvent(BaseModel):
+    """Shape of messages pushed over the WebSocket.
 
-
-class TaskStatusResponse(BaseModel):
-    task_id: UUID
-    status: str
-    response: str | None = None
-    error: str | None = None
-    events: list[TaskEventResponse] = Field(default_factory=list)
+    Mirrors what the kernel publishes to 'kernel_events'. Extra fields
+    (plan, agent_id, result, response, error, etc.) are passed through as-is.
+    """
+    event: str
+    req_id: str
+    task_id: str

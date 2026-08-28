@@ -1,26 +1,20 @@
-import type { TaskStatus } from "@/types";
 import apiClient from "./client";
 
 /**
- * Creates a new task on the backend.
+ * Submit a new task.
  * POST /task
+ *
+ * Returns the req_id which is used to:
+ *   1. Key the task in local state
+ *   2. Open the WebSocket at /ws/{req_id}
  */
 export async function createTask(prompt: string): Promise<{
-  task_id: string;
+  req_id: string;
   status: string;
 }> {
-  const { data } = await apiClient.post<{ task_id: string; status: string }>(
+  const { data } = await apiClient.post<{ req_id: string; status: string }>(
     "/task",
     { prompt },
   );
-  return data;
-}
-
-/**
- * Fetches the current status of a task.
- * GET /status/:taskId
- */
-export async function getTaskStatus(taskId: string): Promise<TaskStatus> {
-  const { data } = await apiClient.get<TaskStatus>(`/status/${taskId}`);
   return data;
 }

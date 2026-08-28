@@ -1,36 +1,24 @@
 import type { TaskRecord } from "@/types";
 
 /**
- * Extracts unique agent names from a task's event list.
- * Strips the task_id prefix from agent_id if present (e.g. "<task_id>-a3" → "a3").
- * Also parses planned agents from "Plan ready: ['a1', 'a3']" messages.
+ * Returns the list of agent names involved in a task.
+ *
+ * Primary source: `task.plan` (captured from the kernel's task.PLANNED event).
+ * Fallback: unique agent_id values from agent.* DisplayEvents.
  */
 export function getAgentNames(task: TaskRecord): string[] {
-  const names = new Set<string>();
-
-  for (const event of task.events) {
-    if (event.agent_id) {
-      const cleanName =
-        event.agent_id.includes("-") && event.agent_id.startsWith(task.task_id)
-          ? event.agent_id.slice(task.task_id.length + 1)
-          : event.agent_id;
-      if (cleanName && cleanName !== "agent" && cleanName !== "task") {
-        names.add(cleanName);
-      }
-    }
-
-    if (event.message?.startsWith("Plan ready:")) {
-      const match = event.message.match(/Plan ready:\s*\[(.*?)\]/);
-      if (match && match[1]) {
-        match[1]
-          .split(",")
-          .map((s) => s.replace(/['"\s]/g, ""))
-          .filter(Boolean)
-          .forEach((agent) => names.add(agent));
-      }
-    }
+  // Prefer the planner's explicit list
+  if (task.plan.length > 0) {
+    return task.plan;
   }
 
+  // Fallback: collect agent_id from agent-stage display events
+  const names = new Set<string>();
+  for (const ev of task.events) {
+    if (ev.stage === "agent" && ev.agent_id) {
+      names.add(ev.agent_id);
+    }
+  }
   return Array.from(names);
 }
 
@@ -38,19 +26,15 @@ export function getAgentNames(task: TaskRecord): string[] {
  * Returns a formatted string describing which agents are involved in a task.
  */
 export function formatAgents(agents: string[], status: string): string {
-  if (agents.length > 0) {
-    return agents.join(", ");
-  }
-  if (status === "completed") {
-    return "None (Direct response)";
-  }
+  if (agents.length > 0) return agents.join(", ");
+  if (status === "completed") return "None (direct response)";
   return "Not selected yet";
 }
 
 /**
- * Returns the first segment of a UUID-style task ID for compact display.
- * e.g. "abc123de-..." → "abc123de"
+ * Returns the first segment of a UUID-style ID for compact display.
+ * e.g. "abc123de-…" → "abc123de"
  */
-export function shortId(taskId: string): string {
-  return taskId.split("-")[0];
+export function shortId(id: string): string {
+  return id.split("-")[0];
 }

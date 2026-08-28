@@ -1,48 +1,50 @@
-import type { TaskEvent, TaskRecord } from "@/types";
+"use client";
+
+import type { DisplayEvent, TaskRecord } from "@/types";
 import { formatTime } from "@/utils/time";
-import { formatAgents, getAgentNames } from "@/utils/task";
+import { formatAgents, getAgentNames, shortId } from "@/utils/task";
 
 type TaskActivityProps = {
   task: TaskRecord | undefined;
 };
 
-/** Maps status/stage combos to dot colour classes. */
+/** Maps stage/status combos to timeline dot colours. */
 const MARK_COLOR: Record<string, string> = {
   running: "bg-[#5e5e58]",
   started: "bg-[#5e5e58]",
+  planning: "bg-[#5e5e58]",
+  planned: "bg-[#5e5e58]",
+  created: "bg-[#b0b0aa]",
   completed: "bg-[#242422]",
   failed: "bg-[#b84343]",
-  tool: "bg-[#3b82f6]",
+  destroyed: "bg-[#b0b0aa]",
+  "tool-started": "bg-[#3b82f6]",
   "tool-completed": "bg-[#10b981]",
+  "tool-failed": "bg-[#b84343]",
 };
 
-function ActivityMark({
-  status,
-  isTool,
-}: {
-  status: string;
-  isTool: boolean;
-}) {
-  let colorKey = status;
-  if (isTool && status === "completed") colorKey = "tool-completed";
-  else if (isTool) colorKey = "tool";
+function dotColor(event: DisplayEvent): string {
+  if (event.stage === "tool") {
+    return MARK_COLOR[`tool-${event.status}`] ?? "bg-[#3b82f6]";
+  }
+  return MARK_COLOR[event.status] ?? "bg-[#b0b0aa]";
+}
 
-  const color = MARK_COLOR[colorKey] ?? "bg-[#b0b0aa]";
-
+function ActivityMark({ event }: { event: DisplayEvent }) {
   return (
     <span
       aria-hidden="true"
-      className={`z-10 flex-none w-2 h-2 mt-0.5 rounded-full border-2 border-white box-content ${color}`}
+      className={`z-10 flex-none w-2 h-2 mt-0.5 rounded-full border-2 border-white box-content ${dotColor(event)}`}
     />
   );
 }
 
-function ActivityEvent({ event }: { event: TaskEvent }) {
+function ActivityEvent({ event }: { event: DisplayEvent }) {
   const isTool = event.stage === "tool";
 
   return (
     <li className="grid grid-cols-[8px_minmax(0,1fr)_auto] gap-2 relative pb-[18px] last:pb-0">
-      <ActivityMark status={event.status} isTool={isTool} />
+      <ActivityMark event={event} />
       <div>
         <p
           className={`mb-[3px] text-xs font-bold capitalize ${
@@ -110,7 +112,7 @@ export function TaskActivity({ task }: TaskActivityProps) {
             <div>
               <p className="m-0 mb-1 text-sm capitalize">{task.status}</p>
               <code className="text-[10px] text-[#5a5a54] font-mono overflow-wrap-anywhere">
-                {task.task_id}
+                {shortId(task.req_id)}
               </code>
             </div>
           </div>
