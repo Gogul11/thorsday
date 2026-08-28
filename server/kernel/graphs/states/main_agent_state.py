@@ -1,8 +1,10 @@
-from typing import TypedDict, Annotated
+"""LangGraph state type for the main agent pipeline."""
+
+from typing import Annotated
 
 from langchain_core.messages import BaseMessage
 from langgraph.graph.message import add_messages
-from pydantic import BaseModel, Field
+from typing import TypedDict
 
 
 class MainAgentState(TypedDict):
@@ -14,9 +16,3 @@ class MainAgentState(TypedDict):
     current_agent: int
     results: dict[str, str]
     response: str
-
-
-class ExecutionPlan(BaseModel):
-    agents: list[str] = Field(
-        description="Agents that should execute the task in order"
-    )

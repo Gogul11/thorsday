@@ -4,19 +4,22 @@ import { FormEvent, KeyboardEvent, useState } from "react";
 
 type ChatComposerProps = {
   disabled: boolean;
+  placeholder?: string;
   onSubmit: (prompt: string) => Promise<void>;
 };
 
-export function ChatComposer({ disabled, onSubmit }: ChatComposerProps) {
+export function ChatComposer({
+  disabled,
+  placeholder = "Ask AgentOS to do something…",
+  onSubmit,
+}: ChatComposerProps) {
   const [prompt, setPrompt] = useState("");
 
   async function submit(event?: FormEvent) {
     event?.preventDefault();
     const nextPrompt = prompt.trim();
 
-    if (!nextPrompt || disabled) {
-      return;
-    }
+    if (!nextPrompt || disabled) return;
 
     await onSubmit(nextPrompt);
     setPrompt("");
@@ -38,7 +41,7 @@ export function ChatComposer({ disabled, onSubmit }: ChatComposerProps) {
         value={prompt}
         onChange={(event) => setPrompt(event.target.value)}
         onKeyDown={onKeyDown}
-        placeholder="Ask AgentOS to do something..."
+        placeholder={placeholder}
         rows={3}
         disabled={disabled}
         className="block w-full resize-y border-0 outline-none rounded-t-md px-3.5 pt-3 pb-2 bg-transparent text-[#1e1e1c] text-sm leading-[1.45] disabled:cursor-not-allowed"
@@ -50,7 +53,7 @@ export function ChatComposer({ disabled, onSubmit }: ChatComposerProps) {
           disabled={disabled || !prompt.trim()}
           className="border border-[#292927] rounded bg-[#292927] px-2.5 py-1.5 text-white text-xs hover:bg-[#3b3b37] disabled:border-[#deded9] disabled:bg-[#f0f0ec] disabled:text-[#74746f] disabled:cursor-not-allowed"
         >
-          {disabled ? "Sending..." : "Send task"}
+          {disabled ? "Sending…" : "Send"}
         </button>
       </div>
     </form>

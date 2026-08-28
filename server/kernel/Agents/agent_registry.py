@@ -1,31 +1,30 @@
-from .agents.a1 import AgentA1
-from .agents.a2 import AgentA2
-from .agents.a3 import AgentA3
+"""Agent registry — function-based registry for all agent types."""
 
-class AgentRegistry:
+from Agents.agents.a1 import run_agent_a1, AGENT_A1_DESCRIPTION
+from Agents.agents.a2 import run_agent_a2, AGENT_A2_DESCRIPTION
+from Agents.agents.a3 import run_agent_a3, AGENT_A3_DESCRIPTION
 
-    def __init__(self, model):
-        self.model = model
+# Registry maps agent_type → (run_fn, description)
+_REGISTRY: dict[str, dict] = {
+    "a1": {"run": run_agent_a1, "description": AGENT_A1_DESCRIPTION},
+    "a2": {"run": run_agent_a2, "description": AGENT_A2_DESCRIPTION},
+    "a3": {"run": run_agent_a3, "description": AGENT_A3_DESCRIPTION},
+}
 
-        self.agents = {
-            "a1": AgentA1,
-            "a2": AgentA2,
-            "a3": AgentA3
-        }
 
-    def create(self, agent_id :str):
-        agent = self.agents[agent_id]
-        return agent(self.model)
+def get_agent_run_fn(agent_type: str):
+    """Return the run function for the given agent type."""
+    entry = _REGISTRY.get(agent_type)
+    if entry is None:
+        raise ValueError(f"Unknown agent type: {agent_type}")
+    return entry["run"]
 
-    # def destroy(self, agent_id : str):
-    #     agent = self.agents[agent_id]
-    #     del agent
 
-    def get(self, agent_id: str):
-        return self.agents.get(agent_id)
+def get_agent_descriptions() -> dict[str, str]:
+    """Return a dict of agent_type → description for the planner prompt."""
+    return {name: entry["description"] for name, entry in _REGISTRY.items()}
 
-    def get_descriptions(self):
-        return {
-              name: agent.description
-              for name, agent in self.agents.items()
-          }
+
+def list_agent_types() -> list[str]:
+    """Return all registered agent type keys."""
+    return list(_REGISTRY.keys())

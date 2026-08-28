@@ -1,12 +1,11 @@
 "use client";
 
 import type { TaskRecord } from "@/types";
-import { shortId } from "@/utils/task";
 
 type TaskListProps = {
   tasks: TaskRecord[];
-  selectedReqId: string | null;
-  onSelect: (reqId: string) => void;
+  selectedTaskId: string | null;
+  onSelect: (taskId: string) => void;
   onNewTask: () => void;
   collapsed: boolean;
   onToggle: () => void;
@@ -14,6 +13,7 @@ type TaskListProps = {
 
 const STATUS_DOT_COLOR: Record<string, string> = {
   running: "bg-[#5e5e58]",
+  queued: "bg-[#b0b0aa]",
   completed: "bg-[#242422]",
   failed: "bg-[#b84343]",
 };
@@ -30,7 +30,7 @@ function StatusDot({ status }: { status: string }) {
 
 export function TaskList({
   tasks,
-  selectedReqId,
+  selectedTaskId,
   onSelect,
   onNewTask,
   collapsed,
@@ -93,23 +93,23 @@ export function TaskList({
         ) : (
           tasks.map((task) => (
             <button
-              key={task.req_id}
+              key={task.task_id}
               type="button"
-              onClick={() => onSelect(task.req_id)}
-              aria-label={task.prompt}
-              title={task.prompt}
+              onClick={() => onSelect(task.task_id)}
+              aria-label={task.title}
+              title={task.title}
               className={`flex gap-2 w-full border-0 rounded-[5px] bg-transparent text-[#1e1e1c] text-left min-w-0 overflow-hidden hover:bg-[#f0f0ec] ${
-                task.req_id === selectedReqId ? "bg-[#f0f0ec]" : ""
+                task.task_id === selectedTaskId ? "bg-[#f0f0ec]" : ""
               } ${collapsed ? "justify-center py-2 px-0" : "p-2"}`}
             >
               <StatusDot status={task.status} />
               {!collapsed && (
                 <span className="min-w-0">
                   <span className="block text-[13px] leading-[1.35] overflow-hidden text-ellipsis whitespace-nowrap">
-                    {task.prompt}
+                    {task.title}
                   </span>
                   <span className="block mt-[3px] text-[#74746f] text-[11px] overflow-hidden text-ellipsis whitespace-nowrap">
-                    {shortId(task.req_id)} · {task.status}
+                    {task.status}
                   </span>
                 </span>
               )}

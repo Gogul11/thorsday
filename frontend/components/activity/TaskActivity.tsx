@@ -112,7 +112,7 @@ export function TaskActivity({ task }: TaskActivityProps) {
             <div>
               <p className="m-0 mb-1 text-sm capitalize">{task.status}</p>
               <code className="text-[10px] text-[#5a5a54] font-mono overflow-wrap-anywhere">
-                {shortId(task.req_id)}
+                {shortId(task.task_id || task.req_id)}
               </code>
             </div>
           </div>
@@ -148,7 +148,7 @@ export function TaskActivity({ task }: TaskActivityProps) {
                 Submitted
               </dt>
               <dd className="m-0 text-xs leading-[1.45] break-all">
-                {formatTime(task.submittedAt)}
+                {formatTime(task.created_at)}
               </dd>
             </div>
           </dl>

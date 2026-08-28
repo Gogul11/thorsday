@@ -2,11 +2,6 @@
 // Raw kernel events — shape of every WS message pushed by the backend
 // ---------------------------------------------------------------------------
 
-/**
- * Every message the backend pushes over the WebSocket is a raw kernel event.
- * The `event` field tells you what happened; additional fields are
- * event-specific.
- */
 export type KernelEvent = {
   event:
     | "task.CREATED"
@@ -20,7 +15,7 @@ export type KernelEvent = {
     | "tool.STARTED"
     | "tool.COMPLETED"
     | "tool.FAILED"
-    | string; // future events
+    | string;
 
   req_id: string;
   task_id: string;
@@ -28,7 +23,7 @@ export type KernelEvent = {
   // task.PLANNED
   plan?: string[];
 
-  // agent.*  /  tool.*
+  // agent.* / tool.*
   agent_id?: string;
   agent_name?: string;
 
@@ -50,10 +45,6 @@ export type KernelEvent = {
 // Derived display event — synthesised from a KernelEvent for the timeline UI
 // ---------------------------------------------------------------------------
 
-/**
- * A normalised, display-ready event synthesised from a raw KernelEvent.
- * Components should render these instead of raw events directly.
- */
 export type DisplayEvent = {
   /** "task" | "agent" | "tool" */
   stage: string;
@@ -70,27 +61,41 @@ export type DisplayEvent = {
 };
 
 // ---------------------------------------------------------------------------
-// Task record — client-side state for one submitted task
+// Conversation message — one turn in the task history
+// ---------------------------------------------------------------------------
+
+export type TaskMessage = {
+  /** "human" | "ai" */
+  role: "human" | "ai";
+  content: string;
+  /** ISO timestamp */
+  timestamp: string;
+};
+
+// ---------------------------------------------------------------------------
+// Task record — client-side state for one task
 // ---------------------------------------------------------------------------
 
 /**
  * Everything the frontend knows about a task.
  *
- * Keyed by `req_id` (returned by POST /task).
- * `task_id` arrives later via the first WS event from the kernel.
+ * Keyed by `task_id` (the kernel's persistent ID).
+ * `req_id` is the transient WebSocket key for the current in-flight request.
  */
 export type TaskRecord = {
-  /** Returned immediately by POST /task — also the WS subscription key */
-  req_id: string;
-  /** Assigned by the kernel on task.CREATED — may be "" until that event */
+  /** Kernel-assigned persistent ID — primary key */
   task_id: string;
-  /** Original prompt submitted by the user */
-  prompt: string;
-  /** ISO timestamp of local submission */
-  submittedAt: string;
+  /** Transient request ID for the current WS connection (changes each follow-up) */
+  req_id: string;
+  /** Display title — first prompt, truncated */
+  title: string;
+  /** ISO timestamp of creation */
+  created_at: string;
   /** "queued" | "running" | "completed" | "failed" */
   status: string;
-  /** Final markdown response from the kernel (task.COMPLETED) */
+  /** Full conversation history: all human + ai turns */
+  messages: TaskMessage[];
+  /** Final markdown response from the last completed turn */
   response: string | null;
   /** Error string if the task failed */
   error: string | null;
