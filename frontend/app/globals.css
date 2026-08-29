@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+/*
+  CSS custom properties are kept here for reference but are largely
+  inlined as Tailwind arbitrary values in components. Only global resets
+  and properties that can't easily be expressed as utility classes live here.
+*/
+:root {
+  --background: #f7f7f5;
+  --surface: #ffffff;
+  --border: #deded9;
+  --text: #1e1e1c;
+  --muted: #74746f;
+  --subtle: #f0f0ec;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+textarea {
+  font: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}

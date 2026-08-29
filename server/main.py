@@ -1,26 +1,19 @@
-from Agents.main_agent import Main_Agent
-from models.model import Models
-from logger import logger
+"""AgentOS — top-level entry point.
 
-import asyncio
+Run from the server/ directory:
+    uvicorn main:app --reload
 
-async def main():
-    logger.info("Application started successfully!")
-    models = Models()
-    main_agent = Main_Agent(models)
+This file just adds backend/ to the Python path and re-exports the
+FastAPI app that lives in backend/index.py. All routing, middleware,
+and lifespan logic is defined there.
+"""
 
+import sys
+import os
 
-    while True:
-        message = input("Enter a message : ")
+# Make bare imports inside backend/ work when running from server/
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "backend"))
 
-        if message == "exit":
-            logger.info("Program exited!")
-            break
+from backend.index import app  # noqa: E402  (must come after sys.path mutation)
 
-        response = await main_agent.chat(message)
-    
-        print("Agent : ", response)
-            
-
-if __name__ == "__main__":
-    asyncio.run(main())
+__all__ = ["app"]
