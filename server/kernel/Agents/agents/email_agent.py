@@ -19,7 +19,12 @@ E_AGENT_DESCRIPTION = """
     - Return a clear summary of the email delivery status, recipient, and subject
     """
 
-async def run_email_agent(model, task: str, context: str = "") -> str:
+async def run_email_agent(
+    model,
+    task: str,
+    context: str = "",
+    callbacks: list | None = None,
+) -> str:
     agent = create_agent(model=model, tools=EMAIL_TOOLS)
     prompt = f"""You are {_NAME}.
 
@@ -40,13 +45,16 @@ async def run_email_agent(model, task: str, context: str = "") -> str:
         5. Return the delivery status clearly.
         """
 
-    result = await agent.ainvoke({
-        "messages": [
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-    })
+    result = await agent.ainvoke(
+        {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ]
+        },
+        config={"callbacks": callbacks} if callbacks else None,
+    )
 
-    return result["messages"][-1].content
+    return result["messages"][-1].content

@@ -51,7 +51,12 @@ CONTENT_AGENT_DESCRIPTION = """
     - Do not add unnecessary explanations before or after the requested content.
     """
 
-async def run(model, task: str, context: str = "") -> str:
+async def run_content_creator_agent(
+    model,
+    task: str,
+    context: str = "",
+    callbacks: list | None = None,
+) -> str:
     sender_email = get_current_user_email()
     sender_name = get_current_user_name()
 
@@ -128,13 +133,16 @@ async def run(model, task: str, context: str = "") -> str:
     7. Return ONLY the completed content requested by the user.
     """
 
-    result = await agent.ainvoke({
-        "messages": [
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-    })
+    result = await agent.ainvoke(
+        {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ]
+        },
+        config={"callbacks": callbacks} if callbacks else None,
+    )
 
-    return result["messages"][-1].content
+    return result["messages"][-1].content
