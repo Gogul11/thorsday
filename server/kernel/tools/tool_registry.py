@@ -1,6 +1,7 @@
 from tools.sys_info_tools import *
 from tools.time_tool import get_time
 from tools.research_tools import wikipedia_search, trusted_web_search
+from tools.email_tools import send_email
 
 A1_TOOLS = [
     get_system_info
@@ -13,6 +14,10 @@ A2_TOOLS = [
 A3_TOOLS = [
     wikipedia_search,
     trusted_web_search
+]
+
+EMAIL_TOOLS = [
+    send_email
 ]
 
 # TOOL_MAP = {tool.name : tool for tool in TOOLS}
