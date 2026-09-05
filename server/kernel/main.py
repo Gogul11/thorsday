@@ -37,15 +37,19 @@ async def main() -> None:
     try:
         await mongo_client.admin.command("ping")
         logger.info("MongoDB connection established")
+        print("MongoDB connection established")
     except Exception as exc:
         logger.exception("MongoDB connection failed: %s", exc)
+        print("MongoDB connection failed: %s" % exc)
         raise
 
     try:
         await redis_client.ping()
         logger.info("Redis connection established")
+        print("Redis connection established")
     except Exception as exc:
         logger.exception("Redis connection failed: %s", exc)
+        print("Redis connection failed: %s" % exc)
         raise
 
     # ------------------------------------------------------------------
@@ -53,6 +57,7 @@ async def main() -> None:
     # ------------------------------------------------------------------
     warmup()
     logger.info("Kernel ready — listening on 'backend_tasks'")
+    print("Kernel ready — listening on 'backend_tasks'")
 
     # ------------------------------------------------------------------
     # 3. Block forever, dispatching every incoming Redis message
