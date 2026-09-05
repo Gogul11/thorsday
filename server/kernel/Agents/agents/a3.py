@@ -29,6 +29,7 @@ async def run_agent_a3(
     task: str,
     context: str = "",
     callbacks: list | None = None,
+    **kwargs
 ) -> str:
     """Run the A3 research agent and return its text result."""
     agent = create_agent(model=model, tools=A3_TOOLS)
