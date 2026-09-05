@@ -1,179 +1,129 @@
 "use client";
 
+import React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import { ChatComposer } from "./ChatComposer";
+import {ChatComposer} from "./ChatComposer";
+import {DeleteConfirmationDialog} from "./DeleteConfirmationDialog";
+
 import type { TaskMessage, TaskRecord } from "@/types";
 
 type ChatPanelProps = {
-  selectedTask: TaskRecord | undefined;
+  selectedTask: TaskRecord | null;
   isSubmitting: boolean;
   submitError: string | null;
   onSubmit: (prompt: string) => Promise<void>;
-};
-
-// ---------------------------------------------------------------------------
-// Empty state
-// ---------------------------------------------------------------------------
+  onDeleteConfirmationClose: () => void;
+};  
 
 function EmptyConversation() {
   return (
-    <div className="mt-[13vh] text-[#74746f]">
-      <h2 className="mb-2 text-[#1e1e1c] text-xl">Send a task</h2>
-      <p className="max-w-[420px] text-sm leading-[1.55]">
-        Use the chat box to start an agent task. Its progress will appear on
-        the right.
-      </p>
+    <div className="flex h-full items-center justify-center px-6">
+      <div className="max-w-md text-center">
+        <h2 className="text-lg font-semibold text-gray-900">
+          Start a conversation
+        </h2>
+
+        <p className="mt-2 text-sm text-gray-500">
+          Ask the agent to research, analyze, create files, or perform a task.
+        </p>
+      </div>
     </div>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Single message bubble
-// ---------------------------------------------------------------------------
 
 function MessageBubble({ message }: { message: TaskMessage }) {
   const isHuman = message.role === "human";
 
   return (
-    <article
-      className={`mb-5 border border-[#deded9] rounded-[5px] px-4 py-[15px] ${
-        isHuman ? "bg-[#eef2f7]" : "bg-[#fafaf8]"
+    <div
+      className={`flex w-full ${
+        isHuman ? "justify-end" : "justify-start"
       }`}
     >
-      <span className="block mb-2 text-[#74746f] text-xs font-bold">
-        {isHuman ? "You" : "AgentOS"}
-      </span>
-
-      {isHuman ? (
-        <p className="mb-0 text-sm leading-[1.65] whitespace-pre-wrap">
-          {message.content}
-        </p>
-      ) : (
-        <div
-          className="
-            text-sm leading-[1.65]
-            [&>:first-child]:mt-0 [&>:last-child]:mb-0
-            [&_h1]:mt-[22px] [&_h1]:mb-[9px] [&_h1]:text-base
-            [&_h2]:mt-[22px] [&_h2]:mb-[9px] [&_h2]:text-base
-            [&_h3]:mt-[22px] [&_h3]:mb-[9px] [&_h3]:text-base
-            [&_ul]:my-[10px] [&_ul]:pl-[22px] [&_ul]:leading-[1.65]
-            [&_ol]:my-[10px] [&_ol]:pl-[22px] [&_ol]:leading-[1.65]
-            [&_li+li]:mt-[3px]
-            [&_pre]:overflow-x-auto [&_pre]:p-2.5 [&_pre]:rounded [&_pre]:bg-[#f0f0ec]
-            [&_code]:bg-[#f0f0ec] [&_code]:text-[#5a5a54] [&_code]:font-mono [&_code]:text-[10px]
-            [&_:not(pre)>code]:px-1 [&_:not(pre)>code]:rounded-[3px]
-          "
-        >
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {message.content}
-          </ReactMarkdown>
-        </div>
-      )}
-    </article>
+      <div
+        className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm ${
+          isHuman
+            ? "bg-black text-white"
+            : "bg-gray-100 text-gray-900"
+        }`}
+      >
+        {isHuman ? (
+          <div className="whitespace-pre-wrap">{message.content}</div>
+        ) : (
+          <div className="prose prose-sm max-w-none">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {message.content}
+            </ReactMarkdown>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
-// ---------------------------------------------------------------------------
-// "Agent is working" placeholder shown while the current turn is in-flight
-// ---------------------------------------------------------------------------
-
-function WorkingPlaceholder({ prompt }: { prompt: string }) {
+function WorkingPlaceholder() {
   return (
-    <>
-      <article className="mb-5 border border-[#deded9] rounded-[5px] px-4 py-[15px] bg-[#eef2f7]">
-        <span className="block mb-2 text-[#74746f] text-xs font-bold">You</span>
-        <p className="mb-0 text-sm leading-[1.65] whitespace-pre-wrap">{prompt}</p>
-      </article>
-      <article className="mb-5 border border-[#deded9] rounded-[5px] px-4 py-[15px] bg-[#fafaf8]">
-        <span className="block mb-2 text-[#74746f] text-xs font-bold">AgentOS</span>
-        <p className="text-[#74746f] text-sm leading-[1.65] mb-0">
-          Working on this task…
-        </p>
-      </article>
-    </>
+    <div className="flex justify-start">
+      <div className="rounded-2xl bg-gray-100 px-4 py-3 text-sm text-gray-500">
+        <div className="flex items-center gap-2">
+          <span>Working</span>
+
+          <span className="flex gap-1">
+            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-gray-400 [animation-delay:-0.3s]" />
+            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-gray-400 [animation-delay:-0.15s]" />
+            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-gray-400" />
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Full conversation view
-// ---------------------------------------------------------------------------
 
 function TaskConversation({ task }: { task: TaskRecord }) {
-  const isRunning = task.status === "running" || task.status === "queued";
+  const isRunning =
+    task.status === "running" || task.status === "queued";
 
-  // The pending human message (latest follow-up not yet in messages[])
-  // is the last human message in the current turn — we detect it by checking
-  // if the last message is from the human and the task is still running.
-  const pendingPrompt =
-    isRunning &&
-    task.messages.length > 0 &&
-    task.messages[task.messages.length - 1].role === "human"
-      ? null // already in messages[], don't double-render
-      : isRunning
-        ? task.title // very first turn: show title as placeholder
-        : null;
+  const messages = task.messages ?? [];
 
   return (
-    <>
-      {/* Render all persisted messages */}
-      {task.messages.map((msg, i) => (
-        <MessageBubble key={i} message={msg} />
-      ))}
+    <div className="flex h-full flex-col">
+      <div className="flex-1 overflow-y-auto px-6 py-6">
+        <div className="mx-auto flex max-w-4xl flex-col gap-4">
+          {messages.map((message, index) => (
+            <MessageBubble
+              key={`${task.task_id}-${message.timestamp}-${index}`}
+              message={message}
+            />
+          ))}
 
-      {/* If running with no messages yet, show the working placeholder */}
-      {isRunning && task.messages.length === 0 && (
-        <WorkingPlaceholder prompt={task.title} />
-      )}
+          {isRunning && <WorkingPlaceholder />}
 
-      {/* If running and the last persisted message is AI (follow-up was submitted) */}
-      {pendingPrompt && task.messages.length > 0 && (
-        <WorkingPlaceholder prompt={pendingPrompt} />
-      )}
-
-      {/* Error state */}
-      {task.error && (
-        <article className="mb-5 border border-[#deded9] rounded-[5px] px-4 py-[15px] bg-[#fff5f5]">
-          <span className="block mb-2 text-[#b84343] text-xs font-bold">Error</span>
-          <p className="text-[#b84343] text-sm leading-[1.65] mb-0 whitespace-pre-wrap">
-            {task.error}
-          </p>
-        </article>
-      )}
-    </>
+          {!isRunning && task.error && (
+            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {task.error}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 
-// ---------------------------------------------------------------------------
-// ChatPanel
-// ---------------------------------------------------------------------------
-
-export function ChatPanel({
+export default function ChatPanel({
   selectedTask,
   isSubmitting,
   submitError,
   onSubmit,
+  onDeleteConfirmationClose,
 }: ChatPanelProps) {
-  return (
-    <section className="grid grid-rows-[auto_1fr_auto] h-dvh min-h-screen min-w-0">
-      {/* Header */}
-      <header className="flex items-center justify-between border-b border-[#deded9] px-[30px] pt-[22px] pb-[18px]">
-        <div>
-          <p className="m-0 mb-[3px] text-[#74746f] text-xs">Agent workspace</p>
-          <h1 className="m-0 text-lg font-semibold">
-            {selectedTask ? selectedTask.title : "New task"}
-          </h1>
-        </div>
-        {selectedTask && (
-          <span className="text-[#74746f] text-sm capitalize">
-            {selectedTask.status}
-          </span>
-        )}
-      </header>
+  const confirmation = selectedTask?.delete_confirmation ?? null;
 
-      {/* Conversation area */}
-      <div className="w-[min(760px,100%)] h-full mx-auto px-[30px] py-[38px] overflow-y-auto">
+  return (
+    <div className="relative flex h-full min-h-0 flex-col bg-white">
+      {/* Conversation */}
+      <div className="min-h-0 flex-1">
         {selectedTask ? (
           <TaskConversation task={selectedTask} />
         ) : (
@@ -183,21 +133,30 @@ export function ChatPanel({
 
       {/* Submit error */}
       {submitError && (
-        <p className="w-[min(760px,calc(100%-60px))] mx-auto mb-2.5 text-[#b84343] text-sm">
-          {submitError}
-        </p>
+        <div className="px-6 pb-2">
+          <div className="mx-auto max-w-4xl rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
+            {submitError}
+          </div>
+        </div>
       )}
 
-      {/* Composer — disabled when submitting */}
-      <ChatComposer
-        disabled={isSubmitting}
-        placeholder={
-          selectedTask
-            ? "Follow up on this task…"
-            : "Ask AgentOS to do something…"
-        }
-        onSubmit={onSubmit}
-      />
-    </section>
+      {/* Composer */}
+      <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">
+        <div className="mx-auto max-w-4xl">
+          <ChatComposer
+            disabled={isSubmitting}
+            onSubmit={onSubmit}
+          />
+        </div>
+      </div>
+
+      {/* Delete confirmation */}
+      {confirmation && (
+        <DeleteConfirmationDialog
+          confirmation={confirmation}
+          onClose={onDeleteConfirmationClose}
+        />
+      )}
+    </div>
   );
 }

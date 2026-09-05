@@ -1,7 +1,3 @@
-// ---------------------------------------------------------------------------
-// Raw kernel events — shape of every WS message pushed by the backend
-// ---------------------------------------------------------------------------
-
 export type KernelEvent = {
   event:
     | "task.CREATED"
@@ -15,6 +11,7 @@ export type KernelEvent = {
     | "tool.STARTED"
     | "tool.COMPLETED"
     | "tool.FAILED"
+    | "DELETE_CONFIRMATION_REQUIRED"
     | string;
 
   req_id: string;
@@ -39,26 +36,51 @@ export type KernelEvent = {
 
   // *.FAILED
   error?: string;
+
+  // DELETE_CONFIRMATION_REQUIRED
+  confirmation_id?: string;
+  path?: string;
+  recursive?: boolean;
 };
+
+
+// ---------------------------------------------------------------------------
+// Delete confirmation — pending destructive operation
+// ---------------------------------------------------------------------------
+
+export type DeleteConfirmation = {
+  reqId: string;
+  taskId: string;
+  confirmationId: string;
+  path: string;
+  recursive: boolean;
+};
+
 
 // ---------------------------------------------------------------------------
 // Derived display event — synthesised from a KernelEvent for the timeline UI
 // ---------------------------------------------------------------------------
 
 export type DisplayEvent = {
-  /** "task" | "agent" | "tool" */
+  /** "task" | "agent" | "tool" | "delete" */
   stage: string;
+
   /** e.g. "created", "started", "failed" */
   status: string;
+
   /** Human-readable description */
   message: string;
+
   /** ISO timestamp — set to Date.now() when the event is received */
   occurred_at: string;
+
   /** Agent identifier, if relevant */
   agent_id: string | null;
+
   /** Original raw event type for programmatic checks */
   raw_event: string;
 };
+
 
 // ---------------------------------------------------------------------------
 // Conversation message — one turn in the task history
@@ -68,9 +90,9 @@ export type TaskMessage = {
   /** "human" | "ai" */
   role: "human" | "ai";
   content: string;
-  /** ISO timestamp */
   timestamp: string;
 };
+
 
 // ---------------------------------------------------------------------------
 // Task record — client-side state for one task
@@ -85,22 +107,40 @@ export type TaskMessage = {
 export type TaskRecord = {
   /** Kernel-assigned persistent ID — primary key */
   task_id: string;
-  /** Transient request ID for the current WS connection (changes each follow-up) */
+
+  /** Transient request ID for the current WS connection */
   req_id: string;
+
   /** Display title — first prompt, truncated */
   title: string;
+
   /** ISO timestamp of creation */
   created_at: string;
+
   /** "queued" | "running" | "completed" | "failed" */
   status: string;
-  /** Full conversation history: all human + ai turns */
+
+  /** Full conversation history */
   messages: TaskMessage[];
-  /** Final markdown response from the last completed turn */
+
+  /** Final markdown response */
   response: string | null;
+
   /** Error string if the task failed */
   error: string | null;
+
   /** Ordered list of display-ready events */
   events: DisplayEvent[];
-  /** Agents selected by the planner (task.PLANNED) */
+
+  /** Agents selected by the planner */
   plan: string[];
+
+  /** Pending destructive operation */
+  delete_confirmation?: {
+    reqId: string;
+    taskId: string;
+    confirmationId: string;
+    path: string;
+    recursive: boolean;
+  } | null;
 };
