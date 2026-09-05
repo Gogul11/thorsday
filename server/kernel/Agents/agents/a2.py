@@ -27,6 +27,7 @@ async def run_agent_a2(
     task: str,
     context: str = "",
     callbacks: list | None = None,
+    **kwargs
 ) -> str:
     """Run the A2 date/time agent and return its text result."""
     agent = create_agent(model=model, tools=A2_TOOLS)

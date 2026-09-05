@@ -282,7 +282,10 @@ async def _node_executor(state: dict, model) -> dict:
         result = await run_fn(
             model=model,
             task=state["task"],
-            context=str(state["results"]),
+            context="\n".join(
+                f"{msg.type}: {msg.content}"
+                for msg in state["messages"]
+            ) + "\n" + "Previous Results :" + str(state["results"]),
             callbacks=[callback],
             req_id=state["req_id"],
             task_id=state["task_id"],

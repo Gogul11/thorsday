@@ -29,6 +29,7 @@ async def run_agent_a1(
     task: str,
     context: str = "",
     callbacks: list | None = None,
+    **kwargs
 ) -> str:
     """Run the A1 system-info agent and return its text result."""
     agent = create_agent(model=model, tools=A1_TOOLS)

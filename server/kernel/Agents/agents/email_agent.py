@@ -24,6 +24,7 @@ async def run_email_agent(
     task: str,
     context: str = "",
     callbacks: list | None = None,
+    **kwargs
 ) -> str:
     agent = create_agent(model=model, tools=EMAIL_TOOLS)
     prompt = f"""You are {_NAME}.
@@ -57,4 +58,4 @@ async def run_email_agent(
         config={"callbacks": callbacks} if callbacks else None,
     )
 
-    return result["messages"][-1].content
+    return result["messages"][-1].content

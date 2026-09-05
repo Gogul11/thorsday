@@ -56,6 +56,7 @@ async def run_content_creator_agent(
     task: str,
     context: str = "",
     callbacks: list | None = None,
+    **kwargs
 ) -> str:
     sender_email = get_current_user_email()
     sender_name = get_current_user_name()
@@ -145,4 +146,4 @@ async def run_content_creator_agent(
         config={"callbacks": callbacks} if callbacks else None,
     )
 
-    return result["messages"][-1].content
+    return result["messages"][-1].content
