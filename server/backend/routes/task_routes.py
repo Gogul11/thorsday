@@ -1,17 +1,52 @@
-"""Task routes — REST and WebSocket endpoints.
+"""
+Task routes — REST and WebSocket endpoints.
 
-POST /task              — submit a new task or follow-up, get back req_id
-WS   /ws/{req_id}       — stream kernel events for that request in real time
-GET  /tasks             — list all tasks (summary) for sidebar history
-GET  /tasks/{task_id}   — full task detail including messages[]
+POST /task
+    Submit a new task or follow-up.
+
+POST /delete-confirmation
+    Confirm or cancel a pending destructive filesystem operation.
+
+WS /ws/{req_id}
+    Stream kernel events for that request.
+
+GET /tasks
+    List task history.
+
+GET /tasks/{task_id}
+    Get full task details.
 """
 
-from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect, status
+from fastapi import (
+    APIRouter,
+    HTTPException,
+    WebSocket,
+    WebSocketDisconnect,
+    status,
+)
 
-from controller.task_controller import create_task_handler
-from schemas.task import TaskRequest, TaskResponse
-from services.ws_service import ws_connect, ws_disconnect
-from services.task_query_service import get_all_tasks, get_task_by_id
+from controller.task_controller import (
+    confirm_delete_handler,
+    create_task_handler,
+)
+
+from schemas.task import (
+    DeleteConfirmationRequest,
+    DeleteConfirmationResponse,
+    TaskRequest,
+    TaskResponse,
+)
+
+from services.task_query_service import (
+    get_all_tasks,
+    get_task_by_id,
+)
+
+from services.ws_service import (
+    ws_connect,
+    ws_disconnect,
+)
+
 
 router = APIRouter()
 
@@ -20,47 +55,99 @@ router = APIRouter()
 # Task submission
 # ---------------------------------------------------------------------------
 
+
 @router.post(
     "/task",
     response_model=TaskResponse,
     status_code=status.HTTP_202_ACCEPTED,
     summary="Submit a task or follow-up",
 )
-async def create_task(request: TaskRequest) -> TaskResponse:
+async def create_task(
+    request: TaskRequest,
+) -> TaskResponse:
     """
-    Accepts a prompt (and optional task_id for follow-ups).
-    Generates a unique req_id, publishes to the kernel via Redis,
-    and returns the req_id immediately.
-    Open WS /ws/{req_id} to receive live progress events.
+    Accept a prompt and submit it to the kernel.
     """
+
     return await create_task_handler(request)
+
+
+# ---------------------------------------------------------------------------
+# Delete confirmation
+# ---------------------------------------------------------------------------
+
+
+@router.post(
+    "/delete-confirmation",
+    response_model=DeleteConfirmationResponse,
+    summary="Confirm or cancel a pending delete operation",
+)
+async def confirm_delete(
+    request: DeleteConfirmationRequest,
+) -> DeleteConfirmationResponse:
+    """
+    Process the user's Delete/Cancel decision.
+
+    The frontend sends:
+        req_id
+        task_id
+        confirmation_id
+        confirmed
+
+    The frontend does NOT send the filesystem path.
+
+    The backend retrieves the pending confirmation and performs
+    the appropriate action through confirm_delete_handler().
+    """
+
+    return await confirm_delete_handler(request)
 
 
 # ---------------------------------------------------------------------------
 # WebSocket live stream
 # ---------------------------------------------------------------------------
 
+
 @router.websocket("/ws/{req_id}")
-async def task_websocket(websocket: WebSocket, req_id: str) -> None:
-    """Stream kernel events for *req_id* to the connected client."""
-    await ws_connect(req_id, websocket)
+async def task_websocket(
+    websocket: WebSocket,
+    req_id: str,
+) -> None:
+    """
+    Stream kernel events for req_id.
+    """
+
+    await ws_connect(
+        req_id,
+        websocket,
+    )
+
     try:
         while True:
             await websocket.receive_text()
+
     except WebSocketDisconnect:
         pass
+
     finally:
-        ws_disconnect(req_id, websocket)
+        ws_disconnect(
+            req_id,
+            websocket,
+        )
 
 
 # ---------------------------------------------------------------------------
-# Task history (GPT-style sidebar)
+# Task history
 # ---------------------------------------------------------------------------
+
 
 @router.get(
     "/tasks",
     summary="List all tasks",
-    description="Returns all tasks newest-first with summary fields for the sidebar.",
+    description=(
+        "Returns all tasks newest-first with summary fields "
+        "for the sidebar."
+    ),
 )
 async def list_tasks() -> list[dict]:
     return await get_all_tasks()
@@ -70,8 +157,15 @@ async def list_tasks() -> list[dict]:
     "/tasks/{task_id}",
     summary="Get a single task with full message history",
 )
-async def get_task(task_id: str) -> dict:
+async def get_task(
+    task_id: str,
+) -> dict:
     task = await get_task_by_id(task_id)
+
     if task is None:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise HTTPException(
+            status_code=404,
+            detail="Task not found",
+        )
+
     return task
