@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { ChatPanel } from "@/components/chat/ChatPanel";
+import ChatPanel from "@/components/chat/ChatPanel";
 import { TaskActivity } from "@/components/activity/TaskActivity";
 import { TaskList } from "@/components/sidebar/TaskList";
 import { useTaskSubscriptions } from "@/hooks/useTaskSubscriptions";

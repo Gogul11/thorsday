@@ -146,14 +146,62 @@ Available agents:
 User task:
 {state["task"]}
 
+Agent selection rules:
+
+- a1 = system information, hardware, software, processes, services,
+  system configuration and system status.
+
+- a2 = date, time, timezone and calendar/date-related questions.
+
+- a3 = research, web search, Wikipedia, academic, scientific,
+  technical and factual information gathering.
+
+- a4 = FILE AND DOCUMENT OPERATIONS on the user's local computer.
+  This includes:
+  - finding/searching files
+  - searching by extension such as PDF, DOCX, TXT, etc.
+  - searching directories
+  - listing directory contents
+  - reading documents
+  - creating files
+  - modifying files
+  - appending to files
+  - renaming files
+  - moving files
+  - creating folders
+  - deleting files
+  - comparing documents
+  - extracting information from documents
+  - summarizing documents
+  - classifying documents
+  - retrieving file metadata.
+
+IMPORTANT:
+If the user asks to interact with files or directories on their
+computer, ALWAYS select a4.
+
+Examples:
+- "find my PDFs" -> ["a4"]
+- "list files in Downloads" -> ["a4"]
+- "show the 5 newest PDFs" -> ["a4"]
+- "read this PDF" -> ["a4"]
+- "summarize this document" -> ["a4"]
+- "create a text file" -> ["a4"]
+- "rename this file" -> ["a4"]
+- "move this file" -> ["a4"]
+- "delete this file" -> ["a4"]
+- "compare these two documents" -> ["a4"]
+- "what is the current time?" -> ["a2"]
+- "what processes are running?" -> ["a1"]
+- "research operating system scheduling algorithms" -> ["a3"]
+
 Rules:
 - Respond by providing an ExecutionPlan.
-- Select only agents by their exact identifier (e.g. 'a1', 'a2', 'a3') that
-  are required to fulfill the request.
+- Select only agents by their exact identifiers: a1, a2, a3, a4.
+- Select a4 whenever filesystem or document operations are requested.
 - Order agents logically according to dependencies.
-- If no specialized agent is suitable, or the user is asking a general
-  question, return an empty list: agents = [].
-- Do not perform the task yourself; delegate to agents when available.
+- If no specialized agent is suitable, return an empty list: agents = [].
+- Do not perform the task yourself; delegate to the appropriate agent.
 """
 
     planner = model.with_structured_output(ExecutionPlan)
@@ -161,6 +209,48 @@ Rules:
     try:
         plan: ExecutionPlan = await planner.ainvoke(prompt)
         plan_agents = [a for a in plan.agents if a in valid_types]
+
+        # Deterministic routing safeguard for filesystem/document tasks.
+        #
+        # This prevents the planner LLM from accidentally answering a
+        # filesystem request itself instead of delegating it to A4.
+        task_lower = state["task"].lower()
+
+        file_keywords = (
+            "file",
+            "files",
+            "folder",
+            "folders",
+            "directory",
+            "directories",
+            "pdf",
+            "docx",
+            "document",
+            "documents",
+            "download",
+            "downloads",
+            "rename",
+            "move",
+            "delete",
+            "create a file",
+            "create file",
+            "read file",
+            "read document",
+            "write file",
+            "modify file",
+            "edit file",
+            "append to",
+            "metadata",
+        )
+
+        is_file_task = any(
+            keyword in task_lower
+            for keyword in file_keywords
+        )
+
+        if is_file_task and "a4" in valid_types:
+            plan_agents = ["a4"]
+
     except Exception as exc:
         logger.warning("Planner failed: %s. Defaulting to empty plan.", exc)
         plan_agents = []
@@ -194,6 +284,8 @@ async def _node_executor(state: dict, model) -> dict:
             task=state["task"],
             context=str(state["results"]),
             callbacks=[callback],
+            req_id=state["req_id"],
+            task_id=state["task_id"],
         )
 
         updated_results = {**state["results"], agent_name: result}
