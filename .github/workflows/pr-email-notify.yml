@@ -1,0 +1,47 @@
+name: Notify Contributors on New PR
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  send-pr-email:
+    name: Send Email Notification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send PR Notification Email
+        uses: dawidd6/action-send-mail@v5
+        with:
+          server_address: ${{ secrets.MAIL_SERVER }}
+          server_port: 587
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          secure: false
+
+          subject: "[${{ github.repository }}] New PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}"
+          to: ${{ secrets.CONTRIBUTOR_EMAILS }}
+          from: ${{ secrets.MAIL_USERNAME }}
+
+          html_body: |
+            <h2>A new Pull Request has been submitted!</h2>
+            <p><strong>Repository:</strong> <a href="${{ github.event.repository.html_url }}">${{ github.repository }}</a></p>
+            <p><strong>PR Title:</strong> ${{ github.event.pull_request.title }} (<a href="${{ github.event.pull_request.html_url }}">#${{ github.event.pull_request.number }}</a>)</p>
+            <p><strong>Author:</strong> <a href="${{ github.event.pull_request.user.html_url }}">${{ github.event.pull_request.user.login }}</a></p>
+            <p><strong>Branch:</strong> <code>${{ github.event.pull_request.head.ref }}</code> &rarr; <code>${{ github.event.pull_request.base.ref }}</code></p>
+            <hr/>
+            <h3>Description:</h3>
+            <blockquote>
+              ${{ github.event.pull_request.body || '<em>No description provided.</em>' }}
+            </blockquote>
+            <p><a href="${{ github.event.pull_request.html_url }}" style="display:inline-block;padding:10px 20px;background-color:#2da44e;color:#ffffff;text-decoration:none;border-radius:6px;font-weight:bold;">Review Pull Request</a></p>
+
+          body: |
+            A new Pull Request has been opened in ${{ github.repository }}:
+
+            Title: ${{ github.event.pull_request.title }} (#${{ github.event.pull_request.number }})
+            Author: ${{ github.event.pull_request.user.login }}
+            URL: ${{ github.event.pull_request.html_url }}
+            Branch: ${{ github.event.pull_request.head.ref }} -> ${{ github.event.pull_request.base.ref }}
+
+            Description:
+            ${{ github.event.pull_request.body || 'No description provided.' }}
