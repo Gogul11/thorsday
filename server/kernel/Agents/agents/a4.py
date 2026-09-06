@@ -159,8 +159,7 @@ async def run_agent_a4(
     task: str,
     context: str = "",
     callbacks: list | None = None,
-    req_id: str = "",
-    task_id: str = "",
+    **kwargs
 ) -> str:
     """
     Run the A4 File & Document Agent.
@@ -169,7 +168,8 @@ async def run_agent_a4(
     This guarantees that deletion always enters the confirmation flow
     instead of allowing the model to merely describe how to delete.
     """
-
+    req_id : str = kwargs.get("req_id", "")
+    task_id : str = kwargs.get("task_id", "")
     delete_context_token = set_delete_context(
         req_id,
         task_id,
