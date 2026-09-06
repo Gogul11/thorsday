@@ -17,6 +17,10 @@ jobs:
       pull-requests: write
 
     steps:
-    - uses: actions/labeler@v5
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Run Labeler
+      uses: actions/labeler@v5
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
