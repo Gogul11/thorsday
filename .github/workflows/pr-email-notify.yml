@@ -10,21 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send PR Notification Email
-        uses: dawidd6/action-send-mail@v4
+        uses: dawidd6/action-send-mail@v5
         with:
-          # SMTP Server Configuration
           server_address: ${{ secrets.MAIL_SERVER }}
-          server_port: ${{ secrets.MAIL_PORT || 465 }}
+          server_port: 587
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
-          secure: true
+          secure: false
 
-          # Sender and Recipients
-          subject: " [${{ github.repository }}] New PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}"
+          subject: "[${{ github.repository }}] New PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}"
           to: ${{ secrets.CONTRIBUTOR_EMAILS }}
-          from: ${{ secrets.MAIL_FROM || secrets.MAIL_USERNAME }}
+          from: ${{ secrets.MAIL_USERNAME }}
 
-          # Email Content
           html_body: |
             <h2>A new Pull Request has been submitted!</h2>
             <p><strong>Repository:</strong> <a href="${{ github.event.repository.html_url }}">${{ github.repository }}</a></p>
@@ -38,15 +35,13 @@ jobs:
             </blockquote>
             <p><a href="${{ github.event.pull_request.html_url }}" style="display:inline-block;padding:10px 20px;background-color:#2da44e;color:#ffffff;text-decoration:none;border-radius:6px;font-weight:bold;">Review Pull Request</a></p>
 
-          # Fallback Plaintext Body
           body: |
             A new Pull Request has been opened in ${{ github.repository }}:
-            
+
             Title: ${{ github.event.pull_request.title }} (#${{ github.event.pull_request.number }})
             Author: ${{ github.event.pull_request.user.login }}
             URL: ${{ github.event.pull_request.html_url }}
             Branch: ${{ github.event.pull_request.head.ref }} -> ${{ github.event.pull_request.base.ref }}
-            
+
             Description:
             ${{ github.event.pull_request.body || 'No description provided.' }}
-
