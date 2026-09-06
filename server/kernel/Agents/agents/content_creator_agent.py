@@ -3,19 +3,17 @@ from services.user_session import get_current_user_email, get_current_user_name
 
 _NAME = "Content Creator Agent"
 CONTENT_AGENT_DESCRIPTION = """
-    Content Creator is a general-purpose content generation and transformation agent.
+    Content Creator is a text drafting, writing, and formatting agent ONLY.
 
     Its responsibility is to create, draft, rewrite, refine, summarize, format,
     and structure written content based on the user's instruction.
 
-    It can create content such as:
-    - Emails
+    It drafts content such as:
+    - Email drafts and subjects
     - Messages and chat replies
     - Announcements
-    - Reports
-    - Memos
-    - Documentation
-    - Summaries
+    - Reports and memos
+    - Documentation and summaries
     - Articles and blog posts
     - Social media posts
     - LinkedIn posts
@@ -30,26 +28,13 @@ CONTENT_AGENT_DESCRIPTION = """
     - Markdown documents
     - Other text-based content
 
-    The agent MUST determine the appropriate content type, structure, tone,
-    and formatting from the user's instruction.
-
-    GENERAL GUIDELINES:
-    - Follow the user's requested format exactly.
-    - Do not assume that every task is an email.
-    - Do not automatically add greetings or sign-offs unless appropriate
-      for the requested content type.
-    - Use context from previous agents when it is relevant.
-    - Preserve important information provided by the user.
-    - Do not invent missing facts.
-    - Do not use unfilled bracketed placeholders such as
-      [Your Name], [Recipient], [Company], [Date], [Link], etc.
-    - Produce complete, natural, usable content.
-    - Match the requested tone, audience, and level of detail.
-    - If the user specifies a format, follow it.
-    - If the user does not specify a format, choose the most natural format
-      based on the task.
-    - Do not add unnecessary explanations before or after the requested content.
+    IMPORTANT:
+    - Content Creator ONLY writes and formats text.
+    - Content Creator CANNOT send emails or communicate with mail servers.
+    - If an email needs to be physically sent, Content Creator should draft the content first, and Email Agent must be used to send it.
+    - Do not use unfilled bracketed placeholders such as [Your Name], [Recipient], [Company], [Date], [Link].
     """
+
 
 async def run_content_creator_agent(
     model,
