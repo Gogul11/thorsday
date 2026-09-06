@@ -1,23 +1,24 @@
 from langchain.agents import create_agent
 
+from services.user_session import get_current_user_email
 from tools.tool_registry import EMAIL_TOOLS
 
 _NAME = "Email Agent"
 E_AGENT_DESCRIPTION = """
-    Email Agent is responsible for sending emails to target recipient email addresses.
+    Email Agent is responsible for SENDING, DISPATCHING, and DELIVERING emails to recipients.
 
     Use Email Agent whenever a task requires:
-    - Sending an email to a specified email address or recipient
-    - Dispatching drafted messages, announcements, or notifications via email
-    - Forwarding generated content (e.g., from Content Creator) to an email destination
+    - Sending an email to an email address (e.g. "send an email to...", "email test@example.com", "mail someone...")
+    - Dispatching drafted messages, invitations, announcements, or notifications via email
+    - Forwarding generated text (such as drafts prepared by Content Creator) to a recipient inbox
 
     Email Agent should:
     - Extract the recipient email address(es) from the user's prompt or context
     - Extract or determine the subject line and email body from prior agent results (such as Content Creator)
     - Ensure the email body is completely free of any bracketed placeholder tokens (e.g. [Your Name]) before sending
-    - Use the send_email tool to send the email
-    - Return a clear summary of the email delivery status, recipient, and subject
+    - Email Agent ALWAYS executes its `send_email` tool to deliver the email.
     """
+
 
 async def run_email_agent(
     model,
@@ -26,24 +27,29 @@ async def run_email_agent(
     callbacks: list | None = None,
     **kwargs
 ) -> str:
+    sender_email = get_current_user_email()
     agent = create_agent(model=model, tools=EMAIL_TOOLS)
+
     prompt = f"""You are {_NAME}.
 
-        Your responsibility:
-        {E_AGENT_DESCRIPTION}
+Your responsibility:
+{E_AGENT_DESCRIPTION}
 
-        Task:
-        {task}
+User Task:
+{task}
 
-        Results from previous agents:
-        {context}
+Previous Agent Results (Content Drafts):
+{context}
 
         Instructions:
-        1. Extract the recipient email address (to_email).
-        2. Extract the subject and email body from previous agent results (Content Creator).
-        3. Ensure there are NO unresolved bracketed placeholders like [Your Name] or [Link] in the email body.
-        4. Call the send_email tool with the recipient, subject, and cleaned email body.
-        5. Return the delivery status clearly.
+        1. Extract the recipient email address (to_email)from the task or context.
+        2. Determine the subject line and email body (use the text prepared by Content Creator if available; if not available, write a clean, complete email body).
+        3. Ensure there are NO unresolved bracketed placeholders like [Your Name] or [Link] no [Date] in the email body.
+        4. Call the send_email tool with the recipient, subject, and cleaned email body.YOU MUST CALL THE `send_email` TOOL with:
+   - to_email: <recipient email address>
+   - subject: <email subject>
+   - body: <cleaned email body content>
+        5. Return the exact delivery confirmation output provided by the `send_email` tool.
         """
 
     result = await agent.ainvoke(
@@ -59,3 +65,4 @@ async def run_email_agent(
     )
 
     return result["messages"][-1].content
+
