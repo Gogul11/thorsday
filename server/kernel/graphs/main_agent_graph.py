@@ -22,6 +22,7 @@ from graphs.states.main_agent_state import MainAgentState
 from logger import logger
 from Redis.redis_connection import publish
 from repository.task_repo import DB_add_task_event, DB_create_task, DB_update_task
+from services.context import get_context
 
 
 # ---------------------------------------------------------------------------
@@ -157,49 +158,46 @@ Agent selection rules:
   technical and factual information gathering.
 
 - a4 = FILE AND DOCUMENT OPERATIONS on the user's local computer.
-  This includes:
-  - finding/searching files
-  - searching by extension such as PDF, DOCX, TXT, etc.
-  - searching directories
-  - listing directory contents
-  - reading documents
-  - creating files
-  - modifying files
-  - appending to files
-  - renaming files
-  - moving files
-  - creating folders
-  - deleting files
-  - comparing documents
-  - extracting information from documents
-  - summarizing documents
-  - classifying documents
-  - retrieving file metadata.
+  This includes finding/searching files, reading documents, creating/modifying/renaming/moving files.
+
+- content_creator = drafting, writing, and formatting written text, reports, summaries,
+  documentation, and email drafts.
+
+- email_agent = SENDING and dispatching emails to recipients via SMTP.
+
+- weather_agent = live weather conditions, forecasts, temperatures, precipitation,
+  humidity, wind speed, and meteorological data for any city or location worldwide.
 
 IMPORTANT:
 If the user asks to interact with files or directories on their
 computer, ALWAYS select a4.
+If the user asks about the weather, temperature, or forecasts for any location, ALWAYS select weather_agent.
 
 Examples:
+- "what is the weather in London?" -> ["weather_agent"]
+- "3-day forecast for Tokyo" -> ["weather_agent"]
+- "how hot is it in Paris right now?" -> ["weather_agent"]
+- "is it raining in Seattle?" -> ["weather_agent"]
 - "find my PDFs" -> ["a4"]
 - "list files in Downloads" -> ["a4"]
-- "show the 5 newest PDFs" -> ["a4"]
 - "read this PDF" -> ["a4"]
-- "summarize this document" -> ["a4"]
-- "create a text file" -> ["a4"]
-- "rename this file" -> ["a4"]
-- "move this file" -> ["a4"]
-- "delete this file" -> ["a4"]
-- "compare these two documents" -> ["a4"]
 - "what is the current time?" -> ["a2"]
 - "what processes are running?" -> ["a1"]
 - "research operating system scheduling algorithms" -> ["a3"]
+- "draft a weekly summary report" -> ["content_creator"]
+- "send an email to team@example.com" -> ["content_creator", "email_agent"]
 
 Rules:
 - Respond by providing an ExecutionPlan.
-- Select only agents by their exact identifiers: a1, a2, a3, a4.
+- Select only agents by their exact identifier (e.g. 'a1', 'a2', 'a3') that
+  are required to fulfill the request.
+- Select only agents from the available agent identifiers: {', '.join(sorted(valid_types))}.
 - Select a4 whenever filesystem or document operations are requested.
+- Select weather_agent whenever weather, temperature, or forecast information is requested.
 - Order agents logically according to dependencies.
+- If no specialized agent is suitable, or the user is asking a general
+  question, return an empty list: agents = [].
+- Do not perform the task yourself; delegate to agents when available.
 - If no specialized agent is suitable, return an empty list: agents = [].
 - Do not perform the task yourself; delegate to the appropriate agent.
 """
@@ -210,10 +208,7 @@ Rules:
         plan: ExecutionPlan = await planner.ainvoke(prompt)
         plan_agents = [a for a in plan.agents if a in valid_types]
 
-        # Deterministic routing safeguard for filesystem/document tasks.
-        #
-        # This prevents the planner LLM from accidentally answering a
-        # filesystem request itself instead of delegating it to A4.
+        # Deterministic routing safeguards
         task_lower = state["task"].lower()
 
         file_keywords = (
@@ -243,13 +238,33 @@ Rules:
             "metadata",
         )
 
+        weather_keywords = (
+            "weather",
+            "temperature",
+            "forecast",
+            "humidity",
+            "precipitation",
+            "is it raining",
+            "will it rain",
+            "how hot is it",
+            "how cold is it",
+            "degrees in",
+        )
+
         is_file_task = any(
             keyword in task_lower
             for keyword in file_keywords
         )
 
+        is_weather_task = any(
+            keyword in task_lower
+            for keyword in weather_keywords
+        )
+
         if is_file_task and "a4" in valid_types:
             plan_agents = ["a4"]
+        elif is_weather_task and "weather_agent" in valid_types and not plan_agents:
+            plan_agents = ["weather_agent"]
 
     except Exception as exc:
         logger.warning("Planner failed: %s. Defaulting to empty plan.", exc)
@@ -278,10 +293,14 @@ async def _node_executor(state: dict, model) -> dict:
     callback = ToolEventCallback(_emit, state, agent_name, agent_id, loop)
 
     try:
+        curr_context = get_context(state[task_id])
+        added_context = str(state["results"]) + state[messages]
+        print(added_context)
         run_fn = runtime["run"]
         result = await run_fn(
             model=model,
             task=state["task"],
+            context=added_context, 
             context="\n".join(
                 f"{msg.type}: {msg.content}"
                 for msg in state["messages"]

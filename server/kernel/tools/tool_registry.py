@@ -2,6 +2,7 @@ from tools.sys_info_tools import *
 from tools.time_tool import get_time
 from tools.research_tools import wikipedia_search, trusted_web_search
 from tools.email_tools import send_email
+from tools.weather_tools import get_current_weather, get_weather_forecast
 
 """
 Tool registry for AgentOS.
@@ -19,7 +20,7 @@ from tools.file_document_tools import (
     move_file,
     read_document,
     rename_file,
-    replace_in_file,
+    replace_in_file,    
     request_delete_confirmation,
     search_files,
 )
@@ -67,6 +68,11 @@ A4_TOOLS = [
 
 EMAIL_TOOLS = [
     send_email
+]
+
+WEATHER_TOOLS = [
+    get_current_weather,
+    get_weather_forecast,
 ]
 
 # TOOL_MAP = {tool.name : tool for tool in TOOLS}

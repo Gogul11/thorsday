@@ -47,6 +47,7 @@ export function DeleteConfirmationDialog({
     confirmed: boolean,
   ) {
     if (isSubmitting) {
+    if (!confirmation || isSubmitting) {
       return;
     }
 

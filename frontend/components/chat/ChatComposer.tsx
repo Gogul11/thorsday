@@ -27,6 +27,8 @@ export function ChatComposer({
 
   function onKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
       void submit();
     }
   }
@@ -48,6 +50,7 @@ export function ChatComposer({
       />
       <div className="flex items-center justify-between px-3 pt-2 pb-2.5 text-[#74746f] text-[11px]">
         <span>Ctrl + Enter to send</span>
+        <span>Enter to send, Shift + Enter for new line</span>
         <button
           type="submit"
           disabled={disabled || !prompt.trim()}

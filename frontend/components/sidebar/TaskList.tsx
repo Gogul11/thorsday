@@ -107,6 +107,33 @@ export function TaskList({
                 <span className="min-w-0">
                   <span className="block text-[13px] leading-[1.35] overflow-hidden text-ellipsis whitespace-nowrap">
                     {task.title}
+          tasks.map((task, index) => {
+            const taskIdOrReq = task.task_id || task.req_id;
+            const isSelected =
+              Boolean(selectedTaskId) &&
+              ((task.task_id && task.task_id === selectedTaskId) ||
+                (task.req_id && task.req_id === selectedTaskId));
+
+            return (
+              <button
+                key={taskIdOrReq || `task-${index}`}
+                type="button"
+                onClick={() => onSelect(taskIdOrReq)}
+                aria-label={task.title}
+                title={task.title}
+                className={`flex gap-2 w-full border-0 rounded-[5px] bg-transparent text-[#1e1e1c] text-left min-w-0 overflow-hidden hover:bg-[#f0f0ec] ${
+                  isSelected ? "bg-[#f0f0ec]" : ""
+                } ${collapsed ? "justify-center py-2 px-0" : "p-2"}`}
+              >
+                <StatusDot status={task.status} />
+                {!collapsed && (
+                  <span className="min-w-0">
+                    <span className="block text-[13px] leading-[1.35] overflow-hidden text-ellipsis whitespace-nowrap">
+                      {task.title}
+                    </span>
+                    <span className="block mt-[3px] text-[#74746f] text-[11px] overflow-hidden text-ellipsis whitespace-nowrap">
+                      {task.status}
+                    </span>
                   </span>
                   <span className="block mt-[3px] text-[#74746f] text-[11px] overflow-hidden text-ellipsis whitespace-nowrap">
                     {task.status}
@@ -115,6 +142,10 @@ export function TaskList({
               )}
             </button>
           ))
+                )}
+              </button>
+            );
+          })
         )}
       </div>
     </aside>
