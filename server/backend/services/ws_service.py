@@ -48,8 +48,7 @@ async def _cleanup_buffer(req_id: str, delay: int = 60) -> None:
 
 
 async def ws_broadcast(req_id: str, data: dict) -> None:
-    """Send a JSON message to every connection watching *req_id*.
-    """Send a JSON message to every connection watching *req_id* and buffer it for late joiners."""
+    """Send a JSON message to every connection watching *req_id* and buffer it for late joiners.
     # Store in buffer
     buffer = _event_buffer.setdefault(req_id, [])
     buffer.append(data)

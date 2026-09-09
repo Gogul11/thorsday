@@ -293,14 +293,11 @@ async def _node_executor(state: dict, model) -> dict:
     callback = ToolEventCallback(_emit, state, agent_name, agent_id, loop)
 
     try:
-        curr_context = get_context(state[task_id])
-        added_context = str(state["results"]) + state[messages]
-        print(added_context)
+        
         run_fn = runtime["run"]
         result = await run_fn(
             model=model,
             task=state["task"],
-            context=added_context, 
             context="\n".join(
                 f"{msg.type}: {msg.content}"
                 for msg in state["messages"]

@@ -144,7 +144,7 @@ export function useTaskSubscriptions(
         (ev: KernelEvent) => {
           setTasks((current) =>
             current.map((t) => {
-              if (t.req_id !== task.req_id) {
+              // if (t.req_id !== task.req_id) {
               const matches =
                 (t.req_id && t.req_id === task.req_id) ||
                 (ev.task_id && t.task_id && t.task_id === ev.task_id);
@@ -160,17 +160,17 @@ export function useTaskSubscriptions(
               // -----------------------------------------------------------
 
               let updatedMessages = t.messages;
-              let updatedMessages = t.messages ?? [];
+              // let updatedMessages = t.messages ?? [];
 
               if (
                 ev.event === "task.COMPLETED" &&
                 ev.response
               ) {
-                const aiMsg: TaskMessage = {
-                  role: "ai",
-                  content: ev.response,
-                  timestamp: new Date().toISOString(),
-                };
+                // const aiMsg: TaskMessage = {
+                //   role: "ai",
+                //   content: ev.response,
+                //   timestamp: new Date().toISOString(),
+                // };
                 const alreadyHasResponse = updatedMessages.some(
                   (m) => m.role === "ai" && m.content === ev.response,
                 );
@@ -181,12 +181,8 @@ export function useTaskSubscriptions(
                     timestamp: new Date().toISOString(),
                   };
 
-                updatedMessages = [
-                  ...t.messages,
-                  aiMsg,
-                ];
                   updatedMessages = [
-                    ...updatedMessages,
+                    ...t.messages,
                     aiMsg,
                   ];
                 }
