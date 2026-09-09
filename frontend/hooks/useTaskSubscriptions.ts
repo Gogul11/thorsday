@@ -166,11 +166,11 @@ export function useTaskSubscriptions(
                 ev.event === "task.COMPLETED" &&
                 ev.response
               ) {
-                const aiMsg: TaskMessage = {
-                  role: "ai",
-                  content: ev.response,
-                  timestamp: new Date().toISOString(),
-                };
+                // const aiMsg: TaskMessage = {
+                //   role: "ai",
+                //   content: ev.response,
+                //   timestamp: new Date().toISOString(),
+                // };
                 const alreadyHasResponse = updatedMessages.some(
                   (m) => m.role === "ai" && m.content === ev.response,
                 );
@@ -181,12 +181,8 @@ export function useTaskSubscriptions(
                     timestamp: new Date().toISOString(),
                   };
 
-                updatedMessages = [
-                  ...t.messages,
-                  aiMsg,
-                ];
                   updatedMessages = [
-                    ...updatedMessages,
+                    ...t.messages,
                     aiMsg,
                   ];
                 }
