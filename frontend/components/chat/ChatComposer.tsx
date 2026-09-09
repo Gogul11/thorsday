@@ -26,7 +26,7 @@ export function ChatComposer({
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
-    if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
+    // if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       void submit();

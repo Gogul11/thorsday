@@ -48,7 +48,7 @@ export default function ChatPage () {
     setSelectedTaskId(taskId)
 
     // Check if we already have messages loaded for this task
-    const existing = tasks.find(t => t.task_id === taskId)
+    // const existing = tasks.find(t => t.task_id === taskId)
     const existing = tasks.find(
       t =>
         (t.task_id && t.task_id === taskId) || (t.req_id && t.req_id === taskId)
@@ -90,7 +90,7 @@ export default function ChatPage () {
   // ---------------------------------------------------------------------------
   // Submit a new task or follow-up
   // ---------------------------------------------------------------------------
-  const selectedTask = tasks.find(t => t.task_id === selectedTaskId)
+  // const selectedTask = tasks.find(t => t.task_id === selectedTaskId)
   const selectedTask = tasks.find(
     t =>
       (t.task_id && t.task_id === selectedTaskId) ||
