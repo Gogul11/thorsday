@@ -145,6 +145,11 @@ export function useTaskSubscriptions(
           setTasks((current) =>
             current.map((t) => {
               if (t.req_id !== task.req_id) {
+              const matches =
+                (t.req_id && t.req_id === task.req_id) ||
+                (ev.task_id && t.task_id && t.task_id === ev.task_id);
+
+              if (!matches) {
                 return t;
               }
 
@@ -155,6 +160,7 @@ export function useTaskSubscriptions(
               // -----------------------------------------------------------
 
               let updatedMessages = t.messages;
+              let updatedMessages = t.messages ?? [];
 
               if (
                 ev.event === "task.COMPLETED" &&
@@ -165,11 +171,25 @@ export function useTaskSubscriptions(
                   content: ev.response,
                   timestamp: new Date().toISOString(),
                 };
+                const alreadyHasResponse = updatedMessages.some(
+                  (m) => m.role === "ai" && m.content === ev.response,
+                );
+                if (!alreadyHasResponse) {
+                  const aiMsg: TaskMessage = {
+                    role: "ai",
+                    content: ev.response,
+                    timestamp: new Date().toISOString(),
+                  };
 
                 updatedMessages = [
                   ...t.messages,
                   aiMsg,
                 ];
+                  updatedMessages = [
+                    ...updatedMessages,
+                    aiMsg,
+                  ];
+                }
               }
 
               // -----------------------------------------------------------

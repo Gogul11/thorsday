@@ -15,6 +15,7 @@ type ChatPanelProps = {
   submitError: string | null;
   onSubmit: (prompt: string) => Promise<void>;
   onDeleteConfirmationClose: () => void;
+  onDeleteConfirmationClose?: () => void;
 };  
 
 function EmptyConversation() {
