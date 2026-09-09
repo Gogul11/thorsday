@@ -35,23 +35,27 @@ async def run_agent_a3(
     agent = create_agent(model=model, tools=A3_TOOLS)
 
     prompt = f"""
-You are {_NAME}.
+    You are {_NAME}.
+    
+    Your responsibility:
+    {AGENT_A3_DESCRIPTION}
+    
+    Task:
+    {task}
+    
+    Results from previous agents:
+    {context}
+    
+    Instructions:
+    
+    1. Use your available research tools to find basic factual information relevant to the task.
+    2. Prefer Wikipedia or a reliable web source when appropriate.
+    3. Do not perform deep or extensive research.
+    4. Return only the key facts needed to answer the task.
+    5. Keep the response concise and easy to understand.
+    6. Include the source URL when available.
+       """
 
-Your responsibility:
-{AGENT_A3_DESCRIPTION}
-
-Task:
-{task}
-
-Results from previous agents:
-{context}
-
-Instructions:
-1. Perform in-depth research using your available research tools (Wikipedia Search and Trusted Web Search).
-2. Synthesize factual, high-quality, and objective findings based on retrieved data.
-3. Include source references, paper titles, and URLs where available.
-4. Return the final research result clearly and concisely.
-"""
 
     result = await agent.ainvoke(
         {"messages": [{"role": "user", "content": prompt}]},
