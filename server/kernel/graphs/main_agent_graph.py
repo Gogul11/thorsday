@@ -195,7 +195,7 @@ async def _node_planner(state: dict, model) -> dict:
             for keyword in weather_keywords
         )
 
-        if is_file_task and "a4" in valid_types:
+        if is_file_task and "a4" in valid_types and "a4" not in plan_agents:
             plan_agents.append("a4")
         elif is_weather_task and "weather_agent" in valid_types and not plan_agents:
             plan_agents.append("weather_agent")
