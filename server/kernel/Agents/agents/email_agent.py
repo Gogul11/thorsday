@@ -42,13 +42,13 @@ Previous Agent Results (Content Drafts):
 {context}
 
         Instructions:
-        1. Extract the recipient email address (to_email)from the task or context.
-        2. Determine the subject line and email body (use the text prepared by Content Creator if available; if not available, write a clean, complete email body).
-        3. Ensure there are NO unresolved bracketed placeholders like [Your Name] or [Link] no [Date] in the email body.
-        4. Call the send_email tool with the recipient, subject, and cleaned email body.YOU MUST CALL THE `send_email` TOOL with:
-   - to_email: <recipient email address>
-   - subject: <email subject>
-   - body: <cleaned email body content>
+        1. Extract the recipient email address (to_email) from the task or context.
+        2. Determine the subject line and email body (use the text prepared by prior agents like Content Creator or calculation agents). Keep the email body clean, professional, and well-structured. If previous results contain lengthy tables or schedules, include the key figures (principal, interest, monthly payment, tenure) and a concise summary breakdown rather than dumping dozens of repeated lines, keeping the email readable and within tool payload limits.
+        3. Ensure there are NO unresolved bracketed placeholders like [Your Name] or [Link] or [Date] in the email body.
+        4. Call the send_email tool with the recipient, subject, and cleaned email body. YOU MUST CALL THE `send_email` TOOL with:
+           - to_email: <recipient email address>
+           - subject: <email subject>
+           - body: <cleaned email body content>
         5. Return the exact delivery confirmation output provided by the `send_email` tool.
         """
 
