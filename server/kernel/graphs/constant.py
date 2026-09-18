@@ -17,7 +17,10 @@ def get_planner_system_prompt(user_task):
     {user_task}
     
     Agent selection rules:
-    
+    - crypto_pnl_agent = Calculate crypto trade profit and ROI, generate report file.
+
+    - loan_emi_agent = Calculate loan EMI and produce amortization schedule.
+
     - a1 = system information, hardware, software, processes, services,
     system configuration and system status.
     
@@ -37,10 +40,18 @@ def get_planner_system_prompt(user_task):
     - weather_agent = live weather conditions, forecasts, temperatures, precipitation,
     humidity, wind speed, and meteorological data for any city or location worldwide.
     
+    - agent_creator = autonomous agent creator. Select this agent when the user's task requires specialized tools, actions, APIs, or domain capabilities that NONE of the other agents above (a1, a2, a3, a4, content_creator, email_agent, weather_agent) can perform.
+    
     IMPORTANT:
-    If the user asks to interact with files or directories on their
-    computer, ALWAYS select a4.
+    If the user asks to interact with files or directories on their computer, ALWAYS select a4.
     If the user asks about the weather, temperature, or forecasts for any location, ALWAYS select weather_agent.
+    If the task requires capabilities that NO existing agent has, select agent_creator so it can build the new agent and tools to complete the task.
+    
+    MULTI-AGENT DECOMPOSITION (HYBRID TASKS):
+    If a user prompt contains BOTH a new capability AND an existing capability, you MUST chain them in order!
+    - For example, if the prompt asks to do a new task AND send an email: select ["agent_creator", "email_agent"].
+    - If the prompt asks to do a new task AND save/write to a local file: select ["agent_creator", "a4"].
+    - Never let agent_creator recreate tools for existing tasks (like email or files). Always reuse existing agents!
     
     Examples:
     - "what is the weather in London?" -> ["weather_agent"]
@@ -55,6 +66,8 @@ def get_planner_system_prompt(user_task):
     - "research operating system scheduling algorithms" -> ["a3"]
     - "draft a weekly summary report" -> ["content_creator"]
     - "send an email to team@example.com" -> ["content_creator", "email_agent"]
+    - "calculate loan EMI for 20 years and email the summary" -> ["agent_creator", "email_agent"]
+    - "convert cryptocurrency rates and save to a text file" -> ["agent_creator", "a4"]
     
     Rules:
     - Respond by providing an ExecutionPlan.

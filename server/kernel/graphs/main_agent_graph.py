@@ -35,6 +35,8 @@ class ExecutionPlan(BaseModel):
     )
 
 
+
+
 # ---------------------------------------------------------------------------
 # Tool-event callback (thread-safe bridge from sync LangChain → async loop)
 # ---------------------------------------------------------------------------
@@ -133,73 +135,12 @@ async def _node_planner(state: dict, model) -> dict:
     await _emit("task.PLANNING", state)
 
     valid_types = set(list_agent_types())
-
     prompt = get_planner_system_prompt(state["task"])
-
     planner = model.with_structured_output(ExecutionPlan)
 
     try:
         plan: ExecutionPlan = await planner.ainvoke(prompt)
         plan_agents = [a for a in plan.agents if a in valid_types]
-
-        # Deterministic routing safeguards
-        task_lower = state["task"].lower()
-
-        file_keywords = (
-            "file",
-            "files",
-            "folder",
-            "folders",
-            "directory",
-            "directories",
-            "pdf",
-            "docx",
-            "document",
-            "documents",
-            "download",
-            "downloads",
-            "rename",
-            "move",
-            "delete",
-            "create a file",
-            "create file",
-            "read file",
-            "read document",
-            "write file",
-            "modify file",
-            "edit file",
-            "append to",
-            "metadata",
-        )
-
-        weather_keywords = (
-            "weather",
-            "temperature",
-            "forecast",
-            "humidity",
-            "precipitation",
-            "is it raining",
-            "will it rain",
-            "how hot is it",
-            "how cold is it",
-            "degrees in",
-        )
-
-        is_file_task = any(
-            keyword in task_lower
-            for keyword in file_keywords
-        )
-
-        is_weather_task = any(
-            keyword in task_lower
-            for keyword in weather_keywords
-        )
-
-        if is_file_task and "a4" in valid_types and "a4" not in plan_agents:
-            plan_agents.append("a4")
-        elif is_weather_task and "weather_agent" in valid_types and not plan_agents:
-            plan_agents.append("weather_agent")
-
     except Exception as exc:
         logger.warning("Planner failed: %s. Defaulting to empty plan.", exc)
         plan_agents = []
@@ -208,6 +149,8 @@ async def _node_planner(state: dict, model) -> dict:
     await DB_update_task(state["task_id"], plan=plan_agents)
 
     return {"plan": plan_agents}
+
+
 
 
 async def _node_executor(state: dict, model) -> dict:
@@ -263,7 +206,9 @@ async def _node_executor(state: dict, model) -> dict:
             error=str(exc),
         )
         set_agent_status(agent_id, "FAILED")
+        await DB_update_task(state["task_id"], status="failed")
         raise
+
 
     finally:
         await _emit("agent.DESTROYED", state, agent_id=agent_id, agent_name=agent_name)
@@ -361,3 +306,5 @@ def build_graph(model):
     g.add_edge("response_node", END)
 
     return g.compile()
+
+

@@ -15,6 +15,8 @@ Nothing else lives here. Business logic belongs in:
 
 import asyncio
 import sys
+from pathlib import Path
+from dotenv import load_dotenv
 
 if sys.platform == "win32":
     try:
@@ -22,6 +24,11 @@ if sys.platform == "win32":
         sys.stderr.reconfigure(encoding="utf-8", errors="replace")
     except Exception:
         pass
+
+# Ensure .env from server/ is loaded
+env_path = Path(__file__).resolve().parent.parent / ".env"
+load_dotenv(dotenv_path=env_path)
+load_dotenv()
 
 from DB.mongodb import mongo_client
 from logger import logger
