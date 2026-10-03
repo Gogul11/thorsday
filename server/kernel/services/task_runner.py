@@ -96,6 +96,8 @@ async def run_task(prompt: str, req_id: str, task_id: str = "") -> str:
             "task_id": task_id,   # "" → new task, non-empty → follow-up
             "task": prompt,
             "plan": [],
+            "plan_steps": [],
+            "completed_steps": [],
             "current_agent": 0,
             "results": {},
             "response": "",

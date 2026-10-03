@@ -19,6 +19,11 @@ export type KernelEvent = {
 
   // task.PLANNED
   plan?: string[];
+  candidates?: string[];
+  confidence?: number;
+  rationale?: string;
+  plan_graph?: PlanStep[];
+  mermaid?: string;
 
   // agent.* / tool.*
   agent_id?: string;
@@ -57,6 +62,13 @@ export type KernelEvent = {
   timed_out?: boolean;
   truncated?: boolean;
   attempt?: number;
+};
+
+export type PlanStep = {
+  id: string;
+  agent: string;
+  depends_on: string[];
+  purpose: string;
 };
 
 
@@ -150,6 +162,8 @@ export type TaskRecord = {
 
   /** Agents selected by the planner */
   plan: string[];
+  plan_graph?: PlanStep[];
+  plan_mermaid?: string;
 
   /** Pending destructive operation */
   delete_confirmation?: {

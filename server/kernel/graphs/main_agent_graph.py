@@ -18,13 +18,14 @@ from Agents.agent_manager import (
     destroy_agent,
     set_agent_status,
 )
-from Agents.agent_registry import get_agent_descriptions, list_agent_types
+from Agents.agent_registry import list_agent_types
 from graphs.states.main_agent_state import MainAgentState
 from logger import logger
 from Redis.redis_connection import publish
 from repository.task_repo import DB_add_task_event, DB_create_task, DB_update_task
 from services.context import get_context
-from graphs.constant import get_planner_system_prompt
+from graphs.constant import build_planner_context
+from planning.diagram import chain_steps, to_mermaid, validate_steps
 
 # ---------------------------------------------------------------------------
 # Structured output schema for the planner
@@ -35,6 +36,9 @@ class ExecutionPlan(BaseModel):
     agents: list[str] = Field(
         description="Agents that should execute the task in order"
     )
+    steps: list[dict] = Field(default_factory=list, description="DAG steps with id, agent, depends_on, and purpose")
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    rationale: str = Field(default="")
 
 
 # ---------------------------------------------------------------------------
@@ -137,30 +141,58 @@ async def _node_planner(state: dict, model) -> dict:
     """Plan which agents should run for this task."""
     await _emit("task.PLANNING", state)
 
-    valid_types = set(list_agent_types())
-    prompt = get_planner_system_prompt(state["task"])
-    planner = model.with_structured_output(ExecutionPlan)
-
     try:
+        valid_types = set(list_agent_types())
+        prompt, candidate_names = build_planner_context(state["task"])
+        planner = model.with_structured_output(ExecutionPlan, method="json_mode")
         plan: ExecutionPlan = await planner.ainvoke(prompt)
-        plan_agents = [a for a in plan.agents if a in valid_types]
+        plan_agents = []
+        for agent_name in plan.agents:
+            if (
+                agent_name in valid_types
+                and agent_name in candidate_names
+                and agent_name not in plan_agents
+            ):
+                plan_agents.append(agent_name)
+        plan_steps = validate_steps(plan.steps, valid_types, set(candidate_names))
+        if not plan_steps:
+            plan_steps = chain_steps(plan_agents)
+        plan_agents = [step["agent"] for step in plan_steps]
     except Exception as exc:
         logger.warning("Planner failed: %s. Defaulting to empty plan.", exc)
         plan_agents = []
+        plan = ExecutionPlan(agents=[], confidence=0.0, rationale=str(exc))
+        plan_steps = []
+        candidate_names = []
 
-    await _emit("task.PLANNED", state, plan=plan_agents)
-    await DB_update_task(state["task_id"], plan=plan_agents)
+    mermaid = to_mermaid(plan_steps)
 
-    return {"plan": plan_agents}
+    await _emit(
+        "task.PLANNED",
+        state,
+        plan=plan_agents,
+        confidence=plan.confidence,
+        rationale=plan.rationale,
+        candidates=candidate_names,
+        plan_graph=plan_steps,
+        mermaid=mermaid,
+    )
+    await DB_update_task(state["task_id"], plan=plan_agents, plan_graph=plan_steps, plan_mermaid=mermaid)
+
+    return {"plan": plan_agents, "plan_steps": plan_steps, "completed_steps": []}
 
 
 async def _node_executor(state: dict, model) -> dict:
     """Run the next agent in the plan."""
-    plan = state["plan"]
-    index = state["current_agent"]
-    agent_name = plan[index]
+    plan_steps = state.get("plan_steps") or chain_steps(state["plan"])
+    completed = set(state.get("completed_steps", []))
+    ready_step = next(
+        step for step in plan_steps
+        if step["id"] not in completed and set(step.get("depends_on", [])) <= completed
+    )
+    agent_name = ready_step["agent"]
     task_id = state["task_id"]
-    agent_id = f"{task_id}-{agent_name}"
+    agent_id = f"{task_id}-{ready_step['id']}-{agent_name}"
 
     await _emit("agent.STARTED", state, agent_id=agent_id, agent_name=agent_name)
 
@@ -177,14 +209,14 @@ async def _node_executor(state: dict, model) -> dict:
             task=state["task"],
             context="\n".join(f"{msg.type}: {msg.content}" for msg in state["messages"])
             + "\n"
-            + "Previous Results :"
+            + f"Current DAG step: {ready_step['purpose']}\nPrevious Results :"
             + str(state["results"]),
             callbacks=[callback],
             req_id=state["req_id"],
             task_id=state["task_id"],
         )
 
-        updated_results = {**state["results"], agent_name: result}
+        updated_results = {**state["results"], ready_step["id"]: result}
         set_agent_status(agent_id, "COMPLETED")
 
         await _emit(
@@ -195,7 +227,10 @@ async def _node_executor(state: dict, model) -> dict:
             result=result,
         )
 
-        return {"results": updated_results, "current_agent": index + 1}
+        return {
+            "results": updated_results,
+            "completed_steps": [*state.get("completed_steps", []), ready_step["id"]],
+        }
 
     except Exception as exc:
         await _emit(
@@ -250,7 +285,7 @@ async def _node_response(state: dict, model) -> dict:
 
 
 def _should_continue(state: dict) -> str:
-    if state["current_agent"] < len(state["plan"]):
+    if len(state.get("completed_steps", [])) < len(state.get("plan_steps", [])):
         return "execute"
     return "end"
 

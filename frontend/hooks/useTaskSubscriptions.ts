@@ -20,7 +20,7 @@ function buildMessage(ev: KernelEvent): string {
   const map: Record<string, string> = {
     "task.CREATED": "Task created.",
     "task.PLANNING": "Planning execution steps…",
-    "task.PLANNED": `Plan ready: [${(ev.plan ?? []).join(", ")}]`,
+    "task.PLANNED": `Plan ready: [${(ev.plan ?? []).join(", ")}]${typeof ev.confidence === "number" ? ` · confidence ${(ev.confidence * 100).toFixed(0)}%` : ""}`,
     "task.COMPLETED": "Task completed.",
 
     "agent.STARTED": `Agent ${agent} started.`,
@@ -277,6 +277,16 @@ export function useTaskSubscriptions(
                         t.plan
                       )
                     : t.plan,
+
+                plan_graph:
+                  ev.event === "task.PLANNED"
+                    ? (ev.plan_graph ?? t.plan_graph)
+                    : t.plan_graph,
+
+                plan_mermaid:
+                  ev.event === "task.PLANNED"
+                    ? (ev.mermaid ?? t.plan_mermaid)
+                    : t.plan_mermaid,
 
                 messages: updatedMessages,
 

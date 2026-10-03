@@ -1,90 +1,49 @@
-from Agents.agent_registry import get_agent_descriptions, list_agent_types
+"""Planner prompt construction using semantic agent retrieval."""
 
-def get_planner_system_prompt(user_task):
-    descriptions = get_agent_descriptions()
+from Agents.agent_registry import list_agent_types
+from planning.agent_retriever import retrieve_agent_candidates
+
+
+def build_planner_context(user_task: str) -> tuple[str, list[str]]:
+    """Build a compact planner prompt from semantically retrieved agents."""
+    candidates = list(retrieve_agent_candidates(user_task))
     valid_types = set(list_agent_types())
-    
-    return f"""
-    You are the Main Agent and task planner of AgentOS.
-    
-    Your responsibility is to decide which specialized agents should execute
-    the user's task and in what order.
-    
-    Available agents:
-    {descriptions}
-    
-    User task:
-    {user_task}
-    
-    Agent selection rules:
-    - crypto_pnl_agent = Calculate crypto trade profit and ROI, generate report file.
+    candidate_names = [
+        candidate["name"]
+        for candidate in candidates
+        if candidate["name"] in valid_types
+    ]
+    candidate_block = "\n\n".join(
+        f"- {candidate['name']} (similarity={candidate['similarity']}):\n{candidate['description']}"
+        for candidate in candidates
+        if candidate["name"] in candidate_names
+    )
 
-    - loan_emi_agent = Calculate loan EMI and produce amortization schedule.
+    prompt = f"""
+You are the AgentOS planning engine.
 
-    - a1 = system information, hardware, software, processes, services,
-    system configuration and system status.
-    
-    - a2 = date, time, timezone and calendar/date-related questions.
-    
-    - a3 = research, web search, Wikipedia, academic, scientific,
-    technical and factual information gathering.
-    
-    - a4 = FILE AND DOCUMENT OPERATIONS on the user's local computer.
-    This includes finding/searching files, reading documents, creating/modifying/renaming/moving files.
-    
-    - content_creator = drafting, writing, and formatting written text, reports, summaries,
-    documentation, and email drafts.
-    
-    - email_agent = SENDING and dispatching emails to recipients via SMTP.
-    
-    - weather_agent = live weather conditions, forecasts, temperatures, precipitation,
-    humidity, wind speed, and meteorological data for any city or location worldwide.
-    
-    - agent_creator = autonomous agent creator. Select this agent when the user's task requires specialized tools, actions, APIs, or domain capabilities that NONE of the other agents above (a1, a2, a3, a4, content_creator, email_agent, weather_agent) can perform.
+Create the smallest correct ordered execution plan for the user's task.
+Use only the candidate agents below. Do not invent agent names.
+Return an empty plan for a general question that needs no specialized agent.
+Order agents according to dependencies. Select multiple agents only when the
+output of one is needed by another.
+Return a JSON object with these fields: agents (array of strings), steps (array
+of objects with id, agent, depends_on, purpose), confidence (number from 0 to 1),
+and rationale (string). Do not call tools.
 
-    - code_runner = writes, runs, tests, debugs, and repairs standalone Python
-    code inside a constrained sandbox with live terminal output.
-    
-    IMPORTANT:
-    If the user asks to interact with files or directories on their computer, ALWAYS select a4.
-    If the user asks about the weather, temperature, or forecasts for any location, ALWAYS select weather_agent.
-    If the task requires capabilities that NO existing agent has, select agent_creator so it can build the new agent and tools to complete the task.
-    Select code_runner for requests to write, run, test, debug, or repair Python code.
-    
-    MULTI-AGENT DECOMPOSITION (HYBRID TASKS):
-    If a user prompt contains BOTH a new capability AND an existing capability, you MUST chain them in order!
-    - For example, if the prompt asks to do a new task AND send an email: select ["agent_creator", "email_agent"].
-    - If the prompt asks to do a new task AND save/write to a local file: select ["agent_creator", "a4"].
-    - Never let agent_creator recreate tools for existing tasks (like email or files). Always reuse existing agents!
-    
-    Examples:
-    - "what is the weather in London?" -> ["weather_agent"]
-    - "3-day forecast for Tokyo" -> ["weather_agent"]
-    - "how hot is it in Paris right now?" -> ["weather_agent"]
-    - "is it raining in Seattle?" -> ["weather_agent"]
-    - "find my PDFs" -> ["a4"]
-    - "list files in Downloads" -> ["a4"]
-    - "read this PDF" -> ["a4"]
-    - "what is the current time?" -> ["a2"]
-    - "what processes are running?" -> ["a1"]
-    - "research operating system scheduling algorithms" -> ["a3"]
-    - "draft a weekly summary report" -> ["content_creator"]
-    - "send an email to team@example.com" -> ["content_creator", "email_agent"]
-    - "calculate loan EMI for 20 years and email the summary" -> ["agent_creator", "email_agent"]
-    - "convert cryptocurrency rates and save to a text file" -> ["agent_creator", "a4"]
-    - "write and test a Python script that parses a CSV" -> ["code_runner"]
-    
-    Rules:
-    - Respond by providing an ExecutionPlan.
-    - Select only agents by their exact identifier (e.g. 'a1', 'a2', 'a3') that
-    are required to fulfill the request.
-    - Select only agents from the available agent identifiers: {', '.join(sorted(valid_types))}.
-    - Select a4 whenever filesystem or document operations are requested.
-    - Select weather_agent whenever weather, temperature, or forecast information is requested.
-    - Order agents logically according to dependencies.
-    - If no specialized agent is suitable, or the user is asking a general
-    question, return an empty list: agents = [].
-    - Do not perform the task yourself; delegate to agents when available.
-    - If no specialized agent is suitable, return an empty list: agents = [].
-    - Do not perform the task yourself; delegate to the appropriate agent.
-    """
+Candidate agents retrieved by semantic capability search:
+{candidate_block}
+
+User task:
+{user_task}
+
+Valid candidate identifiers:
+{', '.join(candidate_names)}
+"""
+    return prompt, candidate_names
+
+
+def get_planner_system_prompt(user_task: str) -> str:
+    """Compatibility wrapper for callers that only need the prompt."""
+    prompt, _ = build_planner_context(user_task)
+    return prompt

@@ -13,6 +13,8 @@ class MainAgentState(TypedDict):
     task_id: str
     task: str
     plan: list[str]
+    plan_steps: list[dict]
+    completed_steps: list[str]
     current_agent: int
     results: dict[str, str]
     response: str
