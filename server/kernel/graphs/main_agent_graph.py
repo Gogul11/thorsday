@@ -141,6 +141,7 @@ async def _node_planner(state: dict, model) -> dict:
     """Plan which agents should run for this task."""
     await _emit("task.PLANNING", state)
 
+    candidate_names: list[str] = []
     try:
         valid_types = set(list_agent_types())
         prompt, candidate_names = build_planner_context(state["task"])
@@ -159,11 +160,17 @@ async def _node_planner(state: dict, model) -> dict:
             plan_steps = chain_steps(plan_agents)
         plan_agents = [step["agent"] for step in plan_steps]
     except Exception as exc:
-        logger.warning("Planner failed: %s. Defaulting to empty plan.", exc)
-        plan_agents = []
-        plan = ExecutionPlan(agents=[], confidence=0.0, rationale=str(exc))
-        plan_steps = []
-        candidate_names = []
+        # Preserve useful semantic routing when the LLM is unavailable, for
+        # example during a provider rate limit. The top retrieved candidate is
+        # safer than silently converting the task into a direct response.
+        logger.warning("Planner failed: %s. Using semantic fallback.", exc)
+        plan_agents = candidate_names[:1]
+        plan_steps = chain_steps(plan_agents)
+        plan = ExecutionPlan(
+            agents=plan_agents,
+            confidence=0.25 if plan_agents else 0.0,
+            rationale="LLM planner unavailable; selected the top semantic candidate.",
+        )
 
     mermaid = to_mermaid(plan_steps)
 

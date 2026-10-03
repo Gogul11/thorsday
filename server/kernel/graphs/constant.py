@@ -29,7 +29,9 @@ Order agents according to dependencies. Select multiple agents only when the
 output of one is needed by another.
 Return a JSON object with these fields: agents (array of strings), steps (array
 of objects with id, agent, depends_on, purpose), confidence (number from 0 to 1),
-and rationale (string). Do not call tools.
+and rationale (string). Each purpose must explain the concrete responsibility
+of that node; do not use generic text such as "Execute the selected agent.".
+Do not call tools.
 
 Candidate agents retrieved by semantic capability search:
 {candidate_block}
