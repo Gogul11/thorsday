@@ -3,6 +3,8 @@
 import type { DisplayEvent, TaskRecord } from "@/types";
 import { formatTime } from "@/utils/time";
 import { formatAgents, getAgentNames, shortId } from "@/utils/task";
+import { PlanGraphModal } from "@/components/activity/PlanGraphModal";
+import { useState } from "react";
 
 type TaskActivityProps = {
   task: TaskRecord | undefined;
@@ -93,6 +95,7 @@ function ActivityEvent({ event }: { event: DisplayEvent }) {
 }
 
 export function TaskActivity({ task }: TaskActivityProps) {
+  const [showPlanGraph, setShowPlanGraph] = useState(false);
   const latestEvent = task?.events.at(-1);
   const agents = task ? getAgentNames(task) : [];
 
@@ -168,8 +171,13 @@ export function TaskActivity({ task }: TaskActivityProps) {
           </dl>
 
           {/* Timeline heading */}
-          <div className="mt-0 mb-2.5 mx-2 text-[#74746f] text-[11px] font-bold tracking-[0.08em] uppercase">
-            Timeline
+          <div className="mt-0 mb-2.5 mx-2 flex items-center justify-between">
+            <div className="text-[#74746f] text-[11px] font-bold tracking-[0.08em] uppercase">Timeline</div>
+            {task.plan_graph && (
+              <button type="button" onClick={() => setShowPlanGraph(true)} className="rounded-md border border-[#c9d8d6] px-2 py-1 text-[10px] font-semibold text-[#0f766e] hover:bg-[#edf7f5]">
+                View graph
+              </button>
+            )}
           </div>
 
           {/* Event list */}
@@ -190,6 +198,9 @@ export function TaskActivity({ task }: TaskActivityProps) {
               ))
             )}
           </ol>
+          {showPlanGraph && task.plan_graph && (
+            <PlanGraphModal steps={task.plan_graph} mermaid={task.plan_mermaid} onClose={() => setShowPlanGraph(false)} />
+          )}
         </>
       )}
     </aside>

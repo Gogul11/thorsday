@@ -99,7 +99,9 @@ export default function ChatPage () {
             ? {
                 ...task,
                 messages: full.messages ?? [],
-                response: full.response ?? task.response
+                response: full.response ?? task.response,
+                plan_graph: full.plan_graph ?? task.plan_graph,
+                plan_mermaid: full.plan_mermaid ?? task.plan_mermaid
               }
             : task
         )
