@@ -41,11 +41,15 @@ def get_planner_system_prompt(user_task):
     humidity, wind speed, and meteorological data for any city or location worldwide.
     
     - agent_creator = autonomous agent creator. Select this agent when the user's task requires specialized tools, actions, APIs, or domain capabilities that NONE of the other agents above (a1, a2, a3, a4, content_creator, email_agent, weather_agent) can perform.
+
+    - code_runner = writes, runs, tests, debugs, and repairs standalone Python
+    code inside a constrained sandbox with live terminal output.
     
     IMPORTANT:
     If the user asks to interact with files or directories on their computer, ALWAYS select a4.
     If the user asks about the weather, temperature, or forecasts for any location, ALWAYS select weather_agent.
     If the task requires capabilities that NO existing agent has, select agent_creator so it can build the new agent and tools to complete the task.
+    Select code_runner for requests to write, run, test, debug, or repair Python code.
     
     MULTI-AGENT DECOMPOSITION (HYBRID TASKS):
     If a user prompt contains BOTH a new capability AND an existing capability, you MUST chain them in order!
@@ -68,6 +72,7 @@ def get_planner_system_prompt(user_task):
     - "send an email to team@example.com" -> ["content_creator", "email_agent"]
     - "calculate loan EMI for 20 years and email the summary" -> ["agent_creator", "email_agent"]
     - "convert cryptocurrency rates and save to a text file" -> ["agent_creator", "a4"]
+    - "write and test a Python script that parses a CSV" -> ["code_runner"]
     
     Rules:
     - Respond by providing an ExecutionPlan.

@@ -47,6 +47,16 @@ export type KernelEvent = {
   confirmation_id?: string;
   path?: string;
   recursive?: boolean;
+
+  // terminal.* code-runner events
+  stream?: "stdout" | "stderr";
+  line?: string;
+  exit_code?: number;
+  duration_ms?: number;
+  timeout_seconds?: number;
+  timed_out?: boolean;
+  truncated?: boolean;
+  attempt?: number;
 };
 
 

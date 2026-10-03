@@ -9,6 +9,7 @@ from Agents.agents.content_creator_agent import run_content_creator_agent, CONTE
 from Agents.agents.email_agent import run_email_agent, E_AGENT_DESCRIPTION
 from Agents.agents.weather_agent import run_weather_agent, WEATHER_AGENT_DESCRIPTION
 from Agents.agents.agent_creator import run_agent_creator, AGENT_CREATOR_DESCRIPTION
+from Agents.agents.code_runner_agent import run_code_runner_agent, CODE_RUNNER_AGENT_DESCRIPTION
 
 # Registry maps agent_type → (run_fn, description)
 _REGISTRY: dict[str, dict] = {
@@ -24,6 +25,7 @@ _REGISTRY: dict[str, dict] = {
     "email_agent": {"run": run_email_agent, "description": E_AGENT_DESCRIPTION},
     "weather_agent": {"run": run_weather_agent, "description": WEATHER_AGENT_DESCRIPTION},
     "agent_creator": {"run": run_agent_creator, "description": AGENT_CREATOR_DESCRIPTION},
+    "code_runner": {"run": run_code_runner_agent, "description": CODE_RUNNER_AGENT_DESCRIPTION},
 }
 
 

@@ -23,11 +23,18 @@ const MARK_COLOR: Record<string, string> = {
   "tool-failed": "bg-[#b84343]",
   page_out: "bg-[#8b5cf6]",
   page_in: "bg-[#0f766e]",
+  "terminal-started": "bg-[#2563eb]",
+  "terminal-completed": "bg-[#10b981]",
+  "terminal-failed": "bg-[#b84343]",
+  output: "bg-[#64748b]",
 };
 
 function dotColor(event: DisplayEvent): string {
   if (event.stage === "tool") {
     return MARK_COLOR[`tool-${event.status}`] ?? "bg-[#3b82f6]";
+  }
+  if (event.stage === "terminal") {
+    return MARK_COLOR[`terminal-${event.status}`] ?? "bg-[#64748b]";
   }
   return MARK_COLOR[event.status] ?? "bg-[#b0b0aa]";
 }

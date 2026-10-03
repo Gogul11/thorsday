@@ -35,6 +35,10 @@ function buildMessage(ev: KernelEvent): string {
     "context.PAGE_OUT": `Paged out ${ev.paged_count ?? 0} message(s) · ${ev.total_in_swap ?? 0} total in swap.`,
     "context.PAGE_IN": `Paged in ${ev.pages_injected ?? 0} relevant message(s)${typeof ev.top_similarity === "number" ? ` · similarity ${(ev.top_similarity * 100).toFixed(1)}%` : ""}.`,
 
+    "terminal.STARTED": `Sandbox started (attempt ${ev.attempt ?? 1}).`,
+    "terminal.COMPLETED": `Sandbox completed successfully in ${ev.duration_ms ?? 0} ms.`,
+    "terminal.FAILED": `Sandbox failed with exit code ${ev.exit_code ?? "unknown"}.`,
+
     "DELETE_CONFIRMATION_REQUIRED":
       "Waiting for confirmation before deleting the file.",
     "DELETE_COMPLETED":
@@ -47,6 +51,11 @@ function buildMessage(ev: KernelEvent): string {
 
   if (ev.event === "DELETE_CONFIRMATION_REQUIRED") {
     return `Delete confirmation required for ${ev.path ?? "the requested path"}.`;
+  }
+
+  if (ev.event === "terminal.OUTPUT") {
+    const stream = ev.stream === "stderr" ? "stderr" : "stdout";
+    return `[${stream}] ${ev.line ?? ""}`;
   }
 
   return map[ev.event] ?? ev.event;
