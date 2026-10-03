@@ -68,7 +68,11 @@ async def run_task(prompt: str, req_id: str, task_id: str = "") -> str:
 
     # For follow-ups, load the prior conversation so the LLM has context.
     # For new tasks, start with an empty message list.
-    messages = await get_context(task_id) if task_id else []
+    messages = (
+        await get_context(task_id, query=prompt, req_id=req_id)
+        if task_id
+        else []
+    )
 
     result = await graph.ainvoke(
         {
