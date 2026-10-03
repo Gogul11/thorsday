@@ -70,7 +70,8 @@ def retrieve_agent_candidates(task: str) -> tuple[dict, ...]:
         {
             "name": metadata["agent_name"],
             "description": document,
-            "similarity": round(1 - (distance / 2), 4),
+            # Chroma cosine distance is d = 1 - cosine_similarity.
+            "similarity": round(1 - distance, 4),
         }
         for document, metadata, distance in zip(documents, metadatas, distances)
     )

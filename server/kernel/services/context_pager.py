@@ -47,7 +47,7 @@ from logger import logger
 
 # W: Active RAM window size (messages kept in the live context prompt).
 # Messages beyond this threshold are swapped out.
-ACTIVE_RAM_WINDOW: int = 2
+ACTIVE_RAM_WINDOW: int = 20
 
 # τ (tau): Cosine similarity threshold for page-in acceptance.
 # A swapped page is only injected back if its similarity to the current
@@ -319,10 +319,10 @@ class ContextPager:
         accepted: list[dict] = []
 
         for doc, meta, dist in zip(documents, metadatas, distances):
-            # ChromaDB with cosine space returns distances in [0, 2] where
-            # 0 = identical vectors. Convert to similarity ∈ [0, 1]:
-            #     similarity = 1 - (distance / 2)
-            similarity = 1.0 - (dist / 2.0)
+            # ChromaDB cosine distance is defined as:
+            #     distance = 1 - cosine_similarity
+            # Therefore the similarity is recovered directly as 1 - distance.
+            similarity = 1.0 - dist
 
             if similarity < threshold:
                 continue
