@@ -14,7 +14,7 @@ Implements Algorithm VM-Paging from the AgentOS design specification:
   * Page-In (Swap-In / Page Fault Handler): When a new user query q
     arrives, the pager performs a vector similarity search over the
     swap partition and retrieves the top-K historical pages whose
-    cosine 
+    cosine
     similarity Sim(q, pᵢ) ≥ τ, injecting them into the active
     context window as supplementary system memory.
 
@@ -43,13 +43,11 @@ import chromadb
 from chromadb.utils import embedding_functions
 from logger import logger
 
-
-
 # Constants — tuneable hyperparameters from the algorithm specification
 
 # W: Active RAM window size (messages kept in the live context prompt).
 # Messages beyond this threshold are swapped out.
-ACTIVE_RAM_WINDOW: int = 20
+ACTIVE_RAM_WINDOW: int = 2
 
 # τ (tau): Cosine similarity threshold for page-in acceptance.
 # A swapped page is only injected back if its similarity to the current
@@ -78,6 +76,7 @@ def _emit_page_event(event: str, task_id: str, **data: Any) -> None:
     try:
         from Redis.redis_connection import publish
         import asyncio
+
         payload = {"event": event, "task_id": task_id, **data}
         loop = asyncio.get_event_loop()
         if loop.is_running():

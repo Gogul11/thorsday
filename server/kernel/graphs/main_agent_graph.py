@@ -9,6 +9,7 @@ import uuid
 from typing import Any
 
 from langchain_core.callbacks import BaseCallbackHandler
+from langchain_core.messages import HumanMessage
 from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, Field
 
@@ -29,17 +30,17 @@ from graphs.constant import get_planner_system_prompt
 # Structured output schema for the planner
 # ---------------------------------------------------------------------------
 
+
 class ExecutionPlan(BaseModel):
     agents: list[str] = Field(
         description="Agents that should execute the task in order"
     )
 
 
-
-
 # ---------------------------------------------------------------------------
 # Tool-event callback (thread-safe bridge from sync LangChain → async loop)
 # ---------------------------------------------------------------------------
+
 
 class ToolEventCallback(BaseCallbackHandler):
     """Bridges synchronous LangChain tool callbacks into the async event loop."""
@@ -101,6 +102,7 @@ class ToolEventCallback(BaseCallbackHandler):
 # Emit helper — publish to Redis and persist to MongoDB
 # ---------------------------------------------------------------------------
 
+
 async def _emit(event: str, state: dict, **data) -> None:
     payload = {
         "event": event,
@@ -115,6 +117,7 @@ async def _emit(event: str, state: dict, **data) -> None:
 # ---------------------------------------------------------------------------
 # Graph nodes
 # ---------------------------------------------------------------------------
+
 
 async def _node_create_task(state: dict) -> dict:
     """Create a new task document in MongoDB (only for brand-new tasks)."""
@@ -151,8 +154,6 @@ async def _node_planner(state: dict, model) -> dict:
     return {"plan": plan_agents}
 
 
-
-
 async def _node_executor(state: dict, model) -> dict:
     """Run the next agent in the plan."""
     plan = state["plan"]
@@ -170,15 +171,14 @@ async def _node_executor(state: dict, model) -> dict:
     callback = ToolEventCallback(_emit, state, agent_name, agent_id, loop)
 
     try:
-        
         run_fn = runtime["run"]
         result = await run_fn(
             model=model,
             task=state["task"],
-            context="\n".join(
-                f"{msg.type}: {msg.content}"
-                for msg in state["messages"]
-            ) + "\n" + "Previous Results :" + str(state["results"]),
+            context="\n".join(f"{msg.type}: {msg.content}" for msg in state["messages"])
+            + "\n"
+            + "Previous Results :"
+            + str(state["results"]),
             callbacks=[callback],
             req_id=state["req_id"],
             task_id=state["task_id"],
@@ -209,41 +209,31 @@ async def _node_executor(state: dict, model) -> dict:
         await DB_update_task(state["task_id"], status="failed")
         raise
 
-
     finally:
         await _emit("agent.DESTROYED", state, agent_id=agent_id, agent_name=agent_name)
         destroy_agent(agent_id)
 
 
 async def _node_response(state: dict, model) -> dict:
-    """Generate and persist the final response for the user."""
+    """Generate and persist the final response for the user while preserving full conversation history."""
     results = state.get("results", {})
-    agent_context = (
-        results
-        if results
-        else "No specialized agent tools were needed. Answer the user request directly."
-    )
 
-    prompt = f"""
-You are the final response generator of AgentOS.
+    # Build full message list: prior conversation history + current turn
+    messages_for_llm = list(state.get("messages", []))
 
-Answer the user's original request directly and clearly using the results
-provided by the agents (if any).
+    current_task = state.get("task", "")
+    if results:
+        user_turn_content = (
+            f"{current_task}\n\n"
+            f"[Agent Execution Results: {results}\n"
+            f"Instruction: Use the agent execution results above to answer the user clearly in Markdown without exposing raw JSON structures.]"
+        )
+    else:
+        user_turn_content = current_task
 
-User request:
-{state["task"]}
+    messages_for_llm.append(HumanMessage(content=user_turn_content))
 
-Agent results:
-{agent_context}
-
-Rules:
-- Do not mention agents, agent IDs, or the orchestration process.
-- Do not return raw python dictionaries.
-- Do not explain how the task was executed internally.
-- Give the user a natural, informative, concise answer with clean Markdown formatting.
-"""
-
-    result = await model.ainvoke(prompt)
+    result = await model.ainvoke(messages_for_llm)
     response = result.content
 
     await _emit("task.COMPLETED", state, response=response)
@@ -251,7 +241,9 @@ Rules:
         state["task_id"],
         status="completed",
         response=response,
-        completed_at=__import__("datetime").datetime.now(__import__("datetime").timezone.utc),
+        completed_at=__import__("datetime").datetime.now(
+            __import__("datetime").timezone.utc
+        ),
     )
 
     return {"response": response}
@@ -266,6 +258,7 @@ def _should_continue(state: dict) -> str:
 # ---------------------------------------------------------------------------
 # Public factory
 # ---------------------------------------------------------------------------
+
 
 def build_graph(model):
     """Build and return a compiled LangGraph for the main agent pipeline.
@@ -306,5 +299,3 @@ def build_graph(model):
     g.add_edge("response_node", END)
 
     return g.compile()
-
-
