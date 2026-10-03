@@ -37,10 +37,26 @@ export type KernelEvent = {
   // *.FAILED
   error?: string;
 
+  // Context paging
+  paged_count?: number;
+  total_in_swap?: number;
+  pages_injected?: number;
+  top_similarity?: number;
+
   // DELETE_CONFIRMATION_REQUIRED
   confirmation_id?: string;
   path?: string;
   recursive?: boolean;
+
+  // terminal.* code-runner events
+  stream?: "stdout" | "stderr";
+  line?: string;
+  exit_code?: number;
+  duration_ms?: number;
+  timeout_seconds?: number;
+  timed_out?: boolean;
+  truncated?: boolean;
+  attempt?: number;
 };
 
 

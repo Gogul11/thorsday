@@ -18,7 +18,6 @@ _event_buffer: dict[str, list[dict]] = {}
 
 
 async def ws_connect(req_id: str, websocket: WebSocket) -> None:
-    """Accept the WebSocket handshake and register it under *req_id*."""
     """Accept the WebSocket handshake, register it under *req_id*, and replay buffered events."""
     await websocket.accept()
     _connections.setdefault(req_id, []).append(websocket)
@@ -49,12 +48,12 @@ async def _cleanup_buffer(req_id: str, delay: int = 60) -> None:
 
 async def ws_broadcast(req_id: str, data: dict) -> None:
     """Send a JSON message to every connection watching *req_id* and buffer it for late joiners.
+    Dead connections are silently removed.
+    """
     # Store in buffer
     buffer = _event_buffer.setdefault(req_id, [])
     buffer.append(data)
 
-    Dead connections are silently removed.
-    """
     # If task is terminal, schedule buffer cleanup
     if data.get("event") in ("task.COMPLETED", "task.FAILED", "agent.FAILED"):
         asyncio.create_task(_cleanup_buffer(req_id, 60))

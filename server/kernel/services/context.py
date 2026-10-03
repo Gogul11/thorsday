@@ -4,9 +4,16 @@ Each task has its own persistent context stored in MongoDB.
 Use task_id as the single key (no more req_id split).
 """
 
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
+from langchain_core.messages import (
+    AIMessage,
+    BaseMessage,
+    HumanMessage,
+    SystemMessage,
+)
 
 from repository.task_repo import DB_add_task_message, DB_get_task_messages
+from logger import logger
+from services.context_pager import ACTIVE_RAM_WINDOW, context_pager
 
 SYSTEM_MESSAGE = SystemMessage(
     content="""You are the Main Agent of AgentOS.
@@ -24,28 +31,68 @@ Rules:
 """
 )
 
-# Keep only the most recent N turns to avoid unbounded context growth
-_CONTEXT_WINDOW = 20
+# Keep only the most recent N messages in active context. Older messages are
+# stored in the vector-backed swap partition and recalled when relevant.
+_CONTEXT_WINDOW = ACTIVE_RAM_WINDOW
 
 
-async def get_context(task_id: str) -> list[BaseMessage]:
+async def get_context(
+    task_id: str,
+    query: str = "",
+    req_id: str = "",
+) -> list[BaseMessage]:
     """Load message history for task_id and return it as LangChain messages.
 
-    Always prepends the system message. Returns the last _CONTEXT_WINDOW entries.
+    Always prepends the system message. Older messages are paged out to ChromaDB,
+    and relevant paged messages are added back as a separate system block.
     Returns just [SYSTEM_MESSAGE] when the task is brand-new.
     """
     messages = await DB_get_task_messages(task_id)
 
+    if not messages:
+        logger.info("Context loaded | task=%s | stored=0 | active=0", task_id)
+        return [SYSTEM_MESSAGE]
+
+    overflow_count = max(0, len(messages) - _CONTEXT_WINDOW)
+    if len(messages) > _CONTEXT_WINDOW:
+        overflow = messages[:-_CONTEXT_WINDOW]
+        context_pager.page_out_messages(
+            task_id=task_id,
+            overflow_messages=overflow,
+            base_index=0,
+            req_id=req_id,
+        )
+
+    paged_in = context_pager.page_in_relevant_context(
+        task_id=task_id,
+        query=query,
+        req_id=req_id,
+    )
+
     context: list[BaseMessage] = [SYSTEM_MESSAGE]
 
-    if messages:
-        for msg in messages:
-            if msg["role"] == "human":
-                context.append(HumanMessage(content=msg["content"]))
-            elif msg["role"] == "ai":
-                context.append(AIMessage(content=msg["content"]))
+    if paged_in:
+        context.append(
+            SystemMessage(content=context_pager.format_page_in_block(paged_in))
+        )
 
-    return context[-_CONTEXT_WINDOW:]
+    for msg in messages[-_CONTEXT_WINDOW:]:
+        if msg["role"] == "human":
+            context.append(HumanMessage(content=msg["content"]))
+        elif msg["role"] == "ai":
+            context.append(AIMessage(content=msg["content"]))
+
+    logger.info(
+        "Context loaded | task=%s | query_chars=%d | stored=%d | paged_out=%d | paged_in=%d | active=%d",
+        task_id,
+        len(query),
+        len(messages),
+        overflow_count,
+        len(paged_in),
+        _CONTEXT_WINDOW,
+    )
+
+    return context
 
 
 async def add_user_message(task_id: str, content: str) -> None:

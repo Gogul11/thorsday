@@ -10,6 +10,7 @@ from tools.agent_creator_tools import (
     create_and_register_agent,
     run_generated_agent,
 )
+from tools.code_runner_tools import run_python_code
 
 """
 Tool registry for AgentOS.
@@ -94,4 +95,8 @@ LOAN_EMI_TOOLS = [
 
 CRYPTO_PNL_TOOLS = [
     calculate_crypto_pnl,
+]
+
+CODE_RUNNER_TOOLS = [
+    run_python_code,
 ]

@@ -34,7 +34,13 @@ async def handle_backend_task(data: dict) -> None:
     event = data.get("event")
     req_id = data.get("req_id", "")
 
-    logger.info("Dispatcher received | event=%s req_id=%s", event, req_id)
+    logger.info(
+        "Dispatcher received | event=%s | req=%s | task=%s | prompt_chars=%d",
+        event,
+        req_id,
+        data.get("task_id") or "new",
+        len(data.get("prompt", "")),
+    )
 
     if event != "task.REQUESTED":
         logger.debug("Dispatcher: ignoring unknown event '%s'", event)

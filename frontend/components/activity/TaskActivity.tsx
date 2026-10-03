@@ -21,11 +21,20 @@ const MARK_COLOR: Record<string, string> = {
   "tool-started": "bg-[#3b82f6]",
   "tool-completed": "bg-[#10b981]",
   "tool-failed": "bg-[#b84343]",
+  page_out: "bg-[#8b5cf6]",
+  page_in: "bg-[#0f766e]",
+  "terminal-started": "bg-[#2563eb]",
+  "terminal-completed": "bg-[#10b981]",
+  "terminal-failed": "bg-[#b84343]",
+  output: "bg-[#64748b]",
 };
 
 function dotColor(event: DisplayEvent): string {
   if (event.stage === "tool") {
     return MARK_COLOR[`tool-${event.status}`] ?? "bg-[#3b82f6]";
+  }
+  if (event.stage === "terminal") {
+    return MARK_COLOR[`terminal-${event.status}`] ?? "bg-[#64748b]";
   }
   return MARK_COLOR[event.status] ?? "bg-[#b0b0aa]";
 }
@@ -41,6 +50,7 @@ function ActivityMark({ event }: { event: DisplayEvent }) {
 
 function ActivityEvent({ event }: { event: DisplayEvent }) {
   const isTool = event.stage === "tool";
+  const isContext = event.stage === "context";
 
   return (
     <li className="grid grid-cols-[8px_minmax(0,1fr)_auto] gap-2 relative pb-[18px] last:pb-0">
@@ -48,7 +58,11 @@ function ActivityEvent({ event }: { event: DisplayEvent }) {
       <div>
         <p
           className={`mb-[3px] text-xs font-bold capitalize ${
-            isTool ? "text-[#2563eb] tracking-[0.02em] normal-case" : ""
+            isTool
+              ? "text-[#2563eb] tracking-[0.02em] normal-case"
+              : isContext
+                ? "text-[#0f766e] tracking-[0.02em] normal-case"
+                : ""
           }`}
         >
           {isTool ? "tool" : event.stage}

@@ -14,7 +14,7 @@ Implements Algorithm VM-Paging from the AgentOS design specification:
   * Page-In (Swap-In / Page Fault Handler): When a new user query q
     arrives, the pager performs a vector similarity search over the
     swap partition and retrieves the top-K historical pages whose
-    cosine 
+    cosine
     similarity Sim(q, pᵢ) ≥ τ, injecting them into the active
     context window as supplementary system memory.
 
@@ -43,13 +43,11 @@ import chromadb
 from chromadb.utils import embedding_functions
 from logger import logger
 
-
-
 # Constants — tuneable hyperparameters from the algorithm specification
 
 # W: Active RAM window size (messages kept in the live context prompt).
 # Messages beyond this threshold are swapped out.
-ACTIVE_RAM_WINDOW: int = 20
+ACTIVE_RAM_WINDOW: int = 2
 
 # τ (tau): Cosine similarity threshold for page-in acceptance.
 # A swapped page is only injected back if its similarity to the current
@@ -67,7 +65,7 @@ _SWAP_SPACE_DIR = Path(__file__).parent.parent / "data" / "swap_space"
 
 
 # Redis telemetry helpers
-def _emit_page_event(event: str, task_id: str, **data: Any) -> None:
+def _emit_page_event(event: str, task_id: str, req_id: str = "", **data: Any) -> None:
     """
     Publish a context paging lifecycle event to the Redis kernel_events
     channel so the Next.js activity panel can display PAGE_OUT / PAGE_IN
@@ -77,11 +75,18 @@ def _emit_page_event(event: str, task_id: str, **data: Any) -> None:
     """
     try:
         from Redis.redis_connection import publish
+        from repository.task_repo import DB_add_task_event
         import asyncio
-        payload = {"event": event, "task_id": task_id, **data}
+
+        payload = {"event": event, "req_id": req_id, "task_id": task_id, **data}
+
+        async def persist_and_publish() -> None:
+            await publish("kernel_events", payload)
+            await DB_add_task_event(task_id, payload)
+
         loop = asyncio.get_event_loop()
         if loop.is_running():
-            asyncio.ensure_future(publish("kernel_events", payload))
+            asyncio.ensure_future(persist_and_publish())
     except Exception as exc:  # pylint: disable=broad-except
         logger.warning("context_pager: redis emit failed (%s): %s", event, exc)
 
@@ -142,6 +147,7 @@ class ContextPager:
         task_id: str,
         overflow_messages: list[dict],
         base_index: int = 0,
+        req_id: str = "",
     ) -> int:
         """
         Embed and persist overflow messages into the swap partition.
@@ -218,17 +224,20 @@ class ContextPager:
 
         count = len(ids)
         logger.info(
-            "ContextPager PAGE_OUT: task=%s paged_out=%d pages (indices %d–%d)",
+            "ContextPager PAGE_OUT | req=%s | task=%s | pages=%d | indices=%d-%d | swap_total=%d",
+            req_id or "-",
             task_id,
             count,
             base_index,
             base_index + len(overflow_messages) - 1,
+            self._collection.count(),
         )
 
         # Emit Redis event for the live activity panel.
         _emit_page_event(
             "context.PAGE_OUT",
             task_id=task_id,
+            req_id=req_id,
             paged_count=count,
             total_in_swap=self._collection.count(),
         )
@@ -245,6 +254,7 @@ class ContextPager:
         query: str,
         top_k: int = MAX_PAGE_IN_RESULTS,
         threshold: float = PAGE_IN_SIMILARITY_THRESHOLD,
+        req_id: str = "",
     ) -> list[dict]:
         """
         Perform a vector similarity search over the swap partition and
@@ -335,14 +345,17 @@ class ContextPager:
 
         if accepted:
             logger.info(
-                "ContextPager PAGE_IN: task=%s injecting %d pages (tau=%.2f)",
+                "ContextPager PAGE_IN | req=%s | task=%s | pages=%d | top_similarity=%.4f | tau=%.2f",
+                req_id or "-",
                 task_id,
                 len(accepted),
+                accepted[0]["similarity"],
                 threshold,
             )
             _emit_page_event(
                 "context.PAGE_IN",
                 task_id=task_id,
+                req_id=req_id,
                 pages_injected=len(accepted),
                 top_similarity=accepted[0]["similarity"],
             )
