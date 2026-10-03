@@ -32,6 +32,9 @@ function buildMessage(ev: KernelEvent): string {
     "tool.COMPLETED": `Tool completed: ${tool}`,
     "tool.FAILED": `Tool ${tool} failed: ${ev.error ?? ""}`,
 
+    "context.PAGE_OUT": `Context paged out ${ev.paged_count ?? 0} message(s) to swap storage.`,
+    "context.PAGE_IN": `Context paged in ${ev.pages_injected ?? 0} relevant message(s) from swap storage.`,
+
     "DELETE_CONFIRMATION_REQUIRED":
       "Waiting for confirmation before deleting the file.",
     "DELETE_COMPLETED":
