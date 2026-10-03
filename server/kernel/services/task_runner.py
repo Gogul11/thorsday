@@ -64,6 +64,14 @@ async def run_task(prompt: str, req_id: str, task_id: str = "") -> str:
     str
         The final markdown response produced by the response_node.
     """
+    logger.info(
+        "Task started | req=%s | task=%s | follow_up=%s | prompt_chars=%d",
+        req_id,
+        task_id or "new",
+        bool(task_id),
+        len(prompt),
+    )
+
     graph = _get_graph()
 
     # For follow-ups, load the prior conversation so the LLM has context.
@@ -72,6 +80,13 @@ async def run_task(prompt: str, req_id: str, task_id: str = "") -> str:
         await get_context(task_id, query=prompt, req_id=req_id)
         if task_id
         else []
+    )
+
+    logger.info(
+        "Task context ready | req=%s | task=%s | messages=%d",
+        req_id,
+        task_id or "new",
+        len(messages),
     )
 
     result = await graph.ainvoke(
@@ -94,5 +109,11 @@ async def run_task(prompt: str, req_id: str, task_id: str = "") -> str:
     await add_user_message(final_task_id, prompt)
     await add_ai_message(final_task_id, response)
 
-    logger.info("Task %s completed. Plan: %s", final_task_id, result.get("plan"))
+    logger.info(
+        "Task completed | req=%s | task=%s | plan=%s | response_chars=%d",
+        req_id,
+        final_task_id,
+        result.get("plan"),
+        len(response),
+    )
     return response

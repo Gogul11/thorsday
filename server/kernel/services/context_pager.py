@@ -224,11 +224,13 @@ class ContextPager:
 
         count = len(ids)
         logger.info(
-            "ContextPager PAGE_OUT: task=%s paged_out=%d pages (indices %d–%d)",
+            "ContextPager PAGE_OUT | req=%s | task=%s | pages=%d | indices=%d-%d | swap_total=%d",
+            req_id or "-",
             task_id,
             count,
             base_index,
             base_index + len(overflow_messages) - 1,
+            self._collection.count(),
         )
 
         # Emit Redis event for the live activity panel.
@@ -239,11 +241,6 @@ class ContextPager:
             paged_count=count,
             total_in_swap=self._collection.count(),
         )
-
-        print("\nPAGE OUT\n")
-        print(f"task_id: {task_id}")
-        print(f"count: {count}")
-        print(f"total_in_swap: {self._collection.count()}")
 
         return count
 
@@ -348,9 +345,11 @@ class ContextPager:
 
         if accepted:
             logger.info(
-                "ContextPager PAGE_IN: task=%s injecting %d pages (tau=%.2f)",
+                "ContextPager PAGE_IN | req=%s | task=%s | pages=%d | top_similarity=%.4f | tau=%.2f",
+                req_id or "-",
                 task_id,
                 len(accepted),
+                accepted[0]["similarity"],
                 threshold,
             )
             _emit_page_event(
@@ -360,11 +359,6 @@ class ContextPager:
                 pages_injected=len(accepted),
                 top_similarity=accepted[0]["similarity"],
             )
-
-            print("\nPAGE IN\n")
-            print(f"task_id: {task_id}")
-            print(f"pages_injected: {len(accepted)}")
-            print(f"top_similarity: {accepted[0]['similarity']}")
 
         return accepted
 

@@ -21,6 +21,8 @@ const MARK_COLOR: Record<string, string> = {
   "tool-started": "bg-[#3b82f6]",
   "tool-completed": "bg-[#10b981]",
   "tool-failed": "bg-[#b84343]",
+  page_out: "bg-[#8b5cf6]",
+  page_in: "bg-[#0f766e]",
 };
 
 function dotColor(event: DisplayEvent): string {
@@ -41,6 +43,7 @@ function ActivityMark({ event }: { event: DisplayEvent }) {
 
 function ActivityEvent({ event }: { event: DisplayEvent }) {
   const isTool = event.stage === "tool";
+  const isContext = event.stage === "context";
 
   return (
     <li className="grid grid-cols-[8px_minmax(0,1fr)_auto] gap-2 relative pb-[18px] last:pb-0">
@@ -48,7 +51,11 @@ function ActivityEvent({ event }: { event: DisplayEvent }) {
       <div>
         <p
           className={`mb-[3px] text-xs font-bold capitalize ${
-            isTool ? "text-[#2563eb] tracking-[0.02em] normal-case" : ""
+            isTool
+              ? "text-[#2563eb] tracking-[0.02em] normal-case"
+              : isContext
+                ? "text-[#0f766e] tracking-[0.02em] normal-case"
+                : ""
           }`}
         >
           {isTool ? "tool" : event.stage}

@@ -32,8 +32,8 @@ function buildMessage(ev: KernelEvent): string {
     "tool.COMPLETED": `Tool completed: ${tool}`,
     "tool.FAILED": `Tool ${tool} failed: ${ev.error ?? ""}`,
 
-    "context.PAGE_OUT": `Context paged out ${ev.paged_count ?? 0} message(s) to swap storage.`,
-    "context.PAGE_IN": `Context paged in ${ev.pages_injected ?? 0} relevant message(s) from swap storage.`,
+    "context.PAGE_OUT": `Paged out ${ev.paged_count ?? 0} message(s) · ${ev.total_in_swap ?? 0} total in swap.`,
+    "context.PAGE_IN": `Paged in ${ev.pages_injected ?? 0} relevant message(s)${typeof ev.top_similarity === "number" ? ` · similarity ${(ev.top_similarity * 100).toFixed(1)}%` : ""}.`,
 
     "DELETE_CONFIRMATION_REQUIRED":
       "Waiting for confirmation before deleting the file.",

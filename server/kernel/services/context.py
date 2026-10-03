@@ -12,6 +12,7 @@ from langchain_core.messages import (
 )
 
 from repository.task_repo import DB_add_task_message, DB_get_task_messages
+from logger import logger
 from services.context_pager import ACTIVE_RAM_WINDOW, context_pager
 
 SYSTEM_MESSAGE = SystemMessage(
@@ -49,8 +50,10 @@ async def get_context(
     messages = await DB_get_task_messages(task_id)
 
     if not messages:
+        logger.info("Context loaded | task=%s | stored=0 | active=0", task_id)
         return [SYSTEM_MESSAGE]
 
+    overflow_count = max(0, len(messages) - _CONTEXT_WINDOW)
     if len(messages) > _CONTEXT_WINDOW:
         overflow = messages[:-_CONTEXT_WINDOW]
         context_pager.page_out_messages(
@@ -78,6 +81,16 @@ async def get_context(
             context.append(HumanMessage(content=msg["content"]))
         elif msg["role"] == "ai":
             context.append(AIMessage(content=msg["content"]))
+
+    logger.info(
+        "Context loaded | task=%s | query_chars=%d | stored=%d | paged_out=%d | paged_in=%d | active=%d",
+        task_id,
+        len(query),
+        len(messages),
+        overflow_count,
+        len(paged_in),
+        _CONTEXT_WINDOW,
+    )
 
     return context
 
