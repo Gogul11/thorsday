@@ -66,6 +66,18 @@ class KernelEvent(BaseModel):
     response: Optional[str] = None
     error: Optional[str] = None
 
+    # Global scheduler metadata
+    step_id: Optional[str] = None
+    execution_id: Optional[str] = None
+    status: Optional[str] = None
+    priority: Optional[float] = None
+    effective_priority: Optional[float] = None
+    queue_wait_ms: Optional[int] = None
+    queue_position: Optional[int] = None
+    attempt: Optional[int] = None
+    reason: Optional[str] = None
+    scheduler_metrics: Optional[dict] = None
+
     # Delete confirmation fields
     confirmation_id: Optional[str] = None
     path: Optional[str] = None

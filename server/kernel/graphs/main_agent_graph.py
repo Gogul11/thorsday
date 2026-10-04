@@ -24,6 +24,7 @@ from logger import logger
 from Redis.redis_connection import publish
 from repository.task_repo import DB_add_task_event, DB_create_task, DB_update_task
 from services.context import get_context
+from services.agent_scheduler import SchedulerJob, get_scheduler
 from graphs.constant import build_planner_context
 from planning.diagram import chain_steps, to_mermaid, validate_steps
 
@@ -190,7 +191,7 @@ async def _node_planner(state: dict, model) -> dict:
 
 
 async def _node_executor(state: dict, model) -> dict:
-    """Run the next agent in the plan."""
+    """Submit the next dependency-ready agent to the global scheduler."""
     plan_steps = state.get("plan_steps") or chain_steps(state["plan"])
     completed = set(state.get("completed_steps", []))
     ready_step = next(
@@ -201,59 +202,58 @@ async def _node_executor(state: dict, model) -> dict:
     task_id = state["task_id"]
     agent_id = f"{task_id}-{ready_step['id']}-{agent_name}"
 
-    await _emit("agent.STARTED", state, agent_id=agent_id, agent_name=agent_name)
-
-    runtime = create_agent(agent_id=agent_id, agent_type=agent_name, task_id=task_id)
-    set_agent_status(agent_id, "RUNNING")
-
-    loop = asyncio.get_running_loop()
-    callback = ToolEventCallback(_emit, state, agent_name, agent_id, loop)
-
-    try:
+    async def run_scheduled_step():
+        await _emit("agent.STARTED", state, agent_id=agent_id, agent_name=agent_name)
+        runtime = create_agent(agent_id=agent_id, agent_type=agent_name, task_id=task_id)
+        set_agent_status(agent_id, "RUNNING")
+        loop = asyncio.get_running_loop()
+        callback = ToolEventCallback(_emit, state, agent_name, agent_id, loop)
         run_fn = runtime["run"]
-        result = await run_fn(
-            model=model,
-            task=state["task"],
-            context="\n".join(f"{msg.type}: {msg.content}" for msg in state["messages"])
-            + "\n"
-            + f"Current DAG step: {ready_step['purpose']}\nPrevious Results :"
-            + str(state["results"]),
-            callbacks=[callback],
+        try:
+            result = await run_fn(
+                model=model,
+                task=state["task"],
+                context="\n".join(f"{msg.type}: {msg.content}" for msg in state["messages"])
+                + "\n"
+                + f"Current DAG step: {ready_step['purpose']}\nPrevious Results :"
+                + str(state["results"]),
+                callbacks=[callback],
+                req_id=state["req_id"],
+                task_id=state["task_id"],
+            )
+            set_agent_status(agent_id, "COMPLETED")
+            await _emit("agent.COMPLETED", state, agent_id=agent_id, agent_name=agent_name, result=result)
+            return result
+        except Exception as exc:
+            error_text = str(exc).lower()
+            retryable = any(token in error_text for token in ("rate limit", "quota", "429", "tokens per day"))
+            await _emit(
+                "agent.WAITING" if retryable else "agent.FAILED",
+                state,
+                agent_id=agent_id,
+                agent_name=agent_name,
+                error=str(exc),
+                reason="provider_quota_or_rate_limit" if retryable else None,
+            )
+            set_agent_status(agent_id, "WAITING" if retryable else "FAILED")
+            raise
+        finally:
+            await _emit("agent.DESTROYED", state, agent_id=agent_id, agent_name=agent_name)
+            destroy_agent(agent_id)
+
+    result = await get_scheduler().submit(
+        SchedulerJob(
+            task_id=task_id,
             req_id=state["req_id"],
-            task_id=state["task_id"],
-        )
-
-        updated_results = {**state["results"], ready_step["id"]: result}
-        set_agent_status(agent_id, "COMPLETED")
-
-        await _emit(
-            "agent.COMPLETED",
-            state,
-            agent_id=agent_id,
+            step_id=ready_step["id"],
             agent_name=agent_name,
-            result=result,
+            runner=run_scheduled_step,
+            base_priority=float(ready_step.get("priority", 5)),
+            estimated_tokens=int(ready_step.get("estimated_tokens", 4000)),
         )
-
-        return {
-            "results": updated_results,
-            "completed_steps": [*state.get("completed_steps", []), ready_step["id"]],
-        }
-
-    except Exception as exc:
-        await _emit(
-            "agent.FAILED",
-            state,
-            agent_id=agent_id,
-            agent_name=agent_name,
-            error=str(exc),
-        )
-        set_agent_status(agent_id, "FAILED")
-        await DB_update_task(state["task_id"], status="failed")
-        raise
-
-    finally:
-        await _emit("agent.DESTROYED", state, agent_id=agent_id, agent_name=agent_name)
-        destroy_agent(agent_id)
+    )
+    updated_results = {**state["results"], ready_step["id"]: result}
+    return {"results": updated_results, "completed_steps": [*state.get("completed_steps", []), ready_step["id"]]}
 
 
 async def _node_response(state: dict, model) -> dict:

@@ -29,6 +29,9 @@ const MARK_COLOR: Record<string, string> = {
   "terminal-completed": "bg-[#10b981]",
   "terminal-failed": "bg-[#b84343]",
   output: "bg-[#64748b]",
+  ready: "bg-[#8b5cf6]",
+  waiting: "bg-[#d97706]",
+  preempted: "bg-[#8b5cf6]",
 };
 
 function dotColor(event: DisplayEvent): string {
@@ -136,6 +139,37 @@ export function TaskActivity({ task }: TaskActivityProps) {
 
           {/* Task facts */}
           <dl className="grid gap-[11px] mx-2 mb-[21px]">
+            {task.scheduler && (
+              <div className="border-b border-[#f0f0ec] pb-2">
+                <dt className="mb-[3px] text-[#74746f] text-[10px] font-bold tracking-[0.06em] uppercase">
+                  Scheduler
+                </dt>
+                <dd className="m-0 text-xs leading-[1.55]">
+                  <span className="font-semibold">{task.scheduler.status}</span>
+                  {task.scheduler.agent_name ? ` · ${task.scheduler.agent_name}` : ""}
+                  {typeof task.scheduler.effective_priority === "number" && (
+                    <span className="block text-[10px] text-[#74746f]">
+                      priority {task.scheduler.effective_priority.toFixed(2)}
+                      {typeof task.scheduler.queue_position === "number"
+                        ? ` · queue #${task.scheduler.queue_position}`
+                        : ""}
+                      {typeof task.scheduler.queue_wait_ms === "number"
+                        ? ` · waited ${task.scheduler.queue_wait_ms} ms`
+                        : ""}
+                    </span>
+                  )}
+                  {task.scheduler.metrics?.resources && (
+                    <span className="block text-[10px] text-[#74746f]">
+                      slots {task.scheduler.metrics.resources.active_slots ?? 0}/
+                      {task.scheduler.metrics.resources.global_slots ?? 0}
+                      {typeof task.scheduler.metrics.pending === "number"
+                        ? ` · ${task.scheduler.metrics.pending} queued globally`
+                        : ""}
+                    </span>
+                  )}
+                </dd>
+              </div>
+            )}
             <div className="border-b border-[#f0f0ec] pb-2">
               <dt className="mb-[3px] text-[#74746f] text-[10px] font-bold tracking-[0.06em] uppercase">
                 Current step

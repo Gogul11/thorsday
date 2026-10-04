@@ -26,7 +26,18 @@ function buildMessage(ev: KernelEvent): string {
     "agent.STARTED": `Agent ${agent} started.`,
     "agent.COMPLETED": `Agent ${agent} completed.`,
     "agent.FAILED": `Agent ${agent} failed: ${ev.error ?? ""}`,
+    "agent.WAITING": `Agent ${agent} is waiting${ev.reason ? ` (${ev.reason})` : ""}.`,
     "agent.DESTROYED": `Agent ${agent} destroyed.`,
+
+    "AGENT_READY": `Scheduler queued ${agent}.`,
+    "AGENT_RUNNING": `Scheduler dispatched ${agent}.`,
+    "AGENT_WAITING": `Scheduler is waiting to run ${agent}${ev.reason ? ` (${ev.reason})` : ""}.`,
+    "AGENT_BLOCKED": `Scheduler blocked ${agent}.`,
+    "AGENT_COMPLETED": `Scheduler completed ${agent}.`,
+    "AGENT_FAILED": `Scheduler failed ${agent}: ${ev.error ?? ""}`,
+    "AGENT_PREEMPTED": `Scheduler requeued ${agent}${ev.reason ? ` (${ev.reason})` : ""}.`,
+    "RESOURCE_APPROVED": `Resources approved for ${agent}.`,
+    "RESOURCE_DENIED": `Resources denied for ${agent}.`,
 
     "tool.STARTED": `Tool started: ${tool}`,
     "tool.COMPLETED": `Tool completed: ${tool}`,
@@ -113,6 +124,14 @@ function deriveStatus(
 
   if (ev.event === "agent.FAILED") {
     return "failed";
+  }
+
+  if (ev.event === "AGENT_FAILED") {
+    return "failed";
+  }
+
+  if (ev.event === "AGENT_WAITING" || ev.event === "AGENT_BLOCKED") {
+    return "running";
   }
 
   return current;
@@ -263,6 +282,7 @@ export function useTaskSubscriptions(
 
                 error:
                   ev.event === "agent.FAILED" ||
+                  ev.event === "AGENT_FAILED" ||
                   ev.event === "tool.FAILED"
                     ? (
                         ev.error ??
@@ -287,6 +307,22 @@ export function useTaskSubscriptions(
                   ev.event === "task.PLANNED"
                     ? (ev.mermaid ?? t.plan_mermaid)
                     : t.plan_mermaid,
+
+                scheduler:
+                  ev.event.startsWith("AGENT_") || ev.event.startsWith("RESOURCE_")
+                    ? {
+                        status: ev.status ?? ev.event,
+                        agent_name: ev.agent_name,
+                        step_id: ev.step_id,
+                        priority: ev.priority,
+                        effective_priority: ev.effective_priority,
+                        queue_position: ev.queue_position,
+                        queue_wait_ms: ev.queue_wait_ms,
+                        attempt: ev.attempt,
+                        execution_id: ev.execution_id,
+                        metrics: ev.scheduler_metrics,
+                      }
+                    : t.scheduler,
 
                 messages: updatedMessages,
 

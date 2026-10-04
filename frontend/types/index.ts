@@ -8,6 +8,15 @@ export type KernelEvent = {
     | "agent.COMPLETED"
     | "agent.FAILED"
     | "agent.DESTROYED"
+    | "AGENT_READY"
+    | "AGENT_RUNNING"
+    | "AGENT_WAITING"
+    | "AGENT_BLOCKED"
+    | "AGENT_COMPLETED"
+    | "AGENT_FAILED"
+    | "AGENT_PREEMPTED"
+    | "RESOURCE_APPROVED"
+    | "RESOURCE_DENIED"
     | "tool.STARTED"
     | "tool.COMPLETED"
     | "tool.FAILED"
@@ -62,6 +71,19 @@ export type KernelEvent = {
   timed_out?: boolean;
   truncated?: boolean;
   attempt?: number;
+
+  // Global scheduler
+  step_id?: string;
+  execution_id?: string;
+  status?: string;
+  priority?: number;
+  effective_priority?: number;
+  queue_wait_ms?: number;
+  queue_position?: number;
+  time_quantum?: number;
+  reason?: string;
+  timestamp?: number;
+  scheduler_metrics?: SchedulerMetrics;
 };
 
 export type PlanStep = {
@@ -165,6 +187,8 @@ export type TaskRecord = {
   plan_graph?: PlanStep[];
   plan_mermaid?: string;
 
+  scheduler?: SchedulerSnapshot;
+
   /** Pending destructive operation */
   delete_confirmation?: {
     reqId: string;
@@ -173,4 +197,34 @@ export type TaskRecord = {
     path: string;
     recursive: boolean;
   } | null;
+};
+
+export type SchedulerSnapshot = {
+  status: string;
+  agent_name?: string;
+  step_id?: string;
+  priority?: number;
+  effective_priority?: number;
+  queue_position?: number;
+  queue_wait_ms?: number;
+  attempt?: number;
+  execution_id?: string;
+  metrics?: SchedulerMetrics;
+};
+
+export type SchedulerMetrics = {
+  pending?: number;
+  metrics?: {
+    submitted?: number;
+    completed?: number;
+    failed?: number;
+    requeued?: number;
+    wait_ms?: number;
+  };
+  resources?: {
+    global_slots?: number;
+    active_slots?: number;
+    task_slots?: number;
+    token_budget?: number;
+  };
 };
