@@ -84,6 +84,7 @@ async def DB_get_all_tasks() -> list[dict]:
             "status": 1,
             "plan": 1,
             "response": 1,
+            "token_usage": 1,
             "created_at": 1,
         },
     ).sort("created_at", -1)

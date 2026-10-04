@@ -331,6 +331,7 @@ export function useTaskSubscriptions(
                         queue_wait_ms: ev.queue_wait_ms,
                         attempt: ev.attempt,
                         execution_id: ev.execution_id,
+                        estimated_tokens: ev.estimated_tokens,
                         metrics: ev.scheduler_metrics,
                       }
                     : t.scheduler,

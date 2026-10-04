@@ -83,6 +83,7 @@ export type KernelEvent = {
   time_quantum?: number;
   reason?: string;
   timestamp?: number;
+  estimated_tokens?: number;
   scheduler_metrics?: SchedulerMetrics;
   token_usage?: TokenUsage;
 };
@@ -211,6 +212,7 @@ export type SchedulerSnapshot = {
   queue_wait_ms?: number;
   attempt?: number;
   execution_id?: string;
+  estimated_tokens?: number;
   metrics?: SchedulerMetrics;
   token_usage?: TokenUsage;
 };

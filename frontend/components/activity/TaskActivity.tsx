@@ -108,8 +108,9 @@ export function TaskActivity({ task }: TaskActivityProps) {
   const agents = task ? getAgentNames(task) : [];
   const tokenUsage = task?.token_usage;
   const tokenBudget = task?.scheduler?.metrics?.resources?.token_budget;
-  const tokenPercent = tokenUsage && tokenBudget
-    ? Math.min(100, (tokenUsage.total_tokens / tokenBudget) * 100)
+  const visibleTokenUsage = tokenUsage ?? { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 };
+  const tokenPercent = tokenBudget
+    ? Math.min(100, (visibleTokenUsage.total_tokens / tokenBudget) * 100)
     : 0;
 
   async function copyTaskId() {
@@ -198,17 +199,25 @@ export function TaskActivity({ task }: TaskActivityProps) {
                 </dd>
               </div>
             )}
-            {tokenUsage && (
+            {task.scheduler && (
               <div className="border-b border-[#f0f0ec] pb-2">
                 <dt className="mb-[3px] text-[#74746f] text-[10px] font-bold tracking-[0.06em] uppercase">
                   Token usage
                 </dt>
                 <dd className="m-0 text-xs leading-[1.55]">
-                  <span className="font-semibold">{formatTokens(tokenUsage.total_tokens)} total</span>
+                  <span className="font-semibold">{formatTokens(visibleTokenUsage.total_tokens)} total</span>
                   {tokenBudget ? ` / ${formatTokens(tokenBudget)} budget` : ""}
                   <span className="block text-[10px] text-[#74746f]">
-                    input {formatTokens(tokenUsage.prompt_tokens)} · output {formatTokens(tokenUsage.completion_tokens)}
+                    input {formatTokens(visibleTokenUsage.prompt_tokens)} · output {formatTokens(visibleTokenUsage.completion_tokens)}
                   </span>
+                  {!tokenUsage && (
+                    <span className="block text-[10px] text-[#a16207]">
+                      Awaiting provider usage metadata
+                      {task.scheduler.estimated_tokens
+                        ? ` · estimate ${formatTokens(task.scheduler.estimated_tokens)}`
+                        : ""}
+                    </span>
+                  )}
                   {tokenBudget && (
                     <span className="mt-1 block h-1.5 overflow-hidden rounded-full bg-[#e7eceb]" aria-label={`${tokenPercent.toFixed(1)} percent of token budget used`}>
                       <span className="block h-full rounded-full bg-[#0f766e]" style={{ width: `${tokenPercent}%` }} />

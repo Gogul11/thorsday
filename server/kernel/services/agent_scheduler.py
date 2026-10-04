@@ -309,6 +309,7 @@ class AgentScheduler:
             "effective_priority": round(effective, 4), "queue_wait_ms": wait_ms,
             "queue_position": max(0, len(self._pending) + 1),
             "attempt": job.attempt, "timestamp": now,
+            "estimated_tokens": job.estimated_tokens,
             "scheduler_metrics": self.snapshot(), **data,
         }
         try:
