@@ -35,6 +35,7 @@ from logger import logger
 from Redis.redis_connection import redis_client, subscribe
 from services.dispatcher import handle_backend_task
 from services.task_runner import warmup
+from services.agent_scheduler import get_scheduler
 
 
 async def main() -> None:
@@ -63,6 +64,7 @@ async def main() -> None:
     # 2. Pre-build the graph so the first request isn't slow
     # ------------------------------------------------------------------
     warmup()
+    await get_scheduler().start()
     logger.info("Kernel ready — listening on 'backend_tasks'")
     print("Kernel ready — listening on 'backend_tasks'")
 

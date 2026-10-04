@@ -4,11 +4,13 @@ import type { DisplayEvent, TaskRecord } from "@/types";
 import { formatTime } from "@/utils/time";
 import { formatAgents, getAgentNames, shortId } from "@/utils/task";
 import { PlanGraphModal } from "@/components/activity/PlanGraphModal";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 type TaskActivityProps = {
   task: TaskRecord | undefined;
 };
+
+type ActivityFilter = "all" | "scheduler" | "agents" | "tools";
 
 /** Maps stage/status combos to timeline dot colours. */
 const MARK_COLOR: Record<string, string> = {
@@ -29,6 +31,9 @@ const MARK_COLOR: Record<string, string> = {
   "terminal-completed": "bg-[#10b981]",
   "terminal-failed": "bg-[#b84343]",
   output: "bg-[#64748b]",
+  ready: "bg-[#8b5cf6]",
+  waiting: "bg-[#d97706]",
+  preempted: "bg-[#8b5cf6]",
 };
 
 function dotColor(event: DisplayEvent): string {
@@ -39,6 +44,10 @@ function dotColor(event: DisplayEvent): string {
     return MARK_COLOR[`terminal-${event.status}`] ?? "bg-[#64748b]";
   }
   return MARK_COLOR[event.status] ?? "bg-[#b0b0aa]";
+}
+
+function formatTokens(value: number): string {
+  return new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(value);
 }
 
 function ActivityMark({ event }: { event: DisplayEvent }) {
@@ -96,8 +105,37 @@ function ActivityEvent({ event }: { event: DisplayEvent }) {
 
 export function TaskActivity({ task }: TaskActivityProps) {
   const [showPlanGraph, setShowPlanGraph] = useState(false);
+  const [copiedId, setCopiedId] = useState(false);
+  const [activityFilter, setActivityFilter] = useState<ActivityFilter>("all");
   const latestEvent = task?.events.at(-1);
   const agents = task ? getAgentNames(task) : [];
+  const visibleEvents = useMemo(() => {
+    if (!task || activityFilter === "all") return task?.events ?? [];
+    return task.events.filter((event) => {
+      if (activityFilter === "scheduler") {
+        return event.raw_event.startsWith("AGENT_") || event.raw_event.startsWith("RESOURCE_");
+      }
+      if (activityFilter === "agents") return event.stage === "agent";
+      return event.stage === "tool";
+    });
+  }, [activityFilter, task]);
+  const tokenUsage = task?.token_usage;
+  const tokenBudget = task?.scheduler?.metrics?.resources?.token_budget;
+  const visibleTokenUsage = tokenUsage ?? { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 };
+  const tokenPercent = tokenBudget
+    ? Math.min(100, (visibleTokenUsage.total_tokens / tokenBudget) * 100)
+    : 0;
+
+  async function copyTaskId() {
+    if (!task?.task_id) return;
+    try {
+      await navigator.clipboard.writeText(task.task_id);
+      setCopiedId(true);
+      window.setTimeout(() => setCopiedId(false), 1400);
+    } catch {
+      setCopiedId(false);
+    }
+  }
 
   return (
     <aside className="bg-white border-l border-[#deded9] px-4 py-[22px] h-dvh overflow-y-auto min-w-0">
@@ -128,14 +166,79 @@ export function TaskActivity({ task }: TaskActivityProps) {
             />
             <div>
               <p className="m-0 mb-1 text-sm capitalize">{task.status}</p>
-              <code className="text-[10px] text-[#5a5a54] font-mono overflow-wrap-anywhere">
-                {shortId(task.task_id || task.req_id)}
-              </code>
+              <div className="flex items-center gap-1.5">
+                <code className="text-[10px] text-[#5a5a54] font-mono overflow-wrap-anywhere">
+                  {shortId(task.task_id || task.req_id)}
+                </code>
+                {task.task_id && (
+                  <button type="button" onClick={() => void copyTaskId()} className="text-[10px] text-[#0f766e] hover:underline">
+                    {copiedId ? "Copied" : "Copy ID"}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
           {/* Task facts */}
           <dl className="grid gap-[11px] mx-2 mb-[21px]">
+            {task.scheduler && (
+              <div className="border-b border-[#f0f0ec] pb-2">
+                <dt className="mb-[3px] text-[#74746f] text-[10px] font-bold tracking-[0.06em] uppercase">
+                  Scheduler
+                </dt>
+                <dd className="m-0 text-xs leading-[1.55]">
+                  <span className="font-semibold">{task.scheduler.status}</span>
+                  {task.scheduler.agent_name ? ` · ${task.scheduler.agent_name}` : ""}
+                  {typeof task.scheduler.effective_priority === "number" && (
+                    <span className="block text-[10px] text-[#74746f]">
+                      priority {task.scheduler.effective_priority.toFixed(2)}
+                      {typeof task.scheduler.queue_position === "number"
+                        ? ` · queue #${task.scheduler.queue_position}`
+                        : ""}
+                      {typeof task.scheduler.queue_wait_ms === "number"
+                        ? ` · waited ${task.scheduler.queue_wait_ms} ms`
+                        : ""}
+                    </span>
+                  )}
+                  {task.scheduler.metrics?.resources && (
+                    <span className="block text-[10px] text-[#74746f]">
+                      slots {task.scheduler.metrics.resources.active_slots ?? 0}/
+                      {task.scheduler.metrics.resources.global_slots ?? 0}
+                      {typeof task.scheduler.metrics.pending === "number"
+                        ? ` · ${task.scheduler.metrics.pending} queued globally`
+                        : ""}
+                    </span>
+                  )}
+                </dd>
+              </div>
+            )}
+            {task.scheduler && (
+              <div className="border-b border-[#f0f0ec] pb-2">
+                <dt className="mb-[3px] text-[#74746f] text-[10px] font-bold tracking-[0.06em] uppercase">
+                  Token usage
+                </dt>
+                <dd className="m-0 text-xs leading-[1.55]">
+                  <span className="font-semibold">{formatTokens(visibleTokenUsage.total_tokens)} total</span>
+                  {tokenBudget ? ` / ${formatTokens(tokenBudget)} budget` : ""}
+                  <span className="block text-[10px] text-[#74746f]">
+                    input {formatTokens(visibleTokenUsage.prompt_tokens)} · output {formatTokens(visibleTokenUsage.completion_tokens)}
+                  </span>
+                  {!tokenUsage && (
+                    <span className="block text-[10px] text-[#a16207]">
+                      Awaiting provider usage metadata
+                      {task.scheduler.estimated_tokens
+                        ? ` · estimate ${formatTokens(task.scheduler.estimated_tokens)}`
+                        : ""}
+                    </span>
+                  )}
+                  {tokenBudget && (
+                    <span className="mt-1 block h-1.5 overflow-hidden rounded-full bg-[#e7eceb]" aria-label={`${tokenPercent.toFixed(1)} percent of token budget used`}>
+                      <span className="block h-full rounded-full bg-[#0f766e]" style={{ width: `${tokenPercent}%` }} />
+                    </span>
+                  )}
+                </dd>
+              </div>
+            )}
             <div className="border-b border-[#f0f0ec] pb-2">
               <dt className="mb-[3px] text-[#74746f] text-[10px] font-bold tracking-[0.06em] uppercase">
                 Current step
@@ -180,17 +283,39 @@ export function TaskActivity({ task }: TaskActivityProps) {
             )}
           </div>
 
+          <div className="mx-2 mb-3 flex flex-wrap gap-1" role="group" aria-label="Activity filters">
+            {(["all", "scheduler", "agents", "tools"] as ActivityFilter[]).map((filter) => (
+              <button
+                key={filter}
+                type="button"
+                onClick={() => setActivityFilter(filter)}
+                className={`rounded-full border px-2 py-1 text-[10px] capitalize transition-colors ${
+                  activityFilter === filter
+                    ? "border-[#0f766e] bg-[#edf7f5] font-semibold text-[#0f766e]"
+                    : "border-[#deded9] text-[#74746f] hover:bg-[#f7f7f5]"
+                }`}
+              >
+                {filter}
+              </button>
+            ))}
+            {activityFilter !== "all" && (
+              <span className="self-center text-[10px] text-[#a0a09a]">
+                {visibleEvents.length} shown
+              </span>
+            )}
+          </div>
+
           {/* Event list */}
           <ol
             className="relative grid gap-0 m-0 list-none px-2 py-0
               before:content-[''] before:absolute before:top-[5px] before:bottom-[10px] before:left-[11px] before:w-px before:bg-[#deded9]"
           >
-            {task.events.length === 0 ? (
+            {visibleEvents.length === 0 ? (
               <li className="text-[#74746f] text-xs leading-relaxed">
-                Waiting for task activity.
+                {task.events.length === 0 ? "Waiting for task activity." : "No events match this filter."}
               </li>
             ) : (
-              task.events.map((event, index) => (
+              visibleEvents.map((event, index) => (
                 <ActivityEvent
                   key={`${event.occurred_at}-${index}`}
                   event={event}

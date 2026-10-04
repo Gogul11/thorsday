@@ -24,6 +24,7 @@ from logger import logger
 from Redis.redis_connection import publish
 from repository.task_repo import DB_add_task_event, DB_create_task, DB_update_task
 from services.context import get_context
+from services.agent_scheduler import SchedulerJob, get_scheduler
 from graphs.constant import build_planner_context
 from planning.diagram import chain_steps, to_mermaid, validate_steps
 
@@ -56,6 +57,58 @@ class ToolEventCallback(BaseCallbackHandler):
         self.agent_id = agent_id
         self.loop = loop
         self.current_tool = "tool"
+        self.token_usage = {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+        }
+        self._usage_sources: set[int] = set()
+
+    def _record_usage(self, usage: dict, source: object) -> None:
+        if not usage or id(source) in self._usage_sources:
+            return
+        self._usage_sources.add(id(source))
+        def value(*keys):
+            return next((int(usage[key]) for key in keys if usage.get(key) is not None), 0)
+
+        prompt = value("prompt_tokens", "input_tokens")
+        completion = value("completion_tokens", "output_tokens")
+        total = value("total_tokens") or prompt + completion
+        self.token_usage["prompt_tokens"] += prompt
+        self.token_usage["completion_tokens"] += completion
+        self.token_usage["total_tokens"] += total
+
+    def on_llm_end(self, response, **kwargs):
+        """Collect usage from classic LangChain LLM callback responses."""
+        usage = getattr(response, "llm_output", None) or {}
+        usage = usage.get("token_usage") or usage.get("usage") or {}
+        if not usage:
+            for generation_group in getattr(response, "generations", []) or []:
+                for generation in generation_group or []:
+                    message = getattr(generation, "message", None)
+                    usage = getattr(message, "usage_metadata", None) or {}
+                    if usage:
+                        break
+                if usage:
+                    break
+        self._record_usage(usage, response)
+
+    def on_chat_model_end(self, response, **kwargs):
+        """Collect usage from chat-model callback responses."""
+        self.on_llm_end(response, **kwargs)
+
+    def on_chain_end(self, outputs, **kwargs):
+        """Fallback for agent runtimes exposing usage on returned messages."""
+        messages = outputs.get("messages", []) if isinstance(outputs, dict) else []
+        for message in messages:
+            usage = getattr(message, "usage_metadata", None) or {}
+            if not usage:
+                metadata = getattr(message, "response_metadata", None) or {}
+                usage = metadata.get("token_usage", {}) if isinstance(metadata, dict) else {}
+            if isinstance(message, dict):
+                response_metadata = message.get("response_metadata") or {}
+                usage = message.get("usage_metadata") or response_metadata.get("token_usage", {})
+            self._record_usage(usage, message)
 
     def _fire(self, coro):
         if not self.loop.is_closed():
@@ -190,7 +243,7 @@ async def _node_planner(state: dict, model) -> dict:
 
 
 async def _node_executor(state: dict, model) -> dict:
-    """Run the next agent in the plan."""
+    """Submit the next dependency-ready agent to the global scheduler."""
     plan_steps = state.get("plan_steps") or chain_steps(state["plan"])
     completed = set(state.get("completed_steps", []))
     ready_step = next(
@@ -201,59 +254,66 @@ async def _node_executor(state: dict, model) -> dict:
     task_id = state["task_id"]
     agent_id = f"{task_id}-{ready_step['id']}-{agent_name}"
 
-    await _emit("agent.STARTED", state, agent_id=agent_id, agent_name=agent_name)
-
-    runtime = create_agent(agent_id=agent_id, agent_type=agent_name, task_id=task_id)
-    set_agent_status(agent_id, "RUNNING")
-
-    loop = asyncio.get_running_loop()
-    callback = ToolEventCallback(_emit, state, agent_name, agent_id, loop)
-
-    try:
+    async def run_scheduled_step():
+        await _emit("agent.STARTED", state, agent_id=agent_id, agent_name=agent_name)
+        runtime = create_agent(agent_id=agent_id, agent_type=agent_name, task_id=task_id)
+        set_agent_status(agent_id, "RUNNING")
+        loop = asyncio.get_running_loop()
+        callback = ToolEventCallback(_emit, state, agent_name, agent_id, loop)
         run_fn = runtime["run"]
-        result = await run_fn(
-            model=model,
-            task=state["task"],
-            context="\n".join(f"{msg.type}: {msg.content}" for msg in state["messages"])
-            + "\n"
-            + f"Current DAG step: {ready_step['purpose']}\nPrevious Results :"
-            + str(state["results"]),
-            callbacks=[callback],
+        try:
+            result = await run_fn(
+                model=model,
+                task=state["task"],
+                context="\n".join(f"{msg.type}: {msg.content}" for msg in state["messages"])
+                + "\n"
+                + f"Current DAG step: {ready_step['purpose']}\nPrevious Results :"
+                + str(state["results"]),
+                callbacks=[callback],
+                req_id=state["req_id"],
+                task_id=state["task_id"],
+            )
+            # Pass provider usage back to the scheduler without changing the
+            # agent's public result shape.
+            scheduled_job.token_usage = dict(callback.token_usage)
+            if not scheduled_job.token_usage["total_tokens"]:
+                logger.warning(
+                    "No provider token usage received | task=%s | agent=%s | model usage metadata unavailable",
+                    task_id,
+                    agent_name,
+                )
+            set_agent_status(agent_id, "COMPLETED")
+            await _emit("agent.COMPLETED", state, agent_id=agent_id, agent_name=agent_name, result=result)
+            return result
+        except Exception as exc:
+            error_text = str(exc).lower()
+            retryable = any(token in error_text for token in ("rate limit", "quota", "429", "tokens per day"))
+            await _emit(
+                "agent.WAITING" if retryable else "agent.FAILED",
+                state,
+                agent_id=agent_id,
+                agent_name=agent_name,
+                error=str(exc),
+                reason="provider_quota_or_rate_limit" if retryable else None,
+            )
+            set_agent_status(agent_id, "WAITING" if retryable else "FAILED")
+            raise
+        finally:
+            await _emit("agent.DESTROYED", state, agent_id=agent_id, agent_name=agent_name)
+            destroy_agent(agent_id)
+
+    scheduled_job = SchedulerJob(
+            task_id=task_id,
             req_id=state["req_id"],
-            task_id=state["task_id"],
-        )
-
-        updated_results = {**state["results"], ready_step["id"]: result}
-        set_agent_status(agent_id, "COMPLETED")
-
-        await _emit(
-            "agent.COMPLETED",
-            state,
-            agent_id=agent_id,
+            step_id=ready_step["id"],
             agent_name=agent_name,
-            result=result,
+            runner=run_scheduled_step,
+            base_priority=float(ready_step.get("priority", 5)),
+            estimated_tokens=int(ready_step.get("estimated_tokens", 4000)),
         )
-
-        return {
-            "results": updated_results,
-            "completed_steps": [*state.get("completed_steps", []), ready_step["id"]],
-        }
-
-    except Exception as exc:
-        await _emit(
-            "agent.FAILED",
-            state,
-            agent_id=agent_id,
-            agent_name=agent_name,
-            error=str(exc),
-        )
-        set_agent_status(agent_id, "FAILED")
-        await DB_update_task(state["task_id"], status="failed")
-        raise
-
-    finally:
-        await _emit("agent.DESTROYED", state, agent_id=agent_id, agent_name=agent_name)
-        destroy_agent(agent_id)
+    result = await get_scheduler().submit(scheduled_job)
+    updated_results = {**state["results"], ready_step["id"]: result}
+    return {"results": updated_results, "completed_steps": [*state.get("completed_steps", []), ready_step["id"]]}
 
 
 async def _node_response(state: dict, model) -> dict:
