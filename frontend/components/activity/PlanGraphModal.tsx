@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import type { PlanStep } from "@/types";
 
@@ -11,7 +11,10 @@ type PlanGraphModalProps = {
 };
 
 export function PlanGraphModal({ steps, mermaid, onClose }: PlanGraphModalProps) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
+    closeButtonRef.current?.focus();
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
     };
@@ -59,14 +62,14 @@ export function PlanGraphModal({ steps, mermaid, onClose }: PlanGraphModalProps)
   }, [displaySteps, mermaid]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-5" role="dialog" aria-modal="true" aria-label="Execution plan graph" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-5" role="dialog" aria-modal="true" aria-labelledby="execution-plan-graph-title" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
       <div className="flex max-h-[90dvh] w-full max-w-5xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl">
         <div className="flex items-center justify-between border-b border-[#deded9] px-5 py-4">
           <div>
-            <h2 className="m-0 text-base font-semibold text-[#1e1e1c]">Execution plan graph</h2>
+            <h2 id="execution-plan-graph-title" className="m-0 text-base font-semibold text-[#1e1e1c]">Execution plan graph</h2>
             {/* <p className="m-0 mt-1 text-xs text-[#74746f]">Dependency-aware agent execution DAG</p> */}
           </div>
-          <button type="button" onClick={onClose} className="rounded-md px-3 py-1.5 text-sm text-[#5a5a54] hover:bg-[#f0f0ec]">Close</button>
+          <button ref={closeButtonRef} type="button" onClick={onClose} className="rounded-md px-3 py-1.5 text-sm text-[#5a5a54] hover:bg-[#f0f0ec]">Close</button>
         </div>
 
         <div className="overflow-auto p-5">

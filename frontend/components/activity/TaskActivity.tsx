@@ -4,11 +4,13 @@ import type { DisplayEvent, TaskRecord } from "@/types";
 import { formatTime } from "@/utils/time";
 import { formatAgents, getAgentNames, shortId } from "@/utils/task";
 import { PlanGraphModal } from "@/components/activity/PlanGraphModal";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 type TaskActivityProps = {
   task: TaskRecord | undefined;
 };
+
+type ActivityFilter = "all" | "scheduler" | "agents" | "tools";
 
 /** Maps stage/status combos to timeline dot colours. */
 const MARK_COLOR: Record<string, string> = {
@@ -104,8 +106,19 @@ function ActivityEvent({ event }: { event: DisplayEvent }) {
 export function TaskActivity({ task }: TaskActivityProps) {
   const [showPlanGraph, setShowPlanGraph] = useState(false);
   const [copiedId, setCopiedId] = useState(false);
+  const [activityFilter, setActivityFilter] = useState<ActivityFilter>("all");
   const latestEvent = task?.events.at(-1);
   const agents = task ? getAgentNames(task) : [];
+  const visibleEvents = useMemo(() => {
+    if (!task || activityFilter === "all") return task?.events ?? [];
+    return task.events.filter((event) => {
+      if (activityFilter === "scheduler") {
+        return event.raw_event.startsWith("AGENT_") || event.raw_event.startsWith("RESOURCE_");
+      }
+      if (activityFilter === "agents") return event.stage === "agent";
+      return event.stage === "tool";
+    });
+  }, [activityFilter, task]);
   const tokenUsage = task?.token_usage;
   const tokenBudget = task?.scheduler?.metrics?.resources?.token_budget;
   const visibleTokenUsage = tokenUsage ?? { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 };
@@ -270,17 +283,39 @@ export function TaskActivity({ task }: TaskActivityProps) {
             )}
           </div>
 
+          <div className="mx-2 mb-3 flex flex-wrap gap-1" role="group" aria-label="Activity filters">
+            {(["all", "scheduler", "agents", "tools"] as ActivityFilter[]).map((filter) => (
+              <button
+                key={filter}
+                type="button"
+                onClick={() => setActivityFilter(filter)}
+                className={`rounded-full border px-2 py-1 text-[10px] capitalize transition-colors ${
+                  activityFilter === filter
+                    ? "border-[#0f766e] bg-[#edf7f5] font-semibold text-[#0f766e]"
+                    : "border-[#deded9] text-[#74746f] hover:bg-[#f7f7f5]"
+                }`}
+              >
+                {filter}
+              </button>
+            ))}
+            {activityFilter !== "all" && (
+              <span className="self-center text-[10px] text-[#a0a09a]">
+                {visibleEvents.length} shown
+              </span>
+            )}
+          </div>
+
           {/* Event list */}
           <ol
             className="relative grid gap-0 m-0 list-none px-2 py-0
               before:content-[''] before:absolute before:top-[5px] before:bottom-[10px] before:left-[11px] before:w-px before:bg-[#deded9]"
           >
-            {task.events.length === 0 ? (
+            {visibleEvents.length === 0 ? (
               <li className="text-[#74746f] text-xs leading-relaxed">
-                Waiting for task activity.
+                {task.events.length === 0 ? "Waiting for task activity." : "No events match this filter."}
               </li>
             ) : (
-              task.events.map((event, index) => (
+              visibleEvents.map((event, index) => (
                 <ActivityEvent
                   key={`${event.occurred_at}-${index}`}
                   event={event}
