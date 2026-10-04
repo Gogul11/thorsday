@@ -69,6 +69,18 @@ def validate_steps(steps: Iterable[dict], valid_agents: set[str], candidates: se
                 dependencies.append(dependency_id)
         step["depends_on"] = list(dict.fromkeys(dependencies))
 
+    # Older planner responses often returned multiple ordered steps without
+    # filling depends_on. The executor is cooperative and currently advances
+    # one DAG step at a time, so preserve that ordered-plan contract by adding
+    # edges between adjacent steps. Explicit dependencies above are never
+    # overwritten; this fallback only applies when every edge is missing.
+    if len(normalized) > 1 and not any(step["depends_on"] for step in normalized):
+        previous_id = None
+        for step in normalized:
+            if previous_id is not None:
+                step["depends_on"] = [previous_id]
+            previous_id = step["id"]
+
     # Kahn-style cycle check.
     remaining = {step["id"]: set(step["depends_on"]) for step in normalized}
     resolved: set[str] = set()

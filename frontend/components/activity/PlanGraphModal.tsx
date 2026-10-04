@@ -11,11 +11,21 @@ type PlanGraphModalProps = {
 };
 
 export function PlanGraphModal({ steps, mermaid, onClose }: PlanGraphModalProps) {
+  const displaySteps = useMemo(() => {
+    if (steps.length <= 1 || steps.some((step) => step.depends_on.length > 0)) {
+      return steps;
+    }
+    return steps.map((step, index) => ({
+      ...step,
+      depends_on: index === 0 ? [] : [steps[index - 1].id],
+    }));
+  }, [steps]);
+
   const levels = useMemo(() => {
     const result: PlanStep[][] = [];
     const placed = new Set<string>();
-    while (placed.size < steps.length) {
-      const level = steps.filter(
+    while (placed.size < displaySteps.length) {
+      const level = displaySteps.filter(
         (step) => !placed.has(step.id) && step.depends_on.every((dependency) => placed.has(dependency)),
       );
       if (level.length === 0) break;
@@ -23,7 +33,22 @@ export function PlanGraphModal({ steps, mermaid, onClose }: PlanGraphModalProps)
       result.push(level);
     }
     return result;
-  }, [steps]);
+  }, [displaySteps]);
+
+  const displayMermaid = useMemo(() => {
+    if (mermaid?.includes("-->")) return mermaid;
+    if (displaySteps.length === 0) return mermaid;
+    const lines = ["flowchart TD"];
+    for (const step of displaySteps) {
+      lines.push(`  ${step.id}[\"${step.id}\\n${step.agent}\"]`);
+    }
+    for (const step of displaySteps) {
+      for (const dependency of step.depends_on) {
+        lines.push(`  ${dependency} --> ${step.id}`);
+      }
+    }
+    return lines.join("\\n");
+  }, [displaySteps, mermaid]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-5" role="dialog" aria-modal="true" aria-label="Execution plan graph">
@@ -37,7 +62,7 @@ export function PlanGraphModal({ steps, mermaid, onClose }: PlanGraphModalProps)
         </div>
 
         <div className="overflow-auto p-5">
-          {steps.length === 0 ? (
+          {displaySteps.length === 0 ? (
             <p className="rounded-lg bg-[#f7f7f5] p-4 text-sm text-[#74746f]">No specialized agents were selected. The response is direct.</p>
           ) : (
             <div className="flex min-w-max items-center gap-5 rounded-lg bg-[#f7f7f5] p-6">
@@ -59,10 +84,10 @@ export function PlanGraphModal({ steps, mermaid, onClose }: PlanGraphModalProps)
             </div>
           )}
 
-          {mermaid && (
+          {displayMermaid && (
             <details className="mt-5">
               <summary className="cursor-pointer text-xs font-semibold text-[#5a5a54]">View Mermaid source</summary>
-              <pre className="mt-2 overflow-auto rounded-lg bg-[#1e1e1c] p-4 text-xs leading-relaxed text-[#f7f7f5]">{mermaid}</pre>
+              <pre className="mt-2 overflow-auto rounded-lg bg-[#1e1e1c] p-4 text-xs leading-relaxed text-[#f7f7f5]">{displayMermaid}</pre>
             </details>
           )}
         </div>
