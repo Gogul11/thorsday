@@ -62,22 +62,12 @@ class ToolEventCallback(BaseCallbackHandler):
             "completion_tokens": 0,
             "total_tokens": 0,
         }
+        self._usage_sources: set[int] = set()
 
-    def on_llm_end(self, response, **kwargs):
-        """Collect provider usage from LangChain/Groq response variants."""
-        usage = getattr(response, "llm_output", None) or {}
-        usage = usage.get("token_usage") or usage.get("usage") or {}
-        if not usage:
-            for generation_group in getattr(response, "generations", []) or []:
-                for generation in generation_group or []:
-                    message = getattr(generation, "message", None)
-                    metadata = getattr(message, "usage_metadata", None) or {}
-                    if metadata:
-                        usage = metadata
-                        break
-                if usage:
-                    break
-
+    def _record_usage(self, usage: dict, source: object) -> None:
+        if not usage or id(source) in self._usage_sources:
+            return
+        self._usage_sources.add(id(source))
         def value(*keys):
             return next((int(usage[key]) for key in keys if usage.get(key) is not None), 0)
 
@@ -87,6 +77,38 @@ class ToolEventCallback(BaseCallbackHandler):
         self.token_usage["prompt_tokens"] += prompt
         self.token_usage["completion_tokens"] += completion
         self.token_usage["total_tokens"] += total
+
+    def on_llm_end(self, response, **kwargs):
+        """Collect usage from classic LangChain LLM callback responses."""
+        usage = getattr(response, "llm_output", None) or {}
+        usage = usage.get("token_usage") or usage.get("usage") or {}
+        if not usage:
+            for generation_group in getattr(response, "generations", []) or []:
+                for generation in generation_group or []:
+                    message = getattr(generation, "message", None)
+                    usage = getattr(message, "usage_metadata", None) or {}
+                    if usage:
+                        break
+                if usage:
+                    break
+        self._record_usage(usage, response)
+
+    def on_chat_model_end(self, response, **kwargs):
+        """Collect usage from chat-model callback responses."""
+        self.on_llm_end(response, **kwargs)
+
+    def on_chain_end(self, outputs, **kwargs):
+        """Fallback for agent runtimes exposing usage on returned messages."""
+        messages = outputs.get("messages", []) if isinstance(outputs, dict) else []
+        for message in messages:
+            usage = getattr(message, "usage_metadata", None) or {}
+            if not usage:
+                metadata = getattr(message, "response_metadata", None) or {}
+                usage = metadata.get("token_usage", {}) if isinstance(metadata, dict) else {}
+            if isinstance(message, dict):
+                response_metadata = message.get("response_metadata") or {}
+                usage = message.get("usage_metadata") or response_metadata.get("token_usage", {})
+            self._record_usage(usage, message)
 
     def _fire(self, coro):
         if not self.loop.is_closed():
@@ -254,6 +276,12 @@ async def _node_executor(state: dict, model) -> dict:
             # Pass provider usage back to the scheduler without changing the
             # agent's public result shape.
             scheduled_job.token_usage = dict(callback.token_usage)
+            if not scheduled_job.token_usage["total_tokens"]:
+                logger.warning(
+                    "No provider token usage received | task=%s | agent=%s | model usage metadata unavailable",
+                    task_id,
+                    agent_name,
+                )
             set_agent_status(agent_id, "COMPLETED")
             await _emit("agent.COMPLETED", state, agent_id=agent_id, agent_name=agent_name, result=result)
             return result
