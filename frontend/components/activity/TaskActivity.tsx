@@ -44,6 +44,10 @@ function dotColor(event: DisplayEvent): string {
   return MARK_COLOR[event.status] ?? "bg-[#b0b0aa]";
 }
 
+function formatTokens(value: number): string {
+  return new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(value);
+}
+
 function ActivityMark({ event }: { event: DisplayEvent }) {
   return (
     <span
@@ -99,8 +103,25 @@ function ActivityEvent({ event }: { event: DisplayEvent }) {
 
 export function TaskActivity({ task }: TaskActivityProps) {
   const [showPlanGraph, setShowPlanGraph] = useState(false);
+  const [copiedId, setCopiedId] = useState(false);
   const latestEvent = task?.events.at(-1);
   const agents = task ? getAgentNames(task) : [];
+  const tokenUsage = task?.token_usage;
+  const tokenBudget = task?.scheduler?.metrics?.resources?.token_budget;
+  const tokenPercent = tokenUsage && tokenBudget
+    ? Math.min(100, (tokenUsage.total_tokens / tokenBudget) * 100)
+    : 0;
+
+  async function copyTaskId() {
+    if (!task?.task_id) return;
+    try {
+      await navigator.clipboard.writeText(task.task_id);
+      setCopiedId(true);
+      window.setTimeout(() => setCopiedId(false), 1400);
+    } catch {
+      setCopiedId(false);
+    }
+  }
 
   return (
     <aside className="bg-white border-l border-[#deded9] px-4 py-[22px] h-dvh overflow-y-auto min-w-0">
@@ -131,9 +152,16 @@ export function TaskActivity({ task }: TaskActivityProps) {
             />
             <div>
               <p className="m-0 mb-1 text-sm capitalize">{task.status}</p>
-              <code className="text-[10px] text-[#5a5a54] font-mono overflow-wrap-anywhere">
-                {shortId(task.task_id || task.req_id)}
-              </code>
+              <div className="flex items-center gap-1.5">
+                <code className="text-[10px] text-[#5a5a54] font-mono overflow-wrap-anywhere">
+                  {shortId(task.task_id || task.req_id)}
+                </code>
+                {task.task_id && (
+                  <button type="button" onClick={() => void copyTaskId()} className="text-[10px] text-[#0f766e] hover:underline">
+                    {copiedId ? "Copied" : "Copy ID"}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
@@ -165,6 +193,25 @@ export function TaskActivity({ task }: TaskActivityProps) {
                       {typeof task.scheduler.metrics.pending === "number"
                         ? ` · ${task.scheduler.metrics.pending} queued globally`
                         : ""}
+                    </span>
+                  )}
+                </dd>
+              </div>
+            )}
+            {tokenUsage && (
+              <div className="border-b border-[#f0f0ec] pb-2">
+                <dt className="mb-[3px] text-[#74746f] text-[10px] font-bold tracking-[0.06em] uppercase">
+                  Token usage
+                </dt>
+                <dd className="m-0 text-xs leading-[1.55]">
+                  <span className="font-semibold">{formatTokens(tokenUsage.total_tokens)} total</span>
+                  {tokenBudget ? ` / ${formatTokens(tokenBudget)} budget` : ""}
+                  <span className="block text-[10px] text-[#74746f]">
+                    input {formatTokens(tokenUsage.prompt_tokens)} · output {formatTokens(tokenUsage.completion_tokens)}
+                  </span>
+                  {tokenBudget && (
+                    <span className="mt-1 block h-1.5 overflow-hidden rounded-full bg-[#e7eceb]" aria-label={`${tokenPercent.toFixed(1)} percent of token budget used`}>
+                      <span className="block h-full rounded-full bg-[#0f766e]" style={{ width: `${tokenPercent}%` }} />
                     </span>
                   )}
                 </dd>

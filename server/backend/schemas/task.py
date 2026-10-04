@@ -77,6 +77,7 @@ class KernelEvent(BaseModel):
     attempt: Optional[int] = None
     reason: Optional[str] = None
     scheduler_metrics: Optional[dict] = None
+    token_usage: Optional[dict] = None
 
     # Delete confirmation fields
     confirmation_id: Optional[str] = None

@@ -5,6 +5,7 @@ import type {
   KernelEvent,
   TaskRecord,
   TaskMessage,
+  TokenUsage,
 } from "@/types";
 
 import { subscribeToTask } from "@/api/websocket";
@@ -186,6 +187,14 @@ export function useTaskSubscriptions(
 
               const displayEvent = toDisplayEvent(ev);
 
+              const updatedTokenUsage: TokenUsage | undefined = ev.token_usage
+                ? {
+                    prompt_tokens: (t.token_usage?.prompt_tokens ?? 0) + ev.token_usage.prompt_tokens,
+                    completion_tokens: (t.token_usage?.completion_tokens ?? 0) + ev.token_usage.completion_tokens,
+                    total_tokens: (t.token_usage?.total_tokens ?? 0) + ev.token_usage.total_tokens,
+                  }
+                : t.token_usage;
+
               // -----------------------------------------------------------
               // Messages
               // -----------------------------------------------------------
@@ -307,6 +316,8 @@ export function useTaskSubscriptions(
                   ev.event === "task.PLANNED"
                     ? (ev.mermaid ?? t.plan_mermaid)
                     : t.plan_mermaid,
+
+                token_usage: updatedTokenUsage,
 
                 scheduler:
                   ev.event.startsWith("AGENT_") || ev.event.startsWith("RESOURCE_")

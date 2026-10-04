@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 import type { PlanStep } from "@/types";
 
@@ -11,6 +11,14 @@ type PlanGraphModalProps = {
 };
 
 export function PlanGraphModal({ steps, mermaid, onClose }: PlanGraphModalProps) {
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
   const displaySteps = useMemo(() => {
     if (steps.length <= 1 || steps.some((step) => step.depends_on.length > 0)) {
       return steps;
@@ -51,7 +59,7 @@ export function PlanGraphModal({ steps, mermaid, onClose }: PlanGraphModalProps)
   }, [displaySteps, mermaid]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-5" role="dialog" aria-modal="true" aria-label="Execution plan graph">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-5" role="dialog" aria-modal="true" aria-label="Execution plan graph" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
       <div className="flex max-h-[90dvh] w-full max-w-5xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl">
         <div className="flex items-center justify-between border-b border-[#deded9] px-5 py-4">
           <div>

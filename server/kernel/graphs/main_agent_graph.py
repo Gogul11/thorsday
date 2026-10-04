@@ -57,6 +57,36 @@ class ToolEventCallback(BaseCallbackHandler):
         self.agent_id = agent_id
         self.loop = loop
         self.current_tool = "tool"
+        self.token_usage = {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+        }
+
+    def on_llm_end(self, response, **kwargs):
+        """Collect provider usage from LangChain/Groq response variants."""
+        usage = getattr(response, "llm_output", None) or {}
+        usage = usage.get("token_usage") or usage.get("usage") or {}
+        if not usage:
+            for generation_group in getattr(response, "generations", []) or []:
+                for generation in generation_group or []:
+                    message = getattr(generation, "message", None)
+                    metadata = getattr(message, "usage_metadata", None) or {}
+                    if metadata:
+                        usage = metadata
+                        break
+                if usage:
+                    break
+
+        def value(*keys):
+            return next((int(usage[key]) for key in keys if usage.get(key) is not None), 0)
+
+        prompt = value("prompt_tokens", "input_tokens")
+        completion = value("completion_tokens", "output_tokens")
+        total = value("total_tokens") or prompt + completion
+        self.token_usage["prompt_tokens"] += prompt
+        self.token_usage["completion_tokens"] += completion
+        self.token_usage["total_tokens"] += total
 
     def _fire(self, coro):
         if not self.loop.is_closed():
@@ -221,6 +251,9 @@ async def _node_executor(state: dict, model) -> dict:
                 req_id=state["req_id"],
                 task_id=state["task_id"],
             )
+            # Pass provider usage back to the scheduler without changing the
+            # agent's public result shape.
+            scheduled_job.token_usage = dict(callback.token_usage)
             set_agent_status(agent_id, "COMPLETED")
             await _emit("agent.COMPLETED", state, agent_id=agent_id, agent_name=agent_name, result=result)
             return result
@@ -241,8 +274,7 @@ async def _node_executor(state: dict, model) -> dict:
             await _emit("agent.DESTROYED", state, agent_id=agent_id, agent_name=agent_name)
             destroy_agent(agent_id)
 
-    result = await get_scheduler().submit(
-        SchedulerJob(
+    scheduled_job = SchedulerJob(
             task_id=task_id,
             req_id=state["req_id"],
             step_id=ready_step["id"],
@@ -251,7 +283,7 @@ async def _node_executor(state: dict, model) -> dict:
             base_priority=float(ready_step.get("priority", 5)),
             estimated_tokens=int(ready_step.get("estimated_tokens", 4000)),
         )
-    )
+    result = await get_scheduler().submit(scheduled_job)
     updated_results = {**state["results"], ready_step["id"]: result}
     return {"results": updated_results, "completed_steps": [*state.get("completed_steps", []), ready_step["id"]]}
 

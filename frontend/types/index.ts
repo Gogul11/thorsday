@@ -84,6 +84,7 @@ export type KernelEvent = {
   reason?: string;
   timestamp?: number;
   scheduler_metrics?: SchedulerMetrics;
+  token_usage?: TokenUsage;
 };
 
 export type PlanStep = {
@@ -186,6 +187,7 @@ export type TaskRecord = {
   plan: string[];
   plan_graph?: PlanStep[];
   plan_mermaid?: string;
+  token_usage?: TokenUsage;
 
   scheduler?: SchedulerSnapshot;
 
@@ -210,6 +212,13 @@ export type SchedulerSnapshot = {
   attempt?: number;
   execution_id?: string;
   metrics?: SchedulerMetrics;
+  token_usage?: TokenUsage;
+};
+
+export type TokenUsage = {
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_tokens: number;
 };
 
 export type SchedulerMetrics = {

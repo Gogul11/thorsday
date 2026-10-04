@@ -16,7 +16,7 @@ from typing import Any, Awaitable, Callable
 
 from Redis.redis_connection import publish, redis_client
 from logger import logger
-from repository.task_repo import DB_add_task_event
+from repository.task_repo import DB_add_task_event, DB_update_task
 
 
 @dataclass
@@ -94,6 +94,7 @@ class SchedulerJob:
     ready_at: float = field(default_factory=time.time)
     execution_id: str = field(default_factory=lambda: str(uuid.uuid4()))
     attempt: int = 1
+    token_usage: dict[str, int] = field(default_factory=dict)
     future: asyncio.Future[Any] | None = None
 
 
@@ -117,6 +118,7 @@ class AgentScheduler:
         self._running: set[asyncio.Task[None]] = set()
         self._started = False
         self._metrics = {"submitted": 0, "completed": 0, "failed": 0, "requeued": 0, "wait_ms": 0}
+        self._usage_by_task: dict[str, dict[str, int]] = {}
 
     async def start(self) -> None:
         if self._started:
@@ -209,8 +211,22 @@ class AgentScheduler:
                     job.future.set_result(result)
             else:
                 self._metrics["completed"] += 1
-                await self._persist(job, "COMPLETED")
-                await self._emit("AGENT_COMPLETED", job, status="COMPLETED", duration_ms=int((time.monotonic() - started) * 1000))
+                usage = job.token_usage or {}
+                task_usage = self._usage_by_task.setdefault(job.task_id, {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0})
+                for key in ("prompt_tokens", "completion_tokens", "total_tokens"):
+                    task_usage[key] += int(usage.get(key, 0))
+                try:
+                    await DB_update_task(job.task_id, token_usage=task_usage)
+                except Exception as exc:
+                    logger.warning("Scheduler token usage persistence failed: %s", exc)
+                await self._persist(job, "COMPLETED", token_usage=usage)
+                await self._emit(
+                    "AGENT_COMPLETED",
+                    job,
+                    status="COMPLETED",
+                    duration_ms=int((time.monotonic() - started) * 1000),
+                    token_usage=usage,
+                )
                 if job.future and not job.future.done():
                     job.future.set_result(result)
         except Exception as exc:
@@ -307,7 +323,12 @@ class AgentScheduler:
         return any(token in text for token in ("rate limit", "quota", "429", "tokens per day"))
 
     def snapshot(self) -> dict[str, Any]:
-        return {"pending": len(self._pending), "metrics": dict(self._metrics), "resources": self.resources.snapshot()}
+        return {
+            "pending": len(self._pending),
+            "metrics": dict(self._metrics),
+            "resources": self.resources.snapshot(),
+            "usage_by_task": dict(self._usage_by_task),
+        }
 
 
 _scheduler: AgentScheduler | None = None
