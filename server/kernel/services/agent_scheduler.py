@@ -81,6 +81,10 @@ class ResourceManager:
             and self._tokens_by_task.get(task_id, 0) + estimated_tokens <= self.token_budget
         )
 
+    def exceeds_budget(self, task_id: str, estimated_tokens: int) -> bool:
+        """Return whether this task can never admit the requested estimate."""
+        return self._tokens_by_task.get(task_id, 0) + estimated_tokens > self.token_budget
+
 
 @dataclass
 class SchedulerJob:
@@ -169,8 +173,35 @@ class AgentScheduler:
                         await self._persist(oversized, "FAILED", error="Estimated execution exceeds the task token budget")
                         await self._emit("RESOURCE_DENIED", oversized, status="FAILED", reason="token_budget")
                         await self._emit("AGENT_BLOCKED", oversized, status="BLOCKED", reason="token_budget")
+                        try:
+                            await DB_update_task(oversized.task_id, status="failed", error="Estimated execution exceeds the task token budget")
+                        except Exception as exc:
+                            logger.warning("Scheduler blocked-task persistence failed: %s", exc)
                         if oversized.future and not oversized.future.done():
                             oversized.future.set_exception(RuntimeError("Estimated execution exceeds the task token budget"))
+                    else:
+                        blocked = next(
+                            (
+                                candidate
+                                for candidate in self._pending
+                                if self.resources.exceeds_budget(candidate.task_id, candidate.estimated_tokens)
+                            ),
+                            None,
+                        )
+                        if blocked is not None:
+                            async with self._lock:
+                                self._pending.remove(blocked)
+                            error = "Task token budget reached; no more agent steps can be admitted"
+                            await self._persist(blocked, "FAILED", error=error)
+                            await self._emit("RESOURCE_DENIED", blocked, status="FAILED", reason="task_token_budget")
+                            await self._emit("AGENT_BLOCKED", blocked, status="BLOCKED", reason="task_token_budget")
+                            try:
+                                await DB_update_task(blocked.task_id, status="failed", error=error)
+                            except Exception as exc:
+                                logger.warning("Scheduler blocked-task persistence failed: %s", exc)
+                            self._metrics["failed"] += 1
+                            if blocked.future and not blocked.future.done():
+                                blocked.future.set_exception(RuntimeError(error))
                     break
 
                 lease = await self.resources.acquire(job.task_id, job.estimated_tokens)
