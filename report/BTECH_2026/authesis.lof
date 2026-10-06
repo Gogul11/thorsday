@@ -1,0 +1,23 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Overall AgentOS system architecture and major module relationships}}{10}{figure.caption.5}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Frontend, FastAPI gateway, Redis channels, AI kernel, and agent-workforce flow}}{11}{figure.caption.6}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Planner, validation, and dependency-aware execution flow}}{12}{figure.caption.7}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Context page-out, vector-store retrieval, and semantic page-in flow}}{12}{figure.caption.8}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Global agent scheduler, lifecycle events, resource checks, and runtime feedback}}{13}{figure.caption.9}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Resource-manager decision flow supplied for the AgentOS design}}{14}{figure.caption.10}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Tool selection, permission checking, invocation, and result return}}{15}{figure.caption.11}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Agent lifecycle transitions}}{16}{figure.caption.12}%
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Sandboxed Python execution and bounded self-healing loop}}{16}{figure.caption.13}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Optimized semantic planner with candidate retrieval, structured plan validation, fallback routing, and DAG execution}}{19}{figure.caption.15}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces AgentOS agent lifecycle management}}{25}{figure.caption.18}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces AgentOS virtual-memory context paging}}{26}{figure.caption.19}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces AgentOS cooperative time-sliced agent execution}}{27}{figure.caption.20}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces AgentOS semantic dependency-aware planning}}{28}{figure.caption.21}%
+\contentsline {figure}{\numberline {4.6}{\ignorespaces AgentOS dependency-aware DAG execution}}{29}{figure.caption.22}%
+\contentsline {figure}{\numberline {4.7}{\ignorespaces AgentOS priority-aging and cooperative time-slice model}}{30}{figure.caption.23}%
+\contentsline {figure}{\numberline {4.8}{\ignorespaces AgentOS global priority-aging cooperative scheduler}}{31}{figure.caption.24}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }

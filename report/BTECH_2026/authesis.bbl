@@ -1,0 +1,125 @@
+\begin{thebibliography}{10}
+
+\bibitem{mei2024aios}
+Kai Mei et~al.
+\newblock Aios: Llm agent operating system.
+\newblock {\em arXiv preprint arXiv:2403.16971}, 2024.
+
+\bibitem{wang2024survey}
+Lei Wang et~al.
+\newblock A survey on large language model based autonomous agents.
+\newblock {\em Frontiers of Computer Science}, 18(6), 2024.
+
+\bibitem{liu2023llmos}
+Zhihan Liu et~al.
+\newblock Llm+ p: Empowering large language models with optimal planning
+  proficiency.
+\newblock {\em arXiv preprint arXiv:2312.03815}, 2023.
+
+\bibitem{wu2023autogen}
+Qingyun Wu et~al.
+\newblock Autogen: Enabling next-gen llm applications.
+\newblock {\em arXiv preprint arXiv:2308.08155}, 2023.
+
+\bibitem{langgraphdocs}
+{LangChain}.
+\newblock Langgraph documentation, 2026.
+\newblock Accessed October 2026.
+
+\bibitem{packer2023memgpt}
+Charles Packer et~al.
+\newblock Memgpt: Towards llms as operating systems.
+\newblock {\em arXiv preprint arXiv:2310.08560}, 2023.
+
+\bibitem{kang2025memoryos}
+Jiazheng Kang et~al.
+\newblock Memory os of ai agent.
+\newblock In {\em Proceedings of the 2025 Conference on Empirical Methods in
+  Natural Language Processing}, pages 25264--25286, 2025.
+
+\bibitem{lewis2020rag}
+Patrick Lewis et~al.
+\newblock Retrieval-augmented generation for knowledge-intensive nlp tasks.
+\newblock In {\em Advances in Neural Information Processing Systems},
+  volume~33, 2020.
+
+\bibitem{chromadocs}
+{Chroma}.
+\newblock Chroma documentation: Collections and configuration, 2026.
+\newblock Accessed October 2026.
+
+\bibitem{yao2023react}
+Shunyu Yao et~al.
+\newblock React: Synergizing reasoning and acting in language models.
+\newblock In {\em International Conference on Learning Representations}, 2023.
+
+\bibitem{schick2023toolformer}
+Timo Schick et~al.
+\newblock Toolformer: Language models can teach themselves to use tools.
+\newblock In {\em Advances in Neural Information Processing Systems},
+  volume~36, 2023.
+
+\bibitem{park2023generative}
+Joon~Sung Park et~al.
+\newblock Generative agents: Interactive simulacra of human behavior.
+\newblock In {\em Proceedings of the 36th Annual ACM Symposium on User
+  Interface Software and Technology}, 2023.
+
+\bibitem{shinn2023reflexion}
+Noah Shinn et~al.
+\newblock Reflexion: Language agents with verbal reinforcement learning.
+\newblock In {\em Advances in Neural Information Processing Systems},
+  volume~36, 2023.
+
+\bibitem{vaswani2017attention}
+Ashish Vaswani et~al.
+\newblock Attention is all you need.
+\newblock In {\em Advances in Neural Information Processing Systems},
+  volume~30, 2017.
+
+\bibitem{silberschatz2018os}
+Abraham Silberschatz, Peter~Baer Galvin, and Greg Gagne.
+\newblock {\em Operating System Concepts}.
+\newblock Wiley, 10 edition, 2018.
+
+\bibitem{cgroupsv2}
+{Linux Kernel Documentation}.
+\newblock Control group v2, 2026.
+\newblock Accessed October 2026.
+
+\bibitem{langgraphpersistence}
+{LangChain}.
+\newblock Langgraph persistence and checkpointing, 2026.
+\newblock Accessed October 2026.
+
+\bibitem{temporaldocs}
+{Temporal Technologies}.
+\newblock Temporal documentation: Durable execution, 2026.
+\newblock Accessed October 2026.
+
+\bibitem{mcpdocs}
+{Model Context Protocol}.
+\newblock Model context protocol specification, 2026.
+\newblock Accessed October 2026.
+
+\bibitem{owaspllm}
+{OWASP Foundation}.
+\newblock Owasp top 10 for large language model applications, 2025.
+\newblock Accessed October 2026.
+
+\bibitem{firecracker}
+{Amazon Web Services}.
+\newblock Firecracker microvm documentation, 2026.
+\newblock Accessed October 2026.
+
+\bibitem{redispubsub}
+{Redis Ltd.}
+\newblock Redis pub/sub documentation, 2026.
+\newblock Accessed October 2026.
+
+\bibitem{mongodocs}
+{MongoDB Inc.}
+\newblock Mongodb documentation, 2026.
+\newblock Accessed October 2026.
+
+\end{thebibliography}

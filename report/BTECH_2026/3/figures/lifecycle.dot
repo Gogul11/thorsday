@@ -1,0 +1,1 @@
+digraph G { rankdir=LR; graph [bgcolor="white", nodesep=.25]; node [shape=box, style="rounded,filled", fillcolor="#f8f3ff", color="#6842a5", fontname="Helvetica", fontsize=10]; CREATED -> READY -> RUNNING -> COMPLETED; RUNNING -> WAITING; RUNNING -> BLOCKED; RUNNING -> FAILED; WAITING -> READY; }

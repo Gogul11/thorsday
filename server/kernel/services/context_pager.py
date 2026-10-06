@@ -442,8 +442,4 @@ class ContextPager:
         }
 
 
-# ---------------------------------------------------------------------------
-# Module-level singleton — import this everywhere
-# ---------------------------------------------------------------------------
-
 context_pager = ContextPager()

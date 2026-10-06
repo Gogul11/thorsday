@@ -1,0 +1,105 @@
+\chapter{\uppercase{Evaluation Metrics}}
+\label{app:metrics}
+
+This appendix defines the metrics that will be used to evaluate AgentOS. The metrics specify how planning quality, execution reliability, scheduling behaviour, resource control, context paging, event delivery, and user-facing observability will be measured. No experimental values are reported here; the definitions are intended to support a later controlled evaluation.
+
+\section{\uppercase{Evaluation Notation}}
+Let $N$ be the number of evaluated tasks, $S$ the number of planned steps, and $E$ the number of emitted events. For each task, the expected result, required agents, dependency relationships, and final status must be recorded before execution. A task is counted as successful only when its required output is produced and all mandatory steps complete without an unrecovered error.
+
+\section{\uppercase{Planning Quality Metrics}}
+\begin{table}[H]
+\centering
+\caption{Metrics for evaluating planner quality}
+\label{tab:planning-metrics}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.27\textwidth}>{\raggedright\arraybackslash}X}
+\toprule
+Metric & Definition and formula \\
+\midrule
+Agent-selection accuracy & Fraction of tasks for which the planner selects the complete required agent set: $\frac{\text{tasks with correct agent set}}{N}$. \\
+Agent precision & Fraction of selected agents that are relevant: $\frac{TP}{TP+FP}$. \\
+Agent recall & Fraction of required agents that are selected: $\frac{TP}{TP+FN}$. \\
+Agent F1-score & Harmonic mean of selection precision and recall: $F_1=2\frac{PR}{P+R}$. \\
+Plan validity rate & Fraction of generated plans that pass schema, agent-identifier, dependency, and cycle validation: $\frac{\text{valid plans}}{\text{generated plans}}$. \\
+Dependency correctness & Fraction of dependency relations that match the expected relations: $\frac{\text{correct dependency edges}}{\text{expected dependency edges}}$. \\
+Fallback rate & Fraction of tasks executed using semantic fallback: $\frac{\text{fallback tasks}}{N}$. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+For benchmark tasks with more than one acceptable plan, agent-selection accuracy should use set-based comparison and dependency correctness should use the union of all accepted dependency graphs.
+
+\section{\uppercase{Execution Reliability Metrics}}
+\begin{table}[H]
+\centering
+\caption{Metrics for execution reliability}
+\label{tab:execution-metrics}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.29\textwidth}>{\raggedright\arraybackslash}X}
+\toprule
+Metric & Definition and formula \\
+\midrule
+Task success rate & $\frac{\text{tasks completed with the expected result}}{N}$. \\
+Step success rate & $\frac{\text{successfully completed steps}}{\text{dispatched steps}}$. \\
+Failure rate & $\frac{\text{tasks ending in FAILED}}{N}$, reported separately from temporary WAITING or BLOCKED states. \\
+Retry rate & $\frac{\text{steps executed more than once}}{\text{dispatched steps}}$. \\
+Recovery correctness & $\frac{\text{interrupted steps safely requeued without duplicate completion}}{\text{interrupted steps requiring recovery}}$. \\
+Dependency-order violation rate & $\frac{\text{steps started before all prerequisites completed}}{\text{started steps}}$. The desired value is zero. \\
+End-to-end task latency & $T_{complete}-T_{created}$, reported using mean, median, and percentile values such as $P_{95}$. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{\uppercase{Scheduler and Resource Metrics}}
+\begin{table}[H]
+\centering
+\caption{Metrics for scheduling and resource admission}
+\label{tab:scheduler-metrics}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.30\textwidth}>{\raggedright\arraybackslash}X}
+\toprule
+Metric & Definition and formula \\
+\midrule
+Mean queue waiting time & $\frac{1}{S}\sum_{i=1}^{S}(T_{start,i}-T_{ready,i})$. \\
+Scheduling response time & $T_{dispatch}-T_{ready}$ for each admitted step. \\
+Starvation rate & $\frac{\text{ready steps exceeding the starvation threshold}}{\text{ready steps}}$. \\
+Fairness across tasks & Jain's fairness index: $J=\frac{(\sum_i x_i)^2}{n\sum_i x_i^2}$, where $x_i$ is the service received by task $i$. \\
+Concurrency-limit violations & $\frac{\text{dispatches exceeding global or per-task limits}}{\text{dispatches}}$. The desired value is zero. \\
+Temporary-denial handling rate & $\frac{\text{temporarily denied jobs correctly waiting and requeued}}{\text{temporary denials}}$. \\
+Token-budget compliance & $\frac{\text{tasks whose admitted estimate remains within budget}}{N}$. \\
+Token utilisation & $\frac{\text{consumed or reported tokens}}{\text{configured token budget}}$, reported separately for estimated and provider-reported usage. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{\uppercase{Context Paging and Retrieval Metrics}}
+The context-paging experiment should compare a bounded-context run with a run in which the complete conversation is available.
+\begin{itemize}
+\item Page-out rate $=\frac{\text{messages paged out}}{\text{messages received}}$.
+\item Page-in precision@$k$ $=\frac{\text{relevant pages among top-$k$ retrieved pages}}{k}$.
+\item Page-in recall $=\frac{\text{relevant pages retrieved}}{\text{relevant pages required}}$.
+\item Context-retrieval mean similarity $=\frac{1}{m}\sum_{j=1}^{m}s_j$, where $s_j=1-d_j$ and $d_j$ is the ChromaDB cosine distance.
+\item Context token reduction $=1-\frac{\text{active-context tokens with paging}}{\text{full-context tokens}}$.
+\item Paging latency $=T_{page\text{-}in}-T_{query}$.
+\end{itemize}
+
+\section{\uppercase{Event and Observability Metrics}}
+Redis and WebSocket behaviour will be evaluated by correlating the event identifier and execution identifier in Redis, MongoDB, the backend stream, and the frontend activity log.
+\begin{itemize}
+\item Event delivery rate $=\frac{\text{events received by the intended consumer}}{E}$.
+\item Event loss rate $=1-\text{event delivery rate}$.
+\item Event duplication rate $=\frac{\text{duplicate event records}}{E}$.
+\item Event ordering accuracy $=\frac{\text{lifecycle transitions observed in valid order}}{\text{observed lifecycle transitions}}$.
+\item WebSocket propagation latency $=T_{frontend\ receives}-T_{kernel\ publishes}$.
+\item Observability completeness $=\frac{\text{events containing all required fields}}{E}$.
+\end{itemize}
+The required event fields are task identifier, step identifier, agent name, execution identifier, status, timestamp, priority, effective priority, queue wait, and attempt number.
+
+\section{\uppercase{Code Runner Safety Metrics}}
+\begin{itemize}
+\item Timeout enforcement rate $=\frac{\text{timed-out processes terminated within the policy window}}{\text{timed-out processes}}$.
+\item Output-capture completeness $=\frac{\text{runs with correctly captured stdout and stderr}}{\text{runs}}$.
+\item Self-healing repair success $=\frac{\text{failed scripts repaired within the retry limit}}{\text{failed scripts eligible for repair}}$.
+\item Retry exhaustion rate $=\frac{\text{scripts still failing after the maximum retries}}{\text{failed scripts}}$.
+\item Working-directory escape count: number of executions writing outside the configured working directory. The desired value is zero.
+\end{itemize}
+
+\section{\uppercase{Reporting Protocol}}
+Each experiment should record the task prompt, expected result, planner candidate list, generated plan, validation outcome, lifecycle events, execution attempts, scheduler timestamps, resource decisions, token metadata, and final status. Results should later be reported over repeated runs using mean, median, standard deviation, and appropriate percentile values. Metrics that depend on human-labelled expected agents or relevant context pages must include the annotation procedure and the number of evaluated tasks. Provider-reported token usage should never be replaced by an estimate without clearly labelling the value as an estimate.
