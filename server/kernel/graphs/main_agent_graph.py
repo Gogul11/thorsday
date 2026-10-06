@@ -25,7 +25,7 @@ from Redis.redis_connection import publish
 from repository.task_repo import DB_add_task_event, DB_create_task, DB_update_task
 from services.context import get_context
 from services.agent_scheduler import SchedulerJob, get_scheduler
-from graphs.constant import build_planner_context
+from graphs.constant import build_planner_context, get_explicit_agent_hints
 from planning.diagram import chain_steps, to_mermaid, validate_steps
 
 # ---------------------------------------------------------------------------
@@ -212,12 +212,32 @@ async def _node_planner(state: dict, model) -> dict:
         if not plan_steps:
             plan_steps = chain_steps(plan_agents)
         plan_agents = [step["agent"] for step in plan_steps]
+
+        # Preserve every capability explicitly requested by a compound task.
+        # The LLM still performs the primary planning; this guard prevents a
+        # valid but overly-minimal response from silently dropping later work.
+        explicit_hints = get_explicit_agent_hints(state["task"])
+        missing_hints = [
+            agent for agent in explicit_hints
+            if agent in candidate_names and agent not in plan_agents
+        ]
+        if missing_hints:
+            ordered_agents = [
+                agent for agent in explicit_hints
+                if agent in candidate_names and agent in (plan_agents + missing_hints)
+            ]
+            ordered_agents.extend(agent for agent in plan_agents if agent not in ordered_agents)
+            plan_agents = ordered_agents
+            plan_steps = chain_steps(plan_agents)
     except Exception as exc:
         # Preserve useful semantic routing when the LLM is unavailable, for
         # example during a provider rate limit. The top retrieved candidate is
         # safer than silently converting the task into a direct response.
         logger.warning("Planner failed: %s. Using semantic fallback.", exc)
-        plan_agents = candidate_names[:1]
+        explicit_hints = get_explicit_agent_hints(state["task"])
+        plan_agents = [agent for agent in explicit_hints if agent in candidate_names]
+        if not plan_agents:
+            plan_agents = candidate_names[:1]
         plan_steps = chain_steps(plan_agents)
         plan = ExecutionPlan(
             agents=plan_agents,

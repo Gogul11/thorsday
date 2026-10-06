@@ -1,0 +1,1316 @@
+AGENTOS - A HYBRID MULTI-AGENT RUNTIME
+ENVIRONMENT FOR AUTONOMOUS AI
+APPLICATIONS
+A PROJECT REPORT
+Submitted by
+
+GOGUL A (2023115020)
+MOHAN VISHNU KUMAR M (2023115026)
+OVIYASHREE C J (2023115052)
+KUDIMI GUNA SEKHAR (2023115126)
+submitted to the Faculty of
+INFORMATION SCIENCE AND TECHNOLOGY
+in partial fulfillment for the award of the degree
+of
+
+BACHELOR OF TECHNOLOGY
+in
+
+INFORMATION TECHNOLOGY
+
+DEPARTMENT OF INFORMATION SCIENCE AND TECHNOLOGY
+COLLEGE OF ENGINEERING, GUINDY
+ANNA UNIVERSITY
+CHENNAI 600 025
+OCTOBER 2026
+
+ii
+
+ANNA UNIVERSITY
+CHENNAI - 600 025
+BONA FIDE CERTIFICATE
+
+Certified that this project report titled AgentOS - A Hybrid
+Multi-Agent Runtime Environment for Autonomous AI Applications is
+the bona fide work of Gogul A (2023115020), Mohan Vishnu Kumar M
+(2023115026), Oviyashree C J (2023115052), and Kudimi Guna Sekhar
+(2023115126), who carried out the project work under my supervision. Certified
+further that, to the best of my knowledge and belief, the work reported herein
+does not form part of any other thesis or dissertation on the basis of which a
+degree or an award was conferred on an earlier occasion on this or any other
+candidate.
+PLACE:
+
+DR. SELVI RAVINDRAN
+
+DATE:
+
+ASSOCIATE PROFESSOR
+PROJECT GUIDE
+DEPARTMENT OF IST, CEG
+ANNA UNIVERSITY
+CHENNAI 600025
+COUNTERSIGNED
+
+DR. P. YOGESH
+HEAD OF THE DEPARTMENT
+DEPARTMENT OF INFORMATION SCIENCE AND TECHNOLOGY
+COLLEGE OF ENGINEERING, GUINDY
+ANNA UNIVERSITY
+CHENNAI 600025
+
+iii
+
+ABSTRACT
+
+Large-language-model applications are evolving from single-turn chat
+interfaces into systems that plan, use tools, preserve context, and coordinate
+multiple specialised agents. However, application developers commonly rebuild
+scheduling, memory, event propagation, execution monitoring, and failure handling
+for each project. This report presents AgentOS, a hybrid multi-agent runtime
+environment that provides these operating-system-style services around autonomous
+AI applications. The implemented system combines a Next.js user interface, a
+FastAPI gateway, a Redis-backed event path, MongoDB task history, ChromaDB
+semantic retrieval, structured LLM planning, dependency-aware directed acyclic
+graph execution, semantic context paging, a global priority-aging scheduler,
+token and concurrency admission control, and a sandboxed Python code runner
+with bounded self-healing retries. The frontend exposes the generated plan
+graph and live scheduler and execution activity through WebSocket updates.
+The report distinguishes implemented facilities from proposed components such
+as complete role-based access control, distributed locking, hybrid model routing,
+and durable coroutine restoration after a kernel restart. Verification is based on
+repository compile checks, TypeScript checks, and focused smoke tests rather
+than unsubstantiated performance claims. AgentOS therefore provides a modular
+foundation for studying reliable, observable, and resource-aware multi-agent
+execution.
+Keywords: multi-agent systems, agent runtime, LLM planning, DAG
+execution, context paging, priority scheduling, Redis, ChromaDB, sandboxed
+code execution.
+
+iv
+
+ACKNOWLEDGEMENT
+
+We express our sincere gratitude to our project guide, Dr. Selvi
+Ravindran, Associate Professor, Department of Information Science and Technology,
+Anna University, College of Engineering, Guindy, for her guidance, technical
+suggestions, and continuous encouragement throughout this work.
+We thank the faculty members and staff of the Department of Information
+Science and Technology for providing the academic environment and facilities
+required to undertake this project. We also acknowledge our classmates, friends,
+and families for their support during the design, implementation, testing, and
+documentation of AgentOS.
+
+Gogul A
+Mohan Vishnu Kumar M
+Oviyashree C J
+Kudimi Guna Sekhar
+
+v
+
+TABLE OF CONTENTS
+
+ABSTRACT
+ACKNOWLEDGEMENT
+LIST OF TABLES
+LIST OF FIGURES
+LIST OF SYMBOLS AND ABBREVIATIONS
+
+iii
+iv
+vii
+viii
+ix
+
+1
+
+INTRODUCTION
+1.1 BACKGROUND
+1.2 MOTIVATION
+1.3 PROBLEM STATEMENT
+1.4 OBJECTIVES
+1.5 SCOPE
+1.6 CONTRIBUTIONS
+1.7 REPORT ORGANIZATION
+
+1
+1
+1
+2
+2
+3
+3
+3
+
+2
+
+LITERATURE SURVEY
+2.1 OVERVIEW
+2.2 AGENT RUNTIMES AND AUTONOMOUS AGENTS
+2.3 MEMORY AND CONTEXT MANAGEMENT
+2.4 PLANNING, TOOL USE, AND REFLECTION
+2.5 SCHEDULING, RESOURCES, AND RELIABILITY
+2.6 SECURITY AND SANDBOXED EXECUTION
+2.7 EVENT-DRIVEN INFRASTRUCTURE
+2.8 RESEARCH GAP AND POSITIONING
+
+5
+5
+5
+5
+6
+7
+7
+8
+8
+
+3
+
+SYSTEM DESIGN
+3.1 DESIGN PRINCIPLES
+3.2 OVERALL ARCHITECTURE
+3.3 FRONTEND, GATEWAY, AND EVENT FLOW
+3.4 PLANNER AND DAG EXECUTION
+3.5 CONTEXT PAGING
+3.6 GLOBAL SCHEDULER AND RESOURCE MANAGER
+3.7 RESOURCE MANAGEMENT
+3.8 TOOL MANAGEMENT
+
+9
+9
+9
+10
+11
+12
+12
+13
+14
+
+vi
+3.9 AGENT LIFECYCLE AND EVENTS
+3.10 SANDBOXED CODE RUNNER
+3.11 IMPLEMENTED AND PROPOSED BOUNDARIES
+
+15
+16
+16
+
+4
+
+IMPLEMENTATION
+4.1 IMPLEMENTATION ENVIRONMENT
+4.2 SEMANTIC AGENT RETRIEVAL
+4.3 PLANNER AND FALLBACK
+4.4 DAG VALIDATION
+4.5 PRIORITY-AGING SCHEDULER
+4.6 RESOURCE ADMISSION AND TOKEN BUDGETS
+4.7 REDIS EVENTS AND BACKEND FORWARDING
+4.8 CONTEXT PAGE-OUT AND PAGE-IN
+4.9 SANDBOXED EXECUTION AND SELF-HEALING
+4.10 FRONTEND OBSERVABILITY
+4.11 AGENTOS ALGORITHMIC SPECIFICATION
+4.12 CONFIGURATION AND VERIFICATION
+
+18
+18
+18
+19
+19
+19
+20
+21
+21
+22
+22
+22
+23
+
+5
+
+CONCLUSION AND FUTURE WORK
+
+33
+
+6
+
+VERIFICATION EVIDENCE
+
+34
+
+REFERENCES
+
+35
+
+vii
+
+LIST OF TABLES
+
+3.1 Implemented and future AgentOS modules
+
+17
+
+4.1 Principal Redis channels and keys
+4.2 Selected AgentOS configuration values
+
+21
+23
+
+viii
+
+LIST OF FIGURES
+
+3.1 AgentOS system architecture and the boundary between
+implemented and proposed runtime modules
+3.2 Frontend, FastAPI gateway, Redis channels, AI kernel,
+and agent-workforce flow
+3.3 Planner, validation, and dependency-aware execution
+flow
+3.4 Context page-out, vector-store retrieval, and semantic
+page-in flow
+3.5 Global agent scheduler, lifecycle events, resource
+checks, and runtime feedback
+3.6 Resource-manager decision flow supplied for the AgentOS
+design
+3.7 Tool selection, permission checking, invocation, and
+result return
+3.8 Agent lifecycle transitions
+3.9 Sandboxed Python execution and bounded self-healing
+loop
+4.1
+4.2
+4.3
+4.4
+4.5
+4.6
+4.7
+4.8
+4.9
+
+AgentOS structured LLM-based task planner
+AgentOS multi-agent sequential executor
+AgentOS agent lifecycle management
+AgentOS virtual-memory context paging
+AgentOS cooperative time-sliced agent execution
+AgentOS semantic dependency-aware planning
+AgentOS dependency-aware DAG execution
+AgentOS priority-aging and cooperative time-slice model
+AgentOS global priority-aging cooperative scheduler
+
+10
+11
+12
+12
+13
+14
+15
+16
+16
+24
+25
+26
+27
+28
+29
+30
+31
+32
+
+ix
+
+LIST OF SYMBOLS AND ABBREVIATIONS
+AI
+
+Artificial Intelligence
+
+API
+
+Application Programming Interface
+
+DAG
+
+Directed Acyclic Graph
+
+FSM
+
+Finite-State Machine
+
+IPC
+
+Inter-Process Communication
+
+LLM
+
+Large Language Model
+
+MCP
+
+Model Context Protocol
+
+MongoDB
+
+Document-oriented database used for task history and
+metadata
+
+RAG
+
+Retrieval-Augmented Generation
+
+RBAC
+
+Role-Based Access Control
+
+Redis
+
+In-memory data store used for queues and event transport
+
+UI
+
+User Interface
+
+WebSocket
+
+Bidirectional communication protocol over a persistent
+connection
+
+α
+
+Aging factor used in effective-priority calculation
+
+Pmax
+
+Maximum effective priority
+
+Tq
+
+Cooperative dispatch time quantum
+
+1
+
+CHAPTER 1
+INTRODUCTION
+
+1.1
+
+BACKGROUND
+
+Large-language-model (LLM) applications have progressed from reactive
+question-answering interfaces to systems that can plan, call tools, maintain memory,
+and delegate work to specialised agents. A useful multi-agent application therefore
+needs more than a prompt and a model endpoint. It needs a runtime that can
+represent work, enforce dependencies, manage limited provider and execution
+resources, preserve useful context, report progress, and recover safely from
+failures.
+Operating-system concepts provide a useful design analogy. A task
+is submitted to a gateway, a planner decomposes it into executable steps, a
+scheduler selects runnable agent work, a resource manager performs admission
+control, and an event path exposes state transitions. AgentOS applies this analogy
+to LLM-powered agents while retaining the uncertainty and latency of model
+calls.
+
+1.2
+
+MOTIVATION
+
+In a conventional chatbot, application logic, conversation state, tool
+invocation, and error handling are often tightly coupled. This makes it difficult
+to run independent work concurrently or to explain why an agent was selected.
+Long conversations also exceed the practical context window of a model, while
+blindly truncating history can remove information needed by later steps. Finally,
+direct code execution or unrestricted tools create safety and observability risks.
+
+2
+AgentOS is motivated by the need for a reusable runtime layer. The
+project investigates how planning, agent retrieval, DAG execution, semantic
+context paging, global scheduling, resource accounting, event streaming, and
+sandboxed execution can be composed into one observable system.
+
+1.3
+
+PROBLEM STATEMENT
+
+There is no single lightweight runtime in the project environment
+that coordinates heterogeneous agents across multiple concurrent tasks while
+enforcing dependencies, observing token and concurrency budgets, preserving
+relevant context, and exposing execution state to a user interface. Reimplementing
+these facilities inside each application increases duplication, makes failures difficult
+to diagnose, and prevents systematic evaluation of scheduling and resource policies.
+
+1.4
+
+OBJECTIVES
+
+The objectives of AgentOS are:
+
+1. to provide a modular AI-kernel-style runtime for specialised agents;
+2. to generate structured plans and execute their steps as a validated
+DAG;
+3. to retrieve suitable agents using semantic capability matching;
+4. to page conversational context between an active window and a vector-backed
+swap space;
+5. to schedule runnable work using priority aging, fairness, and cooperative
+dispatch;
+
+3
+6. to enforce global and per-task concurrency and token budgets before
+execution;
+7. to publish lifecycle and execution events through Redis and forward
+them to the UI; and
+8. to execute generated Python code in a bounded subprocess with a
+limited self-healing loop.
+
+1.5
+
+SCOPE
+
+The current phase covers a Next.js frontend, FastAPI gateway, Python
+kernel, Redis event transport, MongoDB task persistence, ChromaDB retrieval,
+structured planning, DAG validation and Mermaid generation, context paging,
+a global in-process scheduler, resource admission, and a sandboxed Python
+runner. The scope does not claim complete RBAC, distributed scheduler workers,
+forced termination of active LLM calls, automatic coroutine restoration, or a
+production-grade hybrid model router. These are documented as future work.
+
+1.6
+
+CONTRIBUTIONS
+
+The project contributions are a unified execution model for heterogeneous
+agents, a visible plan graph, a Redis-mediated activity stream, a semantic context
+paging mechanism, a priority-aging scheduler with resource admission, and a
+bounded code-execution/self-healing path. The implementation also makes a
+deliberate distinction between design aspirations and features that are present
+and testable in the repository.
+
+1.7
+
+REPORT ORGANIZATION
+
+4
+Chapter 2 surveys research and technical systems related to autonomous
+agents, memory, planning, scheduling, tool use, security, event transport, and
+vector retrieval. Chapter 3 presents the AgentOS architecture and data flows.
+Chapter 4 describes the implementation algorithms, storage conventions, events,
+and verification evidence. The conclusion records current limitations and future
+extensions.
+
+5
+
+CHAPTER 2
+LITERATURE SURVEY
+
+2.1
+
+OVERVIEW
+
+This chapter reviews work that informs the design of AgentOS. The
+survey combines peer-reviewed or archival research with official technical documentation
+for infrastructure components. Each group is considered in terms of its contribution,
+limitation for the present project, and the way AgentOS uses or extends the idea.
+
+2.2
+
+AGENT RUNTIMES AND AUTONOMOUS AGENTS
+
+AIOS frames an LLM agent operating system around scheduling,
+context management, memory, storage, access control, and tool management
+[1]. Its operating-system analogy directly motivates the AgentOS kernel, although
+the current AgentOS implementation is smaller and uses a Python/Redis/MongoDB
+stack rather than a complete OS abstraction. The broader survey by Wang et
+al. classifies LLM-based agents by construction, applications, and evaluation
+[2]; it identifies coordination and reliability as open challenges that AgentOS
+addresses through explicit events and DAG dependencies.
+The LLM-as-an-OS proposal treats models as system resources and
+agents as applications [3]. AutoGen demonstrates programmable multi-agent
+conversation and human-in-the-loop patterns [4], while LangGraph provides
+graph-based orchestration and durable execution concepts [5]. These systems
+show the value of explicit state and orchestration, but do not provide the exact
+global priority-aging and token-admission policy implemented here.
+
+6
+2.3
+
+MEMORY AND CONTEXT MANAGEMENT
+
+MemGPT introduces virtual context management that moves information
+between active context and external storage [6]. MemoryOS organises memory
+into short-, mid-, and long-term layers and evaluates memory retention for conversational
+agents [7]. These works motivate AgentOS context page-out and page-in. AgentOS
+uses semantic embeddings in ChromaDB and an active-window policy; it currently
+provides a project-level paging mechanism rather than a learned memory hierarchy
+or an independently benchmarked memory score.
+Retrieval-Augmented Generation (RAG) combines generation with a
+non-parametric knowledge store [8]. ChromaDB documents collections, embeddings,
+and distance-based retrieval [9]. AgentOS uses this pattern both for agent capability
+retrieval and for swapped context. The limitation is that retrieval quality depends
+on the embedding model and distance configuration; the current implementation
+exposes similarity metadata but does not claim domain-wide retrieval benchmarks.
+
+2.4
+
+PLANNING, TOOL USE, AND REFLECTION
+
+ReAct interleaves reasoning and action so that an agent can use external
+tools during problem solving [10]. Toolformer studies self-supervised learning
+for deciding when and how to call APIs [11]. Generative Agents combine
+memory, reflection, and planning for believable behaviour [12]. Reflexion uses
+verbal feedback to improve subsequent attempts without updating model weights
+[13]. AgentOS adopts structured planning, explicit tool boundaries, persisted
+events, and bounded self-healing, but does not train models or claim the autonomous
+reflection capabilities of these research systems.
+The Transformer architecture remains the dominant basis for modern
+LLMs [14]. Its context limitation makes external context management relevant
+
+7
+to AgentOS, while the model itself remains an external provider selected by the
+planner/runtime.
+
+2.5
+
+SCHEDULING, RESOURCES, AND RELIABILITY
+
+Classical operating-system scheduling shows why priority alone can
+starve old work and why aging can improve fairness [15]. Linux cgroups provide
+a practical model for resource accounting and isolation [16]. AgentOS adapts
+these ideas to agent work: effective priority increases with queue wait, admission
+checks global and per-task slots, and token reservations are tracked before dispatch.
+Unlike a CPU scheduler, AgentOS cannot forcibly preempt an in-flight remote
+LLM request; its quantum is cooperative and checkpoint-based.
+The workflow and orchestration literature emphasises explicit dependency
+graphs and stateful execution. LangGraph persistence documents checkpointed
+graph state [17], while Temporal documents durable workflow execution [18].
+AgentOS currently validates and executes a DAG in-process and persists task/event
+evidence; automatic continuation of interrupted coroutines remains future work.
+
+2.6
+
+SECURITY AND SANDBOXED EXECUTION
+
+The Model Context Protocol specifies a standard way for AI applications
+to connect models with tools and data sources [19]. OWASP’s LLM security
+guidance highlights risks including excessive agency, insecure tool use, and
+code execution [20]. Python subprocess execution and filesystem scoping are
+therefore bounded in the code runner. Firecracker demonstrates the stronger
+isolation achievable with microVMs [21]. AgentOS’s current runner limits
+duration and output and scopes its working directory, but it is not a substitute
+for a hardened kernel or microVM sandbox.
+
+8
+2.7
+
+EVENT-DRIVEN INFRASTRUCTURE
+
+Redis documents Pub/Sub as a low-latency message distribution mechanism
+[22]. MongoDB provides durable document storage suitable for task history and
+metadata [23]. AgentOS uses Redis for transient task/event transport and queue
+metadata and MongoDB for durable task records. Redis Pub/Sub alone is not a
+durable event log; recovery therefore persists relevant state in Redis hashes and
+MongoDB events, with full replay and exactly-once semantics left for future
+work.
+
+2.8
+
+RESEARCH GAP AND POSITIONING
+
+The reviewed systems provide strong solutions for individual concerns:
+planning, memory, graph orchestration, tool use, security, or workflow durability.
+AgentOS’s contribution is an integrated educational/runtime prototype that makes
+these concerns observable together in one project. Its distinctive implementation
+choices are semantic agent selection, explicit DAG validation, global priority-aging
+scheduling, token/concurrency admission, Redis lifecycle events, context paging,
+and frontend graph/activity observability. The current phase prioritises a transparent
+and testable architecture over claims of production isolation or benchmark leadership.
+
+9
+
+CHAPTER 3
+SYSTEM DESIGN
+
+3.1
+
+DESIGN PRINCIPLES
+
+AgentOS is designed as a modular runtime. The gateway handles
+external requests, the orchestrator converts a prompt into a structured plan, and
+the kernel owns execution concerns. Redis is used for low-latency coordination
+and event transport, while MongoDB stores task history. ChromaDB stores
+embeddings used for semantic agent retrieval and context swap. The design
+keeps the current dependency truth in the DAG executor and treats scheduler
+decisions as admission and dispatch decisions.
+
+3.2
+
+OVERALL ARCHITECTURE
+
+Figure 3.1 shows the implemented data-plane components and their
+relationships. A user submits a task through the Next.js interface. The FastAPI
+gateway creates or retrieves task state and communicates with the kernel. The
+planner selects agents and creates steps; the kernel validates and executes those
+steps while publishing activity events.
+
+10
+
+Figure 3.1: AgentOS system architecture and the boundary between
+implemented and proposed runtime modules
+
+3.3
+
+FRONTEND, GATEWAY, AND EVENT FLOW
+
+The frontend sends task prompts over HTTP and receives live activity
+over WebSocket. The backend listener subscribes to the kernel event channel
+and forwards events to connected clients. Figure 3.2 shows the separation between
+the task submission channel and the kernel event channel. MongoDB persistence
+is performed by the kernel/repository layer so the UI can later query task history.
+
+11
+
+Figure 3.2: Frontend, FastAPI gateway, Redis channels, AI kernel, and
+agent-workforce flow
+
+3.4
+
+PLANNER AND DAG EXECUTION
+
+The planner retrieves relevant agent descriptions, requests a structured
+execution plan, and applies a fallback plan when the provider is unavailable.
+Each step includes an identifier, agent name, description, and dependency list.
+The validator canonicalises identifiers, rejects unknown dependencies and cycles,
+and supplies a sequential fallback only when a plan omits dependencies. The
+executor runs only steps whose prerequisites are complete. Figure 3.3 summarises
+this path. The frontend uses the same validated plan to generate Mermaid source
+and draw the plan graph, ensuring that displayed edges represent dependencies
+rather than decorative links.
+
+12
+
+Prompt
+
+Planner
+
+Validate DAG
+cycle + dependency checks
+
+Global scheduler
+priority aging
+
+Run ready step
+then unlock dependants
+
+Response
+
+Figure 3.3: Planner, validation, and dependency-aware execution flow
+
+3.5
+
+CONTEXT PAGING
+
+The context pager keeps a bounded active message window. When
+the window is exceeded, older or less relevant messages are embedded and
+stored in the ChromaDB swap collection. A later query retrieves semantically
+related pages and injects them into the active context. ChromaDB’s cosine space
+returns distance; the implementation converts it as s = 1 − d, where d is the
+returned cosine distance. Figure 3.4 presents the page-out and page-in flow.
+This mechanism reduces active prompt growth but does not guarantee perfect
+recall.
+
+Figure 3.4: Context page-out, vector-store retrieval, and semantic page-in
+flow
+
+13
+3.6
+
+GLOBAL SCHEDULER AND RESOURCE MANAGER
+
+The scheduler maintains ready records and selects work globally
+across active tasks. Effective priority is computed from base priority and queue
+waiting time, bounded by a maximum. Before dispatch, the resource manager
+checks the global slot limit, per-task slot limit, and token budget. The current
+defaults are three global execution slots, two slots per task, and a configurable
+50,000-token task budget. Dispatch is cooperative: a running remote LLM
+request is not forcibly killed. Figure 3.5 shows the decision path.
+
+Figure 3.5: Global agent scheduler, lifecycle events, resource checks, and
+runtime feedback
+
+3.7
+
+RESOURCE MANAGEMENT
+
+The resource-manager design in Figure 3.6 expands the admission
+point in the scheduler. It separates token-bucket accounting, quota monitoring,
+process monitoring, resource checking, and the final decision. In the current
+
+14
+implementation, the corresponding resource manager enforces global and per-task
+execution slots and a token budget; the policy store, process monitor, and hard
+preemption shown in the figure are design extensions.
+
+Figure 3.6: Resource-manager decision flow supplied for the AgentOS
+design
+
+3.8
+
+TOOL MANAGEMENT
+
+Figure 3.7 shows the intended tool-manager boundary between an
+agent, a tool registry, permission policy, and local or external services. AgentOS
+currently exposes bounded tools through the runtime and code runner; a complete
+permission store and MCP-compatible tool manager remain proposed components.
+
+15
+
+Figure 3.7: Tool selection, permission checking, invocation, and result
+return
+
+3.9
+
+AGENT LIFECYCLE AND EVENTS
+
+An agent step progresses from CREATED to READY, RUNNING,
+and COMPLETED. It can move to WAITING when a resource or dependency
+is unavailable, or to BLOCKED/FAILED when execution cannot proceed. The
+scheduler and runtime publish structured lifecycle events containing task, step,
+agent, execution, status, priority, queue wait, and attempt information. Figure 3.8
+shows the state model. RBAC, distributed mutex locking, and complete state-machine
+enforcement are architectural extensions rather than claims of full implementation
+in this phase.
+
+16
+
+WAITING
+CREATED
+
+READY
+RUNNING
+
+COMPLETED
+
+BLOCKED
+
+FAILED
+
+Figure 3.8: Agent lifecycle transitions
+
+3.10
+
+SANDBOXED CODE RUNNER
+
+The code runner receives generated Python, writes it into a scoped
+working directory, and invokes it through an asynchronous subprocess. It bounds
+execution time and captured output. A non-zero exit code or traceback is returned
+to the coder/tester agent, which may produce a corrected version for at most
+three attempts. Output lines can be published as kernel events for live frontend
+observation. Figure 3.9 shows this flow. The current isolation is process and
+directory scoping; hardened container or microVM isolation is future work.
+
+exit 0
+Output
+
+Request
+
+Coder & Tester Agent
+
+subprocess
+time + output limits
+
+max 3 retries
+
+Done
+
+traceback
+Repair
+
+Figure 3.9: Sandboxed Python execution and bounded self-healing loop
+
+17
+3.11
+
+IMPLEMENTED AND PROPOSED BOUNDARIES
+
+Table 3.1 records the design boundary used throughout the report.
+Table 3.1: Implemented and future AgentOS modules
+Module
+Frontend and gateway
+
+Current implementation
+
+Next.js, FastAPI, WebSocket
+activity
+Planner and DAG
+Structured plan, validation,
+Mermaid graph
+Scheduler
+and Priority aging, slots, token
+resources
+admission
+Context paging
+ChromaDB semantic swap
+and retrieval
+Redis and MongoDB
+Events, queue metadata, task
+history
+Code runner
+Bounded Python subprocess
+and retries
+RBAC / capability Architecture documented
+policy
+Distributed locks / Architecture documented
+workers
+Hybrid model routing Provider
+abstraction
+is
+partial
+Durable
+coroutine Interrupted records are
+restoration
+detected/requeued policy is
+partial
+
+Status / limitation
+Implemented
+Implemented
+Implemented;
+cooperative only
+Implemented
+Implemented
+Implemented;
+not
+microVM isolation
+Proposed
+Future
+Future
+Future
+
+18
+
+CHAPTER 4
+IMPLEMENTATION
+
+4.1
+
+IMPLEMENTATION ENVIRONMENT
+
+The kernel is implemented in Python using asynchronous services.
+The backend is FastAPI-based and the frontend is implemented with Next.js
+and TypeScript. Redis provides task/event channels and scheduler metadata;
+MongoDB stores task records and event history; ChromaDB provides persistent
+vector collections for planning and context swap. Provider-specific LLM usage
+is treated as optional metadata because some providers do not return reliable
+token counts.
+
+4.2
+
+SEMANTIC AGENT RETRIEVAL
+
+Agent descriptions are embedded in a persistent ChromaDB collection.
+A task description is used as a query, and the top candidate records are returned
+with their distances and metadata. In the configured cosine space, ChromaDB
+returns d = 1 − cos(θ), so the implementation reports s = 1 − d. It does not
+divide by two; that transformation would be appropriate for a different distance
+normalisation. An LRU cache reduces repeated retrieval for identical descriptions.
+Algorithm 4.1 Semantic Agent Retrieval
+Require: task description q, agent collection C, result count k
+1: r ← C.query(q, k)
+2: for all candidate distances di in r do
+3:
+si ← 1 − d i
+4:
+attach (agenti , si , descriptioni ) to candidate
+5: end for
+6: sort candidates by si descending
+7: return top candidates
+
+19
+4.3
+
+PLANNER AND FALLBACK
+
+The planner asks the configured LLM for a structured execution plan.
+The response is parsed into steps and normalised against the agent registry. If the
+LLM request fails, exceeds quota, or produces invalid structure, a deterministic
+fallback creates a usable plan from the best retrieved agent(s). This maintains
+task execution and observability without pretending that the fallback has the
+same reasoning quality as the provider.
+
+4.4
+
+DAG VALIDATION
+
+Every step has a unique identifier and a list of prerequisite identifiers.
+Validation rejects duplicate identifiers, unknown agents, unknown dependencies,
+and cycles. A Kahn-style topological pass counts nodes removed from the ready
+set. If the count is smaller than the number of steps, the dependency graph
+contains a cycle and is rejected. The same validated dependency lists are used
+to generate Mermaid edges.
+Algorithm 4.2 Dependency Validation by Cycle Detection
+Require: step set S
+1: build adjacency list and indegree for every step
+2: Q ← all steps with indegree zero
+3: visited ← 0
+4: while Q is not empty do
+5:
+remove a step u from Q; visited ← visited + 1
+6:
+for all successors v of u do
+7:
+decrement indegree(v)
+8:
+if indegree(v) = 0 then add v to Q
+9:
+end if
+10:
+end for
+11: end while
+12: if visited ̸= |S| then return invalid cyclic plan
+13: elsereturn valid plan
+14: end if
+
+20
+4.5
+
+PRIORITY-AGING SCHEDULER
+
+The scheduler stores ready records in a Redis sorted set and keeps
+execution metadata in hashes. The selection score is conceptually computed as:
+Pe f f ective = min(Pbase + αW, Pmax ),
+
+(4.1)
+
+where W is queue waiting time. The implementation uses an in-process pending
+set for dispatch coordination and persists the record so that ready and waiting
+work is visible and recoverable. A selected record is marked RUNNING, dispatched
+once, and then completed, requeued, or failed according to the result.
+Algorithm 4.3 Global Priority-Aging Cooperative Scheduler
+1: while scheduler is active do
+2:
+receive and persist READY records
+3:
+if ready queue is empty then wait for event; continue
+4:
+end if
+5:
+for all ready records ai do calculate Pe f f ective,i using Equation 4.1
+6:
+end for
+7:
+a∗ ← arg max Pe f f ective,i
+8:
+if resource manager denies a∗ temporarily then mark WAITING and
+requeue
+9:
+else if resource manager denies permanently then mark FAILED and
+publish event
+10:
+elsedispatch a∗ cooperatively and publish RUNNING
+11:
+if execution completes then publish COMPLETED
+12:
+else if execution waits or is requeued then publish WAITING or
+PREEMPTED
+13:
+elsepublish FAILED
+14:
+end if
+15:
+end if
+16:
+release resource reservations and record metrics
+17: end while
+
+4.6
+
+RESOURCE ADMISSION AND TOKEN BUDGETS
+
+The resource manager checks active global slots, active slots for the
+
+21
+task, and the cumulative estimated token reservation for the task. A temporary
+denial leaves work waiting; an exhausted task budget is converted into a blocked/failed
+outcome rather than leaving the task silently pending. Actual provider usage,
+when available, is recorded separately from estimated admission tokens. This
+distinction explains why a provider such as Groq may display zero usage metadata
+even while the scheduler correctly enforces its configured estimate.
+
+4.7
+
+REDIS EVENTS AND BACKEND FORWARDING
+
+Events are JSON records containing task identifier, step identifier,
+agent name, execution identifier, status, timestamp, priority, effective priority,
+queue wait, and attempt. The kernel publishes them on kernel events; the
+backend subscribes and forwards them over WebSocket. Scheduler records use
+keys such as agentos:scheduler:ready and agentos:scheduler:job:<execution id>.
+MongoDB persists task history and event records for later inspection.
+Table 4.1: Principal Redis channels and keys
+Name
+
+Purpose
+
+New
+task/submission
+messages
+kernel events
+Lifecycle, scheduler, and
+execution events
+agentos:scheduler:ready
+Ready queue sorted-set
+metadata
+agentos:scheduler:job:<id>
+Per-execution state hash
+agentos:task:<id> Task-level scheduler state
+
+backend tasks
+
+4.8
+
+Durability role
+Transport
+Transport plus Mongo
+persistence
+Recovery aid
+Recovery aid
+Inspection/recovery
+
+CONTEXT PAGE-OUT AND PAGE-IN
+
+The pager moves messages from the active conversation state to a
+persistent ChromaDB collection after a configured window is exceeded. Each
+
+22
+page stores message content, task metadata, and an embedding. On a later turn,
+the current query is embedded and the collection is searched; selected messages
+are reintroduced in relevance order. The implementation emits page-out and
+page-in metrics, allowing the UI or logs to verify that paging occurred.
+
+4.9
+
+SANDBOXED EXECUTION AND SELF-HEALING
+
+The code runner creates a scoped temporary script, launches it with
+asyncio.create subprocess exec, captures stdout/stderr, and terminates the
+subprocess after a strict timeout. Output size is limited to prevent unbounded
+memory use. On a traceback, the error is supplied to the coder/tester agent and a
+revised script is attempted, up to three times. The runner publishes line-oriented
+output and final status as kernel events. No claim is made that an ordinary
+subprocess is equivalent to a container or microVM security boundary.
+
+4.10
+
+FRONTEND OBSERVABILITY
+
+The task activity panel displays lifecycle events, scheduler state, queue
+position, effective priority, waiting time, attempt number, resource decisions,
+and token totals when provider metadata is present. The plan graph modal
+displays the structured graph and Mermaid source. Token fields distinguish
+input, output, total, and configured budget; when the provider omits usage, the
+interface reports that the metadata is unavailable rather than inventing a count.
+
+4.11
+
+AGENTOS ALGORITHMIC SPECIFICATION
+
+The following algorithm sheets define the AgentOS execution design.
+Together they specify the relationship between the planner, executor, lifecycle
+manager, context pager, dependency-aware DAG executor, scheduler, and priority-aging
+
+23
+model. They complement the executable implementation described above. The
+sheets that describe full execution-context restoration, hard time-slice suspension,
+permission stores, or preemption represent planned extensions where the current
+implementation remains cooperative or partial.
+
+4.12
+
+CONFIGURATION AND VERIFICATION
+
+Table 4.2 lists the important policy values. Verification for this phase
+consists of Python compilation, TypeScript type checking, scheduler/resource
+smoke tests, DAG validation checks, and manual event/graph inspection. No
+throughput, latency, or model-quality benchmark is claimed because a controlled
+benchmark dataset and repeated measurement harness are not yet part of the
+repository.
+Table 4.2: Selected AgentOS configuration values
+Configuration
+
+Default
+
+Role
+
+Global execution slots
+
+3
+
+Per-task execution slots
+Task token budget
+
+2
+50,000
+
+Maximum
+simultaneously
+admitted jobs
+Fairness/isolation across tasks
+Cumulative
+estimated
+admission limit
+Upper bound for aging
+
+Maximum
+scheduler configurable
+priority
+Context active window
+configurable
+Self-healing attempts
+3
+
+Number of active messages
+Maximum code repair retries
+
+24
+
+Figure 4.1: AgentOS structured LLM-based task planner
+
+25
+
+Figure 4.2: AgentOS multi-agent sequential executor
+
+26
+
+Figure 4.3: AgentOS agent lifecycle management
+
+27
+
+Figure 4.4: AgentOS virtual-memory context paging
+
+28
+
+Figure 4.5: AgentOS cooperative time-sliced agent execution
+
+29
+
+Figure 4.6: AgentOS semantic dependency-aware planning
+
+30
+
+Figure 4.7: AgentOS dependency-aware DAG execution
+
+31
+
+Figure 4.8: AgentOS priority-aging and cooperative time-slice model
+
+32
+
+Figure 4.9: AgentOS global priority-aging cooperative scheduler
+
+33
+
+CHAPTER 5
+CONCLUSION AND FUTURE WORK
+
+AgentOS establishes a modular runtime for multi-agent applications
+in which planning, semantic agent selection, DAG execution, context management,
+scheduling, resource admission, sandboxed code execution, and frontend observability
+are treated as shared system services. The current implementation provides a
+concrete bridge between the project architecture and a working repository: tasks
+enter through a gateway, plans are validated, runnable steps are scheduled, Redis
+carries lifecycle events, MongoDB preserves task history, ChromaDB supports
+semantic retrieval, and the frontend exposes both the plan graph and execution
+activity.
+The implementation is intentionally transparent about its boundaries.
+Scheduler dispatch is cooperative, token usage can be unavailable when a provider
+omits metadata, and restart recovery identifies interrupted work without restoring
+every active coroutine. Complete RBAC, distributed locks, hardened microVM
+isolation, durable workflow continuation, and formal performance evaluation
+remain outside the completed phase.
+Future work will therefore focus on durable restart resumption, true
+checkpoints inside long-running agents, complete capability enforcement, distributed
+scheduler workers, a hybrid local/cloud model router, cost-aware scheduling,
+formal workload benchmarks, and additional autonomous event triggers. These
+extensions can be added without changing the central separation between planner,
+scheduler, runtime, persistence, and observability layers.
+
+34
+
+CHAPTER 6
+VERIFICATION EVIDENCE
+
+The current phase was checked with repository-level validation rather
+than performance claims. Python modules in the kernel and backend were
+compiled with python -m compileall -q. The frontend was checked with
+the TypeScript compiler using npx tsc --noEmit --incremental false. Focused
+smoke tests exercised scheduler admission, resource release, priority aging,
+DAG validation, and event payload creation. Manual inspection verified that
+Mermaid source contains dependency edges when the plan supplies dependencies
+and that the activity interface receives kernel events.
+The evidence establishes build and integration readiness for the present
+phase. It does not establish production security, exact-once distributed execution,
+provider-independent token accounting, or comparative model quality. Those
+claims require controlled experiments and are reserved for future evaluation.
+
+35
+
+REFERENCES
+
+[1] Kai Mei et al. Aios: Llm agent operating system.
+arXiv:2403.16971, 2024.
+
+arXiv preprint
+
+[2] Lei Wang et al. A survey on large language model based autonomous
+agents. Frontiers of Computer Science, 18(6), 2024.
+[3] Zhihan Liu et al. Llm+ p: Empowering large language models with optimal
+planning proficiency. arXiv preprint arXiv:2312.03815, 2023.
+[4] Qingyun Wu et al. Autogen: Enabling next-gen llm applications. arXiv
+preprint arXiv:2308.08155, 2023.
+[5] LangChain. Langgraph documentation, 2026. Accessed October 2026.
+[6] Charles Packer et al. Memgpt: Towards llms as operating systems. arXiv
+preprint arXiv:2310.08560, 2023.
+[7] Jiazheng Kang et al. Memory os of ai agent. In Proceedings of the 2025
+Conference on Empirical Methods in Natural Language Processing, pages
+25264–25286, 2025.
+[8] Patrick Lewis et al.
+Retrieval-augmented generation for
+knowledge-intensive nlp tasks. In Advances in Neural Information
+Processing Systems, volume 33, 2020.
+[9] Chroma. Chroma documentation: Collections and configuration, 2026.
+Accessed October 2026.
+[10] Shunyu Yao et al. React: Synergizing reasoning and acting in language
+models. In International Conference on Learning Representations, 2023.
+[11] Timo Schick et al. Toolformer: Language models can teach themselves
+to use tools. In Advances in Neural Information Processing Systems,
+volume 36, 2023.
+[12] Joon Sung Park et al. Generative agents: Interactive simulacra of human
+behavior. In Proceedings of the 36th Annual ACM Symposium on User
+Interface Software and Technology, 2023.
+[13] Noah Shinn et al. Reflexion: Language agents with verbal reinforcement
+learning.
+In Advances in Neural Information Processing Systems,
+volume 36, 2023.
+[14] Ashish Vaswani et al. Attention is all you need. In Advances in Neural
+Information Processing Systems, volume 30, 2017.
+
+36
+[15] Abraham Silberschatz, Peter Baer Galvin, and Greg Gagne. Operating
+System Concepts. Wiley, 10 edition, 2018.
+[16] Linux Kernel Documentation. Control group v2, 2026. Accessed October
+2026.
+[17] LangChain. Langgraph persistence and checkpointing, 2026. Accessed
+October 2026.
+[18] Temporal Technologies. Temporal documentation: Durable execution,
+2026. Accessed October 2026.
+[19] Model Context Protocol.
+Accessed October 2026.
+
+Model context protocol specification, 2026.
+
+[20] OWASP Foundation. Owasp top 10 for large language model applications,
+2025. Accessed October 2026.
+[21] Amazon Web Services.
+Accessed October 2026.
+
+Firecracker microvm documentation, 2026.
+
+[22] Redis Ltd. Redis pub/sub documentation, 2026. Accessed October 2026.
+[23] MongoDB Inc. Mongodb documentation, 2026. Accessed October 2026.
+
+

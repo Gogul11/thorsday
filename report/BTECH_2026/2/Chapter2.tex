@@ -1,0 +1,34 @@
+\chapter{\uppercase{Literature Survey}}
+\label{ch:survey}
+
+\section{\uppercase{Overview}}
+This chapter reviews work that informs the design of AgentOS. The survey combines peer-reviewed or archival research with official technical documentation for infrastructure components. Each group is considered in terms of its contribution, limitation for the present project, and the way AgentOS uses or extends the idea.
+
+\section{\uppercase{Agent Runtimes and Autonomous Agents}}
+AIOS frames an LLM agent operating system around scheduling, context management, memory, storage, access control, and tool management \cite{mei2024aios}. Its operating-system analogy directly motivates the AgentOS kernel, although the current AgentOS implementation is smaller and uses a Python/Redis/MongoDB stack rather than a complete OS abstraction. The broader survey by Wang et al. classifies LLM-based agents by construction, applications, and evaluation \cite{wang2024survey}; it identifies coordination and reliability as open challenges that AgentOS addresses through explicit events and DAG dependencies.
+
+The LLM-as-an-OS proposal treats models as system resources and agents as applications \cite{liu2023llmos}. AutoGen demonstrates programmable multi-agent conversation and human-in-the-loop patterns \cite{wu2023autogen}, while LangGraph provides graph-based orchestration and durable execution concepts \cite{langgraphdocs}. These systems show the value of explicit state and orchestration, but do not provide the exact global priority-aging and token-admission policy implemented here.
+
+\section{\uppercase{Memory and Context Management}}
+MemGPT introduces virtual context management that moves information between active context and external storage \cite{packer2023memgpt}. MemoryOS organises memory into short-, mid-, and long-term layers and evaluates memory retention for conversational agents \cite{kang2025memoryos}. These works motivate AgentOS context page-out and page-in. AgentOS uses semantic embeddings in ChromaDB and an active-window policy; it currently provides a project-level paging mechanism rather than a learned memory hierarchy or an independently benchmarked memory score.
+
+Retrieval-Augmented Generation (RAG) combines generation with a non-parametric knowledge store \cite{lewis2020rag}. ChromaDB documents collections, embeddings, and distance-based retrieval \cite{chromadocs}. AgentOS uses this pattern both for agent capability retrieval and for swapped context. The limitation is that retrieval quality depends on the embedding model and distance configuration; the current implementation exposes similarity metadata but does not claim domain-wide retrieval benchmarks.
+
+\section{\uppercase{Planning, Tool Use, and Reflection}}
+ReAct interleaves reasoning and action so that an agent can use external tools during problem solving \cite{yao2023react}. Toolformer studies self-supervised learning for deciding when and how to call APIs \cite{schick2023toolformer}. Generative Agents combine memory, reflection, and planning for believable behaviour \cite{park2023generative}. Reflexion uses verbal feedback to improve subsequent attempts without updating model weights \cite{shinn2023reflexion}. AgentOS adopts structured planning, explicit tool boundaries, persisted events, and bounded self-healing, but does not train models or claim the autonomous reflection capabilities of these research systems.
+
+The Transformer architecture remains the dominant basis for modern LLMs \cite{vaswani2017attention}. Its context limitation makes external context management relevant to AgentOS, while the model itself remains an external provider selected by the planner/runtime.
+
+\section{\uppercase{Scheduling, Resources, and Reliability}}
+Classical operating-system scheduling shows why priority alone can starve old work and why aging can improve fairness \cite{silberschatz2018os}. Linux cgroups provide a practical model for resource accounting and isolation \cite{cgroupsv2}. AgentOS adapts these ideas to agent work: effective priority increases with queue wait, admission checks global and per-task slots, and token reservations are tracked before dispatch. Unlike a CPU scheduler, AgentOS cannot forcibly preempt an in-flight remote LLM request; its quantum is cooperative and checkpoint-based.
+
+The workflow and orchestration literature emphasises explicit dependency graphs and stateful execution. LangGraph persistence documents checkpointed graph state \cite{langgraphpersistence}, while Temporal documents durable workflow execution \cite{temporaldocs}. AgentOS currently validates and executes a DAG in-process and persists task/event evidence; automatic continuation of interrupted coroutines remains future work.
+
+\section{\uppercase{Security and Sandboxed Execution}}
+The Model Context Protocol specifies a standard way for AI applications to connect models with tools and data sources \cite{mcpdocs}. OWASP's LLM security guidance highlights risks including excessive agency, insecure tool use, and code execution \cite{owaspllm}. Python subprocess execution and filesystem scoping are therefore bounded in the code runner. Firecracker demonstrates the stronger isolation achievable with microVMs \cite{firecracker}. AgentOS's current runner limits duration and output and scopes its working directory, but it is not a substitute for a hardened kernel or microVM sandbox.
+
+\section{\uppercase{Event-Driven Infrastructure}}
+Redis documents Pub/Sub as a low-latency message distribution mechanism \cite{redispubsub}. MongoDB provides durable document storage suitable for task history and metadata \cite{mongodocs}. AgentOS uses Redis for transient task/event transport and queue metadata and MongoDB for durable task records. Redis Pub/Sub alone is not a durable event log; recovery therefore persists relevant state in Redis hashes and MongoDB events, with full replay and exactly-once semantics left for future work.
+
+\section{\uppercase{Research Gap and Positioning}}
+The reviewed systems provide strong solutions for individual concerns: planning, memory, graph orchestration, tool use, security, or workflow durability. AgentOS's contribution is an integrated educational/runtime prototype that makes these concerns observable together in one project. Its distinctive implementation choices are semantic agent selection, explicit DAG validation, global priority-aging scheduling, token/concurrency admission, Redis lifecycle events, context paging, and frontend graph/activity observability. The current phase prioritises a transparent and testable architecture over claims of production isolation or benchmark leadership.

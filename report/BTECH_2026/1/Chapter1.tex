@@ -1,0 +1,37 @@
+\chapter{\uppercase{Introduction}}
+\label{intro}
+
+\section{\uppercase{Background}}
+Large-language-model (LLM) applications have progressed from reactive question-answering interfaces to systems that can plan, call tools, maintain memory, and delegate work to specialised agents. A useful multi-agent application therefore needs more than a prompt and a model endpoint. It needs a runtime that can represent work, enforce dependencies, manage limited provider and execution resources, preserve useful context, report progress, and recover safely from failures.
+
+Operating-system concepts provide a useful design analogy. A task is submitted to a gateway, a planner decomposes it into executable steps, a scheduler selects runnable agent work, a resource manager performs admission control, and an event path exposes state transitions. AgentOS applies this analogy to LLM-powered agents while retaining the uncertainty and latency of model calls.
+
+\section{\uppercase{Motivation}}
+In a conventional chatbot, application logic, conversation state, tool invocation, and error handling are often tightly coupled. This makes it difficult to run independent work concurrently or to explain why an agent was selected. Long conversations also exceed the practical context window of a model, while blindly truncating history can remove information needed by later steps. Finally, direct code execution or unrestricted tools create safety and observability risks.
+
+AgentOS is motivated by the need for a reusable runtime layer. The project investigates how planning, agent retrieval, DAG execution, semantic context paging, global scheduling, resource accounting, event streaming, and sandboxed execution can be composed into one observable system.
+
+\section{\uppercase{Problem Statement}}
+There is no single lightweight runtime in the project environment that coordinates heterogeneous agents across multiple concurrent tasks while enforcing dependencies, observing token and concurrency budgets, preserving relevant context, and exposing execution state to a user interface. Reimplementing these facilities inside each application increases duplication, makes failures difficult to diagnose, and prevents systematic evaluation of scheduling and resource policies.
+
+\section{\uppercase{Objectives}}
+The objectives of AgentOS are:
+\begin{enumerate}
+\item to provide a modular AI-kernel-style runtime for specialised agents;
+\item to generate structured plans and execute their steps as a validated DAG;
+\item to retrieve suitable agents using semantic capability matching;
+\item to page conversational context between an active window and a vector-backed swap space;
+\item to schedule runnable work using priority aging, fairness, and cooperative dispatch;
+\item to enforce global and per-task concurrency and token budgets before execution;
+\item to publish lifecycle and execution events through Redis and forward them to the UI; and
+\item to execute generated Python code in a bounded subprocess with a limited self-healing loop.
+\end{enumerate}
+
+\section{\uppercase{Scope}}
+The current phase covers a Next.js frontend, FastAPI gateway, Python kernel, Redis event transport, MongoDB task persistence, ChromaDB retrieval, structured planning, DAG validation and Mermaid generation, context paging, a global in-process scheduler, resource admission, and a sandboxed Python runner. The scope does not claim complete RBAC, distributed scheduler workers, forced termination of active LLM calls, automatic coroutine restoration, or a production-grade hybrid model router. These are documented as future work.
+
+\section{\uppercase{Contributions}}
+The project contributions are a unified execution model for heterogeneous agents, a visible plan graph, a Redis-mediated activity stream, a semantic context paging mechanism, a priority-aging scheduler with resource admission, and a bounded code-execution/self-healing path. The implementation also makes a deliberate distinction between design aspirations and features that are present and testable in the repository.
+
+\section{\uppercase{Report Organization}}
+Chapter 2 surveys research and technical systems related to autonomous agents, memory, planning, scheduling, tool use, security, event transport, and vector retrieval. Chapter 3 presents the AgentOS architecture and data flows. Chapter 4 describes the implementation algorithms, storage conventions, events, and verification evidence. The conclusion records current limitations and future extensions.

@@ -1,0 +1,146 @@
+\chapter{\uppercase{Implementation}}
+\label{chap4}
+
+\section{\uppercase{Implementation Environment}}
+The kernel is implemented in Python using asynchronous services. The backend is FastAPI-based and the frontend is implemented with Next.js and TypeScript. Redis provides task/event channels and scheduler metadata; MongoDB stores task records and event history; ChromaDB provides persistent vector collections for planning and context swap. Provider-specific LLM usage is treated as optional metadata because some providers do not return reliable token counts.
+
+\section{\uppercase{Semantic Agent Retrieval}}
+Agent descriptions are embedded in a persistent ChromaDB collection. A task description is used as a query, and the top candidate records are returned with their distances and metadata. In the configured cosine space, ChromaDB returns $d=1-\cos(\theta)$, so the implementation reports $s=1-d$. It does not divide by two; that transformation would be appropriate for a different distance normalisation. An LRU cache reduces repeated retrieval for identical descriptions.
+
+\begin{algorithm}[H]
+\caption{Semantic Agent Retrieval}
+\begin{algorithmic}[1]
+\Require task description $q$, agent collection $C$, result count $k$
+\State $r \gets C.\mathrm{query}(q,k)$
+\ForAll{candidate distances $d_i$ in $r$}
+\State $s_i \gets 1-d_i$
+\State attach $(agent_i,s_i,description_i)$ to candidate
+\EndFor
+\State sort candidates by $s_i$ descending
+\State \Return top candidates
+\end{algorithmic}
+\end{algorithm}
+
+\section{\uppercase{Planner and Fallback}}
+The planner asks the configured LLM for a structured execution plan. The response is parsed into steps and normalised against the agent registry. If the LLM request fails, exceeds quota, or produces invalid structure, a deterministic fallback creates a usable plan from the best retrieved agent(s). This maintains task execution and observability without pretending that the fallback has the same reasoning quality as the provider.
+
+Figure~\ref{fig:optimized-planner} illustrates the complete optimized planning path, from semantic candidate retrieval through structured plan validation, fallback routing, DAG construction, scheduling, and runtime execution.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.98\textwidth]{4/figures/optimized_planner.png}
+\caption{Optimized semantic planner with candidate retrieval, structured plan validation, fallback routing, and DAG execution}
+\label{fig:optimized-planner}
+\end{figure}
+
+\section{\uppercase{DAG Validation}}
+Every step has a unique identifier and a list of prerequisite identifiers. Validation rejects duplicate identifiers, unknown agents, unknown dependencies, and cycles. A Kahn-style topological pass counts nodes removed from the ready set. If the count is smaller than the number of steps, the dependency graph contains a cycle and is rejected. The same validated dependency lists are used to generate Mermaid edges.
+
+\begin{algorithm}[H]
+\caption{Dependency Validation by Cycle Detection}
+\begin{algorithmic}[1]
+\Require step set $S$
+\State build adjacency list and indegree for every step
+\State $Q \gets$ all steps with indegree zero
+\State $visited \gets 0$
+\While{$Q$ is not empty}
+\State remove a step $u$ from $Q$; $visited \gets visited+1$
+\ForAll{successors $v$ of $u$}
+\State decrement indegree$(v)$
+\If{indegree$(v)=0$} add $v$ to $Q$ \EndIf
+\EndFor
+\EndWhile
+\If{$visited \ne |S|$} \Return invalid cyclic plan \Else \Return valid plan \EndIf
+\end{algorithmic}
+\end{algorithm}
+
+\section{\uppercase{Priority-Aging Scheduler}}
+The scheduler stores ready records in a Redis sorted set and keeps execution metadata in hashes. The selection score is conceptually computed as:
+\begin{equation}
+P_{effective}=\min(P_{base}+\alpha W,P_{max}),
+\label{eq:priority}
+\end{equation}
+where $W$ is queue waiting time. The implementation uses an in-process pending set for dispatch coordination and persists the record so that ready and waiting work is visible and recoverable. A selected record is marked RUNNING, dispatched once, and then completed, requeued, or failed according to the result.
+
+\begin{algorithm}[H]
+\caption{Global Priority-Aging Cooperative Scheduler}
+\begin{algorithmic}[1]
+\While{scheduler is active}
+\State receive and persist READY records
+\If{ready queue is empty} wait for event; continue \EndIf
+\ForAll{ready records $a_i$} calculate $P_{effective,i}$ using Equation~\ref{eq:priority} \EndFor
+\State $a^* \gets \arg\max P_{effective,i}$
+\If{resource manager denies $a^*$ temporarily} mark WAITING and requeue
+\ElsIf{resource manager denies permanently} mark FAILED and publish event
+\Else dispatch $a^*$ cooperatively and publish RUNNING
+\If{execution completes} publish COMPLETED
+\ElsIf{execution waits or is requeued} publish WAITING or PREEMPTED
+\Else publish FAILED
+\EndIf
+\EndIf
+\State release resource reservations and record metrics
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+\section{\uppercase{Resource Admission and Token Budgets}}
+The resource manager checks active global slots, active slots for the task, and the cumulative estimated token reservation for the task. A temporary denial leaves work waiting; an exhausted task budget is converted into a blocked/failed outcome rather than leaving the task silently pending. Actual provider usage, when available, is recorded separately from estimated admission tokens. This distinction explains why a provider such as Groq may display zero usage metadata even while the scheduler correctly enforces its configured estimate.
+
+\section{\uppercase{Redis Events and Backend Forwarding}}
+Events are JSON records containing task identifier, step identifier, agent name, execution identifier, status, timestamp, priority, effective priority, queue wait, and attempt. The kernel publishes them on \texttt{kernel\_events}; the backend subscribes and forwards them over WebSocket. Scheduler records use keys such as \texttt{agentos:scheduler:ready} and \texttt{agentos:scheduler:job:<execution\_id>}. MongoDB persists task history and event records for later inspection.
+
+\begin{table}[H]
+\centering
+\caption{Principal Redis channels and keys}
+\label{tab:rediskeys}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.29\textwidth}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{0.29\textwidth}}
+\toprule
+Name & Purpose & Durability role \\
+\midrule
+\texttt{backend\_tasks} & New task/submission messages & Transport \\
+\texttt{kernel\_events} & Lifecycle, scheduler, and execution events & Transport plus Mongo persistence \\
+\texttt{agentos:\allowbreak scheduler:\allowbreak ready} & Ready queue sorted-set metadata & Recovery aid \\
+\texttt{agentos:\allowbreak scheduler:\allowbreak job:\allowbreak <id>} & Per-execution state hash & Recovery aid \\
+\texttt{agentos:\allowbreak task:\allowbreak <id>} & Task-level scheduler state & Inspection/recovery \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{\uppercase{Context Page-Out and Page-In}}
+The pager moves messages from the active conversation state to a persistent ChromaDB collection after a configured window is exceeded. Each page stores message content, task metadata, and an embedding. On a later turn, the current query is embedded and the collection is searched; selected messages are reintroduced in relevance order. The implementation emits page-out and page-in metrics, allowing the UI or logs to verify that paging occurred.
+
+\section{\uppercase{Sandboxed Execution and Self-Healing}}
+The code runner creates a scoped temporary script, launches it with \texttt{asyncio.create\_subprocess\_exec}, captures stdout/stderr, and terminates the subprocess after a strict timeout. Output size is limited to prevent unbounded memory use. On a traceback, the error is supplied to the coder/tester agent and a revised script is attempted, up to three times. The runner publishes line-oriented output and final status as kernel events. No claim is made that an ordinary subprocess is equivalent to a container or microVM security boundary.
+
+\section{\uppercase{Frontend Observability}}
+The task activity panel displays lifecycle events, scheduler state, queue position, effective priority, waiting time, attempt number, resource decisions, and token totals when provider metadata is present. The plan graph modal displays the structured graph and Mermaid source. Token fields distinguish input, output, total, and configured budget; when the provider omits usage, the interface reports that the metadata is unavailable rather than inventing a count.
+
+\section{\uppercase{Configuration and Verification}}
+Table~\ref{tab:config} lists the important policy values. Verification for this phase consists of Python compilation, TypeScript type checking, scheduler/resource smoke tests, DAG validation checks, and manual event/graph inspection. No throughput, latency, or model-quality benchmark is claimed because a controlled benchmark dataset and repeated measurement harness are not yet part of the repository.
+\begin{table}[H]
+\centering
+\caption{Selected AgentOS configuration values}
+\label{tab:config}
+\begin{tabular}{p{5cm}p{3cm}p{5.5cm}}
+\toprule
+Configuration & Default & Role \\
+\midrule
+Global execution slots & 3 & Maximum simultaneously admitted jobs \\
+Per-task execution slots & 2 & Fairness/isolation across tasks \\
+Task token budget & 50,000 & Cumulative estimated admission limit \\
+Maximum scheduler priority & configurable & Upper bound for aging \\
+Context active window & configurable & Number of active messages \\
+Self-healing attempts & 3 & Maximum code repair retries \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{\uppercase{AgentOS Algorithmic Specification}}
+The following algorithm sheets define the AgentOS execution design. Together they specify the relationship between the planner, executor, lifecycle manager, context pager, dependency-aware DAG executor, scheduler, and priority-aging model. They complement the executable implementation described above. The sheets that describe full execution-context restoration, hard time-slice suspension, permission stores, or preemption represent planned extensions where the current implementation remains cooperative or partial.
+
+\begin{figure}[p]\centering\includegraphics[trim=1.8cm 2cm 1.8cm 7.5cm,clip,width=0.98\textwidth]{4/algorithms/alg-3.png}\caption{AgentOS agent lifecycle management}\label{fig:algo-lifecycle}\end{figure}
+\begin{figure}[p]\centering\includegraphics[trim=1.8cm 2cm 1.8cm 1cm,clip,width=0.98\textwidth]{4/algorithms/alg-4.png}\caption{AgentOS virtual-memory context paging}\label{fig:algo-context}\end{figure}
+\begin{figure}[p]\centering\includegraphics[trim=1.8cm 2cm 1.8cm 1cm,clip,width=0.98\textwidth]{4/algorithms/alg-5.png}\caption{AgentOS cooperative time-sliced agent execution}\label{fig:algo-timeslice}\end{figure}
+\begin{figure}[p]\centering\includegraphics[trim=1.8cm 2cm 1.8cm 1cm,clip,width=0.98\textwidth]{4/algorithms/alg-6.png}\caption{AgentOS semantic dependency-aware planning}\label{fig:algo-semantic}\end{figure}
+\begin{figure}[p]\centering\includegraphics[trim=1.8cm 2cm 1.8cm 1cm,clip,width=0.98\textwidth]{4/algorithms/alg-7.png}\caption{AgentOS dependency-aware DAG execution}\label{fig:algo-dag}\end{figure}
+\begin{figure}[p]\centering\includegraphics[trim=1.8cm 2cm 1.8cm 1cm,clip,width=0.98\textwidth]{4/algorithms/alg-8.png}\caption{AgentOS priority-aging and cooperative time-slice model}\label{fig:algo-model}\end{figure}
+\begin{figure}[p]\centering\includegraphics[trim=1.8cm 2cm 1.8cm 1cm,clip,width=0.98\textwidth]{4/algorithms/alg-9.png}\caption{AgentOS global priority-aging cooperative scheduler}\label{fig:algo-scheduler}\end{figure}
