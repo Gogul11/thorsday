@@ -38,6 +38,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Any
+import os
 
 import chromadb
 from chromadb.utils import embedding_functions
@@ -61,7 +62,13 @@ MAX_PAGE_IN_RESULTS: int = 3
 _COLLECTION_NAME = "agentos_context_swap"
 
 # Persistent storage path: server/kernel/data/swap_space/
-_SWAP_SPACE_DIR = Path(__file__).parent.parent / "data" / "swap_space"
+_DEFAULT_SWAP_SPACE_DIR = Path(__file__).parent.parent / "data" / "swap_space"
+# Evaluation runs can point the pager at an isolated Chroma directory. This
+# prevents smoke tests and benchmark runs from polluting the production swap
+# partition.
+_SWAP_SPACE_DIR = Path(
+    os.getenv("AOS_CONTEXT_SWAP_DIR", str(_DEFAULT_SWAP_SPACE_DIR))
+)
 
 
 # Redis telemetry helpers

@@ -1,0 +1,77 @@
+[
+  {
+    "question_id": "smoke-001",
+    "conversation_id": "agentos-architecture",
+    "messages": [
+      {"id": "msg-001", "role": "human", "content": "We are designing AgentOS as a kernel, backend, and frontend system."},
+      {"id": "msg-002", "role": "ai", "content": "The kernel owns planning, scheduling, execution, and context management."},
+      {"id": "msg-003", "role": "human", "content": "The persistent task conversation is stored in MongoDB."},
+      {"id": "msg-004", "role": "ai", "content": "The context engine should page older messages into ChromaDB for semantic retrieval."},
+      {"id": "msg-005", "role": "human", "content": "The frontend displays task activity and status updates."},
+      {"id": "msg-006", "role": "ai", "content": "Recent messages remain active while older messages move to the swap partition."}
+    ],
+    "question": "Which database stores the persistent task conversation?",
+    "expected_answer": "MongoDB",
+    "relevant_message_ids": ["msg-003"]
+  },
+  {
+    "question_id": "smoke-002",
+    "conversation_id": "context-policy",
+    "messages": [
+      {"id": "msg-001", "role": "human", "content": "Keep the active context window small so the model has room to reason."},
+      {"id": "msg-002", "role": "ai", "content": "The initial AgentOS policy keeps 20 messages in the active RAM window."},
+      {"id": "msg-003", "role": "human", "content": "Messages outside that window are candidates for page-out."},
+      {"id": "msg-004", "role": "ai", "content": "Relevant historical pages can be retrieved when a later query needs them."},
+      {"id": "msg-005", "role": "human", "content": "Unrelated messages discuss UI colours and dashboard spacing."},
+      {"id": "msg-006", "role": "ai", "content": "The evaluation should measure both retrieval quality and token reduction."}
+    ],
+    "question": "What is the configured active context window size?",
+    "expected_answer": "20 messages",
+    "relevant_message_ids": ["msg-002"]
+  },
+  {
+    "question_id": "smoke-003",
+    "conversation_id": "scheduler-policy",
+    "messages": [
+      {"id": "msg-001", "role": "human", "content": "The scheduler must respect the global concurrency limit."},
+      {"id": "msg-002", "role": "ai", "content": "Temporary resource denials should leave a task waiting and eligible for requeue."},
+      {"id": "msg-003", "role": "human", "content": "A failed task is different from a temporarily blocked task."},
+      {"id": "msg-004", "role": "ai", "content": "The desired dependency-order violation rate is zero."},
+      {"id": "msg-005", "role": "human", "content": "The dashboard also reports queue waiting time."},
+      {"id": "msg-006", "role": "ai", "content": "The test should ask about temporary denial handling rather than UI details."}
+    ],
+    "question": "What should happen after a temporary resource denial?",
+    "expected_answer": "The task should wait and be requeued.",
+    "relevant_message_ids": ["msg-002"]
+  },
+  {
+    "question_id": "smoke-004",
+    "conversation_id": "event-contract",
+    "messages": [
+      {"id": "msg-001", "role": "human", "content": "Every lifecycle event needs a task identifier and execution identifier."},
+      {"id": "msg-002", "role": "ai", "content": "Redis carries kernel events to the backend and activity stream."},
+      {"id": "msg-003", "role": "human", "content": "The event contract also includes status, timestamp, priority, and attempt number."},
+      {"id": "msg-004", "role": "ai", "content": "The frontend should correlate events using the execution identifier."},
+      {"id": "msg-005", "role": "human", "content": "The test fixture contains unrelated context about MongoDB."},
+      {"id": "msg-006", "role": "ai", "content": "Observability completeness means required event fields are present."}
+    ],
+    "question": "Which system carries kernel events to the backend?",
+    "expected_answer": "Redis",
+    "relevant_message_ids": ["msg-002"]
+  },
+  {
+    "question_id": "smoke-005",
+    "conversation_id": "missing-fact",
+    "messages": [
+      {"id": "msg-001", "role": "human", "content": "The project has agents for weather, email, code execution, and research."},
+      {"id": "msg-002", "role": "ai", "content": "Each agent is selected by the planner based on the task requirements."},
+      {"id": "msg-003", "role": "human", "content": "The context engine must not invent facts that are absent from the conversation."},
+      {"id": "msg-004", "role": "ai", "content": "An unanswered question should be marked as unavailable or abstained."},
+      {"id": "msg-005", "role": "human", "content": "The deployment region is intentionally not specified in this conversation."},
+      {"id": "msg-006", "role": "ai", "content": "This case tests whether retrieval correctly supports abstention."}
+    ],
+    "question": "Which cloud region is AgentOS deployed in?",
+    "expected_answer": null,
+    "relevant_message_ids": []
+  }
+]
