@@ -119,6 +119,11 @@ as external comparisons only after the four local configurations are stable.
 These values should be recorded in every experiment manifest and kept fixed
 within a comparison.
 
+The pager now also records page-out internals: embedding time, vector-store
+write time, skipped existing pages, and total page-out time. It uses a per-task
+message-index watermark, explicit one-time embedding, bounded batch upserts,
+and runs page-out work in a worker thread from the async context loader.
+
 ## Improved smoke run
 
 Run from the repository root after installing the dependencies in

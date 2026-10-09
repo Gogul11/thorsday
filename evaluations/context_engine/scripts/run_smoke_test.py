@@ -165,6 +165,7 @@ def run_trial(
     page_out_count = 0
     page_out_latency_ms = 0.0
     page_in_latency_ms = 0.0
+    page_out_metrics: dict[str, Any] = {}
     error = None
 
     started = time.perf_counter()
@@ -177,6 +178,7 @@ def run_trial(
                 task_id=task_id, overflow_messages=overflow, base_index=0
             )
             page_out_latency_ms = (time.perf_counter() - page_out_started) * 1000
+            page_out_metrics = context_pager.get_last_page_out_metrics()
             page_in_started = time.perf_counter()
             if configuration == "vector_rag":
                 retrieved = context_pager.page_in_relevant_context(
@@ -237,6 +239,11 @@ def run_trial(
         "active_context_tokens_estimate": active_tokens,
         "context_token_reduction": 1 - active_tokens / full_tokens if full_tokens else None,
         "page_out_latency_ms": round(page_out_latency_ms, 3),
+        "embedding_latency_ms": page_out_metrics.get("embedding_latency_ms", 0.0),
+        "vector_store_write_latency_ms": page_out_metrics.get("vector_store_write_latency_ms", 0.0),
+        "skipped_existing_or_watermark": page_out_metrics.get(
+            "skipped_existing_or_watermark", 0
+        ),
         "page_in_latency_ms": round(page_in_latency_ms, 3),
         "total_context_operation_latency_ms": round(retrieval_latency_ms, 3),
         "answer_visible_without_llm": answer_visible,
@@ -266,6 +273,8 @@ def aggregate(trials: list[dict[str, Any]]) -> dict[str, Any]:
     for configuration, rows in grouped.items():
         latencies = [row["page_in_latency_ms"] for row in rows if row["page_in_latency_ms"] > 0]
         page_out_latencies = [row["page_out_latency_ms"] for row in rows if row["page_out_latency_ms"] > 0]
+        embedding_latencies = [row["embedding_latency_ms"] for row in rows if row["embedding_latency_ms"] > 0]
+        write_latencies = [row["vector_store_write_latency_ms"] for row in rows if row["vector_store_write_latency_ms"] > 0]
         reductions = [row["context_token_reduction"] for row in rows if row["context_token_reduction"] is not None]
         summary["configurations"][configuration] = {
             "trial_count": len(rows),
@@ -280,6 +289,11 @@ def aggregate(trials: list[dict[str, Any]]) -> dict[str, Any]:
             "mean_token_reduction": mean(reductions) if reductions else None,
             "page_in_latency_ms": latency_stats(latencies),
             "page_out_latency_ms": latency_stats(page_out_latencies),
+            "embedding_latency_ms": latency_stats(embedding_latencies),
+            "vector_store_write_latency_ms": latency_stats(write_latencies),
+            "total_skipped_existing_or_watermark": sum(
+                row["skipped_existing_or_watermark"] for row in rows
+            ),
             "llm_answer_accuracy": (
                 mean([row["llm_answer_correct"] for row in rows if row["llm_answer_correct"] is not None])
                 if any(row["llm_answer_correct"] is not None for row in rows) else None

@@ -39,6 +39,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 import os
+from time import perf_counter
 
 import chromadb
 from chromadb.utils import embedding_functions
@@ -57,6 +58,10 @@ PAGE_IN_SIMILARITY_THRESHOLD: float = 0.55
 
 # K: Maximum number of swapped pages to inject per query turn.
 MAX_PAGE_IN_RESULTS: int = 3
+
+# Chroma accepts batches, but keeping a bounded batch avoids oversized writes
+# when a long conversation is first paged out.
+PAGE_OUT_BATCH_SIZE: int = 64
 
 # ChromaDB collection name — acts as the named swap partition.
 _COLLECTION_NAME = "agentos_context_swap"
@@ -138,6 +143,13 @@ class ContextPager:
             metadata={"hnsw:space": "cosine"},
         )
 
+        # Append-only conversations normally overflow at the end. Remembering
+        # the highest indexed page per task lets repeated context loads avoid
+        # rescanning and re-embedding the complete overflow prefix. The
+        # watermark is rebuilt from Chroma on first use after a process restart.
+        self._page_out_watermarks: dict[str, int] = {}
+        self._last_page_out_metrics: dict[str, Any] = {}
+
         logger.info(
             "ContextPager: swap partition initialised at %s (collection=%s, items=%d)",
             _SWAP_SPACE_DIR,
@@ -187,26 +199,39 @@ class ContextPager:
         if not overflow_messages:
             return 0
 
+        started = perf_counter()
+        candidate_indices = [
+            base_index + offset for offset in range(len(overflow_messages))
+        ]
+        if task_id not in self._page_out_watermarks:
+            # One metadata lookup restores the optimization after a restart.
+            existing = self._collection.get(
+                where={"task_id": task_id}, include=["metadatas"]
+            )
+            existing_indices = [
+                int(meta["message_index"])
+                for meta in (existing.get("metadatas") or [])
+                if meta and "message_index" in meta
+            ]
+            self._page_out_watermarks[task_id] = max(existing_indices, default=-1)
+
+        watermark = self._page_out_watermarks[task_id]
+        candidate_indices = [index for index in candidate_indices if index > watermark]
+        skipped_by_watermark = len(overflow_messages) - len(candidate_indices)
+
         ids: list[str] = []
         documents: list[str] = []
         metadatas: list[dict] = []
 
-        for offset, msg in enumerate(overflow_messages):
-            absolute_index = base_index + offset
+        for absolute_index in candidate_indices:
+            msg = overflow_messages[absolute_index - base_index]
             page_key = f"{task_id}_msg_{absolute_index}"
-
-            # Check for existing pages to avoid duplicate embeddings.
-            existing = self._collection.get(ids=[page_key])
-            if existing and existing.get("ids"):
-                continue
-
             content = msg.get("content", "").strip()
             if not content:
                 continue
 
             role = msg.get("role", "unknown")
             timestamp = msg.get("timestamp", "")
-
             ids.append(page_key)
             documents.append(content)
             metadatas.append(
@@ -220,16 +245,49 @@ class ContextPager:
             )
 
         if not ids:
+            self._last_page_out_metrics = {
+                "task_id": task_id,
+                "indexed_count": 0,
+                "skipped_existing_or_watermark": skipped_by_watermark,
+                "embedding_latency_ms": 0.0,
+                "vector_store_write_latency_ms": 0.0,
+                "total_latency_ms": round((perf_counter() - started) * 1000, 3),
+            }
             return 0
 
-        # Batch upsert — ChromaDB computes embeddings via the ONNX engine.
-        self._collection.upsert(
-            ids=ids,
-            documents=documents,
-            metadatas=metadatas,
+        # Compute embeddings explicitly so embedding and Chroma write time can
+        # be measured separately, and so the vectors are never recomputed by
+        # Chroma during upsert.
+        embedding_started = perf_counter()
+        embeddings = self._embed_fn(documents)
+        embedding_latency_ms = (perf_counter() - embedding_started) * 1000
+
+        write_started = perf_counter()
+        for start in range(0, len(ids), PAGE_OUT_BATCH_SIZE):
+            end = start + PAGE_OUT_BATCH_SIZE
+            self._collection.upsert(
+                ids=ids[start:end],
+                documents=documents[start:end],
+                embeddings=embeddings[start:end],
+                metadatas=metadatas[start:end],
+            )
+        write_latency_ms = (perf_counter() - write_started) * 1000
+
+        self._page_out_watermarks[task_id] = max(
+            self._page_out_watermarks[task_id], max(int(meta["message_index"]) for meta in metadatas)
         )
 
         count = len(ids)
+        total_latency_ms = (perf_counter() - started) * 1000
+        self._last_page_out_metrics = {
+            "task_id": task_id,
+            "indexed_count": count,
+            "skipped_existing_or_watermark": skipped_by_watermark,
+            "embedding_latency_ms": round(embedding_latency_ms, 3),
+            "vector_store_write_latency_ms": round(write_latency_ms, 3),
+            "total_latency_ms": round(total_latency_ms, 3),
+            "batch_size": PAGE_OUT_BATCH_SIZE,
+        }
         logger.info(
             "ContextPager PAGE_OUT | req=%s | task=%s | pages=%d | indices=%d-%d | swap_total=%d",
             req_id or "-",
@@ -247,9 +305,18 @@ class ContextPager:
             req_id=req_id,
             paged_count=count,
             total_in_swap=self._collection.count(),
+            **{
+                key: value
+                for key, value in self._last_page_out_metrics.items()
+                if key != "task_id"
+            },
         )
 
         return count
+
+    def get_last_page_out_metrics(self) -> dict[str, Any]:
+        """Return timing and deduplication data for the most recent page-out."""
+        return dict(self._last_page_out_metrics)
 
     # ------------------------------------------------------------------
     # Phase 2 — Page-In (Swap-In / Page Fault Handler)

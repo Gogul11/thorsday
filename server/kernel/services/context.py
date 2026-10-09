@@ -56,7 +56,14 @@ async def get_context(
     overflow_count = max(0, len(messages) - _CONTEXT_WINDOW)
     if len(messages) > _CONTEXT_WINDOW:
         overflow = messages[:-_CONTEXT_WINDOW]
-        context_pager.page_out_messages(
+        # Chroma embedding and writes are blocking CPU/I/O work. Run them in a
+        # worker thread so they do not block the async kernel event loop. We
+        # still await completion before page-in to preserve retrieval
+        # correctness on the first overflow of a task.
+        import asyncio
+
+        await asyncio.to_thread(
+            context_pager.page_out_messages,
             task_id=task_id,
             overflow_messages=overflow,
             base_index=0,
