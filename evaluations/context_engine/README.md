@@ -118,3 +118,30 @@ as external comparisons only after the four local configurations are stable.
 
 These values should be recorded in every experiment manifest and kept fixed
 within a comparison.
+
+## Improved smoke run
+
+Run from the repository root after installing the dependencies in
+`server/pyproject.toml`:
+
+```powershell
+python evaluations/context_engine/scripts/run_smoke_test.py
+```
+
+The runner expands the five seed scenarios into 50 deterministic local cases,
+performs one unrecorded warm-up, measures page-out and page-in separately, and
+sweeps AgentOS thresholds `0.40`, `0.45`, `0.50`, `0.55`, and `0.60` with five
+retrieval candidates. Results are written to `results/smoke_trials.jsonl` and
+`results/smoke_summary.json`.
+
+Optional LLM answer scoring uses an OpenAI-compatible chat endpoint. Enable it
+only when a key is available:
+
+```powershell
+$env:AOS_SMOKE_LLM_SCORING = "1"
+$env:AOS_SMOKE_LLM_API_KEY = "<key>"
+python evaluations/context_engine/scripts/run_smoke_test.py
+```
+
+The smoke score is a diagnostic only. The public benchmark should use a fixed
+judge, record the model and prompt, and report judge cost separately.
