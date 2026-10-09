@@ -1,0 +1,40 @@
+{
+  "experiment_name": "context-engine-initial-comparison",
+  "question_count": {
+    "public_dataset": 100,
+    "agentos_specific": 25
+  },
+  "repetitions": 3,
+  "configurations": [
+    "full_context",
+    "recent_truncation",
+    "vector_rag",
+    "agentos_paging"
+  ],
+  "fixed_variables": {
+    "model": "record-before-run",
+    "embedding_model": "chromadb-default-record-before-run",
+    "temperature": 0,
+    "max_retrieval_k": 5,
+    "dataset_split": "record-before-run"
+  },
+  "agentos_paging": {
+    "active_ram_window_messages": 20,
+    "page_in_top_k": 3,
+    "page_in_similarity_threshold": 0.55
+  },
+  "metrics": [
+    "answer_accuracy",
+    "task_success_rate",
+    "retrieval_recall_at_5",
+    "retrieval_precision_at_5",
+    "active_context_tokens",
+    "context_token_reduction",
+    "page_in_latency_ms",
+    "end_to_end_latency_ms",
+    "estimated_token_cost",
+    "provider_reported_token_cost"
+  ],
+  "raw_output": "results/trials.jsonl",
+  "aggregate_output": "results/summary.json"
+}
