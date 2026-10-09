@@ -1,4 +1,4 @@
-\chapter{\uppercase{Evaluation Metrics}}
+\chapter{\uppercase{Evaluation Framework and Metrics}}
 \label{app:metrics}
 
 This appendix defines the metrics that will be used to evaluate AgentOS. The metrics specify how planning quality, execution reliability, scheduling behaviour, resource control, context paging, event delivery, and user-facing observability will be measured. No experimental values are reported here; the definitions are intended to support a later controlled evaluation.
@@ -7,6 +7,7 @@ This appendix defines the metrics that will be used to evaluate AgentOS. The met
 Let $N$ be the number of evaluated tasks, $S$ the number of planned steps, and $E$ the number of emitted events. For each task, the expected result, required agents, dependency relationships, and final status must be recorded before execution. A task is counted as successful only when its required output is produced and all mandatory steps complete without an unrecovered error.
 
 \section{\uppercase{Planning Quality Metrics}}
+Table~\ref{tab:planning-metrics} defines the planning-quality measures used to assess agent selection, plan validity, and dependency correctness.
 \begin{table}[H]
 \centering
 \caption{Metrics for evaluating planner quality}
@@ -28,7 +29,9 @@ Fallback rate & Fraction of tasks executed using semantic fallback: $\frac{\text
 
 For benchmark tasks with more than one acceptable plan, agent-selection accuracy should use set-based comparison and dependency correctness should use the union of all accepted dependency graphs.
 
+\clearpage
 \section{\uppercase{Execution Reliability Metrics}}
+Table~\ref{tab:execution-metrics} defines the reliability measures used to assess task completion, failures, retries, recovery, ordering, and latency.
 \begin{table}[H]
 \centering
 \caption{Metrics for execution reliability}
@@ -49,6 +52,7 @@ End-to-end task latency & $T_{complete}-T_{created}$, reported using mean, media
 \end{table}
 
 \section{\uppercase{Scheduler and Resource Metrics}}
+Table~\ref{tab:scheduler-metrics} defines the scheduler and resource measures used to assess waiting time, fairness, concurrency, denial handling, and token-budget compliance.
 \begin{table}[H]
 \centering
 \caption{Metrics for scheduling and resource admission}
@@ -102,4 +106,20 @@ The required event fields are task identifier, step identifier, agent name, exec
 \end{itemize}
 
 \section{\uppercase{Reporting Protocol}}
-Each experiment should record the task prompt, expected result, planner candidate list, generated plan, validation outcome, lifecycle events, execution attempts, scheduler timestamps, resource decisions, token metadata, and final status. Results should later be reported over repeated runs using mean, median, standard deviation, and appropriate percentile values. Metrics that depend on human-labelled expected agents or relevant context pages must include the annotation procedure and the number of evaluated tasks. Provider-reported token usage should never be replaced by an estimate without clearly labelling the value as an estimate.
+The evaluation shall use a fixed task set and a documented procedure for every configuration.
+
+\begin{enumerate}
+\item \textbf{Define and repeat the test.} Record the prompts, expected outputs, required agents, dependency relations, configuration, number of tasks, and number of independent repetitions. Keep the planner model, candidate limit, context window, scheduler limits, resource limits, and retry policy fixed within a comparison.
+
+\item \textbf{Record raw evidence.} Store the task identifier, prompt, expected result, candidates, generated plan, validation result, lifecycle events, attempts, timestamps, resource decisions, token metadata, and final status. Retain raw events so metrics can be recomputed.
+
+\item \textbf{Compute task-level outcomes.} Mark a trial as successful only when the expected result is produced and all mandatory steps complete. Record whether the trial failed, waited, was retried, used fallback planning, violated dependency order, or exceeded a resource limit.
+
+\item \textbf{Aggregate and report.} Report accuracy, success, failure, retry, fallback, and violation measures as percentages. For latency, queue waiting time, token usage, and other continuous measurements, report the mean, median, standard deviation, and 95th percentile ($P_{95}$), together with the number of trials and tasks.
+
+For a rate, use the pooled value $100\times(\sum\text{numerator}/\sum\text{denominator})$ and state how missing or timed-out observations were handled. A zero denominator must be reported as \textit{not applicable}, not as zero.
+
+\item \textbf{Document annotations and usage.} Explain labels for expected agents or relevant context pages, including the annotation procedure and number of labelled tasks. Distinguish provider-reported token usage from estimated admission usage.
+\end{enumerate}
+
+Each configuration summary should therefore include task and repetition counts, success or accuracy rate, failure and retry rates, latency statistics, and relevant scheduler, resource, context-paging, and token-usage measures. No experimental values are reported in this appendix.

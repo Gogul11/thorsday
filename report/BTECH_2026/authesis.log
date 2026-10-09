@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.10.5)  6 OCT 2026 06:09
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.10.5)  9 OCT 2026 11:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -132,6 +132,23 @@ Package: tabularx 2023/12/11 v2.12a `tabularx' package (DPC)
 \TX@cols=\count287
 \TX@ftn=\toks18
 )
+(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/ragged2e\ragged2e.sty
+Package: ragged2e 2023/06/22 v3.6 ragged2e Package
+\CenteringLeftskip=\skip56
+\RaggedLeftLeftskip=\skip57
+\RaggedRightLeftskip=\skip58
+\CenteringRightskip=\skip59
+\RaggedLeftRightskip=\skip60
+\RaggedRightRightskip=\skip61
+\CenteringParfillskip=\skip62
+\RaggedLeftParfillskip=\skip63
+\RaggedRightParfillskip=\skip64
+\JustifyingParfillskip=\skip65
+\CenteringParindent=\skip66
+\RaggedLeftParindent=\skip67
+\RaggedRightParindent=\skip68
+\JustifyingParindent=\skip69
+)
 (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/hyphenat\hyphenat.sty
 Package: hyphenat 2009/09/02 v2.3c hyphenation utilities
 \langwohyphens=\language79
@@ -164,20 +181,20 @@ Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
 \c@ALG@line=\count290
 \c@ALG@rem=\count291
 \c@ALG@nested=\count292
-\ALG@tlm=\skip56
-\ALG@thistlm=\skip57
+\ALG@tlm=\skip70
+\ALG@thistlm=\skip71
 \c@ALG@Lnr=\count293
 \c@ALG@blocknr=\count294
 \c@ALG@storecount=\count295
 \c@ALG@tmpcounter=\count296
-\ALG@tmplength=\skip58
+\ALG@tmplength=\skip72
 )
 Document Style - pseudocode environments for use with the `algorithmicx' style
 ) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/multirow\multirow.sty
 Package: multirow 2024/11/12 v2.9 Span multiple rows of a table
-\multirow@colwidth=\skip59
+\multirow@colwidth=\skip73
 \multirow@cntb=\count297
-\multirow@dima=\skip60
+\multirow@dima=\skip74
 \bigstrutjot=\dimen172
 ) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/tools\multicol.sty
 Package: multicol 2025/10/21 v2.0b multicolumn formatting (FMi)
@@ -193,8 +210,8 @@ Package: multicol 2025/10/21 v2.0b multicolumn formatting (FMi)
 \page@free=\dimen175
 \premulticols=\dimen176
 \postmulticols=\dimen177
-\multicolsep=\skip61
-\multicolbaselineskip=\skip62
+\multicolsep=\skip75
+\multicolbaselineskip=\skip76
 \partial@page=\box64
 \last@line=\box65
 \mc@boxedresult=\box66
@@ -272,7 +289,7 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 )
 (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
 Package: amsmath 2025/07/09 v2.17z AMS math features
-\@mathmargin=\skip63
+\@mathmargin=\skip77
 
 For additional information on amsmath, use the `?' option.
 (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
@@ -332,8 +349,8 @@ LaTeX Info: Redefining \Relbar on input line 970.
 \totwidth@=\dimen258
 \lineht@=\dimen259
 \@envbody=\toks25
-\multlinegap=\skip64
-\multlinetaggap=\skip65
+\multlinegap=\skip78
+\multlinetaggap=\skip79
 \mathdisplay@stack=\toks26
 LaTeX Info: Redefining \[ on input line 2950.
 LaTeX Info: Redefining \] on input line 2951.
@@ -355,9 +372,9 @@ Package: amsthm 2020/05/29 v2.20.6
 \thm@headfont=\toks29
 \thm@notefont=\toks30
 \thm@headpunct=\toks31
-\thm@preskip=\skip66
-\thm@postskip=\skip67
-\thm@headsep=\skip68
+\thm@preskip=\skip80
+\thm@postskip=\skip81
+\thm@headsep=\skip82
 \dth@everypar=\toks32
 )
 (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/base\latexsym.sty
@@ -529,7 +546,7 @@ Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 84.
 )
-\Hy@SectionHShift=\skip69
+\Hy@SectionHShift=\skip83
 )
 (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics\epsfig.sty
 Package: epsfig 2024/01/14 v1.7b (e)psfig emulation (SPQR)
@@ -588,8 +605,8 @@ Package: setspace 2022/12/04 v6.7b set line spacing
 (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/titlesec\titlesec.sty
 Package: titlesec 2025/01/04 v2.17 Sectioning titles
 \ttl@box=\box111
-\beforetitleunit=\skip70
-\aftertitleunit=\skip71
+\beforetitleunit=\skip84
+\aftertitleunit=\skip85
 \ttl@plus=\dimen268
 \ttl@minus=\dimen269
 \ttl@toksa=\toks36
@@ -611,55 +628,55 @@ Package: tocloft 2003/01/20 v2.3b parameterised ToC, etc., typesetting
 
 Package tocloft Note: The document has chapter divisions.
 
-\cftparskip=\skip72
-\cftbeforetoctitleskip=\skip73
-\cftaftertoctitleskip=\skip74
-\cftbeforepartskip=\skip75
-\cftpartnumwidth=\skip76
-\cftpartindent=\skip77
-\cftbeforechapskip=\skip78
-\cftchapindent=\skip79
-\cftchapnumwidth=\skip80
-\cftbeforesecskip=\skip81
-\cftsecindent=\skip82
-\cftsecnumwidth=\skip83
-\cftbeforesubsecskip=\skip84
-\cftsubsecindent=\skip85
-\cftsubsecnumwidth=\skip86
-\cftbeforesubsubsecskip=\skip87
-\cftsubsubsecindent=\skip88
-\cftsubsubsecnumwidth=\skip89
-\cftbeforeparaskip=\skip90
-\cftparaindent=\skip91
-\cftparanumwidth=\skip92
-\cftbeforesubparaskip=\skip93
-\cftsubparaindent=\skip94
-\cftsubparanumwidth=\skip95
-\cftbeforeloftitleskip=\skip96
-\cftafterloftitleskip=\skip97
-\cftbeforefigskip=\skip98
-\cftfigindent=\skip99
-\cftfignumwidth=\skip100
-\cftbeforelottitleskip=\skip101
-\cftafterlottitleskip=\skip102
-\cftbeforetabskip=\skip103
-\cfttabindent=\skip104
-\cfttabnumwidth=\skip105
-\cftbeforesubfigskip=\skip106
-\cftsubfigindent=\skip107
-\cftsubfignumwidth=\skip108
-\cftbeforesubtabskip=\skip109
-\cftsubtabindent=\skip110
-\cftsubtabnumwidth=\skip111
+\cftparskip=\skip86
+\cftbeforetoctitleskip=\skip87
+\cftaftertoctitleskip=\skip88
+\cftbeforepartskip=\skip89
+\cftpartnumwidth=\skip90
+\cftpartindent=\skip91
+\cftbeforechapskip=\skip92
+\cftchapindent=\skip93
+\cftchapnumwidth=\skip94
+\cftbeforesecskip=\skip95
+\cftsecindent=\skip96
+\cftsecnumwidth=\skip97
+\cftbeforesubsecskip=\skip98
+\cftsubsecindent=\skip99
+\cftsubsecnumwidth=\skip100
+\cftbeforesubsubsecskip=\skip101
+\cftsubsubsecindent=\skip102
+\cftsubsubsecnumwidth=\skip103
+\cftbeforeparaskip=\skip104
+\cftparaindent=\skip105
+\cftparanumwidth=\skip106
+\cftbeforesubparaskip=\skip107
+\cftsubparaindent=\skip108
+\cftsubparanumwidth=\skip109
+\cftbeforeloftitleskip=\skip110
+\cftafterloftitleskip=\skip111
+\cftbeforefigskip=\skip112
+\cftfigindent=\skip113
+\cftfignumwidth=\skip114
+\cftbeforelottitleskip=\skip115
+\cftafterlottitleskip=\skip116
+\cftbeforetabskip=\skip117
+\cfttabindent=\skip118
+\cfttabnumwidth=\skip119
+\cftbeforesubfigskip=\skip120
+\cftsubfigindent=\skip121
+\cftsubfignumwidth=\skip122
+\cftbeforesubtabskip=\skip123
+\cftsubtabindent=\skip124
+\cftsubtabnumwidth=\skip125
 )
 (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/subfigure\subfigure.sty
 Package: subfigure 2002/07/30 v2.1.4 subfigure package
-\subfigtopskip=\skip112
-\subfigcapskip=\skip113
+\subfigtopskip=\skip126
+\subfigcapskip=\skip127
 \subfigcaptopadj=\dimen273
-\subfigbottomskip=\skip114
+\subfigbottomskip=\skip128
 \subfigcapmargin=\dimen274
-\subfiglabelskip=\skip115
+\subfiglabelskip=\skip129
 \c@subfigure=\count337
 \c@lofdepth=\count338
 \c@subtable=\count339
@@ -670,14 +687,14 @@ Package: subfigure 2002/07/30 v2.1.4 subfigure package
 
 (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/subfigure\subfigure.cfg
 )
-\subfig@top=\skip116
-\subfig@bottom=\skip117
+\subfig@top=\skip130
+\subfig@bottom=\skip131
 ) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/tools\longtable.sty
 Package: longtable 2025-10-13 v4.24 Multi-page Table package (DPC)
-\LTleft=\skip118
-\LTright=\skip119
-\LTpre=\skip120
-\LTpost=\skip121
+\LTleft=\skip132
+\LTright=\skip133
+\LTpre=\skip134
+\LTpost=\skip135
 \LTchunksize=\count341
 \LTcapwidth=\dimen275
 \LT@head=\box112
@@ -735,7 +752,7 @@ Package color Info: Driver file: pdftex.def on input line 149.
 (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx)
 )
 \everycr=\toks39
-\minrowclearance=\skip122
+\minrowclearance=\skip136
 \rownum=\count348
 ) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/base\newlfont.sty
 Package: newlfont 1998/08/17 v2.2m Standard LaTeX package
@@ -752,33 +769,34 @@ File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count353
 ) (authesis.aux (Abstract/abstract.aux) (acknowl.aux)
 (Acronyms/acronyms.aux) (1/Chapter1.aux) (2/Chapter2.aux) (3/Chapter3.aux)
-(4/Chapter4.aux) (Conclusion/conclusion.aux) (Appendix/appendix.aux))
+(4/Chapter4.aux) (Appendix/appendix.aux) (Conclusion/conclusion.aux)
+(References/references.aux))
 \openout1 = `authesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 157.
-LaTeX Font Info:    ... okay on input line 157.
-LaTeX Font Info:    Checking defaults for OMS/pzccm/m/n on input line 157.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 159.
+LaTeX Font Info:    ... okay on input line 159.
+LaTeX Font Info:    Checking defaults for OMS/pzccm/m/n on input line 159.
 LaTeX Font Info:    Trying to load font information for OMS+pzccm on input line
- 157.
+ 159.
 
 (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omspzccm.fd
 File: omspzccm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/pzccm.
 )
-LaTeX Font Info:    ... okay on input line 157.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 157.
-LaTeX Font Info:    ... okay on input line 157.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 157.
-LaTeX Font Info:    ... okay on input line 157.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 157.
-LaTeX Font Info:    ... okay on input line 157.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 157.
-LaTeX Font Info:    ... okay on input line 157.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 157.
-LaTeX Font Info:    ... okay on input line 157.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 157.
-LaTeX Font Info:    ... okay on input line 157.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 157.
-LaTeX Font Info:    ... okay on input line 157.
+LaTeX Font Info:    ... okay on input line 159.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 159.
+LaTeX Font Info:    ... okay on input line 159.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 159.
+LaTeX Font Info:    ... okay on input line 159.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 159.
+LaTeX Font Info:    ... okay on input line 159.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 159.
+LaTeX Font Info:    ... okay on input line 159.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 159.
+LaTeX Font Info:    ... okay on input line 159.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 159.
+LaTeX Font Info:    ... okay on input line 159.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 159.
+LaTeX Font Info:    ... okay on input line 159.
 
 (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
 ii
@@ -805,7 +823,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 fg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-Package hyperref Info: Link coloring OFF on input line 157.
+Package hyperref Info: Link coloring OFF on input line 159.
  (authesis.out) (authesis.out)
 \@outlinefile=\write3
 \openout3 = `authesis.out'.
@@ -815,22 +833,22 @@ Package caption Info: End \AtBeginDocument code.
 <auemblem.pdf, id=233, 120.45pt x 118.4425pt>
 File: auemblem.pdf Graphic file (type pdf)
 <use auemblem.pdf>
-Package pdftex.def Info: auemblem.pdf  used on input line 194.
+Package pdftex.def Info: auemblem.pdf  used on input line 199.
 (pdftex.def)             Requested size: 38.54477pt x 37.90236pt.
  [1
 
 {C:/Users/curvy/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/curv
 y/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc} <./auemblem.pdf>]
-\aulength=\skip123
-\datewidth=\skip124
+\aulength=\skip137
+\datewidth=\skip138
 
-Underfull \hbox (badness 1577) in paragraph at lines 216--217
+Underfull \hbox (badness 1577) in paragraph at lines 221--222
 []\OT1/ptm/m/n/13 Certified that this project re-port ti-tled \OT1/ptm/b/n/13 A
 gen-tOS - A Hy-brid
  []
 
 
-Underfull \hbox (badness 1132) in paragraph at lines 216--217
+Underfull \hbox (badness 1132) in paragraph at lines 221--222
 \OT1/ptm/m/n/13 (2023115026), Oviyashree C J (2023115052), and Kudimi Guna Sekh
 ar
  []
@@ -846,54 +864,18 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 2.
 
 
-Overfull \hbox (4.20316pt too wide) in paragraph at lines 4--5
-[]\OT1/ptm/m/n/13 Large-language-model ap-pli-ca-tions are evolv-ing from singl
-e-turn chat
+Underfull \hbox (badness 1189) in paragraph at lines 4--5
+\OT1/ptm/m/n/13 mul-ti-ple spe-cialised agents. How-ever, ap-pli-ca-tion de-vel
+-op-ers com-monly
  []
 
 
-Overfull \hbox (15.31415pt too wide) in paragraph at lines 4--5
-\OT1/ptm/m/n/13 schedul-ing, mem-ory, event prop-a-ga-tion, ex-e-cu-tion mon-i-
-tor-ing, and fail-ure han-dling
+Underfull \hbox (badness 1521) in paragraph at lines 4--5
+\OT1/ptm/m/n/13 ser-vices around au-tonomous AI ap-pli-ca-tions. The im-ple-men
+ted sys-tem
  []
 
-
-Overfull \hbox (20.6688pt too wide) in paragraph at lines 4--5
-\OT1/ptm/m/n/13 en-vi-ron-ment that pro-vides these operating-system-style ser-
-vices around au-tonomous
- []
-
-
-Overfull \hbox (2.44252pt too wide) in paragraph at lines 4--5
-\OT1/ptm/m/n/13 FastAPI gate-way, a Redis-backed event path, Mon-goDB task his-
-tory, Chro-maDB
- []
-
-
-Overfull \hbox (0.76544pt too wide) in paragraph at lines 4--5
-\OT1/ptm/m/n/13 se-man-tic re-trieval, struc-tured LLM plan-ning, dependency-aw
-are di-rected acyclic
- []
-
-
-Overfull \hbox (0.67506pt too wide) in paragraph at lines 4--5
-\OT1/ptm/m/n/13 as com-plete role-based ac-cess con-trol, dis-tributed lock-ing
-, hy-brid model rout-ing,
- []
-
-
-Overfull \hbox (3.62532pt too wide) in paragraph at lines 4--5
-\OT1/ptm/m/n/13 than un-sub-stan-ti-ated per-for-mance claims. Agen-tOS there-f
-ore pro-vides a mod-u-lar
- []
-
-)
-Overfull \hbox (2.9935pt too wide) in paragraph at lines 6--259
-[]\OT1/ptm/b/n/13 Keywords: \OT1/ptm/m/n/13 multi-agent sys-tems, agent run-tim
-e, LLM plan-ning, DAG
- []
-
-[3
+) [3
 
 
 ]
@@ -905,15 +887,15 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 2.
 
 
-Overfull \hbox (29.86043pt too wide) in paragraph at lines 4--5
-\OT1/ptm/b/n/13 Ravin-dran\OT1/ptm/m/n/13 , As-so-ciate Pro-fes-sor, De-part-me
-nt of In-for-ma-tion Sci-ence and Tech-nol-ogy,
+Underfull \hbox (badness 1917) in paragraph at lines 4--5
+\OT1/ptm/m/n/13 Tech-nol-ogy, Anna Uni-ver-sity, Col-lege of En-gi-neer-ing, Gu
+indy, for her
  []
 
 
-Overfull \hbox (19.47812pt too wide) in paragraph at lines 6--7
-[]\OT1/ptm/m/n/13 We thank the fac-ulty mem-bers and staff of the De-part-ment 
-of In-for-ma-tion
+Underfull \hbox (badness 1281) in paragraph at lines 6--7
+\OT1/ptm/m/n/13 and fa-cil-i-ties re-quired to un-der-take this project. We als
+o ac-knowl-edge
  []
 
 ) [4
@@ -983,56 +965,18 @@ LaTeX Font Warning: Font shape `U/lasy/m/n' in size <6.5> not available
 \openout5 = `authesis.lot'.
 
  [7] (authesis.lof
-Overfull \hbox (18.63362pt too wide) in paragraph at lines 4--4
- [][] [][]\OT1/ptm/m/n/13 Overall Agen-tOS sys-tem ar-chi-tec-ture and ma-jor m
-od-ule 
+Underfull \hbox (badness 10000) in paragraph at lines 6--6
+ [][] [][]\OT1/ptm/m/n/13 Planner, val-i-da-tion, and dependency-aware 
  []
 
 
-Overfull \hbox (11.8346pt too wide) in paragraph at lines 5--5
- [][] [][]\OT1/ptm/m/n/13 Frontend, FastAPI gate-way, Re-dis chan-nels, AI ker-
-nel, 
+Underfull \hbox (badness 10000) in paragraph at lines 7--7
+ [][] [][]\OT1/ptm/m/n/13 Context page-out, vector-store re-trieval, and 
  []
 
 
-Overfull \hbox (4.47874pt too wide) in paragraph at lines 6--6
- [][] [][]\OT1/ptm/m/n/13 Planner, val-i-da-tion, and dependency-aware ex-e-cu-
-tion 
- []
-
-
-Overfull \hbox (5.97266pt too wide) in paragraph at lines 7--7
- [][] [][]\OT1/ptm/m/n/13 Context page-out, vector-store re-trieval, and se-man
--tic 
- []
-
-
-Overfull \hbox (32.94768pt too wide) in paragraph at lines 9--9
- [][] [][]\OT1/ptm/m/n/13 Resource-manager de-ci-sion flow sup-plied for the Ag
-en-tOS 
- []
-
-
-Overfull \hbox (0.22702pt too wide) in paragraph at lines 10--10
- [][] [][]\OT1/ptm/m/n/13 Tool se-lec-tion, per-mis-sion check-ing, in-vo-ca-ti
-on, and 
- []
-
-
-Overfull \hbox (12.9029pt too wide) in paragraph at lines 12--12
- [][] [][]\OT1/ptm/m/n/13 Sandboxed Python ex-e-cu-tion and bounded self-healin
-g 
- []
-
-
-Overfull \hbox (2.34499pt too wide) in paragraph at lines 14--14
- [][] [][]\OT1/ptm/m/n/13 Optimized se-man-tic plan-ner with can-di-date re-tri
-eval, 
- []
-
-
-Overfull \hbox (3.9321pt too wide) in paragraph at lines 14--14
- \OT1/ptm/m/n/13 struc-tured plan val-i-da-tion, fall-back rout-ing, and DAG 
+Underfull \hbox (badness 10000) in paragraph at lines 12--12
+ [][] [][]\OT1/ptm/m/n/13 Sandboxed Python ex-e-cu-tion and bounded 
  []
 
 )
@@ -1053,10 +997,10 @@ Overfull \hbox (5.99998pt too wide) in alignment at lines 4--21
 
 
 ]
-\ausecspace=\skip125
-\secwidth=\skip126
-\ausubsecspace=\skip127
-\subsecwidth=\skip128
+\ausecspace=\skip139
+\secwidth=\skip140
+\ausubsecspace=\skip141
+\subsecwidth=\skip142
 \openout2 = `1/Chapter1.aux'.
 
  (1/Chapter1.tex
@@ -1068,30 +1012,6 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 4.
-
-
-Overfull \hbox (22.55864pt too wide) in paragraph at lines 5--6
-[]\OT1/ptm/m/n/13 Large-language-model (LLM) ap-pli-ca-tions have pro-gressed f
-rom re-ac-tive
- []
-
-
-Overfull \hbox (17.66513pt too wide) in paragraph at lines 5--6
-\OT1/ptm/m/n/13 question-answering in-ter-faces to sys-tems that can plan, call
- tools, main-tain mem-ory,
- []
-
-
-Overfull \hbox (11.25587pt too wide) in paragraph at lines 5--6
-\OT1/ptm/m/n/13 and del-e-gate work to spe-cialised agents. A use-ful multi-age
-nt ap-pli-ca-tion there-fore
- []
-
-
-Overfull \hbox (4.57426pt too wide) in paragraph at lines 7--8
-\OT1/ptm/m/n/13 con-trol, and an event path ex-poses state tran-si-tions. Agen-
-tOS ap-plies this anal-ogy
- []
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
@@ -1108,21 +1028,15 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 14.
 
 
-Overfull \hbox (8.44913pt too wide) in paragraph at lines 15--16
-\OT1/ptm/m/n/13 rel-e-vant con-text, and ex-pos-ing ex-e-cu-tion state to a use
-r in-ter-face. Reim-ple-ment-ing
+Underfull \hbox (badness 3492) in paragraph at lines 15--16
+\OT1/ptm/m/n/13 that co-or-di-nates het-ero-ge-neous agents across mul-ti-ple c
+on-cur-rent tasks
  []
 
 
-Overfull \hbox (16.00023pt too wide) in paragraph at lines 15--16
-\OT1/ptm/m/n/13 these fa-cil-i-ties in-side each ap-pli-ca-tion in-creases du-p
-li-ca-tion, makes fail-ures dif-fi-cult
- []
-
-
-Overfull \hbox (16.20992pt too wide) in paragraph at lines 15--16
-\OT1/ptm/m/n/13 to di-ag-nose, and pre-vents sys-tem-atic eval-u-a-tion of sche
-dul-ing and re-source poli-cies. 
+Underfull \hbox (badness 1107) in paragraph at lines 15--16
+\OT1/ptm/m/n/13 while en-forc-ing de-pen-den-cies, ob-serv-ing to-ken and con-c
+ur-rency bud-gets,
  []
 
 
@@ -1130,61 +1044,54 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 17.
 
 
-Overfull \hbox (42.13803pt too wide) in paragraph at lines 23--24
-[]\OT1/ptm/m/n/13 to page con-ver-sa-tional con-text be-tween an ac-tive win-do
-w and a vector-backed
+Underfull \hbox (badness 4556) in paragraph at lines 21--22
+[]\OT1/ptm/m/n/13 Generate struc-tured ex-e-cu-tion plans, re-trieve suit-able 
+agents
  []
 
 
-Overfull \hbox (16.3066pt too wide) in paragraph at lines 24--25
-[]\OT1/ptm/m/n/13 to sched-ule runnable work us-ing pri-or-ity ag-ing, fair-nes
-s, and co-op-er-a-tive
+Underfull \hbox (badness 1286) in paragraph at lines 24--25
+[]\OT1/ptm/m/n/13 Execute agent and code-runner tasks re-li-ably while pub-lish
+-ing
  []
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\uppercase' on input line 27.
 
 [2]
+Underfull \hbox (badness 1221) in paragraph at lines 28--29
+\OT1/ptm/m/n/13 Python run-ner. The scope does not claim com-plete RBAC, dis-tr
+ibuted
+ []
+
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 30.
 
 
-Overfull \hbox (1.57758pt too wide) in paragraph at lines 31--32
-[]\OT1/ptm/m/n/13 The cur-rent phase cov-ers a Next.js fron-tend, FastAPI gate-
-way, Python
+Underfull \hbox (badness 3168) in paragraph at lines 31--32
+[]\OT1/ptm/m/n/13 The project con-tri-bu-tions are a uni-fied ex-e-cu-tion mode
+l for
  []
 
 
-Overfull \hbox (4.4065pt too wide) in paragraph at lines 31--32
-\OT1/ptm/m/n/13 run-ner. The scope does not claim com-plete RBAC, dis-tributed 
-sched-uler work-ers,
+Underfull \hbox (badness 2608) in paragraph at lines 31--32
+\OT1/ptm/m/n/13 a se-man-tic con-text pag-ing mech-a-nism, a priority-aging sch
+ed-uler with
  []
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 33.
 
-
-Overfull \hbox (21.89665pt too wide) in paragraph at lines 34--35
-[]\OT1/ptm/m/n/13 The project con-tri-bu-tions are a uni-fied ex-e-cu-tion mode
-l for het-ero-ge-neous
- []
-
-
-Overfull \hbox (1.23332pt too wide) in paragraph at lines 34--35
-\OT1/ptm/m/n/13 agents, a vis-i-ble plan graph, a Redis-mediated ac-tiv-ity str
-eam, a se-man-tic con-text
- []
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 36.
-
 )
-Overfull \hbox (12.77005pt too wide) in paragraph at lines 37--317
+Underfull \hbox (badness 2735) in paragraph at lines 34--322
 []\OT1/ptm/m/n/13 Chapter 2 sur-veys re-search and tech-ni-cal sys-tems re-late
-d to au-tonomous
+d to
  []
 
-[3] [4]
+[3]
 \openout2 = `2/Chapter2.aux'.
 
  (2/Chapter2.tex
@@ -1198,88 +1105,40 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 4.
 
 
-Overfull \hbox (46.36966pt too wide) in paragraph at lines 5--6
-\OT1/ptm/m/n/13 sur-vey com-bines peer-reviewed or archival re-search with of-f
-i-cial tech-ni-cal doc-u-men-ta-tion
- []
-
-
-Overfull \hbox (17.13295pt too wide) in paragraph at lines 5--6
-\OT1/ptm/m/n/13 for in-fras-truc-ture com-po-nents. Each group is con-sid-ered 
-in terms of its con-tri-bu-tion,
- []
-
-
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 7.
 
 
-Overfull \hbox (8.22696pt too wide) in paragraph at lines 8--9
-\OT1/ptm/m/n/13 [[]]. Its operating-system anal-ogy di-rectly mo-ti-vates the A
-gen-tOS ker-nel, al-though
- []
-
-
-Overfull \hbox (15.53267pt too wide) in paragraph at lines 8--9
-\OT1/ptm/m/n/13 the cur-rent Agen-tOS im-ple-men-ta-tion is smaller and uses a 
-Python/Redis/MongoDB
+Underfull \hbox (badness 4242) in paragraph at lines 8--9
+\OT1/ptm/m/n/13 al-though the cur-rent Agen-tOS im-ple-men-ta-tion is smaller a
+nd uses a
  []
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 12.
 
-[5
+[4
 
 
 
 
 ]
-Overfull \hbox (20.67319pt too wide) in paragraph at lines 13--14
+Underfull \hbox (badness 3557) in paragraph at lines 13--14
 []\OT1/ptm/m/n/13 MemGPT in-tro-duces vir-tual con-text man-age-ment that moves
- in-for-ma-tion
+
  []
 
 
-Overfull \hbox (43.91277pt too wide) in paragraph at lines 13--14
-\OT1/ptm/m/n/13 into short-, mid-, and long-term lay-ers and eval-u-ates mem-or
-y re-ten-tion for con-ver-sa-tional
+Underfull \hbox (badness 1163) in paragraph at lines 13--14
+\OT1/ptm/m/n/13 or-gan-ises mem-ory into short-, mid-, and long-term lay-ers an
+d eval-u-ates
  []
 
 
-Overfull \hbox (15.23497pt too wide) in paragraph at lines 13--14
-\OT1/ptm/m/n/13 agents [[]]. These works mo-ti-vate Agen-tOS con-text page-out 
-and page-in. Agen-tOS
- []
-
-
-Overfull \hbox (11.41232pt too wide) in paragraph at lines 13--14
-\OT1/ptm/m/n/13 uses se-man-tic em-bed-dings in Chro-maDB and an active-window 
-pol-icy; it cur-rently
- []
-
-
-Overfull \hbox (11.34836pt too wide) in paragraph at lines 13--14
-\OT1/ptm/m/n/13 pro-vides a project-level pag-ing mech-a-nism rather than a lea
-rned mem-ory hi-er-ar-chy
- []
-
-
-Overfull \hbox (27.92224pt too wide) in paragraph at lines 15--16
-\OT1/ptm/m/n/13 non-parametric knowl-edge store [[]]. Chro-maDB doc-u-ments col
--lec-tions, em-bed-dings,
- []
-
-
-Overfull \hbox (15.63681pt too wide) in paragraph at lines 15--16
-\OT1/ptm/m/n/13 and distance-based re-trieval [[]]. Agen-tOS uses this pat-tern
- both for agent ca-pa-bil-ity
- []
-
-
-Overfull \hbox (10.41135pt too wide) in paragraph at lines 15--16
-\OT1/ptm/m/n/13 ex-poses sim-i-lar-ity meta-data but does not claim domain-wide
- re-trieval bench-marks. 
+Underfull \hbox (badness 1383) in paragraph at lines 13--14
+\OT1/ptm/m/n/13 mem-ory re-ten-tion for con-ver-sa-tional agents [[]]. These wo
+rks mo-ti-vate
  []
 
 
@@ -1287,125 +1146,74 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 17.
 
 
-Overfull \hbox (10.2092pt too wide) in paragraph at lines 18--19
-[]\OT1/ptm/m/n/13 ReAct in-ter-leaves rea-son-ing and ac-tion so that an agent 
-can use ex-ter-nal
+Underfull \hbox (badness 1681) in paragraph at lines 18--19
+\OT1/ptm/m/n/13 Re-flex-ion uses ver-bal feed-back to im-prove sub-se-quent at-
+tempts with-out
  []
 
-
-Overfull \hbox (1.92343pt too wide) in paragraph at lines 18--19
-\OT1/ptm/m/n/13 ver-bal feed-back to im-prove sub-se-quent at-tempts with-out u
-p-dat-ing model weights
- []
-
-
-Overfull \hbox (18.83653pt too wide) in paragraph at lines 18--19
-\OT1/ptm/m/n/13 events, and bounded self-healing, but does not train mod-els or
- claim the au-tonomous
- []
-
-[6]
+[5]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 22.
 
 
-Overfull \hbox (0.32599pt too wide) in paragraph at lines 23--24
-\OT1/ptm/m/n/13 starve old work and why ag-ing can im-prove fair-ness [[]]. Lin
-ux cgroups pro-vide
- []
-
-
-Overfull \hbox (1.49345pt too wide) in paragraph at lines 23--24
-\OT1/ptm/m/n/13 these ideas to agent work: ef-fec-tive pri-or-ity in-creases wi
-th queue wait, ad-mis-sion
- []
-
-
-Overfull \hbox (13.9091pt too wide) in paragraph at lines 23--24
-\OT1/ptm/m/n/13 checks global and per-task slots, and to-ken reser-va-tions are
- tracked be-fore dis-patch.
- []
-
-
-Overfull \hbox (24.70403pt too wide) in paragraph at lines 25--26
+Underfull \hbox (badness 2662) in paragraph at lines 25--26
 []\OT1/ptm/m/n/13 The work-flow and or-ches-tra-tion lit-er-a-ture em-pha-sises
- ex-plicit de-pen-dency
+ ex-plicit
  []
 
 
-Overfull \hbox (12.76364pt too wide) in paragraph at lines 25--26
-\OT1/ptm/m/n/13 Agen-tOS cur-rently val-i-dates and ex-e-cutes a DAG in-process
- and per-sists task/event
+Underfull \hbox (badness 3148) in paragraph at lines 25--26
+\OT1/ptm/m/n/13 and per-sists task/event ev-i-dence; au-to-matic con-tin-u-a-ti
+on of in-ter-rupted
  []
 
+[6]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 27.
+(hyperref)                removing `\uppercase' on input line 28.
 
 
-Overfull \hbox (16.0454pt too wide) in paragraph at lines 28--29
+Underfull \hbox (badness 1389) in paragraph at lines 29--30
 []\OT1/ptm/m/n/13 The Model Con-text Pro-to-col spec-i-fies a stan-dard way for
- AI ap-pli-ca-tions
+ AI
  []
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 30.
-
-[7]
-Overfull \hbox (34.51843pt too wide) in paragraph at lines 31--32
-[]\OT1/ptm/m/n/13 Redis doc-u-ments Pub/Sub as a low-latency mes-sage dis-tri-b
-u-tion mech-a-nism
- []
+(hyperref)                removing `\uppercase' on input line 31.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 33.
+(hyperref)                removing `\uppercase' on input line 34.
 
 )
-Overfull \hbox (8.83112pt too wide) in paragraph at lines 34--318
+Underfull \hbox (badness 2150) in paragraph at lines 35--323
 []\OT1/ptm/m/n/13 The re-viewed sys-tems pro-vide strong so-lu-tions for in-di-
-vid-ual con-cerns:
+vid-ual
  []
 
 
-Overfull \hbox (3.18495pt too wide) in paragraph at lines 34--318
-\OT1/ptm/m/n/13 plan-ning, mem-ory, graph or-ches-tra-tion, tool use, se-cu-rit
-y, or work-flow dura-bil-ity.
+Underfull \hbox (badness 3919) in paragraph at lines 35--323
+\OT1/ptm/m/n/13 con-cerns: plan-ning, mem-ory, graph or-ches-tra-tion, tool use
+, se-cu-rity,
  []
 
 
-Overfull \hbox (6.68077pt too wide) in paragraph at lines 34--318
-\OT1/ptm/m/n/13 Agen-tOS's con-tri-bu-tion is an in-te-grated ed-u-ca-tional/ru
-ntime pro-to-type that makes
+Underfull \hbox (badness 10000) in paragraph at lines 35--323
+\OT1/ptm/m/n/13 or work-flow dura-bil-ity. Agen-tOS's con-tri-bu-tion is an in-
+te-grated
  []
 
 
-Overfull \hbox (14.23276pt too wide) in paragraph at lines 34--318
-\OT1/ptm/m/n/13 choices are se-man-tic agent se-lec-tion, ex-plicit DAG val-i-d
-a-tion, global priority-aging
+Underfull \hbox (badness 10000) in paragraph at lines 35--323
+\OT1/ptm/m/n/13 ed-u-ca-tional/runtime pro-to-type that makes these con-cerns o
+b-serv-able
  []
 
+[7
 
-Overfull \hbox (4.00351pt too wide) in paragraph at lines 34--318
-\OT1/ptm/m/n/13 schedul-ing, to-ken/concurrency ad-mis-sion, Re-dis life-cy-cle
- events, con-text pag-ing,
- []
-
-
-Overfull \hbox (17.79562pt too wide) in paragraph at lines 34--318
-\OT1/ptm/m/n/13 and fron-tend graph/activity ob-serv-abil-ity. The cur-rent pha
-se pri-ori-tises a trans-par-ent
- []
-
-
-Overfull \hbox (25.84273pt too wide) in paragraph at lines 34--318
-\OT1/ptm/m/n/13 and testable ar-chi-tec-ture over claims of pro-duc-tion iso-la
--tion or bench-mark lead-er-ship. 
- []
-
-[8]
+] [8]
 \openout2 = `3/Chapter3.aux'.
 
  (3/Chapter3.tex
@@ -1422,28 +1230,10 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 7.
 
-<3/figures/agentos_architecture.jpeg, id=485, 1541.76pt x 1027.84pt>
-File: 3/figures/agentos_architecture.jpeg Graphic file (type jpg)
-<use 3/figures/agentos_architecture.jpeg>
-Package pdftex.def Info: 3/figures/agentos_architecture.jpeg  used on input lin
-e 11.
-(pdftex.def)             Requested size: 404.31189pt x 269.53758pt.
 
-Underfull \hbox (badness 2744) in paragraph at lines 12--12
-[][]|\OT1/ptm/b/n/13 Over-all Agen-tOS sys-tem ar-chi-tec-ture and ma-jor mod-u
-le
- []
-
-
-Overfull \hbox (21.80412pt too wide) in paragraph at lines 8--14
-[]\OT1/ptm/m/n/13 Figure []3.1[] presents the over-all Agen-tOS ar-chi-tec-ture
- and the re-la-tion-ships
- []
-
-
-Overfull \hbox (26.57085pt too wide) in paragraph at lines 8--14
-\OT1/ptm/m/n/13 among its ma-jor com-po-nents. The fig-ure com-bines im-ple-men
-ted run-time com-po-nents
+Underfull \hbox (badness 1173) in paragraph at lines 8--9
+[]\OT1/ptm/m/n/13 As shown in Fig-ure []3.1[], Agen-tOS is or-gan-ised as an ov
+er-all
  []
 
 [9
@@ -1452,252 +1242,176 @@ ted run-time com-po-nents
 
 
 ]
+<3/figures/agentos_architecture.jpeg, id=469, 1541.76pt x 1027.84pt>
+File: 3/figures/agentos_architecture.jpeg Graphic file (type jpg)
+<use 3/figures/agentos_architecture.jpeg>
+Package pdftex.def Info: 3/figures/agentos_architecture.jpeg  used on input lin
+e 12.
+(pdftex.def)             Requested size: 495.09064pt x 330.06042pt.
+ [10 <./3/figures/agentos_architecture.jpeg>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 16.
-
-<3/figures/frontend_redis_flow.jpeg, id=491, 1421.31pt x 986.68625pt>
-File: 3/figures/frontend_redis_flow.jpeg Graphic file (type jpg)
-<use 3/figures/frontend_redis_flow.jpeg>
-Package pdftex.def Info: 3/figures/frontend_redis_flow.jpeg  used on input line
- 20.
-(pdftex.def)             Requested size: 404.31189pt x 280.68155pt.
-
-Overfull \hbox (8.4494pt too wide) in paragraph at lines 17--23
-\OT1/ptm/m/n/13 and for-wards events to con-nected clients. Fig-ure []3.2[] sho
-ws the sep-a-ra-tion be-tween
- []
+(hyperref)                removing `\uppercase' on input line 18.
 
 
-Overfull \hbox (0.90854pt too wide) in paragraph at lines 17--23
-\OT1/ptm/m/n/13 the task sub-mis-sion chan-nel and the ker-nel event chan-nel. 
-Mon-goDB per-sis-tence
- []
 
-[10 <./3/figures/agentos_architecture.jpeg>]
+pdfTeX warning: pdflatex.exe (file ./3/figures/redis-flow-readable.pdf): PDF in
+clusion: found PDF version <1.7>, but at most version <1.5> allowed
+<3/figures/redis-flow-readable.pdf, id=476, 645.41125pt x 664.4825pt>
+File: 3/figures/redis-flow-readable.pdf Graphic file (type pdf)
+<use 3/figures/redis-flow-readable.pdf>
+Package pdftex.def Info: 3/figures/redis-flow-readable.pdf  used on input line 
+22.
+(pdftex.def)             Requested size: 394.09422pt x 405.73929pt.
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 25.
+(hyperref)                removing `\uppercase' on input line 27.
+
+[11
 
 
+ <./3/figures/redis-flow-readable.pdf>]
 
-pdfTeX warning: pdflatex.exe (file ./3/figures/dag.pdf): PDF inclusion: found P
-DF version <1.7>, but at most version <1.5> allowed
-<3/figures/dag.pdf, id=498, 809.0225pt x 116.435pt>
-File: 3/figures/dag.pdf Graphic file (type pdf)
-<use 3/figures/dag.pdf>
-Package pdftex.def Info: 3/figures/dag.pdf  used on input line 29.
-(pdftex.def)             Requested size: 371.30594pt x 53.43816pt.
+pdfTeX warning: pdflatex.exe (file ./3/figures/dag-readable.pdf): PDF inclusion
+: found PDF version <1.7>, but at most version <1.5> allowed
+<3/figures/dag-readable.pdf, id=496, 513.92pt x 1099.10625pt>
+File: 3/figures/dag-readable.pdf Graphic file (type pdf)
+<use 3/figures/dag-readable.pdf>
+Package pdftex.def Info: 3/figures/dag-readable.pdf  used on input line 31.
+(pdftex.def)             Requested size: 177.4751pt x 379.56102pt.
 
-Overfull \hbox (3.51375pt too wide) in paragraph at lines 26--32
+Underfull \hbox (badness 3354) in paragraph at lines 28--34
 []\OT1/ptm/m/n/13 The plan-ner re-trieves rel-e-vant agent de-scrip-tions, re-q
-uests a struc-tured
+uests a
  []
 
-
-Overfull \hbox (4.35394pt too wide) in paragraph at lines 26--32
-\OT1/ptm/m/n/13 The val-ida-tor canon-i-calises iden-ti-fiers, re-jects un-know
-n de-pen-den-cies and cy-cles,
- []
-
-
-Overfull \hbox (7.30495pt too wide) in paragraph at lines 26--32
-\OT1/ptm/m/n/13 ex-ecu-tor runs only steps whose pre-req-ui-sites are com-plete
-. Fig-ure []3.3[] sum-marises
- []
-
-[11 <./3/figures/frontend_redis_flow.jpeg>]
+[12 <./3/figures/dag-readable.pdf>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 34.
+(hyperref)                removing `\uppercase' on input line 37.
 
-<3/figures/context_paging.png, id=504, 1541.76pt x 1027.84pt>
+<3/figures/context_paging.png, id=510, 1541.76pt x 1027.84pt>
 File: 3/figures/context_paging.png Graphic file (type png)
 <use 3/figures/context_paging.png>
-Package pdftex.def Info: 3/figures/context_paging.png  used on input line 38.
-(pdftex.def)             Requested size: 371.30594pt x 247.53355pt.
+Package pdftex.def Info: 3/figures/context_paging.png  used on input line 41.
+(pdftex.def)             Requested size: 412.56496pt x 275.04251pt.
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 43.
+(hyperref)                removing `\uppercase' on input line 46.
 
-[12 <./3/figures/dag.pdf> <./3/figures/context_paging.png>]
-<3/figures/agent_scheduler.png, id=522, 1541.76pt x 1027.84pt>
+<3/figures/agent_scheduler.png, id=513, 1541.76pt x 1027.84pt>
 File: 3/figures/agent_scheduler.png Graphic file (type png)
 <use 3/figures/agent_scheduler.png>
-Package pdftex.def Info: 3/figures/agent_scheduler.png  used on input line 47.
-(pdftex.def)             Requested size: 371.30594pt x 247.53355pt.
+Package pdftex.def Info: 3/figures/agent_scheduler.png  used on input line 50.
+(pdftex.def)             Requested size: 412.56496pt x 275.04251pt.
+[13
 
+ <./3/figures/context_paging.png>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 52.
+(hyperref)                removing `\uppercase' on input line 55.
 
-<3/figures/resource_manager.png, id=524, 1541.76pt x 1027.84pt>
+<3/figures/resource_manager.png, id=522, 1541.76pt x 1027.84pt>
 File: 3/figures/resource_manager.png Graphic file (type png)
 <use 3/figures/resource_manager.png>
-Package pdftex.def Info: 3/figures/resource_manager.png  used on input line 56.
+Package pdftex.def Info: 3/figures/resource_manager.png  used on input line 59.
 
-(pdftex.def)             Requested size: 379.55899pt x 253.03848pt.
+(pdftex.def)             Requested size: 412.56496pt x 275.04251pt.
 
-Underfull \hbox (badness 1005) in paragraph at lines 57--57
+Underfull \hbox (badness 1005) in paragraph at lines 60--60
 [][]|\OT1/ptm/b/n/13 Resource-manager de-ci-sion flow sup-plied for the Agen-tO
 S
  []
 
 
-Overfull \hbox (8.1762pt too wide) in paragraph at lines 53--59
+Underfull \hbox (badness 1009) in paragraph at lines 56--62
 \OT1/ptm/m/n/13 im-ple-men-ta-tion, the cor-re-spond-ing re-source man-ager en-
-forces global and per-task
+forces global and
  []
 
-[13 <./3/figures/agent_scheduler.png>]
+[14 <./3/figures/agent_scheduler.png>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 61.
+(hyperref)                removing `\uppercase' on input line 64.
 
-<3/figures/tool_manager.png, id=531, 1541.76pt x 1027.84pt>
+<3/figures/tool_manager.png, id=529, 1541.76pt x 1027.84pt>
 File: 3/figures/tool_manager.png Graphic file (type png)
 <use 3/figures/tool_manager.png>
-Package pdftex.def Info: 3/figures/tool_manager.png  used on input line 65.
-(pdftex.def)             Requested size: 379.55899pt x 253.03848pt.
-
-Overfull \hbox (3.87392pt too wide) in paragraph at lines 62--68
-\OT1/ptm/m/n/13 cur-rently ex-poses bounded tools through the run-time and code
- run-ner; a com-plete
- []
-
-
-Overfull \hbox (12.67392pt too wide) in paragraph at lines 62--68
-\OT1/ptm/m/n/13 per-mis-sion store and MCP-compatible tool man-ager re-main pro
--posed com-po-nents. 
- []
-
-[14 <./3/figures/resource_manager.png>]
+Package pdftex.def Info: 3/figures/tool_manager.png  used on input line 68.
+(pdftex.def)             Requested size: 412.56496pt x 275.04251pt.
+[15 <./3/figures/resource_manager.png>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 70.
+(hyperref)                removing `\uppercase' on input line 73.
 
 
 
 pdfTeX warning: pdflatex.exe (file ./3/figures/lifecycle.pdf): PDF inclusion: f
 ound PDF version <1.7>, but at most version <1.5> allowed
-<3/figures/lifecycle.pdf, id=538, 449.68pt x 279.0425pt>
+<3/figures/lifecycle.pdf, id=536, 449.68pt x 279.0425pt>
 File: 3/figures/lifecycle.pdf Graphic file (type pdf)
 <use 3/figures/lifecycle.pdf>
-Package pdftex.def Info: 3/figures/lifecycle.pdf  used on input line 74.
+Package pdftex.def Info: 3/figures/lifecycle.pdf  used on input line 77.
 (pdftex.def)             Requested size: 371.30594pt x 230.41727pt.
-
-Overfull \hbox (2.44344pt too wide) in paragraph at lines 71--77
-\OT1/ptm/m/n/13 agent, ex-e-cu-tion, sta-tus, pri-or-ity, queue wait, and at-te
-mpt in-for-ma-tion. Fig-ure []3.8[]
- []
-
-
-Overfull \hbox (27.44156pt too wide) in paragraph at lines 71--77
-\OT1/ptm/m/n/13 shows the state model. RBAC, dis-tributed mu-tex lock-ing, and 
-com-plete state-machine
- []
-
-
-Overfull \hbox (7.31702pt too wide) in paragraph at lines 71--77
-\OT1/ptm/m/n/13 en-force-ment are ar-chi-tec-tural ex-ten-sions rather than cla
-ims of full im-ple-men-ta-tion
- []
-
-[15 <./3/figures/tool_manager.png>]
+[16 <./3/figures/tool_manager.png>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 79.
+(hyperref)                removing `\uppercase' on input line 82.
 
 
 
 pdfTeX warning: pdflatex.exe (file ./3/figures/runner.pdf): PDF inclusion: foun
 d PDF version <1.7>, but at most version <1.5> allowed
-<3/figures/runner.pdf, id=545, 689.57625pt x 191.71625pt>
+<3/figures/runner.pdf, id=544, 689.57625pt x 191.71625pt>
 File: 3/figures/runner.pdf Graphic file (type pdf)
 <use 3/figures/runner.pdf>
-Package pdftex.def Info: 3/figures/runner.pdf  used on input line 83.
-(pdftex.def)             Requested size: 371.30594pt x 103.22977pt.
-
-Overfull \hbox (1.65157pt too wide) in paragraph at lines 80--86
-\OT1/ptm/m/n/13 work-ing di-rec-tory, and in-vokes it through an asyn-chronous 
-sub-pro-cess. It bounds
- []
-
-
-Overfull \hbox (3.7042pt too wide) in paragraph at lines 80--86
-\OT1/ptm/m/n/13 ex-e-cu-tion time and cap-tured out-put. A non-zero exit code o
-r trace-back is re-turned
- []
-
+Package pdftex.def Info: 3/figures/runner.pdf  used on input line 86.
+(pdftex.def)             Requested size: 412.57204pt x 96.44203pt.
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 88.
+(hyperref)                removing `\uppercase' on input line 91.
 
-[16 <./3/figures/lifecycle.pdf> <./3/figures/runner.pdf
-
-pdfTeX warning: pdflatex.exe (file ./3/figures/runner.pdf): PDF inclusion: mult
-iple pdfs with page group included in a single page
->]
-Underfull \hbox (badness 1038) in paragraph at lines 100--100
+[17 <./3/figures/lifecycle.pdf> <./3/figures/runner.pdf>]
+Underfull \hbox (badness 1038) in paragraph at lines 103--103
 []|\OT1/ptm/m/n/13 Structured plan, val-i-da-tion,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 101--101
-[]|\OT1/ptm/m/n/13 Scheduler and
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 101--102
+Underfull \hbox (badness 10000) in paragraph at lines 104--105
 []|\OT1/ptm/m/n/13 Implemented;
  []
 
 
-Underfull \hbox (badness 2600) in paragraph at lines 102--102
+Underfull \hbox (badness 2600) in paragraph at lines 105--105
 []|\OT1/ptm/m/n/13 ChromaDB se-man-tic swap
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 104--105
+Underfull \hbox (badness 10000) in paragraph at lines 107--108
 []|\OT1/ptm/m/n/13 Implemented; not
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 105--105
-[]|\OT1/ptm/m/n/13 RBAC / ca-pa-bil-ity
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 106--106
-[]|\OT1/ptm/m/n/13 Distributed locks /
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 107--107
+Underfull \hbox (badness 10000) in paragraph at lines 110--110
 []|\OT1/ptm/m/n/13 Provider ab-strac-tion is
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 108--108
-[]|\OT1/ptm/m/n/13 Durable corou-tine
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 108--108
+Underfull \hbox (badness 10000) in paragraph at lines 111--111
 []|\OT1/ptm/m/n/13 Interrupted records are
  []
 
 
-Underfull \hbox (badness 1127) in paragraph at lines 108--108
+Underfull \hbox (badness 1127) in paragraph at lines 111--111
 \OT1/ptm/m/n/13 de-tected/requeued pol-icy is
  []
 
 
-Overfull \hbox (13.23769pt too wide) in paragraph at lines 95--111
+Overfull \hbox (13.23769pt too wide) in paragraph at lines 98--114
  [][] 
  []
 
-) [17]
+) [18]
 \openout2 = `4/Chapter4.aux'.
 
  (4/Chapter4.tex
@@ -1715,277 +1429,177 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 7.
 
 
-Overfull \hbox (8.17996pt too wide) in paragraph at lines 8--9
+Underfull \hbox (badness 3199) in paragraph at lines 8--9
 []\OT1/ptm/m/n/13 Agent de-scrip-tions are em-bed-ded in a per-sis-tent Chro-ma
-DB col-lec-tion.
- []
-
-
-Overfull \hbox (9.07173pt too wide) in paragraph at lines 8--9
-\OT1/ptm/m/n/13 nor-mal-i-sa-tion. An LRU cache re-duces re-peated re-trieval f
-or iden-ti-cal de-scrip-tions. 
+DB
  []
 
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
 put line 11.
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 24.
-
-[18
+[19
 
 
 
 
 ]
-<4/figures/optimized_planner.png, id=584, 1541.76pt x 1027.84pt>
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\uppercase' on input line 25.
+
+<4/figures/optimized_planner.png, id=585, 1541.76pt x 1027.84pt>
 File: 4/figures/optimized_planner.png Graphic file (type png)
 <use 4/figures/optimized_planner.png>
-Package pdftex.def Info: 4/figures/optimized_planner.png  used on input line 30
+Package pdftex.def Info: 4/figures/optimized_planner.png  used on input line 31
 .
 (pdftex.def)             Requested size: 404.31189pt x 269.53758pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 31--31
-[][]|\OT1/ptm/b/n/13 Op-ti-mized se-man-tic plan-ner with can-di-date re-trieva
-l,
- []
-
-
-Underfull \hbox (badness 5908) in paragraph at lines 31--31
-\OT1/ptm/b/n/13 struc-tured plan val-i-da-tion, fall-back rout-ing, and DAG
- []
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 35.
-
-
-Overfull \hbox (1.18227pt too wide) in paragraph at lines 36--37
-\OT1/ptm/m/n/13 Val-i-da-tion re-jects du-pli-cate iden-ti-fiers, un-known agen
-ts, un-known de-pen-den-cies,
- []
-
-[19 <./4/figures/optimized_planner.png>]
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 56.
-
-
-Overfull \hbox (18.3417pt too wide) in paragraph at lines 61--63
-\OT1/ptm/m/n/13 work is vis-i-ble and re-cov-er-able. A se-lected record is mar
-ked RUN-NING, dis-patched
- []
-
 [20]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 85.
+(hyperref)                removing `\uppercase' on input line 36.
 
 
-Overfull \hbox (29.66537pt too wide) in paragraph at lines 86--87
-\OT1/ptm/m/n/13 de-nial leaves work wait-ing; an ex-hausted task bud-get is con
--verted into a blocked/failed
+Underfull \hbox (badness 2035) in paragraph at lines 37--38
+[]\OT1/ptm/m/n/13 Every step has a unique iden-ti-fier and a list of pre-req-ui
+-site
  []
 
+[21 <./4/figures/optimized_planner.png>]
 
-Overfull \hbox (7.2665pt too wide) in paragraph at lines 86--87
-\OT1/ptm/m/n/13 dis-tinc-tion ex-plains why a provider such as Groq may dis-pla
-y zero us-age meta-data
- []
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\uppercase' on input line 58.
 
+[22]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 88.
 
 
-Overfull \hbox (69.18718pt too wide) in paragraph at lines 89--90
-\OT1/ptm/m/n/13 keys such as \OT1/pcr/m/n/13 agentos:scheduler:ready \OT1/ptm/m
-/n/13 and \OT1/pcr/m/n/13 agentos:scheduler:job:<execution[]-id>\OT1/ptm/m/n/13
- .
- []
-
-[21]
-
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 108.
+(hyperref)                removing `\uppercase' on input line 91.
 
 
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 111.
-
-[22]
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 114.
-
-
-Overfull \hbox (5.93166pt too wide) in paragraph at lines 115--116
-[]\OT1/ptm/m/n/13 The task ac-tiv-ity panel dis-plays life-cy-cle events, sched
--uler state, queue
+Underfull \hbox (badness 10000) in paragraph at lines 92--94
+[]\OT1/ptm/m/n/13 Events are JSON records con-tain-ing task iden-ti-fier, step
  []
 
 
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 117.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 127--128
-[]|\OT1/ptm/m/n/13 Maximum si-mul-ta-ne-ously
+Underfull \hbox (badness 2828) in paragraph at lines 92--94
+\OT1/ptm/m/n/13 iden-ti-fier, agent name, ex-e-cu-tion iden-ti-fier, sta-tus, t
+imes-tamp, pri-or-ity,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 129--130
-[]|\OT1/ptm/m/n/13 Cumulative es-ti-mated
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 130--130
-[]|\OT1/ptm/m/n/13 Maximum sched-uler
- []
-
-
-Overfull \hbox (7.54723pt too wide) in paragraph at lines 123--135
- [][] 
- []
-
-
-Overfull \hbox (1.0264pt too wide) in paragraph at lines 118--135
-\OT1/ptm/m/n/13 through-put, la-tency, or model-quality bench-mark is claimed b
-e-cause a con-trolled
+Underfull \hbox (badness 5787) in paragraph at lines 92--94
+\OT1/ptm/m/n/13 Sched-uler records use keys such as \OT1/pcr/m/n/13 agentos:sch
+eduler:ready \OT1/ptm/m/n/13 and
  []
 
 [23]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 137.
+(hyperref)                removing `\uppercase' on input line 112.
+
+[24]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\uppercase' on input line 116.
 
 
-Overfull \hbox (0.2638pt too wide) in paragraph at lines 138--139
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\uppercase' on input line 119.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\uppercase' on input line 122.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 132--133
+[]|\OT1/ptm/m/n/13 Maximum si-mul-ta-ne-ously
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 134--135
+[]|\OT1/ptm/m/n/13 Cumulative es-ti-mated
+ []
+
+
+Overfull \hbox (7.54723pt too wide) in paragraph at lines 128--140
+ [][] 
+ []
+
+[25
+
+]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\uppercase' on input line 142.
+
+
+Underfull \hbox (badness 1533) in paragraph at lines 143--145
 []\OT1/ptm/m/n/13 The fol-low-ing al-go-rithm sheets de-fine the Agen-tOS ex-e-
-cu-tion de-sign.
+cu-tion
  []
 
 
-Overfull \hbox (39.66328pt too wide) in paragraph at lines 138--139
-\OT1/ptm/m/n/13 man-ager, con-text pager, dependency-aware DAG ex-ecu-tor, sche
-d-uler, and priority-aging
+Underfull \hbox (badness 1168) in paragraph at lines 143--145
+\OT1/ptm/m/n/13 and sched-uler pro-ce-dures. Al-go-rithms []4.4[], []4.5[], []4
+.6[], []4.7[], []4.8[], and []4.9[]
  []
 
 
-Overfull \hbox (6.08234pt too wide) in paragraph at lines 138--139
-\OT1/ptm/m/n/13 sheets that de-scribe full execution-context restora-tion, hard
- time-slice sus-pen-sion,
+Underfull \hbox (badness 1371) in paragraph at lines 143--145
+\OT1/ptm/m/n/13 DAG, and global schedul-ing spec-i-fi-ca-tions in that or-der. 
+The sep-a-rate
  []
 
-<4/algorithms/alg-3.png, id=613, 597.9138pt x 845.0772pt>
-File: 4/algorithms/alg-3.png Graphic file (type png)
-<use 4/algorithms/alg-3.png>
-Package pdftex.def Info: 4/algorithms/alg-3.png  used on input line 140.
-(pdftex.def)             Requested size: 404.31189pt x 469.02158pt.
-<4/algorithms/alg-4.png, id=615, 597.9138pt x 845.0772pt>
-File: 4/algorithms/alg-4.png Graphic file (type png)
-<use 4/algorithms/alg-4.png>
-Package pdftex.def Info: 4/algorithms/alg-4.png  used on input line 141.
-(pdftex.def)             Requested size: 404.31189pt x 619.93639pt.
-<4/algorithms/alg-5.png, id=617, 597.9138pt x 845.0772pt>
-File: 4/algorithms/alg-5.png Graphic file (type png)
-<use 4/algorithms/alg-5.png>
-Package pdftex.def Info: 4/algorithms/alg-5.png  used on input line 142.
-(pdftex.def)             Requested size: 404.31189pt x 619.93639pt.
-<4/algorithms/alg-6.png, id=619, 597.9138pt x 845.0772pt>
-File: 4/algorithms/alg-6.png Graphic file (type png)
-<use 4/algorithms/alg-6.png>
-Package pdftex.def Info: 4/algorithms/alg-6.png  used on input line 143.
-(pdftex.def)             Requested size: 404.31189pt x 619.93639pt.
-<4/algorithms/alg-7.png, id=621, 597.9138pt x 845.0772pt>
-File: 4/algorithms/alg-7.png Graphic file (type png)
-<use 4/algorithms/alg-7.png>
-Package pdftex.def Info: 4/algorithms/alg-7.png  used on input line 144.
-(pdftex.def)             Requested size: 404.31189pt x 619.93639pt.
-<4/algorithms/alg-8.png, id=623, 597.9138pt x 845.0772pt>
-File: 4/algorithms/alg-8.png Graphic file (type png)
-<use 4/algorithms/alg-8.png>
-Package pdftex.def Info: 4/algorithms/alg-8.png  used on input line 145.
-(pdftex.def)             Requested size: 404.31189pt x 619.93639pt.
-<4/algorithms/alg-9.png, id=625, 597.9138pt x 845.0772pt>
-File: 4/algorithms/alg-9.png Graphic file (type png)
-<use 4/algorithms/alg-9.png>
-Package pdftex.def Info: 4/algorithms/alg-9.png  used on input line 146.
-(pdftex.def)             Requested size: 404.31189pt x 619.93639pt.
-) [24] [25 <./4/algorithms/alg-3.png (PNG copy)>] [26 <./4/algorithms/alg-4.png
- (PNG copy)>] [27 <./4/algorithms/alg-5.png (PNG copy)>] [28 <./4/algorithms/al
-g-6.png (PNG copy)>] [29 <./4/algorithms/alg-7.png (PNG copy)>] [30 <./4/algori
-thms/alg-8.png (PNG copy)>] [31 <./4/algorithms/alg-9.png (PNG copy)>]
-\openout2 = `Conclusion/conclusion.aux'.
+
+Underfull \hbox (badness 1215) in paragraph at lines 143--145
+\OT1/ptm/m/n/13 priority-aging/time-slice model pre-vi-ously shown as Fig-ure 4
+.7 has been
+ []
 
 
-(Conclusion/conclusion.tex
+Overfull \hbox (39.67043pt too wide) in paragraph at lines 159--160
+[] $\OML/ptmcm/m/it/13 runtime[]store\OT1/ptmcm/m/n/13 [\OML/ptmcm/m/it/13 agen
+t[]id\OT1/ptmcm/m/n/13 ] \OMS/pzccm/m/n/13   \OT1/ptmcm/m/n/13 (\OML/ptmcm/m/it
+/13 agent[]id; agent[]type; task[]id; run[]fn; []\OT1/ptmcm/m/n/13 )$ 
+ []
+
+[26] [27]
+Overfull \hbox (22.13528pt too wide) in paragraph at lines 230--231
+[] $\OML/ptmcm/m/it/13 start[]time \OMS/pzccm/m/n/13   []$\OT1/ptm/m/n/13 ; \OT
+1/ptm/m/sc/13 Se-tA-gentSta-tus\OT1/ptm/m/n/13 ($\OML/ptmcm/m/it/13 A[]:id; []$
+\OT1/ptm/m/n/13 ) 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 239--240
+[] \OT1/ptm/m/sc/13 Save-Ex-e-cu-tion-Con-text\OT1/ptm/m/n/13 ($\OML/ptmcm/m/it
+/13 A[]; runtime$\OT1/ptm/m/n/13 );
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 243--244
+[] $\OML/ptmcm/m/it/13 A[]:result \OMS/pzccm/m/n/13   []\OT1/ptmcm/m/n/13 (\OML
+/ptmcm/m/it/13 runtime\OT1/ptmcm/m/n/13 )$\OT1/ptm/m/n/13 ;
+ []
+
+[28] [29] [30
+
+]
+Underfull \hbox (badness 3792) in paragraph at lines 331--332
+[] \OT1/ptm/m/n/13 Mark READY, up-date $\OML/ptmcm/m/it/13 ready[]time$\OT1/ptm
+/m/n/13 , rein-sert into $\OML/ptmcm/m/it/13 Q$\OT1/ptm/m/n/13 , pub-lish
+ []
+
+) [31] [32]
+\openout2 = `Appendix/appendix.aux'.
+
+ (Appendix/appendix.tex
 CHAPTER 5.
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 1.
-
-
-Overfull \hbox (12.88187pt too wide) in paragraph at lines 4--5
-\OT1/ptm/m/n/13 in which plan-ning, se-man-tic agent se-lec-tion, DAG ex-e-cu-t
-ion, con-text man-age-ment,
- []
-
-
-Overfull \hbox (30.97876pt too wide) in paragraph at lines 4--5
-\OT1/ptm/m/n/13 schedul-ing, re-source ad-mis-sion, sand-boxed code ex-e-cu-tio
-n, and fron-tend ob-serv-abil-ity
- []
-
-
-Overfull \hbox (7.91689pt too wide) in paragraph at lines 6--7
-\OT1/ptm/m/n/13 Sched-uler dis-patch is co-op-er-a-tive, to-ken us-age can be u
-n-avail-able when a provider
- []
-
-
-Overfull \hbox (2.48172pt too wide) in paragraph at lines 6--7
-\OT1/ptm/m/n/13 omits meta-data, and restart re-cov-ery iden-ti-fies in-ter-rup
-ted work with-out restor-ing
- []
-
-)
-Overfull \hbox (25.04955pt too wide) in paragraph at lines 8--323
-\OT1/ptm/m/n/13 check-points in-side long-running agents, com-plete ca-pa-bil-i
-ty en-force-ment, dis-tributed
- []
-
-
-Overfull \hbox (5.29063pt too wide) in paragraph at lines 8--323
-\OT1/ptm/m/n/13 ex-ten-sions can be added with-out chang-ing the cen-tral sep-a
--ra-tion be-tween plan-ner,
- []
-
-[32
-
-
-
-
-]
-\openout2 = `Appendix/appendix.aux'.
-
- (Appendix/appendix.tex
-CHAPTER 6.
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 1.
-
-
-Overfull \hbox (13.51083pt too wide) in paragraph at lines 4--5
-[]\OT1/ptm/m/n/13 This ap-pendix de-fines the met-rics that will be used to eva
-l-u-ate Agen-tOS.
- []
-
-
-Overfull \hbox (25.98642pt too wide) in paragraph at lines 4--5
-\OT1/ptm/m/n/13 The met-rics spec-ify how plan-ning qual-ity, ex-e-cu-tion re-l
-i-a-bil-ity, schedul-ing be-haviour,
- []
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
@@ -2002,103 +1616,142 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 
 
 ]
-Overfull \hbox (18.52905pt too wide) in paragraph at lines 29--30
-[]\OT1/ptm/m/n/13 For bench-mark tasks with more than one ac-cept-able plan, ag
-ent-selection
+Underfull \hbox (badness 4752) in paragraph at lines 30--31
+[]\OT1/ptm/m/n/13 For bench-mark tasks with more than one ac-cept-able plan,
  []
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 31.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 51.
 
 [34]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 72.
+(hyperref)                removing `\uppercase' on input line 33.
+
+
+Underfull \hbox (badness 1496) in paragraph at lines 34--52
+[]\OT1/ptm/m/n/13 Table []5.2[] de-fines the re-li-a-bil-ity mea-sures used to 
+as-sess task
+ []
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\uppercase' on input line 54.
+
+[35
+
+]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\uppercase' on input line 76.
 
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 7
-5.
+9.
 (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-[35]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 83.
+(hyperref)                removing `\uppercase' on input line 87.
 
-
-Overfull \hbox (1.55963pt too wide) in paragraph at lines 84--85
-\OT1/ptm/m/n/13 event iden-ti-fier and ex-e-cu-tion iden-ti-fier in Re-dis, Mon
--goDB, the back-end stream,
- []
-
-
-Overfull \hbox (1.23451pt too wide) in paragraph at lines 93--94
-\OT1/ptm/m/n/13 The re-quired event fields are task iden-ti-fier, step iden-ti-
-fier, agent name, ex-e-cu-tion
- []
-
+[36]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 95.
+(hyperref)                removing `\uppercase' on input line 99.
 
 
-Overfull \hbox (6.644pt too wide) in paragraph at lines 97--98
+Overfull \hbox (6.644pt too wide) in paragraph at lines 101--102
 []\OT1/ptm/m/n/13 Timeout en-force-ment rate $\OT1/ptmcm/m/n/13 = []$\OT1/ptm/m
 /n/13 . 
  []
 
 
-Overfull \hbox (7.24551pt too wide) in paragraph at lines 101--102
-[]\OT1/ptm/m/n/13 Working-directory es-cape count: num-ber of ex-e-cu-tions wri
-t-ing out-side
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\uppercase' on input line 108.
+
+[37] [38])
+Underfull \hbox (badness 1019) in paragraph at lines 125--330
+[]\OT1/ptm/m/n/13 Each con-fig-u-ra-tion sum-mary should there-fore in-clude ta
+sk and
  []
 
-[36]
+[39]
+\openout2 = `Conclusion/conclusion.aux'.
+
+ (Conclusion/conclusion.tex
+CHAPTER 6.
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 104.
+(hyperref)                removing `\uppercase' on input line 1.
 
-)
-Overfull \hbox (13.79755pt too wide) in paragraph at lines 105--326
-[]\OT1/ptm/m/n/13 Each ex-per-i-ment should record the task prompt, ex-pected r
-e-sult, plan-ner
+
+Underfull \hbox (badness 3078) in paragraph at lines 4--5
+\OT1/ptm/m/n/13 in which plan-ning, se-man-tic agent se-lec-tion, DAG ex-e-cu-t
+ion, con-text
  []
 
 
-Overfull \hbox (26.28497pt too wide) in paragraph at lines 105--326
-\OT1/ptm/m/n/13 human-labelled ex-pected agents or rel-e-vant con-text pages mu
-st in-clude the an-no-ta-tion
- []
-
-[37] (authesis.bbl
-Underfull \hbox (badness 10000) in paragraph at lines 41--45
-[]\OT1/ptm/m/n/13 Patrick Lewis et al.  Retrieval-augmented gen-er-a-tion for
+Underfull \hbox (badness 3826) in paragraph at lines 6--7
+[]\OT1/ptm/m/n/13 The im-ple-men-ta-tion is also bounded by ex-plicit lim-i-ta-
+tions.
  []
 
 
-Underfull \hbox (badness 1005) in paragraph at lines 41--45
-\OT1/ptm/m/n/13 knowledge-intensive nlp tasks.  In \OT1/ptm/m/it/13 Ad-vances i
-n Neu-ral In-for-ma-tion
+Underfull \hbox (badness 1117) in paragraph at lines 6--7
+\OT1/ptm/m/n/13 provider omits meta-data, and restart re-cov-ery iden-ti-fies i
+n-ter-rupted work
+ []
+
+) [40
+
+
+
+
+]
+\openout2 = `References/references.aux'.
+
+ (References/references.tex
+Underfull \hbox (badness 3735) in paragraph at lines 15--16
+[]\OT1/ptm/m/n/10.95 B. Liu, Y. Jiang, X. Zhang, Q. Liu, S. Zhang, J. Biswas, a
+nd P. Stone,
+ []
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 19.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 19.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 19.
+
+Underfull \hbox (badness 1817) in paragraph at lines 19--20
+[]\OT1/ptm/m/n/10.95 LangChain, ``Lang-Graph Doc-u-men-ta-tion,'' 2026. [On-lin
+e]. Avail-able: []$\OT1/pcr/m/n/10.95 https : / /
  []
 
 
-Underfull \hbox (badness 1533) in paragraph at lines 69--73
-\OT1/ptm/m/n/13 learn-ing.  In \OT1/ptm/m/it/13 Ad-vances in Neu-ral In-for-ma-
-tion Pro-cess-ing Sys-tems\OT1/ptm/m/n/13 ,
+Underfull \hbox (badness 1675) in paragraph at lines 35--36
+\OT1/ptm/m/n/10.95 Lan-guage Agents With Ver-bal Re-in-force-ment Learn-ing,'' 
+in \OT1/ptm/m/it/10.95 Ad-vances in Neu-ral
  []
 
-[38
+[41
 
 
 
-]) [39] (authesis.aux (Abstract/abstract.aux) (acknowl.aux)
+
+]
+Underfull \hbox (badness 3078) in paragraph at lines 43--44
+[]$\OT1/pcr/m/n/10.95 https : / / langchain -[] ai . github . io / langgraphjs 
+/ concepts / persistence/$[]
+ []
+
+
+Underfull \hbox (badness 2237) in paragraph at lines 51--52
+[]\OT1/ptm/m/n/10.95 Amazon Web Ser-vices, ``Fire-cracker Mi-croVM Doc-u-men-ta
+-tion,'' 2026. [On-line].
+ []
+
+) [42] (authesis.aux (Abstract/abstract.aux) (acknowl.aux)
 (Acronyms/acronyms.aux) (1/Chapter1.aux) (2/Chapter2.aux) (3/Chapter3.aux)
-(4/Chapter4.aux) (Conclusion/conclusion.aux) (Appendix/appendix.aux))
+(4/Chapter4.aux) (Appendix/appendix.aux) (Conclusion/conclusion.aux)
+(References/references.aux))
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
@@ -2109,16 +1762,16 @@ LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 1.75pt have occurred.
 
 Package rerunfilecheck Info: File `authesis.out' has not changed.
-(rerunfilecheck)             Checksum: 5FC5C538533540068C70E4DB658C0E87;10317.
+(rerunfilecheck)             Checksum: 2F85DA6BA768E48B735ED36374F29019;10378.
  ) 
 Here is how much of TeX's memory you used:
- 15147 strings out of 467871
- 245721 string characters out of 5418376
- 660169 words of memory out of 5000000
- 43498 multiletter control sequences out of 15000+600000
- 676110 words of font info for 142 fonts, out of 8000000 for 9000
+ 15274 strings out of 467871
+ 248311 string characters out of 5418376
+ 664499 words of memory out of 5000000
+ 43604 multiletter control sequences out of 15000+600000
+ 691595 words of font info for 178 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,16n,79p,1550b,664s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,17n,79p,1550b,718s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
 cmmi10.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
 fonts/cm/cmr10.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/pu
@@ -2129,9 +1782,9 @@ s/type1/urw/times/utmb8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/font
 s/type1/urw/times/utmbi8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fon
 ts/type1/urw/times/utmr8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fon
 ts/type1/urw/times/utmri8a.pfb>
-Output written on authesis.pdf (48 pages, 12484703 bytes).
+Output written on authesis.pdf (51 pages, 9083415 bytes).
 PDF statistics:
- 779 PDF objects out of 1000 (max. 8388607)
- 167 named destinations out of 1000 (max. 500000)
- 597 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 812 PDF objects out of 1000 (max. 8388607)
+ 171 named destinations out of 1000 (max. 500000)
+ 526 words of extra memory for PDF output out of 10000 (max. 10000000)
 

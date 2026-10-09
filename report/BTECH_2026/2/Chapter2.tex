@@ -24,6 +24,7 @@ Classical operating-system scheduling shows why priority alone can starve old wo
 
 The workflow and orchestration literature emphasises explicit dependency graphs and stateful execution. LangGraph persistence documents checkpointed graph state \cite{langgraphpersistence}, while Temporal documents durable workflow execution \cite{temporaldocs}. AgentOS currently validates and executes a DAG in-process and persists task/event evidence; automatic continuation of interrupted coroutines remains future work.
 
+\clearpage
 \section{\uppercase{Security and Sandboxed Execution}}
 The Model Context Protocol specifies a standard way for AI applications to connect models with tools and data sources \cite{mcpdocs}. OWASP's LLM security guidance highlights risks including excessive agency, insecure tool use, and code execution \cite{owaspllm}. Python subprocess execution and filesystem scoping are therefore bounded in the code runner. Firecracker demonstrates the stronger isolation achievable with microVMs \cite{firecracker}. AgentOS's current runner limits duration and output and scopes its working directory, but it is not a substitute for a hardened kernel or microVM sandbox.
 
