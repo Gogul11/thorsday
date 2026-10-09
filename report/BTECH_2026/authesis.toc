@@ -11,48 +11,48 @@
 \contentsline {section}{\numberline {1.5} \uppercase {Scope}}{3}{section.1.5}%
 \contentsline {section}{\numberline {1.6} \uppercase {Contributions}}{3}{section.1.6}%
 \contentsline {section}{\numberline {1.7} \uppercase {Report Organization}}{3}{section.1.7}%
-\contentsline {chapter}{\numberline {2}\uppercase {Literature Survey}}{5}{chapter.2}%
-\contentsline {section}{\numberline {2.1} \uppercase {Overview}}{5}{section.2.1}%
-\contentsline {section}{\numberline {2.2} \uppercase {Agent Runtimes and Autonomous Agents}}{5}{section.2.2}%
+\contentsline {chapter}{\numberline {2}\uppercase {Literature Survey}}{4}{chapter.2}%
+\contentsline {section}{\numberline {2.1} \uppercase {Overview}}{4}{section.2.1}%
+\contentsline {section}{\numberline {2.2} \uppercase {Agent Runtimes and Autonomous Agents}}{4}{section.2.2}%
 \contentsline {section}{\numberline {2.3} \uppercase {Memory and Context Management}}{5}{section.2.3}%
-\contentsline {section}{\numberline {2.4} \uppercase {Planning, Tool Use, and Reflection}}{6}{section.2.4}%
-\contentsline {section}{\numberline {2.5} \uppercase {Scheduling, Resources, and Reliability}}{7}{section.2.5}%
+\contentsline {section}{\numberline {2.4} \uppercase {Planning, Tool Use, and Reflection}}{5}{section.2.4}%
+\contentsline {section}{\numberline {2.5} \uppercase {Scheduling, Resources, and Reliability}}{6}{section.2.5}%
 \contentsline {section}{\numberline {2.6} \uppercase {Security and Sandboxed Execution}}{7}{section.2.6}%
 \contentsline {section}{\numberline {2.7} \uppercase {Event-Driven Infrastructure}}{7}{section.2.7}%
-\contentsline {section}{\numberline {2.8} \uppercase {Research Gap and Positioning}}{8}{section.2.8}%
+\contentsline {section}{\numberline {2.8} \uppercase {Research Gap and Positioning}}{7}{section.2.8}%
 \contentsline {chapter}{\numberline {3}\uppercase {System Design}}{9}{chapter.3}%
 \contentsline {section}{\numberline {3.1} \uppercase {Design Principles}}{9}{section.3.1}%
 \contentsline {section}{\numberline {3.2} \uppercase {Overall Architecture}}{9}{section.3.2}%
-\contentsline {section}{\numberline {3.3} \uppercase {Frontend, Gateway, and Event Flow}}{10}{section.3.3}%
+\contentsline {section}{\numberline {3.3} \uppercase {Frontend, Gateway, and Event Flow}}{11}{section.3.3}%
 \contentsline {section}{\numberline {3.4} \uppercase {Planner and DAG Execution}}{11}{section.3.4}%
-\contentsline {section}{\numberline {3.5} \uppercase {Context Paging}}{12}{section.3.5}%
-\contentsline {section}{\numberline {3.6} \uppercase {Global Scheduler and Resource Manager}}{12}{section.3.6}%
-\contentsline {section}{\numberline {3.7} \uppercase {Resource Management}}{13}{section.3.7}%
-\contentsline {section}{\numberline {3.8} \uppercase {Tool Management}}{14}{section.3.8}%
-\contentsline {section}{\numberline {3.9} \uppercase {Agent Lifecycle and Events}}{15}{section.3.9}%
-\contentsline {section}{\numberline {3.10} \uppercase {Sandboxed Code Runner}}{16}{section.3.10}%
-\contentsline {section}{\numberline {3.11} \uppercase {Implemented and Proposed Boundaries}}{16}{section.3.11}%
-\contentsline {chapter}{\numberline {4}\uppercase {Implementation}}{18}{chapter.4}%
-\contentsline {section}{\numberline {4.1} \uppercase {Implementation Environment}}{18}{section.4.1}%
-\contentsline {section}{\numberline {4.2} \uppercase {Semantic Agent Retrieval}}{18}{section.4.2}%
-\contentsline {section}{\numberline {4.3} \uppercase {Planner and Fallback}}{19}{section.4.3}%
-\contentsline {section}{\numberline {4.4} \uppercase {DAG Validation}}{19}{section.4.4}%
-\contentsline {section}{\numberline {4.5} \uppercase {Priority-Aging Scheduler}}{20}{section.4.5}%
-\contentsline {section}{\numberline {4.6} \uppercase {Resource Admission and Token Budgets}}{21}{section.4.6}%
-\contentsline {section}{\numberline {4.7} \uppercase {Redis Events and Backend Forwarding}}{21}{section.4.7}%
-\contentsline {section}{\numberline {4.8} \uppercase {Context Page-Out and Page-In}}{22}{section.4.8}%
-\contentsline {section}{\numberline {4.9} \uppercase {Sandboxed Execution and Self-Healing}}{22}{section.4.9}%
-\contentsline {section}{\numberline {4.10} \uppercase {Frontend Observability}}{23}{section.4.10}%
-\contentsline {section}{\numberline {4.11} \uppercase {Configuration and Verification}}{23}{section.4.11}%
-\contentsline {section}{\numberline {4.12} \uppercase {AgentOS Algorithmic Specification}}{24}{section.4.12}%
-\contentsline {chapter}{\numberline {5}\uppercase {Conclusion and Future Work}}{32}{chapter.5}%
-\contentsline {chapter}{\numberline {6}\uppercase {Evaluation Metrics}}{33}{chapter.6}%
-\contentsline {section}{\numberline {6.1} \uppercase {Evaluation Notation}}{33}{section.6.1}%
-\contentsline {section}{\numberline {6.2} \uppercase {Planning Quality Metrics}}{33}{section.6.2}%
-\contentsline {section}{\numberline {6.3} \uppercase {Execution Reliability Metrics}}{34}{section.6.3}%
-\contentsline {section}{\numberline {6.4} \uppercase {Scheduler and Resource Metrics}}{34}{section.6.4}%
-\contentsline {section}{\numberline {6.5} \uppercase {Context Paging and Retrieval Metrics}}{35}{section.6.5}%
-\contentsline {section}{\numberline {6.6} \uppercase {Event and Observability Metrics}}{36}{section.6.6}%
-\contentsline {section}{\numberline {6.7} \uppercase {Code Runner Safety Metrics}}{36}{section.6.7}%
-\contentsline {section}{\numberline {6.8} \uppercase {Reporting Protocol}}{37}{section.6.8}%
-\contentsline {chapter}{REFERENCES}{38}{section*.29}%
+\contentsline {section}{\numberline {3.5} \uppercase {Context Paging}}{13}{section.3.5}%
+\contentsline {section}{\numberline {3.6} \uppercase {Global Scheduler and Resource Manager}}{13}{section.3.6}%
+\contentsline {section}{\numberline {3.7} \uppercase {Resource Management}}{14}{section.3.7}%
+\contentsline {section}{\numberline {3.8} \uppercase {Tool Management}}{15}{section.3.8}%
+\contentsline {section}{\numberline {3.9} \uppercase {Agent Lifecycle and Events}}{16}{section.3.9}%
+\contentsline {section}{\numberline {3.10} \uppercase {Sandboxed Code Runner}}{17}{section.3.10}%
+\contentsline {section}{\numberline {3.11} \uppercase {Implemented and Proposed Boundaries}}{18}{section.3.11}%
+\contentsline {chapter}{\numberline {4}\uppercase {Implementation}}{19}{chapter.4}%
+\contentsline {section}{\numberline {4.1} \uppercase {Implementation Environment}}{19}{section.4.1}%
+\contentsline {section}{\numberline {4.2} \uppercase {Semantic Agent Retrieval}}{19}{section.4.2}%
+\contentsline {section}{\numberline {4.3} \uppercase {Planner and Fallback}}{20}{section.4.3}%
+\contentsline {section}{\numberline {4.4} \uppercase {DAG Validation}}{21}{section.4.4}%
+\contentsline {section}{\numberline {4.5} \uppercase {Priority-Aging Scheduler}}{22}{section.4.5}%
+\contentsline {section}{\numberline {4.6} \uppercase {Resource Admission and Token Budgets}}{23}{section.4.6}%
+\contentsline {section}{\numberline {4.7} \uppercase {Redis Events and Backend Forwarding}}{23}{section.4.7}%
+\contentsline {section}{\numberline {4.8} \uppercase {Context Page-Out and Page-In}}{24}{section.4.8}%
+\contentsline {section}{\numberline {4.9} \uppercase {Sandboxed Execution and Self-Healing}}{25}{section.4.9}%
+\contentsline {section}{\numberline {4.10} \uppercase {Frontend Observability}}{25}{section.4.10}%
+\contentsline {section}{\numberline {4.11} \uppercase {Configuration and Verification}}{25}{section.4.11}%
+\contentsline {section}{\numberline {4.12} \uppercase {AgentOS Algorithmic Specification}}{26}{section.4.12}%
+\contentsline {chapter}{\numberline {5}\uppercase {Evaluation Framework and Metrics}}{33}{chapter.5}%
+\contentsline {section}{\numberline {5.1} \uppercase {Evaluation Notation}}{33}{section.5.1}%
+\contentsline {section}{\numberline {5.2} \uppercase {Planning Quality Metrics}}{33}{section.5.2}%
+\contentsline {section}{\numberline {5.3} \uppercase {Execution Reliability Metrics}}{35}{section.5.3}%
+\contentsline {section}{\numberline {5.4} \uppercase {Scheduler and Resource Metrics}}{35}{section.5.4}%
+\contentsline {section}{\numberline {5.5} \uppercase {Context Paging and Retrieval Metrics}}{36}{section.5.5}%
+\contentsline {section}{\numberline {5.6} \uppercase {Event and Observability Metrics}}{37}{section.5.6}%
+\contentsline {section}{\numberline {5.7} \uppercase {Code Runner Safety Metrics}}{37}{section.5.7}%
+\contentsline {section}{\numberline {5.8} \uppercase {Reporting Protocol}}{38}{section.5.8}%
+\contentsline {chapter}{\numberline {6}\uppercase {Summary and Future Work}}{40}{chapter.6}%
+\contentsline {chapter}{REFERENCES}{41}{section*.22}%

@@ -17,14 +17,11 @@ There is no single lightweight runtime in the project environment that coordinat
 \section{\uppercase{Objectives}}
 The objectives of AgentOS are:
 \begin{enumerate}
-\item to provide a modular AI-kernel-style runtime for specialised agents;
-\item to generate structured plans and execute their steps as a validated DAG;
-\item to retrieve suitable agents using semantic capability matching;
-\item to page conversational context between an active window and a vector-backed swap space;
-\item to schedule runnable work using priority aging, fairness, and cooperative dispatch;
-\item to enforce global and per-task concurrency and token budgets before execution;
-\item to publish lifecycle and execution events through Redis and forward them to the UI; and
-\item to execute generated Python code in a bounded subprocess with a limited self-healing loop.
+\item Develop a modular AI-kernel-style runtime for specialised agents;
+\item Generate structured execution plans, retrieve suitable agents semantically, and validate their dependencies as a DAG;
+\item Manage bounded conversational context through semantic page-out and page-in using a vector-backed swap space;
+\item Schedule runnable work with priority aging, fairness, cooperative dispatch, concurrency limits, and token budgets; and
+\item Execute agent and code-runner tasks reliably while publishing lifecycle events and measurable activity to the user interface.
 \end{enumerate}
 
 \section{\uppercase{Scope}}

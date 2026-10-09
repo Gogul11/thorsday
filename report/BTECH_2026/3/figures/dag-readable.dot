@@ -1,0 +1,25 @@
+digraph PlannerDAG {
+  graph [rankdir=TB, bgcolor="white", pad="0.25", nodesep="0.42", ranksep="0.55", splines=polyline]
+  node [shape=box, style="rounded,filled", color="#1f4e79", fillcolor="#eaf2f8", penwidth=2.0, fontname="Arial", fontsize=22, margin="0.22,0.16"]
+  edge [color="#1f4e79", penwidth=2.0, arrowsize=0.9, fontname="Arial", fontsize=17]
+
+  prompt [label="User task\n(natural-language prompt)", fillcolor="#e8f5e9", color="#2e7d32"]
+  retrieve [label="Semantic agent\ncandidate retrieval"]
+  context [label="Compact planner\ncontext"]
+  plan [label="Structured LLM\nplan"]
+  validate [label="Plan validation\n(agents, IDs, dependencies, cycles)"]
+  fallback [label="Semantic / sequential\nfallback", fillcolor="#fff8e1", color="#b7791f"]
+  dag [label="Validated execution DAG", fillcolor="#f3e5f5", color="#6a1b9a"]
+  execute [label="Dependency-aware\nDAG executor"]
+  runtime [label="Agent runtime\nand result recording", fillcolor="#e8f5e9", color="#2e7d32"]
+
+  prompt -> retrieve
+  retrieve -> context
+  context -> plan
+  plan -> validate
+  validate -> dag [label="valid", fontcolor="#2e7d32"]
+  validate -> fallback [label="invalid / unavailable", fontcolor="#b7791f"]
+  fallback -> dag
+  dag -> execute
+  execute -> runtime
+}

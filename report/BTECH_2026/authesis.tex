@@ -29,11 +29,13 @@
 \renewcommand{\normalsize}{\fontsize{13 pt}{14.6 pt}\selectfont}
 %\usepackage{aunatbib}
 %\usepackage{apalikem}
-\usepackage{natbib}
+\usepackage[numbers,sort&compress]{natbib}
 \usepackage{bussproofs} % for deduction rules 
 \usepackage{auphd}
 \usepackage{array}
 \usepackage{tabularx}
+\usepackage{ragged2e}
+% Keep words intact while allowing TeX extra flexibility to justify paragraphs.
 \usepackage[none]{hyphenat}
 \usepackage[chapter]{algorithm}
 \usepackage{algpseudocode}
@@ -155,6 +157,9 @@
 \titleformat{\subparagraph}[hang]{\normalsize\bfseries}{\makebox[20mm][l]{\thesubparagraph}}{0pt}{}{}
 
 \begin{document}
+\justifying
+\setlength{\emergencystretch}{5em}
+\tolerance=2500
 
 \pagenumbering{roman}
 
@@ -221,7 +226,7 @@ BONA FIDE CERTIFICATE}
  \parbox[t]{\datewidth}{\small{\textbf{PLACE: }}\\
  \small{\textbf{DATE: }}}
  \hfill
- \parbox[t]{6 cm}{\small{\textbf{DR. SELVI RAVINDRAN}} \\
+ \parbox[t]{6 cm}{\small{\textbf{Dr. SELVI RAVINDRAN}} \\
  \small{\textbf{ASSOCIATE PROFESSOR}}\\
  \small{\textbf{PROJECT GUIDE}}\\
  \small{\textbf{DEPARTMENT OF IST, CEG}}\\
@@ -233,7 +238,7 @@ BONA FIDE CERTIFICATE}
 \begin{center}
  \small{\textbf{COUNTERSIGNED}}\\ 
   \vspace{1.5 cm}
-  \textbf{\small{DR. P. YOGESH}}\\
+  \textbf{\small{Dr. P. YOGESH}}\\
   \small{\textbf{HEAD OF THE DEPARTMENT}}\\
  \small{\textbf{DEPARTMENT OF INFORMATION SCIENCE AND TECHNOLOGY}}\\
  \small{\textbf{COLLEGE OF ENGINEERING, GUINDY}}\\
@@ -320,18 +325,17 @@ LIST OF FIGURES} \listoffigures
 \include{4/Chapter4}
 % Chapters 5 and 6 from the sample template are intentionally excluded.
 %\include{6/Chapter6}
-\include{Conclusion/conclusion}
 \cleardoublepage
 \phantomsection 
 \include{Appendix/appendix}
+\include{Conclusion/conclusion}
 
 
 %\bibliographystyle{auapalike}
-\bibliographystyle{unsrt}
 \phantomsection
 \addcontentsline{toc}{chapter}{REFERENCES}
 \begin{spacing}{1}
-\bibliography{publication}
+\include{References/references}
 \end{spacing}
 
 \newpage

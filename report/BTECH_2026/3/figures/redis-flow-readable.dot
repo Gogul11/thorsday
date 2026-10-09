@@ -1,0 +1,29 @@
+digraph RedisFlow {
+  graph [rankdir=TB, bgcolor="white", pad="0.25", nodesep="0.55", ranksep="0.75", splines=polyline]
+  node [shape=box, style="rounded,filled", color="#1f4e79", fillcolor="#eaf2f8", penwidth=2.2, fontname="Arial", fontsize=23, margin="0.25,0.18"]
+  edge [color="#1f4e79", penwidth=2.2, arrowsize=0.95, fontname="Arial", fontsize=15]
+
+  frontend [label="Frontend\nNext.js / Browser", fillcolor="#e8f5e9", color="#2e7d32"]
+  backend [label="Backend Gateway\nFastAPI", fillcolor="#fff3e0", color="#c66a00"]
+
+  subgraph cluster_redis {
+    label="Redis Event Bus"
+    labelloc="t"
+    color="#7b1fa2"
+    penwidth=2.0
+    fontname="Arial Bold"
+    fontsize=24
+    style="rounded,dashed"
+    tasks [label="backend_tasks\nTask submissions", fillcolor="#f3e5f5", color="#7b1fa2"]
+    events [label="kernel_events\nLifecycle and activity", fillcolor="#f3e5f5", color="#7b1fa2"]
+  }
+
+  kernel [label="AI Kernel\nPlanner, scheduler, and agents", fillcolor="#e8f5e9", color="#2e7d32"]
+
+  frontend -> backend [label="POST /task"]
+  backend -> frontend [label="WebSocket updates"]
+  backend -> tasks [label="Task publish"]
+  tasks -> kernel [label="Task subscribe"]
+  kernel -> events [label="Event publish"]
+  events -> backend [label="Event subscribe"]
+}
