@@ -169,7 +169,8 @@ def run_trial(
 
     started = time.perf_counter()
     try:
-        if configuration in ("vector_rag", "agentos_paging"):
+        is_agentos_paging = configuration.startswith("agentos_paging")
+        if configuration == "vector_rag" or is_agentos_paging:
             overflow = messages[:-ACTIVE_WINDOW]
             page_out_started = time.perf_counter()
             page_out_count = context_pager.page_out_messages(
@@ -213,7 +214,8 @@ def run_trial(
     }
     relevant_retrieved = relevant & retrieved_ids
     precision = len(relevant_retrieved) / len(retrieved_ids) if retrieved_ids else 0.0
-    recall = len(relevant_retrieved) / len(relevant) if relevant else None
+    is_retrieval_configuration = configuration == "vector_rag" or configuration.startswith("agentos_paging")
+    recall = len(relevant_retrieved) / len(relevant) if relevant and is_retrieval_configuration else None
 
     return {
         "trial_id": f"{task_id}",
@@ -230,7 +232,7 @@ def run_trial(
         "page_out_count": page_out_count,
         "page_in_count": len(retrieved),
         "retrieval_recall_at_5": recall,
-        "retrieval_precision_at_5": precision if retrieved else None,
+        "retrieval_precision_at_5": precision if retrieved and is_retrieval_configuration else None,
         "full_context_tokens_estimate": full_tokens,
         "active_context_tokens_estimate": active_tokens,
         "context_token_reduction": 1 - active_tokens / full_tokens if full_tokens else None,
