@@ -27,6 +27,7 @@ from services.context import get_context
 from services.agent_scheduler import SchedulerJob, get_scheduler
 from graphs.constant import build_planner_context, get_explicit_agent_hints
 from planning.diagram import chain_steps, to_mermaid, validate_steps
+from planning.agent_type_checker import check_agent_type
 
 # ---------------------------------------------------------------------------
 # Structured output schema for the planner
@@ -38,6 +39,10 @@ class ExecutionPlan(BaseModel):
         description="Agents that should execute the task in order"
     )
     steps: list[dict] = Field(default_factory=list, description="DAG steps with id, agent, depends_on, and purpose")
+    uncovered_tasks: list[str] = Field(
+        default_factory=list,
+        description="Meaningful actionable parts of the user's request that none of the candidate agents can perform.",
+    )
     confidence: float = Field(default=0.0, ge=0.0, le=1.0)
     rationale: str = Field(default="")
 
@@ -198,8 +203,36 @@ async def _node_planner(state: dict, model) -> dict:
     try:
         valid_types = set(list_agent_types())
         prompt, candidate_names = build_planner_context(state["task"])
-        planner = model.with_structured_output(ExecutionPlan, method="json_mode")
-        plan: ExecutionPlan = await planner.ainvoke(prompt)
+        no_retrieved_candidates = not candidate_names
+        if not candidate_names:
+            try:
+                decision = await check_agent_type(model, state["task"])
+            except Exception as exc:
+                # If classification is unavailable, avoid creating an agent
+                # without a positive new-task decision.
+                logger.warning("Agent type check failed: %s. Using direct response.", exc)
+                decision = None
+
+            if decision is not None and decision.kind == "new_task":
+                if "agent_creator" in valid_types:
+                    candidate_names = ["agent_creator"]
+                    prompt = f"Create an agent to complete this actionable task:\n{state['task']}"
+                    plan = ExecutionPlan(
+                        agents=["agent_creator"], confidence=0.9,
+                        rationale="The type checker identified a meaningful new task requiring a new capability.",
+                    )
+                else:
+                    plan = ExecutionPlan(agents=[], rationale="No matching agent is available.")
+            else:
+                rationale = (
+                    "Agent type check was unavailable; responding directly."
+                    if decision is None
+                    else "Unmatched prompt classified as conversational."
+                )
+                plan = ExecutionPlan(agents=[], confidence=0.9, rationale=rationale)
+        else:
+            planner = model.with_structured_output(ExecutionPlan, method="json_mode")
+            plan = await planner.ainvoke(prompt)
         plan_agents = []
         for agent_name in plan.agents:
             if (
@@ -229,6 +262,68 @@ async def _node_planner(state: dict, model) -> dict:
             ordered_agents.extend(agent for agent in plan_agents if agent not in ordered_agents)
             plan_agents = ordered_agents
             plan_steps = chain_steps(plan_agents)
+
+        # Candidate agents can cover only part of a compound request. Check
+        # each remaining actionable part and add creator steps only when the
+        # checker identifies a meaningful new capability.
+        if not no_retrieved_candidates and plan.uncovered_tasks:
+            creator_tasks: list[str] = []
+            for uncovered_task in dict.fromkeys(
+                " ".join(item.split()) for item in plan.uncovered_tasks if item.strip()
+            ):
+                try:
+                    decision = await check_agent_type(model, uncovered_task)
+                except Exception as exc:
+                    logger.warning("Agent type check failed for uncovered task: %s", exc)
+                    continue
+                if decision.kind == "new_task":
+                    creator_tasks.append(uncovered_task)
+
+            if creator_tasks and "agent_creator" in valid_types:
+                # If the planner itself selected the creator from its
+                # candidates, scope those steps to uncovered work instead of
+                # scheduling a duplicate creator call.
+                creator_steps = [
+                    step for step in plan_steps
+                    if step["agent"] == "agent_creator"
+                ]
+                tasks_to_add = []
+                for index, creator_task in enumerate(creator_tasks):
+                    if index < len(creator_steps):
+                        creator_steps[index]["task"] = creator_task
+                    else:
+                        tasks_to_add.append(creator_task)
+
+                # Wait until all planned existing-agent branches complete so
+                # their results are available as context for the new agent.
+                depended_on = {
+                    dependency
+                    for step in plan_steps
+                    for dependency in step.get("depends_on", [])
+                }
+                creator_dependencies = [
+                    step["id"] for step in plan_steps if step["id"] not in depended_on
+                ]
+                used_ids = {step["id"] for step in plan_steps}
+                for index, creator_task in enumerate(tasks_to_add, start=1):
+                    step_id = f"new_capability_{index}"
+                    while step_id in used_ids:
+                        step_id = f"_{step_id}"
+                    used_ids.add(step_id)
+                    plan_steps.append({
+                        "id": step_id,
+                        "agent": "agent_creator",
+                        "depends_on": creator_dependencies,
+                        "purpose": "Create and run an agent for the uncovered task.",
+                        "task": creator_task,
+                    })
+                    creator_dependencies = [step_id]
+                if "agent_creator" not in candidate_names:
+                    candidate_names.append("agent_creator")
+                plan_agents = [step["agent"] for step in plan_steps]
+                plan.rationale = (
+                    f"{plan.rationale} Added agent creator for meaningful uncovered work."
+                ).strip()
     except Exception as exc:
         # Preserve useful semantic routing when the LLM is unavailable, for
         # example during a provider rate limit. The top retrieved candidate is
@@ -282,9 +377,14 @@ async def _node_executor(state: dict, model) -> dict:
         callback = ToolEventCallback(_emit, state, agent_name, agent_id, loop)
         run_fn = runtime["run"]
         try:
+            agent_task = (
+                ready_step.get("task", state["task"])
+                if agent_name == "agent_creator"
+                else state["task"]
+            )
             result = await run_fn(
                 model=model,
-                task=state["task"],
+                task=agent_task,
                 context="\n".join(f"{msg.type}: {msg.content}" for msg in state["messages"])
                 + "\n"
                 + f"Current DAG step: {ready_step['purpose']}\nPrevious Results :"
