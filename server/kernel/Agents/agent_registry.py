@@ -24,7 +24,7 @@ _REGISTRY: dict[str, dict] = {
     "content_creator": {"run": run_content_creator_agent, "description": CONTENT_AGENT_DESCRIPTION},
     "email_agent": {"run": run_email_agent, "description": E_AGENT_DESCRIPTION},
     "weather_agent": {"run": run_weather_agent, "description": WEATHER_AGENT_DESCRIPTION},
-    # "agent_creator": {"run": run_agent_creator, "description": AGENT_CREATOR_DESCRIPTION},
+    "agent_creator": {"run": run_agent_creator, "description": AGENT_CREATOR_DESCRIPTION},
     "code_runner": {"run": run_code_runner_agent, "description": CODE_RUNNER_AGENT_DESCRIPTION},
 }
 
