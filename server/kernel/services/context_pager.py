@@ -369,7 +369,9 @@ class ContextPager:
             for position, key, embedding in zip(
                 missing_positions, (keys[index] for index in missing_positions), new_embeddings
             ):
-                vector = list(embedding)
+                # ChromaDB 1.5 validates against native Python numbers; the
+                # local ONNX embedder returns numpy.float32 values.
+                vector = [float(value) for value in embedding]
                 self._embedding_cache[key] = vector
                 self._embedding_cache.move_to_end(key)
                 result[position] = vector
