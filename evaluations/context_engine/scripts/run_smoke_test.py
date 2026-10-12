@@ -26,7 +26,8 @@ DATASET_PATH = ROOT / "evaluations/context_engine/datasets/smoke_questions.json"
 RESULTS_DIR = ROOT / "evaluations/context_engine/results"
 TRIALS_PATH = RESULTS_DIR / "smoke_trials.jsonl"
 SUMMARY_PATH = RESULTS_DIR / "smoke_summary.json"
-ISOLATED_SWAP_DIR = RESULTS_DIR / "smoke_swap_space"
+RUN_ID = os.getenv("AOS_SMOKE_RUN_ID", time.strftime("%Y%m%d-%H%M%S"))
+ISOLATED_SWAP_DIR = RESULTS_DIR / "smoke_swap_space" / RUN_ID
 
 # Must be set before importing ContextPager: its module-level singleton opens
 # the Chroma client during import.
@@ -240,6 +241,9 @@ def run_trial(
         "context_token_reduction": 1 - active_tokens / full_tokens if full_tokens else None,
         "page_out_latency_ms": round(page_out_latency_ms, 3),
         "embedding_latency_ms": page_out_metrics.get("embedding_latency_ms", 0.0),
+        "embedding_cache_hit_count": page_out_metrics.get("embedding_cache_hit_count", 0),
+        "embedding_cache_miss_count": page_out_metrics.get("embedding_cache_miss_count", 0),
+        "embedding_cache_hit_rate": page_out_metrics.get("embedding_cache_hit_rate", None),
         "vector_store_write_latency_ms": page_out_metrics.get("vector_store_write_latency_ms", 0.0),
         "skipped_existing_or_watermark": page_out_metrics.get(
             "skipped_existing_or_watermark", 0
@@ -275,6 +279,8 @@ def aggregate(trials: list[dict[str, Any]]) -> dict[str, Any]:
         page_out_latencies = [row["page_out_latency_ms"] for row in rows if row["page_out_latency_ms"] > 0]
         embedding_latencies = [row["embedding_latency_ms"] for row in rows if row["embedding_latency_ms"] > 0]
         write_latencies = [row["vector_store_write_latency_ms"] for row in rows if row["vector_store_write_latency_ms"] > 0]
+        cache_hits = sum(row["embedding_cache_hit_count"] for row in rows)
+        cache_misses = sum(row["embedding_cache_miss_count"] for row in rows)
         reductions = [row["context_token_reduction"] for row in rows if row["context_token_reduction"] is not None]
         summary["configurations"][configuration] = {
             "trial_count": len(rows),
@@ -291,6 +297,12 @@ def aggregate(trials: list[dict[str, Any]]) -> dict[str, Any]:
             "page_out_latency_ms": latency_stats(page_out_latencies),
             "embedding_latency_ms": latency_stats(embedding_latencies),
             "vector_store_write_latency_ms": latency_stats(write_latencies),
+            "embedding_cache_hits": cache_hits,
+            "embedding_cache_misses": cache_misses,
+            "embedding_cache_hit_rate": (
+                cache_hits / (cache_hits + cache_misses)
+                if cache_hits + cache_misses else None
+            ),
             "total_skipped_existing_or_watermark": sum(
                 row["skipped_existing_or_watermark"] for row in rows
             ),

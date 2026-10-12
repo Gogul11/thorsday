@@ -39,6 +39,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 import os
+import hashlib
+import threading
+from collections import OrderedDict
 from time import perf_counter
 
 import chromadb
@@ -62,6 +65,10 @@ MAX_PAGE_IN_RESULTS: int = 3
 # Chroma accepts batches, but keeping a bounded batch avoids oversized writes
 # when a long conversation is first paged out.
 PAGE_OUT_BATCH_SIZE: int = 64
+
+# Bound the process-local vector cache so long-running AgentOS processes do not
+# grow memory without limit. The cache is keyed by exact message content.
+EMBEDDING_CACHE_MAX_ITEMS: int = 4096
 
 # ChromaDB collection name — acts as the named swap partition.
 _COLLECTION_NAME = "agentos_context_swap"
@@ -149,6 +156,8 @@ class ContextPager:
         # watermark is rebuilt from Chroma on first use after a process restart.
         self._page_out_watermarks: dict[str, int] = {}
         self._last_page_out_metrics: dict[str, Any] = {}
+        self._embedding_cache: OrderedDict[str, list[float]] = OrderedDict()
+        self._embedding_cache_lock = threading.Lock()
 
         logger.info(
             "ContextPager: swap partition initialised at %s (collection=%s, items=%d)",
@@ -250,6 +259,9 @@ class ContextPager:
                 "indexed_count": 0,
                 "skipped_existing_or_watermark": skipped_by_watermark,
                 "embedding_latency_ms": 0.0,
+                "embedding_cache_hit_count": 0,
+                "embedding_cache_miss_count": 0,
+                "embedding_cache_hit_rate": 1.0,
                 "vector_store_write_latency_ms": 0.0,
                 "total_latency_ms": round((perf_counter() - started) * 1000, 3),
             }
@@ -258,9 +270,9 @@ class ContextPager:
         # Compute embeddings explicitly so embedding and Chroma write time can
         # be measured separately, and so the vectors are never recomputed by
         # Chroma during upsert.
-        embedding_started = perf_counter()
-        embeddings = self._embed_fn(documents)
-        embedding_latency_ms = (perf_counter() - embedding_started) * 1000
+        embeddings, embedding_latency_ms, cache_hits, cache_misses = self._get_cached_embeddings(
+            documents
+        )
 
         write_started = perf_counter()
         for start in range(0, len(ids), PAGE_OUT_BATCH_SIZE):
@@ -284,6 +296,11 @@ class ContextPager:
             "indexed_count": count,
             "skipped_existing_or_watermark": skipped_by_watermark,
             "embedding_latency_ms": round(embedding_latency_ms, 3),
+            "embedding_cache_hit_count": cache_hits,
+            "embedding_cache_miss_count": cache_misses,
+            "embedding_cache_hit_rate": round(
+                cache_hits / (cache_hits + cache_misses), 4
+            ) if cache_hits + cache_misses else 1.0,
             "vector_store_write_latency_ms": round(write_latency_ms, 3),
             "total_latency_ms": round(total_latency_ms, 3),
             "batch_size": PAGE_OUT_BATCH_SIZE,
@@ -317,6 +334,53 @@ class ContextPager:
     def get_last_page_out_metrics(self) -> dict[str, Any]:
         """Return timing and deduplication data for the most recent page-out."""
         return dict(self._last_page_out_metrics)
+
+    def _get_cached_embeddings(
+        self, documents: list[str]
+    ) -> tuple[list[list[float]], float, int, int]:
+        """Return embeddings while reusing exact-content vectors.
+
+        The cache is process-local because the configured embedding function
+        is process-local. Chroma remains the durable store for page vectors;
+        this cache avoids repeating model inference before those vectors are
+        written for another page or task.
+        """
+        keys = [hashlib.sha256(document.encode("utf-8")).hexdigest() for document in documents]
+        result: list[list[float] | None] = [None] * len(documents)
+        missing_documents: list[str] = []
+        missing_positions: list[int] = []
+
+        with self._embedding_cache_lock:
+            for position, key in enumerate(keys):
+                cached = self._embedding_cache.get(key)
+                if cached is None:
+                    missing_documents.append(documents[position])
+                    missing_positions.append(position)
+                else:
+                    self._embedding_cache.move_to_end(key)
+                    result[position] = cached
+
+            cache_hits = len(documents) - len(missing_documents)
+
+            embedding_started = perf_counter()
+            new_embeddings = self._embed_fn(missing_documents) if missing_documents else []
+            embedding_latency_ms = (perf_counter() - embedding_started) * 1000
+
+            for position, key, embedding in zip(
+                missing_positions, (keys[index] for index in missing_positions), new_embeddings
+            ):
+                vector = list(embedding)
+                self._embedding_cache[key] = vector
+                self._embedding_cache.move_to_end(key)
+                result[position] = vector
+                while len(self._embedding_cache) > EMBEDDING_CACHE_MAX_ITEMS:
+                    self._embedding_cache.popitem(last=False)
+
+        # Every position is filled unless the embedding function violates its
+        # contract; fail loudly rather than writing malformed Chroma records.
+        if any(vector is None for vector in result):
+            raise RuntimeError("Embedding function returned an incomplete batch")
+        return [vector for vector in result if vector is not None], embedding_latency_ms, cache_hits, len(missing_documents)
 
     # ------------------------------------------------------------------
     # Phase 2 — Page-In (Swap-In / Page Fault Handler)

@@ -122,7 +122,8 @@ within a comparison.
 The pager now also records page-out internals: embedding time, vector-store
 write time, skipped existing pages, and total page-out time. It uses a per-task
 message-index watermark, explicit one-time embedding, bounded batch upserts,
-and runs page-out work in a worker thread from the async context loader.
+an LRU embedding cache capped at 4,096 message vectors, and runs page-out work
+in a worker thread from the async context loader.
 
 ## Improved smoke run
 
@@ -138,6 +139,10 @@ performs one unrecorded warm-up, measures page-out and page-in separately, and
 sweeps AgentOS thresholds `0.40`, `0.45`, `0.50`, `0.55`, and `0.60` with five
 retrieval candidates. Results are written to `results/smoke_trials.jsonl` and
 `results/smoke_summary.json`.
+
+Each run uses a timestamped isolated Chroma swap directory, so cold page-out
+embedding/write timings are not hidden by a previous run's cache. Set
+`AOS_SMOKE_RUN_ID` to a fixed value when a repeatable directory name is needed.
 
 Optional LLM answer scoring uses an OpenAI-compatible chat endpoint. Enable it
 only when a key is available:
