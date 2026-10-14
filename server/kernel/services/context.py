@@ -47,28 +47,18 @@ async def get_context(
     and relevant paged messages are added back as a separate system block.
     Returns just [SYSTEM_MESSAGE] when the task is brand-new.
     """
-    messages = await DB_get_task_messages(task_id)
+    # Request-time reads are bounded to the active tail. Older messages are
+    # indexed by the pager's background worker and recalled from ChromaDB.
+    messages = await DB_get_task_messages(task_id, limit=_CONTEXT_WINDOW)
 
     if not messages:
         logger.info("Context loaded | task=%s | stored=0 | active=0", task_id)
         return [SYSTEM_MESSAGE]
 
-    overflow_count = max(0, len(messages) - _CONTEXT_WINDOW)
-    if len(messages) > _CONTEXT_WINDOW:
-        overflow = messages[:-_CONTEXT_WINDOW]
-        # Chroma embedding and writes are blocking CPU/I/O work. Run them in a
-        # worker thread so they do not block the async kernel event loop. We
-        # still await completion before page-in to preserve retrieval
-        # correctness on the first overflow of a task.
-        import asyncio
-
-        await asyncio.to_thread(
-            context_pager.page_out_messages,
-            task_id=task_id,
-            overflow_messages=overflow,
-            base_index=0,
-            req_id=req_id,
-        )
+    # Keep the background index current after restarts and after requests that
+    # predate the worker. This is fire-and-forget with task-level deduplication;
+    # it is intentionally not awaited for page-out completion.
+    await context_pager.enqueue_page_out(task_id, req_id=req_id)
 
     paged_in = context_pager.page_in_relevant_context(
         task_id=task_id,
@@ -90,13 +80,11 @@ async def get_context(
             context.append(AIMessage(content=msg["content"]))
 
     logger.info(
-        "Context loaded | task=%s | query_chars=%d | stored=%d | paged_out=%d | paged_in=%d | active=%d",
+        "Context loaded | task=%s | query_chars=%d | active=%d | paged_in=%d",
         task_id,
         len(query),
         len(messages),
-        overflow_count,
         len(paged_in),
-        _CONTEXT_WINDOW,
     )
 
     return context
@@ -105,8 +93,10 @@ async def get_context(
 async def add_user_message(task_id: str, content: str) -> None:
     """Persist a human message for task_id."""
     await DB_add_task_message(task_id, "human", content)
+    await context_pager.enqueue_page_out(task_id)
 
 
 async def add_ai_message(task_id: str, content: str) -> None:
     """Persist an AI (assistant) message for task_id."""
     await DB_add_task_message(task_id, "ai", content)
+    await context_pager.enqueue_page_out(task_id)

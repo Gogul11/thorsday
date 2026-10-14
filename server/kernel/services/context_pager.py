@@ -43,6 +43,7 @@ import hashlib
 import threading
 from collections import OrderedDict
 from time import perf_counter
+import asyncio
 
 import chromadb
 from chromadb.utils import embedding_functions
@@ -57,7 +58,7 @@ ACTIVE_RAM_WINDOW: int = 20
 # τ (tau): Cosine similarity threshold for page-in acceptance.
 # A swapped page is only injected back if its similarity to the current
 # query meets or exceeds this value.
-PAGE_IN_SIMILARITY_THRESHOLD: float = 0.55
+PAGE_IN_SIMILARITY_THRESHOLD: float = 0.4
 
 # K: Maximum number of swapped pages to inject per query turn.
 MAX_PAGE_IN_RESULTS: int = 3
@@ -78,9 +79,7 @@ _DEFAULT_SWAP_SPACE_DIR = Path(__file__).parent.parent / "data" / "swap_space"
 # Evaluation runs can point the pager at an isolated Chroma directory. This
 # prevents smoke tests and benchmark runs from polluting the production swap
 # partition.
-_SWAP_SPACE_DIR = Path(
-    os.getenv("AOS_CONTEXT_SWAP_DIR", str(_DEFAULT_SWAP_SPACE_DIR))
-)
+_SWAP_SPACE_DIR = Path(os.getenv("AOS_CONTEXT_SWAP_DIR", str(_DEFAULT_SWAP_SPACE_DIR)))
 
 
 # Redis telemetry helpers
@@ -159,6 +158,13 @@ class ContextPager:
         self._embedding_cache: OrderedDict[str, list[float]] = OrderedDict()
         self._embedding_cache_lock = threading.Lock()
 
+        # Background page-out state. The queue is created lazily on the active
+        # asyncio event loop because ContextPager is instantiated at import
+        # time, before the kernel loop necessarily exists.
+        self._page_out_queue: asyncio.Queue[tuple[str, str]] | None = None
+        self._page_out_worker_task: asyncio.Task | None = None
+        self._queued_page_out_tasks: set[str] = set()
+
         logger.info(
             "ContextPager: swap partition initialised at %s (collection=%s, items=%d)",
             _SWAP_SPACE_DIR,
@@ -166,10 +172,64 @@ class ContextPager:
             self._collection.count(),
         )
 
-    # ------------------------------------------------------------------
-    # Phase 1 — Page-Out (Swap-Out)
-    # ------------------------------------------------------------------
+    async def enqueue_page_out(self, task_id: str, req_id: str = "") -> None:
+        """Schedule asynchronous indexing for a task's overflow messages.
 
+        Scheduling is deduplicated per task. If several messages are persisted
+        during one turn, the worker reads the latest overflow prefix once and
+        the existing page-out watermark skips anything already indexed.
+        """
+        if not task_id:
+            return
+
+        if self._page_out_queue is None or self._page_out_worker_task is None:
+            self._page_out_queue = asyncio.Queue()
+            self._page_out_worker_task = asyncio.create_task(
+                self._page_out_worker(),
+                name="context-page-out-worker",
+            )
+
+        if task_id in self._queued_page_out_tasks:
+            return
+
+        self._queued_page_out_tasks.add(task_id)
+        await self._page_out_queue.put((task_id, req_id))
+
+    async def _page_out_worker(self) -> None:
+        """Continuously index overflow messages outside request handling."""
+        from repository.task_repo import DB_get_task_overflow_messages
+
+        while True:
+            task_id, req_id = await self._page_out_queue.get()  # type: ignore[union-attr]
+            try:
+                overflow = await DB_get_task_overflow_messages(
+                    task_id,
+                    active_window=ACTIVE_RAM_WINDOW,
+                )
+                if overflow:
+                    await asyncio.to_thread(
+                        self.page_out_messages,
+                        task_id=task_id,
+                        overflow_messages=overflow,
+                        base_index=0,
+                        req_id=req_id,
+                    )
+            except asyncio.CancelledError:
+                raise
+            except Exception as exc:  # pylint: disable=broad-except
+                # The next message or request for this task will enqueue it
+                # again. A failed background index must never fail the user
+                # request that already completed.
+                logger.exception(
+                    "ContextPager background PAGE_OUT failed | task=%s: %s",
+                    task_id,
+                    exc,
+                )
+            finally:
+                self._queued_page_out_tasks.discard(task_id)
+                self._page_out_queue.task_done()  # type: ignore[union-attr]
+
+    # Phase 1 — Page-Out (Swap-Out)
     def page_out_messages(
         self,
         task_id: str,
@@ -270,8 +330,8 @@ class ContextPager:
         # Compute embeddings explicitly so embedding and Chroma write time can
         # be measured separately, and so the vectors are never recomputed by
         # Chroma during upsert.
-        embeddings, embedding_latency_ms, cache_hits, cache_misses = self._get_cached_embeddings(
-            documents
+        embeddings, embedding_latency_ms, cache_hits, cache_misses = (
+            self._get_cached_embeddings(documents)
         )
 
         write_started = perf_counter()
@@ -286,7 +346,8 @@ class ContextPager:
         write_latency_ms = (perf_counter() - write_started) * 1000
 
         self._page_out_watermarks[task_id] = max(
-            self._page_out_watermarks[task_id], max(int(meta["message_index"]) for meta in metadatas)
+            self._page_out_watermarks[task_id],
+            max(int(meta["message_index"]) for meta in metadatas),
         )
 
         count = len(ids)
@@ -298,9 +359,11 @@ class ContextPager:
             "embedding_latency_ms": round(embedding_latency_ms, 3),
             "embedding_cache_hit_count": cache_hits,
             "embedding_cache_miss_count": cache_misses,
-            "embedding_cache_hit_rate": round(
-                cache_hits / (cache_hits + cache_misses), 4
-            ) if cache_hits + cache_misses else 1.0,
+            "embedding_cache_hit_rate": (
+                round(cache_hits / (cache_hits + cache_misses), 4)
+                if cache_hits + cache_misses
+                else 1.0
+            ),
             "vector_store_write_latency_ms": round(write_latency_ms, 3),
             "total_latency_ms": round(total_latency_ms, 3),
             "batch_size": PAGE_OUT_BATCH_SIZE,
@@ -345,7 +408,10 @@ class ContextPager:
         this cache avoids repeating model inference before those vectors are
         written for another page or task.
         """
-        keys = [hashlib.sha256(document.encode("utf-8")).hexdigest() for document in documents]
+        keys = [
+            hashlib.sha256(document.encode("utf-8")).hexdigest()
+            for document in documents
+        ]
         result: list[list[float] | None] = [None] * len(documents)
         missing_documents: list[str] = []
         missing_positions: list[int] = []
@@ -363,11 +429,15 @@ class ContextPager:
             cache_hits = len(documents) - len(missing_documents)
 
             embedding_started = perf_counter()
-            new_embeddings = self._embed_fn(missing_documents) if missing_documents else []
+            new_embeddings = (
+                self._embed_fn(missing_documents) if missing_documents else []
+            )
             embedding_latency_ms = (perf_counter() - embedding_started) * 1000
 
             for position, key, embedding in zip(
-                missing_positions, (keys[index] for index in missing_positions), new_embeddings
+                missing_positions,
+                (keys[index] for index in missing_positions),
+                new_embeddings,
             ):
                 # ChromaDB 1.5 validates against native Python numbers; the
                 # local ONNX embedder returns numpy.float32 values.
@@ -382,12 +452,14 @@ class ContextPager:
         # contract; fail loudly rather than writing malformed Chroma records.
         if any(vector is None for vector in result):
             raise RuntimeError("Embedding function returned an incomplete batch")
-        return [vector for vector in result if vector is not None], embedding_latency_ms, cache_hits, len(missing_documents)
+        return (
+            [vector for vector in result if vector is not None],
+            embedding_latency_ms,
+            cache_hits,
+            len(missing_documents),
+        )
 
-    # ------------------------------------------------------------------
     # Phase 2 — Page-In (Swap-In / Page Fault Handler)
-    # ------------------------------------------------------------------
-
     def page_in_relevant_context(
         self,
         task_id: str,
