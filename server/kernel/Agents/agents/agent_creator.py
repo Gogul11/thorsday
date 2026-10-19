@@ -59,10 +59,12 @@ Previous Context:
 
 CRITICAL STEP-BY-STEP EXECUTION PROCESS:
 
-Step 1: Choose a concise snake_case stem for the new agent (e.g. 'loan_emi', 'crypto_tracker', 'unit_converter').
-        Tool file will be `<stem>_tools.py`
-        Agent file will be `<stem>_agent.py`
-        Tools list variable will be `<STEM_UPPER>_TOOLS`
+Step 1: Determine the appropriate GENERIC DOMAIN AGENT for this task:
+- Always choose a reusable, generic snake_case stem representing the entire domain (e.g. 'finance', 'calculator', 'chemistry', 'converter', 'health_nutrition').
+- DO NOT create single-use micro-agents (e.g. NEVER create 'crypto_pnl_interest_agent' or 'caffeine_molar_agent').
+- Tool file will be `<stem>_tools.py`
+- Agent file will be `<stem>_agent.py`
+- Tools list variable will be `<STEM_UPPER>_TOOLS`
 
 Step 2: TOOL CREATION & REGISTRATION (Tool must always be created FIRST):
 - Write clear, robust, functional Python code for the tool file.
@@ -78,19 +80,19 @@ Step 2: TOOL CREATION & REGISTRATION (Tool must always be created FIRST):
 - It contains the functions that the new agent will use to perform its task.
 - Must import `from langchain_core.tools import tool`.
 - Can use standard libraries (`math`, `datetime`, `urllib.request`, `json`, `re`, etc.).
-- Decorate tool functions with `@tool` and detailed docstrings explaining arguments..
+- Decorate tool functions with `@tool` and detailed docstrings explaining arguments.
 - Call `save_tool_file(filename="<stem>_tools.py", code=...)`.
-  This automatically saves `<stem>_tools.py` AND permanently registers it at Line 1 and the bottom of `tool_registry.py` with full transactional rollback protection!
+  This automatically validates syntax via AST, saves `<stem>_tools.py` AND permanently registers it at Line 1 and the bottom of `tool_registry.py` with full transactional rollback protection!
 
 Step 3: AGENT CREATION & REGISTRATION (Agent created SECOND, using the registered tools):
 - Once Step 2 succeeds, call `create_and_register_agent`:
   * agent_stem: "<stem>_agent"
-  * display_name: "Readable Name Agent"
-  * description: "Comprehensive description of what this agent does"
+  * display_name: "Readable Domain Agent"
+  * description: "Comprehensive, detailed description of all capabilities this domain agent handles, so future similarity searches in ChromaDB will accurately match it"
   * tool_file_stem: "<stem>_tools"
   * tools_var_name: "<STEM_UPPER>_TOOLS"
   * short_summary: "1-line summary for the planner"
-- This tool automatically creates `<stem>_agent.py` importing `<STEM_UPPER>_TOOLS` from `tools.tool_registry`, and registers it at Line 2 of `agent_registry.py` and `constant.py`.
+- This tool automatically creates `<stem>_agent.py` importing `<STEM_UPPER>_TOOLS` from `tools.tool_registry`, registers it in `agent_registry.py`, and indexes it in the ChromaDB vector DB for future similarity retrieval.
 
 Step 4: EXECUTION (Execute the newly created agent):
 - Call `run_generated_agent(agent_file_stem="<stem>_agent", run_fn_name="run_<stem>_agent", task="{task}", context="{context}")`.

@@ -3,7 +3,11 @@
 import re
 
 from Agents.agent_registry import get_agent_descriptions, list_agent_types
-from planning.agent_retriever import retrieve_agent_candidates
+from planning.agent_retriever import (
+    retrieve_agent_candidates,
+    refresh_agent_index,
+    register_agent_in_vector_db,
+)
 
 
 _EXPLICIT_INTENT_RULES = (

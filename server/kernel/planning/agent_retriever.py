@@ -18,9 +18,7 @@ _TOP_K = 5
 _collection = None
 
 
-def _refresh_index() -> None:
-    if _collection is None:
-        return
+def _sync_index(collection) -> None:
     descriptions = get_agent_descriptions()
     ids = list(descriptions)
     documents = [f"Agent: {name}\nCapabilities:\n{descriptions[name]}" for name in ids]
@@ -32,8 +30,44 @@ def _refresh_index() -> None:
         for name in ids
     ]
     if ids:
-        _collection.upsert(ids=ids, documents=documents, metadatas=metadatas)
+        collection.upsert(ids=ids, documents=documents, metadatas=metadatas)
         logger.info("Planner capability index ready | agents=%d | path=%s", len(ids), _INDEX_PATH)
+    retrieve_agent_candidates.cache_clear()
+
+
+def refresh_agent_index() -> None:
+    """Refresh the ChromaDB vector index with all registered agents and clear candidate cache."""
+    collection = _get_collection()
+    _sync_index(collection)
+
+
+def _refresh_index() -> None:
+    if _collection is not None:
+        _sync_index(_collection)
+
+
+def register_agent_in_vector_db(agent_name: str, description: str) -> None:
+    """Explicitly register or update a single agent in ChromaDB vector DB."""
+    collection = _get_collection()
+    doc = f"Agent: {agent_name}\nCapabilities:\n{description.strip()}"
+    meta = {
+        "agent_name": agent_name,
+        "description_hash": hashlib.sha256(description.encode()).hexdigest(),
+    }
+    collection.upsert(ids=[agent_name], documents=[doc], metadatas=[meta])
+    retrieve_agent_candidates.cache_clear()
+    logger.info("Agent '%s' successfully registered in ChromaDB vector DB", agent_name)
+
+
+def remove_agent_from_vector_db(agent_name: str) -> None:
+    """Remove an agent from the ChromaDB vector DB (e.g. on registration rollback)."""
+    try:
+        collection = _get_collection()
+        collection.delete(ids=[agent_name])
+        retrieve_agent_candidates.cache_clear()
+        logger.info("Agent '%s' removed from ChromaDB vector DB", agent_name)
+    except Exception as exc:
+        logger.warning("Could not remove agent '%s' from ChromaDB: %s", agent_name, exc)
 
 
 def _get_collection():

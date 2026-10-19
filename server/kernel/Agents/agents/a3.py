@@ -22,6 +22,7 @@ fabricate information, citations, or URLs.
 """
 
 _NAME = "Agent A3 (Research Agent)"
+_MAX_AGENT_STEPS = 12
 
 
 async def run_agent_a3(
@@ -59,7 +60,12 @@ async def run_agent_a3(
 
     result = await agent.ainvoke(
         {"messages": [{"role": "user", "content": prompt}]},
-        config={"callbacks": callbacks} if callbacks else None,
+        # Research agents can get stuck repeating searches when a provider
+        # keeps requesting tools. Bound the ReAct graph so every run terminates.
+        config={
+            "callbacks": callbacks or [],
+            "recursion_limit": _MAX_AGENT_STEPS,
+        },
     )
 
     return result["messages"][-1].content

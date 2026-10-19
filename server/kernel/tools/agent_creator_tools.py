@@ -20,7 +20,6 @@ TOOLS_DIR = KERNEL_DIR / "tools"
 AGENTS_DIR = KERNEL_DIR / "Agents" / "agents"
 AGENT_REGISTRY_FILE = KERNEL_DIR / "Agents" / "agent_registry.py"
 TOOL_REGISTRY_FILE = KERNEL_DIR / "tools" / "tool_registry.py"
-CONSTANT_FILE = KERNEL_DIR / "graphs" / "constant.py"
 
 
 def _extract_tool_functions(tool_file_path: Path) -> list[str]:
@@ -333,12 +332,6 @@ Perform the task using your available tools and return the final result clearly 
     except Exception as e:
         return f"ERROR: Cannot read agent_registry.py: {e}"
 
-    try:
-        with open(CONSTANT_FILE, "r", encoding="utf-8") as f:
-            original_constant = f.read()
-    except Exception as e:
-        return f"ERROR: Cannot read constant.py: {e}"
-
     target_agent_path = AGENTS_DIR / f"{agent_stem}.py"
     existing_agent_backup = None
     if target_agent_path.exists():
@@ -356,7 +349,7 @@ Perform the task using your available tools and return the final result clearly 
         logger.error("Failed to write agent file %s: %s", target_agent_path, e)
         return f"ERROR: Could not save agent file: {e}"
 
-    # Update agent_registry.py and constant.py with transactional rollback
+    # Update agent_registry.py with transactional rollback
     try:
         agent_import = f"from Agents.agents.{agent_stem} import {run_fn_name}, {desc_var_name}\n"
         new_agent_reg = original_agent_reg
@@ -383,19 +376,6 @@ Perform the task using your available tools and return the final result clearly 
             f.write(new_agent_reg)
         logger.info("Permanently registered %s at line 2 in agent_registry.py", agent_stem)
 
-        # Update constant.py (planner prompt rules)
-        new_constant = original_constant
-        rule_entry = f"    - {agent_stem} = {short_summary}\n"
-        if agent_stem not in new_constant:
-            marker = "Agent selection rules:"
-            if marker in new_constant:
-                parts = new_constant.split(marker, 1)
-                new_constant = parts[0] + marker + "\n" + rule_entry + parts[1]
-                ast.parse(new_constant)
-                with open(CONSTANT_FILE, "w", encoding="utf-8") as f:
-                    f.write(new_constant)
-                logger.info("Added %s to planner prompt rules in constant.py", agent_stem)
-
         # Live in-memory registration
         mod = importlib.import_module(f"Agents.agents.{agent_stem}")
         mod = importlib.reload(mod)
@@ -404,6 +384,11 @@ Perform the task using your available tools and return the final result clearly 
         from Agents.agent_registry import register_agent
         register_agent(agent_stem, fn, d)
         logger.info("In-memory dynamic registration successful for %s", agent_stem)
+
+        # Register newly created agent into ChromaDB vector DB for similarity search
+        from planning.agent_retriever import register_agent_in_vector_db
+        register_agent_in_vector_db(agent_name=agent_stem, description=d)
+        logger.info("Planner ChromaDB capability index registered %s", agent_stem)
 
     except Exception as exc:
         logger.error("Failed to register agent %s: %s. Rolling back all changes!", agent_stem, exc)
@@ -414,8 +399,8 @@ Perform the task using your available tools and return the final result clearly 
         except Exception:
             pass
         try:
-            with open(CONSTANT_FILE, "w", encoding="utf-8") as f:
-                f.write(original_constant)
+            from planning.agent_retriever import remove_agent_from_vector_db
+            remove_agent_from_vector_db(agent_stem)
         except Exception:
             pass
         if existing_agent_backup is not None:
@@ -425,9 +410,10 @@ Perform the task using your available tools and return the final result clearly 
         return f"ERROR: Failed during agent registration: {exc}. All agent files and registries were rolled back."
 
     return (
-        f"SUCCESS: Agent '{agent_stem}' created, configured with '{tools_var_name}', and registered at line 2 of agent_registry.py!\n"
+        f"SUCCESS: Agent '{agent_stem}' created, configured with '{tools_var_name}', registered at line 2 of agent_registry.py, and indexed in the planner ChromaDB vector collection!\n"
         f"Next, call run_generated_agent(agent_file_stem='{agent_stem}', run_fn_name='{run_fn_name}', task=...)"
     )
+
 
 
 @tool

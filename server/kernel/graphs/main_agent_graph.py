@@ -262,6 +262,100 @@ async def _node_planner(state: dict, model) -> dict:
     return {"plan": plan_agents, "plan_steps": plan_steps, "completed_steps": []}
 
 
+# ---------------------------------------------------------------------------
+# Agent Type Checker — invoked when similarity search / planner yields no agent
+# ---------------------------------------------------------------------------
+
+
+class TaskTypeCheck(BaseModel):
+    is_conversational: bool = Field(
+        description=(
+            "True if the user prompt is a greeting, casual chat, emotional expression (e.g. 'I feel alone', 'how are you'), "
+            "or general conversation that should be answered directly by the LLM without tools. "
+            "False if the user prompt asks for a calculation, conversion, domain formula, tool creation, data manipulation, or specialized task."
+        )
+    )
+    task_category: str = Field(description="e.g. 'greeting', 'emotional_support', 'casual_chat', 'calculation', 'chemistry', 'financial', 'unit_conversion', 'other_task'")
+    rationale: str = Field(description="Brief explanation of why this is conversational or a new eligible task")
+
+
+def _is_fast_conversational_match(task: str) -> bool:
+    """Fast check for obvious greetings and small-talk."""
+    import re
+    t = task.strip().casefold()
+    pat_greet = r"^(?:hi|hello|hey|howdy|greetings|good\s+(?:morning|afternoon|evening|day)|what\'?s\s+up|sup|yo|bye|goodbye|see\s+you|thanks|thank\s+you)\b(?:[,\s.!?-]+(?:there|all|everyone|friend)?)?[.!?-]*$"
+    pat_feel = r"\b(?:i\s+(?:feel|am)\s+(?:alone|sad|lonely|bored|happy|depressed|tired)|how\s+are\s+you|who\s+are\s+you|what\s+is\s+your\s+name|tell\s+me\s+about\s+yourself|can\s+we\s+talk|tell\s+me\s+a\s+joke|make\s+me\s+laugh)\b"
+    return bool(re.search(pat_greet, t) or re.search(pat_feel, t))
+
+
+async def _node_agent_type_checker(state: dict, model) -> dict:
+    """Classifies tasks when similarity search / planner yields no matching existing agent.
+    Routes to default LLM for conversational messages, or assigns agent_creator for new tasks.
+    """
+    task = state.get("task", "")
+    logger.info("Agent type checker evaluating prompt: %s", task[:100])
+
+    is_conv = False
+    if _is_fast_conversational_match(task):
+        is_conv = True
+        logger.info("Fast regex classified task as conversational: %s", task[:60])
+    else:
+        try:
+            classifier = model.with_structured_output(TaskTypeCheck, method="json_mode")
+            check_prompt = f"""You are the AgentOS Agent Type Checker.
+A user prompt was submitted, but similarity search found NO matching existing agent.
+Determine whether this prompt is:
+1. CONVERSATIONAL: Greetings, small talk, casual questions, emotional statements, or chit-chat.
+   (e.g., "Hi", "Hello", "How are you?", "I feel alone", "Tell me a joke", "Who made you?")
+   -> Set is_conversational = True. Default LLM will respond directly. No agent created.
+
+2. NEW TASK: A concrete computational, mathematical, scientific, conversion, or specialized operational task
+   requiring a tool or code execution.
+   (e.g., "Calculate compound interest on $25,000...", "Calculate molecular weight of Caffeine...", "Convert 500 knots to km/h...")
+   -> Set is_conversational = False. agent_creator will synthesize and run a new agent.
+
+User prompt:
+"{task}"
+"""
+            result: TaskTypeCheck = await classifier.ainvoke(check_prompt)
+            is_conv = result.is_conversational
+            logger.info("LLM classifier result | is_conversational=%s | category=%s", is_conv, result.task_category)
+        except Exception as exc:
+            logger.warning("Agent type classifier failed (%s); using heuristic fallback", exc)
+            import re
+            is_conv = not any(re.search(r"\b" + kw + r"\b", task.casefold()) for kw in ("calculate", "calc", "compute", "convert", "molar", "interest", "pnl", "rate", "formula", "eval", "solve"))
+
+    if is_conv:
+        logger.info("Task classified as CONVERSATIONAL. Routing to default LLM response node.")
+        return {"plan": [], "plan_steps": []}
+    else:
+        logger.info("Task classified as NEW TASK. Dispatching agent_creator!")
+        new_plan = ["agent_creator"]
+        new_steps = [
+            {
+                "id": "step_1",
+                "agent": "agent_creator",
+                "depends_on": [],
+                "purpose": f"Create generic domain agent and tool for new task: {task[:80]}",
+                "priority": 5,
+                "estimated_tokens": 6000,
+            }
+        ]
+        mermaid = to_mermaid(new_steps)
+        await _emit(
+            "task.PLANNED",
+            state,
+            plan=new_plan,
+            confidence=1.0,
+            rationale="No existing agent matched; agent_type_checker assigned agent_creator to build and run new agent.",
+            candidates=["agent_creator"],
+            plan_graph=new_steps,
+            mermaid=mermaid,
+        )
+        await DB_update_task(state["task_id"], plan=new_plan, plan_graph=new_steps, plan_mermaid=mermaid)
+        return {"plan": new_plan, "plan_steps": new_steps}
+
+
 async def _node_executor(state: dict, model) -> dict:
     """Submit the next dependency-ready agent to the global scheduler."""
     plan_steps = state.get("plan_steps") or chain_steps(state["plan"])
@@ -392,6 +486,9 @@ def build_graph(model):
     async def node_planner(state):
         return await _node_planner(state, model)
 
+    async def node_agent_type_checker(state):
+        return await _node_agent_type_checker(state, model)
+
     async def node_executor(state):
         return await _node_executor(state, model)
 
@@ -402,21 +499,42 @@ def build_graph(model):
 
     g.add_node("task_creation", _node_create_task)
     g.add_node("planner", node_planner)
+    g.add_node("agent_type_checker", node_agent_type_checker)
     g.add_node("executor", node_executor)
     g.add_node("response_node", node_response)
 
     g.add_edge(START, "task_creation")
     g.add_edge("task_creation", "planner")
 
+    def _route_from_planner(state: dict) -> str:
+        if state.get("plan_steps"):
+            return "executor"
+        return "agent_type_checker"
+
+    def _route_from_type_checker(state: dict) -> str:
+        if state.get("plan_steps"):
+            return "executor"
+        return "response_node"
+
+    def _route_from_executor(state: dict) -> str:
+        if len(state.get("completed_steps", [])) < len(state.get("plan_steps", [])):
+            return "executor"
+        return "response_node"
+
     g.add_conditional_edges(
         "planner",
-        _should_continue,
-        {"execute": "executor", "end": "response_node"},
+        _route_from_planner,
+        {"executor": "executor", "agent_type_checker": "agent_type_checker"},
+    )
+    g.add_conditional_edges(
+        "agent_type_checker",
+        _route_from_type_checker,
+        {"executor": "executor", "response_node": "response_node"},
     )
     g.add_conditional_edges(
         "executor",
-        _should_continue,
-        {"execute": "executor", "end": "response_node"},
+        _route_from_executor,
+        {"executor": "executor", "response_node": "response_node"},
     )
     g.add_edge("response_node", END)
 
