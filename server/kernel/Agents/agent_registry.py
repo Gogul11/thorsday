@@ -1,3 +1,5 @@
+from Agents.agents.projectile_agent import run_projectile_agent, AGENT_DESCRIPTION as PROJECTILE_AGENT_DESCRIPTION
+from Agents.agents.radio_latency_agent import run_radio_latency_agent, AGENT_DESCRIPTION as RADIO_LATENCY_AGENT_DESCRIPTION
 """Agent registry — function-based registry for all agent types."""
 from Agents.agents.crypto_pnl_agent import run_crypto_pnl_agent, CRYPTO_PNL_AGENT_DESCRIPTION
 from Agents.agents.loan_emi_agent import run_loan_emi_agent, LOAN_EMI_AGENT_DESCRIPTION
@@ -8,11 +10,15 @@ from Agents.agents.a4 import run_agent_a4, AGENT_A4_DESCRIPTION
 from Agents.agents.content_creator_agent import run_content_creator_agent, CONTENT_AGENT_DESCRIPTION
 from Agents.agents.email_agent import run_email_agent, E_AGENT_DESCRIPTION
 from Agents.agents.weather_agent import run_weather_agent, WEATHER_AGENT_DESCRIPTION
-from Agents.agents.agent_creator import run_agent_creator, AGENT_CREATOR_DESCRIPTION
 from Agents.agents.code_runner_agent import run_code_runner_agent, CODE_RUNNER_AGENT_DESCRIPTION
+from Agents.agents.agent_creator import run_agent_creator, AGENT_CREATOR_DESCRIPTION
 
 # Registry maps agent_type → (run_fn, description)
 _REGISTRY: dict[str, dict] = {
+    "projectile_agent": {"run": run_projectile_agent, "description": PROJECTILE_AGENT_DESCRIPTION},
+
+    "radio_latency_agent": {"run": run_radio_latency_agent, "description": RADIO_LATENCY_AGENT_DESCRIPTION},
+
     "crypto_pnl_agent": {"run": run_crypto_pnl_agent, "description": CRYPTO_PNL_AGENT_DESCRIPTION},
 
     "loan_emi_agent": {"run": run_loan_emi_agent, "description": LOAN_EMI_AGENT_DESCRIPTION},
@@ -24,8 +30,8 @@ _REGISTRY: dict[str, dict] = {
     "content_creator": {"run": run_content_creator_agent, "description": CONTENT_AGENT_DESCRIPTION},
     "email_agent": {"run": run_email_agent, "description": E_AGENT_DESCRIPTION},
     "weather_agent": {"run": run_weather_agent, "description": WEATHER_AGENT_DESCRIPTION},
-    # "agent_creator": {"run": run_agent_creator, "description": AGENT_CREATOR_DESCRIPTION},
     "code_runner": {"run": run_code_runner_agent, "description": CODE_RUNNER_AGENT_DESCRIPTION},
+    "agent_creator": {"run": run_agent_creator, "description": AGENT_CREATOR_DESCRIPTION},
 }
 
 

@@ -1,3 +1,5 @@
+from tools.projectile_tools import calculate_projectile_metrics, save_trajectory_summary
+from tools.radio_latency_tools import calculate_round_trip_time
 from tools.crypto_pnl_tools import calculate_crypto_pnl
 from tools.loan_emi_tools import compute_emi_and_schedule
 from tools.sys_info_tools import *
@@ -5,12 +7,8 @@ from tools.time_tool import get_time
 from tools.research_tools import wikipedia_search, trusted_web_search
 from tools.email_tools import send_email
 from tools.weather_tools import get_current_weather, get_weather_forecast
-from tools.agent_creator_tools import (
-    save_tool_file,
-    create_and_register_agent,
-    run_generated_agent,
-)
 from tools.code_runner_tools import run_python_code
+from tools.agent_creator_tools import AGENT_CREATOR_TOOLS
 
 """
 Tool registry for AgentOS.
@@ -83,12 +81,6 @@ WEATHER_TOOLS = [
     get_weather_forecast,
 ]
 
-AGENT_CREATOR_TOOLS = [
-    save_tool_file,
-    create_and_register_agent,
-    run_generated_agent,
-]
-
 LOAN_EMI_TOOLS = [
     compute_emi_and_schedule,
 ]
@@ -100,3 +92,7 @@ CRYPTO_PNL_TOOLS = [
 CODE_RUNNER_TOOLS = [
     run_python_code,
 ]
+
+RADIO_LATENCY_TOOLS = [calculate_round_trip_time]
+
+PROJECTILE_TOOLS = [calculate_projectile_metrics, save_trajectory_summary]
