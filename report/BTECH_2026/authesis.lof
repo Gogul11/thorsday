@@ -14,3 +14,16 @@
 \contentsline {figure}{\numberline {4.1}{\ignorespaces Optimized semantic planner and DAG construction}}{21}{figure.caption.15}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {7.1}{\ignorespaces AgentOS agent catalogue}}{41}{figure.caption.22}%
+\contentsline {figure}{\numberline {7.2}{\ignorespaces A1 system-information logic}}{42}{figure.caption.23}%
+\contentsline {figure}{\numberline {7.3}{\ignorespaces A2 date-and-time logic}}{43}{figure.caption.24}%
+\contentsline {figure}{\numberline {7.4}{\ignorespaces A3 research and source-verification logic}}{44}{figure.caption.25}%
+\contentsline {figure}{\numberline {7.5}{\ignorespaces A4 file-operation and deletion-confirmation logic}}{45}{figure.caption.26}%
+\contentsline {figure}{\numberline {7.6}{\ignorespaces Content Creator drafting logic}}{46}{figure.caption.27}%
+\contentsline {figure}{\numberline {7.7}{\ignorespaces Email delivery and simulation-mode logic}}{47}{figure.caption.28}%
+\contentsline {figure}{\numberline {7.8}{\ignorespaces Weather retrieval and reporting logic}}{48}{figure.caption.29}%
+\contentsline {figure}{\numberline {7.9}{\ignorespaces Loan EMI and amortisation logic}}{49}{figure.caption.30}%
+\contentsline {figure}{\numberline {7.10}{\ignorespaces Cryptocurrency PnL and ROI logic}}{50}{figure.caption.31}%
+\contentsline {figure}{\numberline {7.11}{\ignorespaces Code generation, sandbox execution, and repair logic}}{51}{figure.caption.32}%
+\contentsline {figure}{\numberline {7.12}{\ignorespaces Dynamic agent creation and registration logic}}{52}{figure.caption.33}%

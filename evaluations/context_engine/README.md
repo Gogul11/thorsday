@@ -1,0 +1,208 @@
+# AgentOS Context Engine Evaluation
+
+This directory contains the isolated evaluation plan and artifacts for the
+AgentOS context-paging engine. It is deliberately separate from
+`server/kernel/services/` so evaluation code, datasets, and results do not
+change production behaviour.
+
+## Research question
+
+Can AgentOS preserve the answer quality of a full-context system while using
+less active context and keeping retrieval latency acceptable?
+
+## Initial experiment
+
+Run the same tasks through these configurations:
+
+1. `full_context`: provide the complete conversation to the model.
+2. `recent_truncation`: keep only the most recent messages.
+3. `vector_rag`: retrieve top-k historical messages with a simple vector search.
+4. `agentos_paging`: use `ContextPager` and the normal AgentOS context path.
+
+Use the same model, embedding model, prompt, temperature, dataset split, and
+number of repetitions for every configuration. Begin with 100 questions from
+LongMemEval or LoCoMo plus 25--50 AgentOS-specific questions. Repeat each
+configuration three times.
+
+## Metrics
+
+### Retrieval
+
+- Recall@1, Recall@5, and Recall@10
+- Precision@k
+- Mean reciprocal rank
+- Retrieval failure rate
+
+### End-to-end
+
+- Answer accuracy
+- Task success rate
+- Abstention accuracy for questions whose answer is absent
+- Hallucination or unsupported-answer rate
+
+### Efficiency
+
+- Active context tokens
+- Context token reduction against full context
+- Page-in latency
+- End-to-end latency
+- Estimated and provider-reported token cost
+
+The full-context configuration is the quality baseline. The intended result is
+similar task accuracy with lower active-context tokens and acceptable latency.
+
+## Required per-trial record
+
+Each trial should retain:
+
+```text
+trial_id
+configuration
+dataset
+question_id
+conversation_id
+question
+expected_answer
+relevant_page_ids
+retrieved_page_ids
+retrieval_distances
+active_context_tokens
+full_context_tokens
+page_out_count
+page_in_count
+page_in_latency_ms
+end_to_end_latency_ms
+answer
+answer_correct
+abstention_correct
+error
+```
+
+Do not store only aggregate scores. Raw records make it possible to recompute
+metrics and inspect retrieval failures.
+
+## Dataset layout
+
+Place downloaded or converted datasets under `datasets/`. Do not commit
+private or licensed data. The expected local format is JSONL with one question
+per line:
+
+```json
+{
+  "question_id": "example-001",
+  "conversation_id": "conversation-001",
+  "messages": [{"role": "user", "content": "..."}],
+  "question": "What database was selected?",
+  "expected_answer": "MongoDB",
+  "relevant_page_ids": ["conversation-001-msg-004"]
+}
+```
+
+Use `datasets/README.md` for source and licensing notes.
+
+## Comparison policy
+
+Published numbers from MemGPT/Letta, Mem0, or other systems are useful
+background but are not directly comparable unless the model, prompt,
+embedding model, k, judge, and dataset split are identical. Add those systems
+as external comparisons only after the four local configurations are stable.
+
+## Current AgentOS implementation notes
+
+- Active context window: `ACTIVE_RAM_WINDOW = 20` messages.
+- Page-in default: top 5 results.
+- Page-in threshold: similarity `0.40`.
+- Local embedding: ChromaDB `DefaultEmbeddingFunction`.
+- Implementation: `server/kernel/services/context_pager.py` and
+  `server/kernel/services/context.py`.
+
+These values should be recorded in every experiment manifest and kept fixed
+within a comparison.
+
+The pager now also records page-out internals: embedding time, vector-store
+write time, skipped existing pages, and total page-out time. It uses a per-task
+message-index watermark, explicit one-time embedding, bounded batch upserts,
+an LRU embedding cache capped at 4,096 message vectors, and runs page-out work
+in a worker thread from the async context loader.
+
+## Improved smoke run
+
+Run from the repository root after installing the dependencies in
+`server/pyproject.toml`:
+
+```powershell
+python evaluations/context_engine/scripts/run_smoke_test.py
+```
+
+The runner expands the five seed scenarios into 50 deterministic local cases.
+Each case contains 32 messages, uses the production 20-message active window,
+and includes an early relevant fact plus distractor messages. It performs one
+unrecorded warm-up, measures page-out and page-in separately, records MRR@5,
+and sweeps AgentOS thresholds `0.40`, `0.45`, `0.50`, `0.55`, and `0.60` with
+five retrieval candidates. This produces 400 trials: 50 cases across eight
+configurations. Results are written to `results/smoke_trials.jsonl` and
+`results/smoke_summary.json`.
+
+Each run uses a timestamped isolated Chroma swap directory, so cold page-out
+embedding/write timings are not hidden by a previous run's cache. Set
+`AOS_SMOKE_RUN_ID` to a fixed value when a repeatable directory name is needed.
+
+Optional LLM answer scoring uses an OpenAI-compatible chat endpoint. Enable it
+only when a key is available:
+
+```powershell
+$env:AOS_SMOKE_LLM_SCORING = "1"
+$env:AOS_SMOKE_LLM_API_KEY = "<key>"
+python evaluations/context_engine/scripts/run_smoke_test.py
+```
+
+The smoke score is a diagnostic only. The public benchmark should use a fixed
+judge, record the model and prompt, and report judge cost separately.
+
+## External benchmark workflow
+
+The smoke dataset is intentionally small and synthetic. It must not be used
+as the final quality claim. External benchmark runs use the original questions
+without generated paraphrases.
+
+### LoCoMo
+
+Download the official `data/locomo10.json` from the
+[LoCoMo repository](https://github.com/snap-research/locomo), then convert it:
+
+```powershell
+python evaluations/context_engine/scripts/convert_locomo.py `
+  --input path/to/locomo10.json `
+  --output evaluations/context_engine/datasets/locomo.json
+python evaluations/context_engine/scripts/run_smoke_test.py `
+  --dataset evaluations/context_engine/datasets/locomo.json `
+  --repetitions 1
+```
+
+The converter preserves LoCoMo evidence dialog IDs and writes a checksum
+manifest. It does not add synthetic questions. Retrieval scores should be
+reported by LoCoMo category and by conversation, with no questions from the
+same conversation split between development and test data.
+
+### LongMemEval
+
+LongMemEval is the larger follow-up benchmark. Use the official
+[LongMemEval-V2 repository](https://github.com/xiaowu0162/LongMemEval-V2) and
+convert a release containing explicit evidence annotations:
+
+```powershell
+python evaluations/context_engine/scripts/convert_longmemeval.py `
+  --input path/to/longmemeval.json `
+  --output evaluations/context_engine/datasets/longmemeval.json
+python evaluations/context_engine/scripts/run_smoke_test.py `
+  --dataset evaluations/context_engine/datasets/longmemeval.json `
+  --repetitions 1
+```
+
+The converter fails if evidence annotations are missing. This is deliberate:
+without evidence, answer scoring may still be possible, but retrieval Recall
+and MRR would not be a valid measurement.
+
+External runs should report the dataset release/checksum, model and embedding
+model, threshold selected on development data, test categories, answer judge,
+confidence intervals, and cold versus warm cache timings.

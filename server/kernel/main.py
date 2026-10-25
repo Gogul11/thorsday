@@ -60,17 +60,13 @@ async def main() -> None:
         print("Redis connection failed: %s" % exc)
         raise
 
-    # ------------------------------------------------------------------
     # 2. Pre-build the graph so the first request isn't slow
-    # ------------------------------------------------------------------
     warmup()
     await get_scheduler().start()
     logger.info("Kernel ready — listening on 'backend_tasks'")
     print("Kernel ready — listening on 'backend_tasks'")
 
-    # ------------------------------------------------------------------
     # 3. Block forever, dispatching every incoming Redis message
-    # ------------------------------------------------------------------
     await subscribe("backend_tasks", handle_backend_task)
 
 

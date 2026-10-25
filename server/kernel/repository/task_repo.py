@@ -62,15 +62,45 @@ async def DB_add_task_event(task_id: str, event: dict) -> None:
     )
 
 
-async def DB_get_task_messages(task_id: str) -> list[dict] | None:
-    """Return the messages array for a task, or None if not found."""
+async def DB_get_task_messages(
+    task_id: str,
+    limit: int = 20,
+) -> list[dict] | None:
+    """Return only the active context tail for a task.
+
+    The context engine should not transfer the complete conversation from
+    MongoDB on every request. Older messages are indexed asynchronously by
+    the context pager and are retrieved from ChromaDB when relevant.
+    """
+    doc = await tasks_collection.find_one(
+        {"task_id": task_id},
+        {"messages": {"$slice": -limit}, "_id": 0},
+    )
+    if doc is None:
+        return None
+    return doc.get("messages", [])
+
+
+async def DB_get_task_overflow_messages(
+    task_id: str,
+    active_window: int = 20,
+) -> list[dict] | None:
+    """Return the older messages that are eligible for background indexing.
+
+    This query is used only by the background page-out worker. It deliberately
+    remains separate from ``DB_get_task_messages`` so request-time context
+    construction transfers only the active tail.
+    """
     doc = await tasks_collection.find_one(
         {"task_id": task_id},
         {"messages": 1, "_id": 0},
     )
     if doc is None:
         return None
-    return doc.get("messages", [])
+
+    messages = doc.get("messages", [])
+    overflow_count = max(0, len(messages) - active_window)
+    return messages[:overflow_count]
 
 
 async def DB_get_all_tasks() -> list[dict]:
