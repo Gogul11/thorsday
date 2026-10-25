@@ -1,0 +1,43 @@
+{
+  "evaluation": "agent_scheduler_smoke",
+  "dataset_id": "agent_scheduler_smoke_v1",
+  "trial_count": 15,
+  "success_count": 12,
+  "success_rate": 0.8,
+  "scenarios": {
+    "concurrency_and_task_limits": {
+      "trials": 3,
+      "success_rate": 1.0,
+      "mean_elapsed_ms": 190.129
+    },
+    "cooperative_preemption": {
+      "trials": 3,
+      "success_rate": 1.0,
+      "mean_elapsed_ms": 12.972
+    },
+    "oversized_token_job": {
+      "trials": 3,
+      "success_rate": 0.0,
+      "mean_elapsed_ms": 0.734
+    },
+    "priority_queue_order": {
+      "trials": 3,
+      "success_rate": 1.0,
+      "mean_elapsed_ms": 47.304
+    },
+    "runner_failure": {
+      "trials": 3,
+      "success_rate": 1.0,
+      "mean_elapsed_ms": 1.306
+    }
+  },
+  "manifest": {
+    "config": "evaluations\\agent_scheduler\\configs\\smoke.json",
+    "dataset": "evaluations\\agent_scheduler\\datasets\\smoke_scenarios.json",
+    "global_slots": 3,
+    "task_slots": 2,
+    "token_budget": 100,
+    "external_persistence": "stubbed",
+    "jobs": "synthetic deterministic async runners"
+  }
+}

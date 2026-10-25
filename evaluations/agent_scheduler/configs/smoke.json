@@ -1,0 +1,8 @@
+{
+  "global_slots": 3,
+  "task_slots": 2,
+  "token_budget": 100,
+  "repetitions": 3,
+  "runner_delay_ms": 40,
+  "description": "Deterministic smoke profile; no external provider calls."
+}

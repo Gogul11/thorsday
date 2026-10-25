@@ -1,0 +1,73 @@
+{
+  "dataset_id": "agentos_planner_smoke_v1",
+  "source": "Hand-authored deterministic planner fixtures",
+  "cases": [
+    {
+      "case_id": "explicit_time",
+      "task": "What is the current time in Tokyo?",
+      "retrieved_candidates": ["a3", "a1", "a2"],
+      "expected_hints": ["a2"],
+      "plan_steps": [{"id": "time", "agent": "a2", "depends_on": []}],
+      "expected_agents": ["a2"]
+    },
+    {
+      "case_id": "explicit_hardware",
+      "task": "Show me the hardware and operating system information.",
+      "retrieved_candidates": ["a3", "a1"],
+      "expected_hints": ["a1"],
+      "plan_steps": [{"id": "inspect", "agent": "a1", "depends_on": []}],
+      "expected_agents": ["a1"]
+    },
+    {
+      "case_id": "research_and_email",
+      "task": "Research black holes and email me a short summary.",
+      "retrieved_candidates": ["content_creator", "a3"],
+      "expected_hints": ["a3", "email_agent"],
+      "proposed_agents": ["a3"],
+      "plan_steps": [
+        {"id": "research", "agent": "a3", "depends_on": []},
+        {"id": "send", "agent": "email_agent", "depends_on": ["research"]}
+      ],
+      "expected_agents": ["a3", "email_agent"]
+    },
+    {
+      "case_id": "explicit_code",
+      "task": "Write Python code to add two numbers and test it.",
+      "retrieved_candidates": ["a3", "code_runner"],
+      "expected_hints": ["code_runner"],
+      "plan_steps": [{"id": "code", "agent": "code_runner", "depends_on": []}],
+      "expected_agents": ["code_runner"]
+    },
+    {
+      "case_id": "unknown_agent_filtered",
+      "task": "Find technical information about solar panels.",
+      "retrieved_candidates": ["a3", "not_registered"],
+      "expected_hints": ["a3"],
+      "plan_steps": [
+        {"id": "bad", "agent": "not_registered", "depends_on": []},
+        {"id": "research", "agent": "a3", "depends_on": []}
+      ],
+      "expected_agents": ["a3"]
+    },
+    {
+      "case_id": "cyclic_plan_fallback",
+      "task": "Research recent battery technology.",
+      "retrieved_candidates": ["a3"],
+      "expected_hints": ["a3"],
+      "plan_steps": [
+        {"id": "first", "agent": "a3", "depends_on": ["second"]},
+        {"id": "second", "agent": "a3", "depends_on": ["first"]}
+      ],
+      "expected_agents": ["a3"],
+      "expect_fallback": true
+    },
+    {
+      "case_id": "general_task_candidate",
+      "task": "Summarize the attached document in plain language.",
+      "retrieved_candidates": ["a4", "content_creator"],
+      "expected_hints": [],
+      "plan_steps": [{"id": "read", "agent": "a4", "depends_on": []}],
+      "expected_agents": ["a4"]
+    }
+  ]
+}

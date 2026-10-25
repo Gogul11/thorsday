@@ -1,0 +1,7 @@
+{
+  "repetitions": 3,
+  "dataset": "evaluations/planner/datasets/smoke_tasks.json",
+  "retrieval_mode": "fixture_candidates",
+  "llm_enabled": false,
+  "description": "Offline mechanics smoke run with fixed candidate retrieval and plan fixtures."
+}

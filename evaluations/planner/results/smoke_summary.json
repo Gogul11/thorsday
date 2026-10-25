@@ -1,0 +1,60 @@
+{
+  "evaluation": "planner_smoke",
+  "dataset_id": "agentos_planner_smoke_v1",
+  "trial_count": 21,
+  "success_count": 21,
+  "success_rate": 1.0,
+  "metrics": {
+    "candidate_coverage": 1.0,
+    "explicit_hint_match": 1.0,
+    "plan_match": 1.0,
+    "plan_graph_valid": 1.0,
+    "mermaid_rendered": 1.0
+  },
+  "invalid_plan_fallback_count": 3,
+  "explicit_hint_repair_count": 0,
+  "mean_latency_ms": 0.1,
+  "cases": {
+    "cyclic_plan_fallback": {
+      "trials": 3,
+      "success_rate": 1.0
+    },
+    "explicit_code": {
+      "trials": 3,
+      "success_rate": 1.0
+    },
+    "explicit_hardware": {
+      "trials": 3,
+      "success_rate": 1.0
+    },
+    "explicit_time": {
+      "trials": 3,
+      "success_rate": 1.0
+    },
+    "general_task_candidate": {
+      "trials": 3,
+      "success_rate": 1.0
+    },
+    "research_and_email": {
+      "trials": 3,
+      "success_rate": 1.0
+    },
+    "unknown_agent_filtered": {
+      "trials": 3,
+      "success_rate": 1.0
+    }
+  },
+  "manifest": {
+    "config": "evaluations\\planner\\configs\\smoke.json",
+    "dataset": "evaluations\\planner\\datasets\\smoke_tasks.json",
+    "candidate_retrieval": "fixture candidates from dataset; Chroma not invoked",
+    "llm": "disabled; plan fields are dataset fixtures",
+    "production_functions": [
+      "build_planner_context",
+      "get_explicit_agent_hints",
+      "validate_steps",
+      "chain_steps",
+      "to_mermaid"
+    ]
+  }
+}
