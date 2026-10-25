@@ -15,14 +15,15 @@ from logger import logger
 _INDEX_PATH = Path(__file__).resolve().parent.parent / "data" / "planning_agent_index"
 _COLLECTION_NAME = "agent_capabilities"
 _TOP_K = 5
+_EXCLUDED_FROM_RETRIEVAL = {"agent_creator"}
 _collection = None
 
 
-def _refresh_index() -> None:
-    if _collection is None:
-        return
+def _sync_index(collection) -> None:
     descriptions = get_agent_descriptions()
-    ids = list(descriptions)
+    # Agent Creator is dispatched by Prompt_type after an empty plan; it must
+    # not compete with task specialists in semantic capability retrieval.
+    ids = [name for name in descriptions if name not in _EXCLUDED_FROM_RETRIEVAL]
     documents = [f"Agent: {name}\nCapabilities:\n{descriptions[name]}" for name in ids]
     metadatas = [
         {
@@ -32,8 +33,49 @@ def _refresh_index() -> None:
         for name in ids
     ]
     if ids:
-        _collection.upsert(ids=ids, documents=documents, metadatas=metadatas)
+        collection.upsert(ids=ids, documents=documents, metadatas=metadatas)
+    for excluded_name in _EXCLUDED_FROM_RETRIEVAL:
+        collection.delete(ids=[excluded_name])
+    if ids:
         logger.info("Planner capability index ready | agents=%d | path=%s", len(ids), _INDEX_PATH)
+    retrieve_agent_candidates.cache_clear()
+
+
+def refresh_agent_index() -> None:
+    """Refresh the ChromaDB vector index with all registered agents and clear candidate cache."""
+    collection = _get_collection()
+    _sync_index(collection)
+
+
+def _refresh_index() -> None:
+    if _collection is not None:
+        _sync_index(_collection)
+
+
+def register_agent_in_vector_db(agent_name: str, description: str) -> None:
+    """Explicitly register or update a single agent in ChromaDB vector DB."""
+    if agent_name in _EXCLUDED_FROM_RETRIEVAL:
+        return
+    collection = _get_collection()
+    doc = f"Agent: {agent_name}\nCapabilities:\n{description.strip()}"
+    meta = {
+        "agent_name": agent_name,
+        "description_hash": hashlib.sha256(description.encode()).hexdigest(),
+    }
+    collection.upsert(ids=[agent_name], documents=[doc], metadatas=[meta])
+    retrieve_agent_candidates.cache_clear()
+    logger.info("Agent '%s' successfully registered in ChromaDB vector DB", agent_name)
+
+
+def remove_agent_from_vector_db(agent_name: str) -> None:
+    """Remove an agent from the ChromaDB vector DB (e.g. on registration rollback)."""
+    try:
+        collection = _get_collection()
+        collection.delete(ids=[agent_name])
+        retrieve_agent_candidates.cache_clear()
+        logger.info("Agent '%s' removed from ChromaDB vector DB", agent_name)
+    except Exception as exc:
+        logger.warning("Could not remove agent '%s' from ChromaDB: %s", agent_name, exc)
 
 
 def _get_collection():
@@ -60,7 +102,7 @@ def retrieve_agent_candidates(task: str) -> tuple[dict, ...]:
 
     results = collection.query(
         query_texts=[task],
-        n_results=min(_TOP_K, total),
+        n_results=min(_TOP_K + len(_EXCLUDED_FROM_RETRIEVAL), total),
         include=["documents", "metadatas", "distances"],
     )
     documents = results.get("documents", [[]])[0]
@@ -74,7 +116,8 @@ def retrieve_agent_candidates(task: str) -> tuple[dict, ...]:
             "similarity": round(1 - distance, 4),
         }
         for document, metadata, distance in zip(documents, metadatas, distances)
-    )
+        if metadata.get("agent_name") not in _EXCLUDED_FROM_RETRIEVAL
+    )[:_TOP_K]
     logger.info(
         "Planner candidates retrieved | task_chars=%d | candidates=%s",
         len(task),

@@ -27,6 +27,7 @@ from services.context import get_context
 from services.agent_scheduler import SchedulerJob, get_scheduler
 from graphs.constant import build_planner_context, get_explicit_agent_hints
 from planning.diagram import chain_steps, to_mermaid, validate_steps
+from planning.prompt_type import Prompt_type
 
 # ---------------------------------------------------------------------------
 # Structured output schema for the planner
@@ -38,6 +39,10 @@ class ExecutionPlan(BaseModel):
         description="Agents that should execute the task in order"
     )
     steps: list[dict] = Field(default_factory=list, description="DAG steps with id, agent, depends_on, and purpose")
+    unhandled_tasks: list[str] = Field(
+        default_factory=list,
+        description="Concrete requested subtasks that none of the available candidate agents can perform",
+    )
     confidence: float = Field(default=0.0, ge=0.0, le=1.0)
     rationale: str = Field(default="")
 
@@ -195,11 +200,13 @@ async def _node_planner(state: dict, model) -> dict:
     await _emit("task.PLANNING", state)
 
     candidate_names: list[str] = []
+    unhandled_tasks: list[str] = []
     try:
         valid_types = set(list_agent_types())
         prompt, candidate_names = build_planner_context(state["task"])
         planner = model.with_structured_output(ExecutionPlan, method="json_mode")
         plan: ExecutionPlan = await planner.ainvoke(prompt)
+        unhandled_tasks = [item.strip() for item in plan.unhandled_tasks if item.strip()]
         plan_agents = []
         for agent_name in plan.agents:
             if (
@@ -213,6 +220,13 @@ async def _node_planner(state: dict, model) -> dict:
             plan_steps = chain_steps(plan_agents)
         plan_agents = [step["agent"] for step in plan_steps]
 
+        # Agent Creator may appear in mixed-task plans only alongside at least
+        # one supported agent. For wholly unsupported work, Prompt_type must
+        # classify the original prompt before Creator is routed.
+        if plan_agents == ["agent_creator"]:
+            plan_agents = []
+            plan_steps = []
+
         # Preserve every capability explicitly requested by a compound task.
         # The LLM still performs the primary planning; this guard prevents a
         # valid but overly-minimal response from silently dropping later work.
@@ -222,11 +236,10 @@ async def _node_planner(state: dict, model) -> dict:
             if agent in candidate_names and agent not in plan_agents
         ]
         if missing_hints:
-            ordered_agents = [
-                agent for agent in explicit_hints
-                if agent in candidate_names and agent in (plan_agents + missing_hints)
-            ]
-            ordered_agents.extend(agent for agent in plan_agents if agent not in ordered_agents)
+            # Preserve the planner's requested task order; append only a
+            # capability it accidentally omitted.
+            ordered_agents = list(plan_agents)
+            ordered_agents.extend(agent for agent in missing_hints if agent not in ordered_agents)
             plan_agents = ordered_agents
             plan_steps = chain_steps(plan_agents)
     except Exception as exc:
@@ -237,13 +250,50 @@ async def _node_planner(state: dict, model) -> dict:
         explicit_hints = get_explicit_agent_hints(state["task"])
         plan_agents = [agent for agent in explicit_hints if agent in candidate_names]
         if not plan_agents:
-            plan_agents = candidate_names[:1]
+            plan_agents = [agent for agent in candidate_names if agent != "agent_creator"][:1]
         plan_steps = chain_steps(plan_agents)
         plan = ExecutionPlan(
             agents=plan_agents,
             confidence=0.25 if plan_agents else 0.0,
             rationale="LLM planner unavailable; selected the top semantic candidate.",
         )
+
+    prompt_type = None
+    if not plan_agents:
+        try:
+            prompt_type = await Prompt_type(state["task"], model)
+        except Exception as exc:
+            logger.warning("Prompt type classifier failed: %s. Keeping the direct response route.", exc)
+
+        if prompt_type and prompt_type.kind == "new_task":
+            plan_agents = ["agent_creator"]
+            plan_steps = [{
+                "id": "step_1",
+                "agent": "agent_creator",
+                "depends_on": [],
+                "purpose": "Handle a new task not supported by the existing agents.",
+            }]
+            plan.rationale = prompt_type.rationale
+
+    elif unhandled_tasks:
+        # The planner places Creator in the requested sequence. Fill its input
+        # with only uncovered work. If omitted, retain the safe sequential
+        # fallback after the supported work.
+        creator_steps = [step for step in plan_steps if step["agent"] == "agent_creator"]
+        if creator_steps:
+            creator_steps[0]["task"] = "\n".join(f"- {item}" for item in unhandled_tasks)
+            creator_steps[0]["purpose"] = "Handle subtasks not covered by the existing agents."
+        else:
+            creator_step_id = "step_agent_creator"
+            plan_agents.append("agent_creator")
+            plan_steps.append({
+                "id": creator_step_id,
+                "agent": "agent_creator",
+                "depends_on": [step["id"] for step in plan_steps],
+                "purpose": "Handle subtasks not covered by the existing agents.",
+                "task": "\n".join(f"- {item}" for item in unhandled_tasks),
+            })
+        plan.rationale = (plan.rationale + " " + "Agent Creator assigned the unsupported subtasks.").strip()
 
     mermaid = to_mermaid(plan_steps)
 
@@ -253,7 +303,7 @@ async def _node_planner(state: dict, model) -> dict:
         plan=plan_agents,
         confidence=plan.confidence,
         rationale=plan.rationale,
-        candidates=candidate_names,
+        candidates=candidate_names + (["agent_creator"] if "agent_creator" in plan_agents else []),
         plan_graph=plan_steps,
         mermaid=mermaid,
     )
@@ -281,14 +331,20 @@ async def _node_executor(state: dict, model) -> dict:
         loop = asyncio.get_running_loop()
         callback = ToolEventCallback(_emit, state, agent_name, agent_id, loop)
         run_fn = runtime["run"]
+        step_task = ready_step.get("task", state["task"])
+        step_context = (
+            "\n".join(f"{msg.type}: {msg.content}" for msg in state["messages"])
+            + "\n"
+            + f"Current DAG step: {ready_step['purpose']}\nPrevious Results :"
+            + str(state["results"])
+        )
+        if step_task != state["task"]:
+            step_context = f"Original user task: {state['task']}\n" + step_context
         try:
             result = await run_fn(
                 model=model,
-                task=state["task"],
-                context="\n".join(f"{msg.type}: {msg.content}" for msg in state["messages"])
-                + "\n"
-                + f"Current DAG step: {ready_step['purpose']}\nPrevious Results :"
-                + str(state["results"]),
+                task=step_task,
+                context=step_context,
                 callbacks=[callback],
                 req_id=state["req_id"],
                 task_id=state["task_id"],
@@ -408,15 +464,25 @@ def build_graph(model):
     g.add_edge(START, "task_creation")
     g.add_edge("task_creation", "planner")
 
+    def _route_from_planner(state: dict) -> str:
+        if state.get("plan_steps"):
+            return "executor"
+        return "response_node"
+
+    def _route_from_executor(state: dict) -> str:
+        if len(state.get("completed_steps", [])) < len(state.get("plan_steps", [])):
+            return "executor"
+        return "response_node"
+
     g.add_conditional_edges(
         "planner",
-        _should_continue,
-        {"execute": "executor", "end": "response_node"},
+        _route_from_planner,
+        {"executor": "executor", "response_node": "response_node"},
     )
     g.add_conditional_edges(
         "executor",
-        _should_continue,
-        {"execute": "executor", "end": "response_node"},
+        _route_from_executor,
+        {"executor": "executor", "response_node": "response_node"},
     )
     g.add_edge("response_node", END)
 
