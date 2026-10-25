@@ -1,0 +1,116 @@
+{
+  "evaluation": "agent_scheduler_external_benchmark",
+  "dataset_id": "longmemeval_scheduler_workload_v1",
+  "question_count": 500,
+  "conversation_count": 500,
+  "profiles": [
+    {
+      "profile": "serial",
+      "global_slots": 1,
+      "task_slots": 2,
+      "job_count": 500,
+      "completed": 500,
+      "failed": 0,
+      "requeued": 0,
+      "elapsed_seconds": 7.7777,
+      "throughput_jobs_per_second": 64.287,
+      "mean_queue_wait_ms": 3886.883,
+      "p95_queue_wait_ms": 7366.947,
+      "mean_end_to_end_ms": 3901.197,
+      "p95_end_to_end_ms": 7381.582,
+      "peak_active_jobs": 1,
+      "scheduler_wait_ms_accumulated": 1942639,
+      "event_counts": {
+        "AGENT_COMPLETED": 500,
+        "AGENT_READY": 500,
+        "AGENT_RUNNING": 500,
+        "RESOURCE_APPROVED": 500
+      }
+    },
+    {
+      "profile": "default",
+      "global_slots": 3,
+      "task_slots": 2,
+      "job_count": 500,
+      "completed": 500,
+      "failed": 0,
+      "requeued": 0,
+      "elapsed_seconds": 2.6107,
+      "throughput_jobs_per_second": 191.519,
+      "mean_queue_wait_ms": 1299.881,
+      "p95_queue_wait_ms": 2466.025,
+      "mean_end_to_end_ms": 1314.58,
+      "p95_end_to_end_ms": 2480.803,
+      "peak_active_jobs": 3,
+      "scheduler_wait_ms_accumulated": 648876,
+      "event_counts": {
+        "AGENT_COMPLETED": 500,
+        "AGENT_READY": 500,
+        "AGENT_RUNNING": 500,
+        "RESOURCE_APPROVED": 500
+      }
+    },
+    {
+      "profile": "expanded",
+      "global_slots": 8,
+      "task_slots": 2,
+      "job_count": 500,
+      "completed": 500,
+      "failed": 0,
+      "requeued": 0,
+      "elapsed_seconds": 0.9966,
+      "throughput_jobs_per_second": 501.709,
+      "mean_queue_wait_ms": 497.921,
+      "p95_queue_wait_ms": 929.384,
+      "mean_end_to_end_ms": 512.797,
+      "p95_end_to_end_ms": 945.218,
+      "peak_active_jobs": 8,
+      "scheduler_wait_ms_accumulated": 247559,
+      "event_counts": {
+        "AGENT_COMPLETED": 500,
+        "AGENT_READY": 500,
+        "AGENT_RUNNING": 500,
+        "RESOURCE_APPROVED": 500
+      }
+    }
+  ],
+  "manifest": {
+    "workload_dataset": "evaluations\\agent_scheduler\\datasets\\local\\longmemeval_workload.json",
+    "dataset_provenance": {
+      "dataset_id": "longmemeval_scheduler_workload_v1",
+      "source_format": "longmemeval",
+      "source_file": "longmemeval_oracle.json",
+      "source_sha256": "821a2034d219ab45846873dd14c14f12cfe7776e73527a483f9dac095d38620c",
+      "converted_on": "2026-10-26",
+      "question_count": 500,
+      "conversation_count": 500,
+      "stored_fields": "IDs, category, message/session counts, and character counts only; no question or conversation text",
+      "note": "Scheduler workload adapter; these benchmark QA sets are not native scheduler traces."
+    },
+    "runner": "deterministic synthetic async function; no LLM or external API",
+    "job_mapping": "one scheduler job per benchmark QA item",
+    "service_time": "2 ms plus one ms per 20,000 history characters, capped at 12 ms",
+    "estimated_tokens_per_job": 4000,
+    "profiles": [
+      {
+        "name": "serial",
+        "global_slots": 1
+      },
+      {
+        "name": "default",
+        "global_slots": 3
+      },
+      {
+        "name": "expanded",
+        "global_slots": 8
+      }
+    ],
+    "task_slots": 2,
+    "token_budget": 50000,
+    "external_persistence": "stubbed"
+  },
+  "limits": [
+    "Benchmark QA records are workload IDs/metadata, not native scheduler traces.",
+    "Latency and throughput describe this synthetic runner, not live LLM/provider execution."
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "evaluation": "agent_scheduler_external_benchmark",
+  "dataset_id": "locomo_scheduler_workload_v1",
+  "question_count": 1986,
+  "conversation_count": 10,
+  "profiles": [
+    {
+      "profile": "serial",
+      "global_slots": 1,
+      "task_slots": 2,
+      "job_count": 1986,
+      "completed": 1986,
+      "failed": 0,
+      "requeued": 0,
+      "elapsed_seconds": 31.0731,
+      "throughput_jobs_per_second": 63.914,
+      "mean_queue_wait_ms": 15561.868,
+      "p95_queue_wait_ms": 29508.49,
+      "mean_end_to_end_ms": 15573.94,
+      "p95_end_to_end_ms": 29522.795,
+      "peak_active_jobs": 1,
+      "scheduler_wait_ms_accumulated": 30897976,
+      "event_counts": {
+        "AGENT_COMPLETED": 1986,
+        "AGENT_READY": 1986,
+        "AGENT_RUNNING": 1986,
+        "RESOURCE_APPROVED": 1986
+      }
+    },
+    {
+      "profile": "default",
+      "global_slots": 3,
+      "task_slots": 2,
+      "job_count": 1986,
+      "completed": 1986,
+      "failed": 0,
+      "requeued": 0,
+      "elapsed_seconds": 12.1043,
+      "throughput_jobs_per_second": 164.074,
+      "mean_queue_wait_ms": 6544.58,
+      "p95_queue_wait_ms": 11560.515,
+      "mean_end_to_end_ms": 6560.631,
+      "p95_end_to_end_ms": 11576.424,
+      "peak_active_jobs": 3,
+      "scheduler_wait_ms_accumulated": 12987622,
+      "event_counts": {
+        "AGENT_COMPLETED": 1986,
+        "AGENT_READY": 1986,
+        "AGENT_RUNNING": 1986,
+        "RESOURCE_APPROVED": 1986
+      }
+    },
+    {
+      "profile": "expanded",
+      "global_slots": 8,
+      "task_slots": 2,
+      "job_count": 1986,
+      "completed": 1986,
+      "failed": 0,
+      "requeued": 0,
+      "elapsed_seconds": 6.7838,
+      "throughput_jobs_per_second": 292.757,
+      "mean_queue_wait_ms": 3977.357,
+      "p95_queue_wait_ms": 6545.02,
+      "mean_end_to_end_ms": 4002.739,
+      "p95_end_to_end_ms": 6560.9,
+      "peak_active_jobs": 8,
+      "scheduler_wait_ms_accumulated": 7883472,
+      "event_counts": {
+        "AGENT_COMPLETED": 1986,
+        "AGENT_READY": 1986,
+        "AGENT_RUNNING": 1986,
+        "RESOURCE_APPROVED": 1986
+      }
+    }
+  ],
+  "manifest": {
+    "workload_dataset": "evaluations\\agent_scheduler\\datasets\\local\\locomo_workload.json",
+    "dataset_provenance": {
+      "dataset_id": "locomo_scheduler_workload_v1",
+      "source_format": "locomo",
+      "source_file": "locomo10.json",
+      "source_sha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+      "converted_on": "2026-10-26",
+      "question_count": 1986,
+      "conversation_count": 10,
+      "stored_fields": "IDs, category, message/session counts, and character counts only; no question or conversation text",
+      "note": "Scheduler workload adapter; these benchmark QA sets are not native scheduler traces."
+    },
+    "runner": "deterministic synthetic async function; no LLM or external API",
+    "job_mapping": "one scheduler job per benchmark QA item",
+    "service_time": "2 ms plus one ms per 20,000 history characters, capped at 12 ms",
+    "estimated_tokens_per_job": 4000,
+    "profiles": [
+      {
+        "name": "serial",
+        "global_slots": 1
+      },
+      {
+        "name": "default",
+        "global_slots": 3
+      },
+      {
+        "name": "expanded",
+        "global_slots": 8
+      }
+    ],
+    "task_slots": 2,
+    "token_budget": 50000,
+    "external_persistence": "stubbed"
+  },
+  "limits": [
+    "Benchmark QA records are workload IDs/metadata, not native scheduler traces.",
+    "Latency and throughput describe this synthetic runner, not live LLM/provider execution."
+  ]
+}
