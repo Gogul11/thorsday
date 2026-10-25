@@ -177,6 +177,12 @@ class AgentScheduler:
                             await DB_update_task(oversized.task_id, status="failed", error="Estimated execution exceeds the task token budget")
                         except Exception as exc:
                             logger.warning("Scheduler blocked-task persistence failed: %s", exc)
+                        # This is a terminal scheduler failure just like a
+                        # task whose cumulative token budget is exhausted.
+                        # Keep the metric consistent across both admission
+                        # rejection paths so observability reflects the
+                        # rejected job.
+                        self._metrics["failed"] += 1
                         if oversized.future and not oversized.future.done():
                             oversized.future.set_exception(RuntimeError("Estimated execution exceeds the task token budget"))
                     else:

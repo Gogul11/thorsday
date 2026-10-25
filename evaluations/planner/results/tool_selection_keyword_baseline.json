@@ -1,0 +1,64 @@
+{
+  "evaluation": "agentos_tool_selection_keyword_baseline",
+  "dataset_id": "agentos_tool_selection_v1",
+  "trial_count": 50,
+  "exact_tool_set_accuracy": 1.0,
+  "required_tool_recall": 1.0,
+  "category_metrics": {
+    "code_execution": {
+      "trial_count": 5,
+      "correct_trials": 5,
+      "exact_tool_set_accuracy": 1.0,
+      "required_tool_recall": 1.0
+    },
+    "date_time": {
+      "trial_count": 5,
+      "correct_trials": 5,
+      "exact_tool_set_accuracy": 1.0,
+      "required_tool_recall": 1.0
+    },
+    "document_workflow": {
+      "trial_count": 5,
+      "correct_trials": 5,
+      "exact_tool_set_accuracy": 1.0,
+      "required_tool_recall": 1.0
+    },
+    "email_delivery": {
+      "trial_count": 5,
+      "correct_trials": 5,
+      "exact_tool_set_accuracy": 1.0,
+      "required_tool_recall": 1.0
+    },
+    "financial_calculation": {
+      "trial_count": 10,
+      "correct_trials": 10,
+      "exact_tool_set_accuracy": 1.0,
+      "required_tool_recall": 1.0
+    },
+    "multi_agent": {
+      "trial_count": 5,
+      "correct_trials": 5,
+      "exact_tool_set_accuracy": 1.0,
+      "required_tool_recall": 1.0
+    },
+    "research": {
+      "trial_count": 5,
+      "correct_trials": 5,
+      "exact_tool_set_accuracy": 1.0,
+      "required_tool_recall": 1.0
+    },
+    "system_information": {
+      "trial_count": 5,
+      "correct_trials": 5,
+      "exact_tool_set_accuracy": 1.0,
+      "required_tool_recall": 1.0
+    },
+    "weather": {
+      "trial_count": 5,
+      "correct_trials": 5,
+      "exact_tool_set_accuracy": 1.0,
+      "required_tool_recall": 1.0
+    }
+  },
+  "rules": "Ordered keyword rules; no model, provider, or external tool calls."
+}

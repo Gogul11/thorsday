@@ -1,0 +1,89 @@
+{
+  "evaluation": "agent_scheduler_performance",
+  "dataset_id": "agent_scheduler_workloads_v1",
+  "result_type": "measurement_not_pass_rate",
+  "trial_count": 40,
+  "profiles": {
+    "queue_contention/priority": {
+      "trials": 10,
+      "all_completed": true,
+      "throughput_jobs_per_sec": {
+        "mean": 85.923,
+        "min": 75.548,
+        "max": 96.401
+      },
+      "queue_wait_p95_ms": 511.915,
+      "end_to_end_p95_ms": 537.254,
+      "high_priority_queue_p95_ms": 101.41,
+      "low_priority_queue_p95_ms": 531.661,
+      "peak_global_active": 2,
+      "max_task_completion_spread": 0
+    },
+    "queue_contention/fifo": {
+      "trials": 10,
+      "all_completed": true,
+      "throughput_jobs_per_sec": {
+        "mean": 85.84,
+        "min": 61.696,
+        "max": 97.03
+      },
+      "queue_wait_p95_ms": 508.351,
+      "end_to_end_p95_ms": 536.639,
+      "high_priority_queue_p95_ms": 459.552,
+      "low_priority_queue_p95_ms": 499.935,
+      "peak_global_active": 2,
+      "max_task_completion_spread": 0
+    },
+    "steady_state/priority": {
+      "trials": 10,
+      "all_completed": true,
+      "throughput_jobs_per_sec": {
+        "mean": 254.274,
+        "min": 241.224,
+        "max": 259.655
+      },
+      "queue_wait_p95_ms": 218.056,
+      "end_to_end_p95_ms": 233.442,
+      "high_priority_queue_p95_ms": 65.175,
+      "low_priority_queue_p95_ms": 218.264,
+      "peak_global_active": 4,
+      "max_task_completion_spread": 0
+    },
+    "steady_state/fifo": {
+      "trials": 10,
+      "all_completed": true,
+      "throughput_jobs_per_sec": {
+        "mean": 258.004,
+        "min": 253.892,
+        "max": 262.29
+      },
+      "queue_wait_p95_ms": 214.479,
+      "end_to_end_p95_ms": 229.963,
+      "high_priority_queue_p95_ms": 205.995,
+      "low_priority_queue_p95_ms": 203.522,
+      "peak_global_active": 4,
+      "max_task_completion_spread": 0
+    }
+  },
+  "comparisons": {
+    "queue_contention": {
+      "throughput_delta_percent_priority_vs_fifo": 0.097,
+      "queue_wait_p95_delta_ms_priority_minus_fifo": 3.564,
+      "end_to_end_p95_delta_ms_priority_minus_fifo": 0.615,
+      "high_priority_queue_p95_delta_ms_priority_minus_fifo": -358.142,
+      "winner_for_high_priority_latency": "priority"
+    },
+    "steady_state": {
+      "throughput_delta_percent_priority_vs_fifo": -1.446,
+      "queue_wait_p95_delta_ms_priority_minus_fifo": 3.577,
+      "end_to_end_p95_delta_ms_priority_minus_fifo": 3.479,
+      "high_priority_queue_p95_delta_ms_priority_minus_fifo": -140.82,
+      "winner_for_high_priority_latency": "priority"
+    }
+  },
+  "manifest": {
+    "methodology": "Closed-loop async workloads with deterministic service-time and priority distributions.",
+    "external_persistence": "stubbed",
+    "same_host_comparison_required": true
+  }
+}

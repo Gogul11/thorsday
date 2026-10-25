@@ -1,31 +1,63 @@
 {
-  "dataset_id": "agent_scheduler_smoke_v1",
-  "source": "Hand-authored deterministic scheduler scenarios",
+  "dataset_id": "agent_scheduler_smoke_v2",
+  "dataset_type": "deterministic_behavioral_benchmark",
+  "source": "Hand-authored scheduler contract scenarios",
+  "purpose": "Validate admission control, queue ordering, lifecycle accounting, and retry behavior without provider calls.",
+  "provenance": "Synthetic workloads derived from the public AgentScheduler submit lifecycle and ResourceManager limits.",
+  "limitations": [
+    "Does not measure LLM quality, provider latency, or production throughput.",
+    "Persistence and recovery adapters are stubbed by the runner.",
+    "Timing assertions are limited to ordering and resource ceilings for repeatability."
+  ],
   "cases": [
     {
       "scenario": "concurrency_and_task_limits",
+      "category": "admission_control",
       "description": "Nine jobs across three tasks should honor global and per-task slot limits.",
-      "expected": {"job_count": 9, "max_global_active": 3, "max_task_active": 2}
+      "workload": {"tasks": 3, "jobs": 9, "estimated_tokens": 10, "runner_delay_ms": 40},
+      "expected": {"job_count": 9, "max_global_active": 3, "max_task_active": 2, "outcome": "completed"}
     },
     {
       "scenario": "priority_queue_order",
+      "category": "queueing",
       "description": "When one slot opens, the queued higher-priority job should start first.",
-      "expected": {"queued_start_order": ["high", "low"]}
+      "workload": {"global_slots": 1, "queued_jobs": 2, "priorities": {"high": 9, "low": 1}},
+      "expected": {"queued_start_order": ["high", "low"], "outcome": "completed"}
     },
     {
       "scenario": "oversized_token_job",
+      "category": "admission_control",
       "description": "An estimate larger than the token budget should be rejected without running.",
-      "expected": {"outcome": "failed", "reason": "token_budget"}
+      "workload": {"token_budget": 20, "estimated_tokens": 21},
+      "expected": {"outcome": "failed", "reason": "token_budget", "runner_invocations": 0}
+    },
+    {
+      "scenario": "cumulative_task_token_budget",
+      "category": "admission_control",
+      "description": "A task that has consumed its cumulative token budget should block its next step.",
+      "workload": {"token_budget": 25, "first_step_tokens": 15, "blocked_step_tokens": 15},
+      "expected": {"first_outcome": "completed", "second_outcome": "failed", "reason": "task_token_budget"}
     },
     {
       "scenario": "runner_failure",
+      "category": "lifecycle_accounting",
       "description": "A runner exception should be surfaced and counted as a failed job.",
-      "expected": {"outcome": "failed", "error": "synthetic failure"}
+      "workload": {"estimated_tokens": 10},
+      "expected": {"outcome": "failed", "error": "synthetic failure", "failed_metric_delta": 1}
     },
     {
       "scenario": "cooperative_preemption",
+      "category": "cooperative_scheduling",
       "description": "A cooperative checkpoint should requeue and execute the runner again.",
+      "workload": {"checkpoint_count": 1},
       "expected": {"runner_attempts": 2, "requeued": 1, "outcome": "completed"}
+    },
+    {
+      "scenario": "quota_retry",
+      "category": "reliability",
+      "description": "A transient provider rate-limit error should requeue once and complete on retry.",
+      "workload": {"provider_errors_before_success": 1, "error_class": "rate_limit"},
+      "expected": {"runner_attempts": 2, "requeued": 1, "failed": 0, "outcome": "completed"}
     }
   ]
 }

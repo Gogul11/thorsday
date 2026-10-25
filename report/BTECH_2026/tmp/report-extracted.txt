@@ -1,0 +1,2847 @@
+AGENTOS - A HYBRID MULTI-AGENT RUNTIME
+ENVIRONMENT FOR AUTONOMOUS AI
+APPLICATIONS
+A PROJECT REPORT
+Submitted by
+
+GOGUL A (2023115020)
+MOHAN VISHNU KUMAR M (2023115026)
+OVIYASHREE C J (2023115052)
+KUDIMI GUNA SEKHAR (2023115126)
+submitted to the Faculty of
+INFORMATION SCIENCE AND TECHNOLOGY
+in partial fulfillment for the award of the degree
+of
+
+BACHELOR OF TECHNOLOGY
+in
+
+INFORMATION TECHNOLOGY
+
+DEPARTMENT OF INFORMATION SCIENCE AND TECHNOLOGY
+COLLEGE OF ENGINEERING, GUINDY
+ANNA UNIVERSITY
+CHENNAI 600 025
+OCTOBER 2026
+
+ii
+
+ANNA UNIVERSITY
+CHENNAI - 600 025
+BONA FIDE CERTIFICATE
+
+Certified that this project report titled AgentOS - A Hybrid
+Multi-Agent Runtime Environment for Autonomous AI Applications is
+the bona fide work of Gogul A (2023115020), Mohan Vishnu Kumar M
+(2023115026), Oviyashree C J (2023115052), and Kudimi Guna Sekhar
+(2023115126), who carried out the project work under my supervision. Certified
+further that, to the best of my knowledge and belief, the work reported herein
+does not form part of any other thesis or dissertation on the basis of which a
+degree or an award was conferred on an earlier occasion on this or any other
+candidate.
+PLACE:
+
+Dr. SELVI RAVINDRAN
+
+DATE:
+
+ASSOCIATE PROFESSOR
+PROJECT GUIDE
+DEPARTMENT OF IST, CEG
+ANNA UNIVERSITY
+CHENNAI 600025
+COUNTERSIGNED
+
+Dr. P. YOGESH
+HEAD OF THE DEPARTMENT
+DEPARTMENT OF INFORMATION SCIENCE AND TECHNOLOGY
+COLLEGE OF ENGINEERING, GUINDY
+ANNA UNIVERSITY
+CHENNAI 600025
+
+iii
+
+ABSTRACT
+
+Large-language-model applications are evolving from single-turn
+chat interfaces into systems that plan, use tools, preserve context, and coordinate
+multiple specialised agents.
+
+However, application developers commonly
+
+rebuild scheduling, memory, event propagation, execution monitoring, and
+failure handling for each project. This report presents AgentOS, a hybrid
+multi-agent runtime environment that provides these operating-system-style
+services around autonomous AI applications.
+
+The implemented system
+
+combines a Next.js user interface, a FastAPI gateway, a Redis-backed event
+path, MongoDB task history, ChromaDB semantic retrieval, structured LLM
+planning, dependency-aware directed acyclic graph execution, semantic context
+paging, a global priority-aging scheduler, token and concurrency admission
+control, and a sandboxed Python code runner with bounded self-healing retries.
+The frontend exposes the generated plan graph and live scheduler and execution
+activity through WebSocket updates. The report distinguishes implemented
+facilities from proposed components such as complete role-based access control,
+hybrid model routing, and durable coroutine restoration after a kernel restart.
+Verification is based on repository compile checks, TypeScript checks, and
+focused smoke tests rather than unsubstantiated performance claims. AgentOS
+therefore provides a modular foundation for studying reliable, observable, and
+resource-aware multi-agent execution.
+Keywords: multi-agent runtime, semantic planning, DAG execution,
+context paging, priority scheduling.
+
+iv
+
+ACKNOWLEDGEMENT
+
+We express our sincere gratitude to our project guide, Dr. Selvi
+Ravindran, Associate Professor, Department of Information Science and
+Technology, Anna University, College of Engineering, Guindy, for her
+guidance, technical suggestions, and continuous encouragement throughout this
+work.
+We thank the faculty members and staff of the Department of
+Information Science and Technology for providing the academic environment
+and facilities required to undertake this project.
+
+We also acknowledge
+
+our classmates, friends, and families for their support during the design,
+implementation, testing, and documentation of AgentOS.
+
+Gogul A
+Mohan Vishnu Kumar M
+Oviyashree C J
+Kudimi Guna Sekhar
+
+v
+
+TABLE OF CONTENTS
+
+ABSTRACT
+ACKNOWLEDGEMENT
+LIST OF TABLES
+LIST OF FIGURES
+LIST OF SYMBOLS AND ABBREVIATIONS
+
+iii
+iv
+viii
+ix
+xi
+
+1
+
+INTRODUCTION
+1.1 BACKGROUND
+1.2 MOTIVATION
+1.3 PROBLEM STATEMENT
+1.4 OBJECTIVES
+1.5 SCOPE
+1.6 CONTRIBUTIONS
+1.7 REPORT ORGANIZATION
+
+1
+1
+1
+2
+2
+3
+3
+3
+
+2
+
+LITERATURE SURVEY
+2.1 OVERVIEW
+2.2 AGENT RUNTIMES AND AUTONOMOUS AGENTS
+2.3 MEMORY AND CONTEXT MANAGEMENT
+2.4 PLANNING, TOOL USE, AND REFLECTION
+2.5 SCHEDULING, RESOURCES, AND RELIABILITY
+2.6 SECURITY AND SANDBOXED EXECUTION
+2.7 EVENT-DRIVEN INFRASTRUCTURE
+2.8 RESEARCH GAP AND POSITIONING
+
+4
+4
+4
+5
+5
+6
+7
+7
+7
+
+3
+
+SYSTEM DESIGN
+3.1 DESIGN PRINCIPLES
+3.2 OVERALL ARCHITECTURE
+3.3 FRONTEND, GATEWAY, AND EVENT FLOW
+3.4 PLANNER AND DAG EXECUTION
+3.5 CONTEXT PAGING
+3.6 GLOBAL SCHEDULER AND RESOURCE MANAGER
+3.7 RESOURCE MANAGEMENT
+3.8 TOOL MANAGEMENT
+
+9
+9
+9
+11
+11
+13
+13
+14
+15
+
+vi
+3.9 AGENT LIFECYCLE AND EVENTS
+3.10 SANDBOXED CODE RUNNER
+3.11 IMPLEMENTED AGENTOS MODULES
+
+16
+17
+18
+
+4
+
+IMPLEMENTATION
+4.1 IMPLEMENTATION ENVIRONMENT
+4.2 SEMANTIC AGENT RETRIEVAL
+4.3 PLANNER AND FALLBACK
+4.4 DAG VALIDATION
+4.5 PRIORITY-AGING SCHEDULER
+4.6 RESOURCE ADMISSION AND TOKEN BUDGETS
+4.7 REDIS EVENTS AND BACKEND FORWARDING
+4.8 CONTEXT PAGE-OUT AND PAGE-IN
+4.9 SANDBOXED EXECUTION AND SELF-HEALING
+4.10 FRONTEND OBSERVABILITY
+4.11 CONFIGURATION AND VERIFICATION
+4.12 AGENTOS ALGORITHMIC SPECIFICATION
+
+19
+19
+19
+20
+21
+22
+23
+23
+24
+25
+25
+25
+26
+
+5
+
+RESULTS AND PERFORMANCE ANALYSIS
+5.1 EXPERIMENTAL CONFIGURATION
+5.2 EVALUATION MEASURES
+5.3 RESULTS
+5.3.1 Rule-based baseline comparison
+5.4 INTERPRETATION AND LIMITATIONS
+
+33
+33
+33
+34
+35
+36
+
+6
+
+EVALUATION FRAMEWORK AND METRICS
+6.1 EVALUATION NOTATION
+6.2 PLANNING QUALITY METRICS
+6.3 EXECUTION RELIABILITY METRICS
+6.4 SCHEDULER AND RESOURCE METRICS
+6.5 SCHEDULER WORKLOAD BENCHMARK
+6.6 CONTEXT PAGING AND RETRIEVAL METRICS
+6.7 EVENT AND OBSERVABILITY METRICS
+6.8 CODE RUNNER SAFETY METRICS
+6.9 REPORTING PROTOCOL
+
+38
+38
+38
+40
+40
+41
+44
+44
+45
+45
+
+7
+
+CONCLUSION
+
+47
+
+vii
+8
+
+AGENT CATALOGUE AND INTERNAL WORKFLOWS
+
+49
+
+AGENT CATALOGUE AND INTERNAL WORKFLOWS
+8.1 Agent A1: System Information Agent
+8.2 Agent A2: Date and Time Agent
+8.3 Agent A3: Research Agent
+8.4 Agent A4: File and Document Agent
+8.5 Content Creator Agent
+8.6 Email Agent
+8.7 Weather Agent
+8.8 Loan EMI Calculator Agent
+8.9 Crypto PnL Agent
+8.10 Code Runner Agent
+8.11 Agent Creator
+
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+
+REFERENCES
+
+61
+
+viii
+
+LIST OF TABLES
+
+3.1 Implemented AgentOS modules
+
+18
+
+4.1 Principal Redis channels and keys
+4.2 Selected AgentOS configuration values
+
+24
+26
+
+5.1 AgentOS tool-selection adapter results
+5.2 Comparison between the model-backed planner and
+the deterministic keyword baseline
+
+34
+
+6.1
+6.2
+6.3
+6.4
+
+39
+40
+41
+42
+
+Metrics for evaluating planner quality
+Metrics for execution reliability
+Metrics for scheduling and resource admission
+Priority-aging scheduler versus FIFO baseline
+
+36
+
+ix
+
+LIST OF FIGURES
+
+3.1 Overall AgentOS system architecture
+3.2 Frontend, FastAPI gateway, Redis channels, AI
+kernel, and agent-workforce flow
+3.3 Planner,
+validation,
+and dependency-aware
+execution flow
+3.4 Context page-out, vector-store retrieval, and
+semantic page-in flow
+3.5 Global agent scheduler, lifecycle events, resource
+checks, and runtime feedback
+3.6 Resource-manager decision flow supplied for the
+AgentOS design
+3.7 Tool selection, permission checking, invocation,
+and result return
+3.8 Agent lifecycle transitions
+3.9 Sandboxed Python execution and bounded
+self-healing loop
+
+10
+
+4.1 Optimized semantic planner and DAG construction
+
+21
+
+5.1 Overall outcomes and per-category end-to-end
+accuracy for the AgentOS tool-selection adapter.
+
+35
+
+11
+12
+13
+14
+15
+16
+17
+17
+
+6.1 Measured scheduler throughput under steady-state
+and queue-contention workloads
+6.2 High- and low-priority queue-wait P95 under priority
+aging and FIFO
+
+43
+
+8.1
+8.2
+8.3
+8.4
+8.5
+8.6
+8.7
+8.8
+
+49
+50
+51
+52
+53
+54
+55
+56
+
+AgentOS agent catalogue
+A1 system-information logic
+A2 date-and-time logic
+A3 research and source-verification logic
+A4 file-operation and deletion-confirmation logic
+Content Creator drafting logic
+Email delivery and simulation-mode logic
+Weather retrieval and reporting logic
+
+42
+
+x
+8.9 Loan EMI and amortisation logic
+8.10 Cryptocurrency PnL and ROI logic
+8.11 Code generation, sandbox execution, and repair logic
+8.12 Dynamic agent creation and registration logic
+
+57
+58
+59
+60
+
+xi
+
+LIST OF SYMBOLS AND ABBREVIATIONS
+AI
+
+Artificial Intelligence
+
+API
+
+Application Programming Interface
+
+DAG
+
+Directed Acyclic Graph
+
+FSM
+
+Finite-State Machine
+
+IPC
+
+Inter-Process Communication
+
+LLM
+
+Large Language Model
+
+MCP
+
+Model Context Protocol
+
+MongoDB
+
+Document-oriented database used for task history and
+metadata
+
+RAG
+
+Retrieval-Augmented Generation
+
+RBAC
+
+Role-Based Access Control
+
+Redis
+
+In-memory data store used for queues and event transport
+
+UI
+
+User Interface
+
+WebSocket
+
+Bidirectional communication protocol over a persistent
+connection
+
+α
+
+Aging factor used in effective-priority calculation
+
+Pmax
+
+Maximum effective priority
+
+Tq
+
+Cooperative dispatch time quantum
+
+1
+
+CHAPTER 1
+INTRODUCTION
+
+1.1
+
+BACKGROUND
+
+Large-language-model (LLM) applications have progressed from
+reactive question-answering interfaces to systems that can plan, call tools,
+maintain memory, and delegate work to specialised agents. A useful multi-agent
+application therefore needs more than a prompt and a model endpoint. It needs a
+runtime that can represent work, enforce dependencies, manage limited provider
+and execution resources, preserve useful context, report progress, and recover
+safely from failures.
+Operating-system concepts provide a useful design analogy. A task
+is submitted to a gateway, a planner decomposes it into executable steps, a
+scheduler selects runnable agent work, a resource manager performs admission
+control, and an event path exposes state transitions. AgentOS applies this
+analogy to LLM-powered agents while retaining the uncertainty and latency of
+model calls.
+
+1.2
+
+MOTIVATION
+
+In a conventional chatbot, application logic, conversation state, tool
+invocation, and error handling are often tightly coupled. This makes it difficult
+to run independent work concurrently or to explain why an agent was selected.
+Long conversations also exceed the practical context window of a model, while
+blindly truncating history can remove information needed by later steps. Finally,
+direct code execution or unrestricted tools create safety and observability risks.
+
+2
+AgentOS is motivated by the need for a reusable runtime layer. The
+project investigates how planning, agent retrieval, DAG execution, semantic
+context paging, global scheduling, resource accounting, event streaming, and
+sandboxed execution can be composed into one observable system.
+
+1.3
+
+PROBLEM STATEMENT
+
+There is no single lightweight runtime in the project environment
+that coordinates heterogeneous agents across multiple concurrent tasks
+while enforcing dependencies, observing token and concurrency budgets,
+preserving relevant context, and exposing execution state to a user interface.
+Reimplementing these facilities inside each application increases duplication,
+makes failures difficult to diagnose, and prevents systematic evaluation of
+scheduling and resource policies.
+
+1.4
+
+OBJECTIVES
+
+The objectives of AgentOS are:
+
+1. Develop a modular AI-kernel-style runtime for specialised agents;
+2. Generate structured execution plans, retrieve suitable agents
+semantically, and validate their dependencies as a DAG;
+3. Manage bounded conversational context through semantic page-out
+and page-in using a vector-backed swap space;
+4. Schedule runnable work with priority aging, fairness, cooperative
+dispatch, concurrency limits, and token budgets; and
+5. Execute agent and code-runner tasks reliably while publishing
+lifecycle events and measurable activity to the user interface.
+
+3
+1.5
+
+SCOPE
+
+The current phase covers a Next.js frontend, FastAPI gateway,
+Python kernel, Redis event transport, MongoDB task persistence, ChromaDB
+retrieval, structured planning, DAG validation and Mermaid generation, context
+paging, a global in-process scheduler, resource admission, and a sandboxed
+Python runner.
+
+The scope does not claim complete RBAC, distributed
+
+scheduler workers, forced termination of active LLM calls, automatic coroutine
+restoration, or a production-grade hybrid model router. These are documented
+as future work.
+
+1.6
+
+CONTRIBUTIONS
+
+The project contributions are a unified execution model for
+heterogeneous agents, a visible plan graph, a Redis-mediated activity stream,
+a semantic context paging mechanism, a priority-aging scheduler with
+resource admission, and a bounded code-execution/self-healing path.
+
+The
+
+implementation also makes a deliberate distinction between design aspirations
+and features that are present and testable in the repository.
+
+1.7
+
+REPORT ORGANIZATION
+
+Chapter 2 surveys research and technical systems related to
+autonomous agents, memory, planning, scheduling, tool use, security, event
+transport, and vector retrieval. Chapter 3 presents the AgentOS architecture
+and data flows. Chapter 4 describes the implementation algorithms, storage
+conventions, events, and verification evidence. The conclusion records current
+limitations and future extensions.
+
+4
+
+CHAPTER 2
+LITERATURE SURVEY
+
+2.1
+
+OVERVIEW
+
+This chapter reviews work that informs the design of AgentOS.
+The survey combines peer-reviewed or archival research with official technical
+documentation for infrastructure components. Each group is considered in terms
+of its contribution, limitation for the present project, and the way AgentOS uses
+or extends the idea.
+
+2.2
+
+AGENT RUNTIMES AND AUTONOMOUS AGENTS
+
+AIOS frames an LLM agent operating system around scheduling,
+context management, memory, storage, access control, and tool management
+[1].
+
+Its operating-system analogy directly motivates the AgentOS kernel,
+
+although the current AgentOS implementation is smaller and uses a
+Python/Redis/MongoDB stack rather than a complete OS abstraction. The
+broader survey by Wang et al. classifies LLM-based agents by construction,
+applications, and evaluation [2]; it identifies coordination and reliability as
+open challenges that AgentOS addresses through explicit events and DAG
+dependencies.
+The LLM-as-an-OS proposal treats models as system resources and
+agents as applications [3]. AutoGen demonstrates programmable multi-agent
+conversation and human-in-the-loop patterns [4], while LangGraph provides
+graph-based orchestration and durable execution concepts [5]. These systems
+
+5
+show the value of explicit state and orchestration, but do not provide the exact
+global priority-aging and token-admission policy implemented here.
+
+2.3
+
+MEMORY AND CONTEXT MANAGEMENT
+
+MemGPT introduces virtual context management that moves
+information between active context and external storage [6].
+
+MemoryOS
+
+organises memory into short-, mid-, and long-term layers and evaluates
+memory retention for conversational agents [7].
+
+These works motivate
+
+AgentOS context page-out and page-in. AgentOS uses semantic embeddings in
+ChromaDB and an active-window policy; it currently provides a project-level
+paging mechanism rather than a learned memory hierarchy or an independently
+benchmarked memory score.
+Retrieval-Augmented Generation (RAG) combines generation with
+a non-parametric knowledge store [8].
+
+ChromaDB documents collections,
+
+embeddings, and distance-based retrieval [9]. AgentOS uses this pattern both
+for agent capability retrieval and for swapped context. The limitation is that
+retrieval quality depends on the embedding model and distance configuration;
+the current implementation exposes similarity metadata but does not claim
+domain-wide retrieval benchmarks.
+
+2.4
+
+PLANNING, TOOL USE, AND REFLECTION
+
+ReAct interleaves reasoning and action so that an agent can use
+external tools during problem solving [10]. Toolformer studies self-supervised
+learning for deciding when and how to call APIs [11]. Generative Agents
+combine memory, reflection, and planning for believable behaviour [12].
+Reflexion uses verbal feedback to improve subsequent attempts without
+
+6
+updating model weights [13]. AgentOS adopts structured planning, explicit
+tool boundaries, persisted events, and bounded self-healing, but does not
+train models or claim the autonomous reflection capabilities of these research
+systems.
+The Transformer architecture remains the dominant basis for modern
+LLMs [14]. Its context limitation makes external context management relevant
+to AgentOS, while the model itself remains an external provider selected by the
+planner/runtime.
+
+2.5
+
+SCHEDULING, RESOURCES, AND RELIABILITY
+
+Classical operating-system scheduling shows why priority alone can
+starve old work and why aging can improve fairness [15]. Linux cgroups
+provide a practical model for resource accounting and isolation [16]. AgentOS
+adapts these ideas to agent work: effective priority increases with queue wait,
+admission checks global and per-task slots, and token reservations are tracked
+before dispatch. Unlike a CPU scheduler, AgentOS cannot forcibly preempt an
+in-flight remote LLM request; its quantum is cooperative and checkpoint-based.
+The workflow and orchestration literature emphasises explicit
+dependency graphs and stateful execution. LangGraph persistence documents
+checkpointed graph state [17], while Temporal documents durable workflow
+execution [18]. AgentOS currently validates and executes a DAG in-process
+and persists task/event evidence; automatic continuation of interrupted
+coroutines remains future work.
+
+7
+2.6
+
+SECURITY AND SANDBOXED EXECUTION
+
+The Model Context Protocol specifies a standard way for AI
+applications to connect models with tools and data sources [19]. OWASP’s
+LLM security guidance highlights risks including excessive agency, insecure
+tool use, and code execution [20]. Python subprocess execution and filesystem
+scoping are therefore bounded in the code runner. Firecracker demonstrates the
+stronger isolation achievable with microVMs [21]. AgentOS’s current runner
+limits duration and output and scopes its working directory, but it is not a
+substitute for a hardened kernel or microVM sandbox.
+
+2.7
+
+EVENT-DRIVEN INFRASTRUCTURE
+
+Redis documents Pub/Sub as a low-latency message distribution
+mechanism [22]. MongoDB provides durable document storage suitable for
+task history and metadata [23]. AgentOS uses Redis for transient task/event
+transport and queue metadata and MongoDB for durable task records. Redis
+Pub/Sub alone is not a durable event log; recovery therefore persists relevant
+state in Redis hashes and MongoDB events, with full replay and exactly-once
+semantics left for future work.
+
+2.8
+
+RESEARCH GAP AND POSITIONING
+
+The reviewed systems provide strong solutions for individual
+concerns:
+
+planning, memory, graph orchestration, tool use, security,
+
+or workflow durability.
+
+AgentOS’s contribution is an integrated
+
+educational/runtime prototype that makes these concerns observable
+together in one project. Its distinctive implementation choices are semantic
+agent selection, explicit DAG validation, global priority-aging scheduling,
+
+8
+token/concurrency admission, Redis lifecycle events, context paging, and
+frontend graph/activity observability. The current phase prioritises a transparent
+and testable architecture over claims of production isolation or benchmark
+leadership.
+
+9
+
+CHAPTER 3
+SYSTEM DESIGN
+
+3.1
+
+DESIGN PRINCIPLES
+
+AgentOS is designed as a modular runtime. The gateway handles
+external requests, the orchestrator converts a prompt into a structured plan, and
+the kernel owns execution concerns. Redis is used for low-latency coordination
+and event transport, while MongoDB stores task history. ChromaDB stores
+embeddings used for semantic agent retrieval and context swap. The design
+keeps the current dependency truth in the DAG executor and treats scheduler
+decisions as admission and dispatch decisions.
+
+3.2
+
+OVERALL ARCHITECTURE
+
+As shown in Figure 3.1, AgentOS is organised as an overall
+runtime architecture connecting the user interface, gateway, planner, kernel,
+storage, tools, agents, and model engines. The figure combines implemented
+runtime components with architectural modules that are planned or only
+partially implemented; their implementation status is documented separately in
+Section 3.11. A user submits a task through the Next.js interface. The FastAPI
+gateway creates or retrieves task state and communicates with the kernel. The
+planner selects agents and creates steps; the kernel validates and executes those
+steps while publishing activity events.
+
+Figure 3.1: Overall AgentOS system architecture
+10
+
+11
+3.3
+
+FRONTEND, GATEWAY, AND EVENT FLOW
+
+The frontend sends task prompts over HTTP and receives live activity
+over WebSocket. The backend listener subscribes to the kernel event channel
+and forwards events to connected clients. Figure 3.2 shows the separation
+between the task submission channel and the kernel event channel. MongoDB
+persistence is performed by the kernel/repository layer so the UI can later query
+task history.
+
+Frontend
+Next.js / Browser
+POST /task WebSocket updates
+
+Backend Gateway
+FastAPI
+Task publish
+
+Event subscribe
+
+Redis Event Bus
+backend_tasks
+Task submissions
+
+kernel_events
+Lifecycle and activity
+
+Task subscribe
+
+Event publish
+
+AI Kernel
+Planner, scheduler, and agents
+
+Figure 3.2: Frontend, FastAPI gateway, Redis channels, AI kernel, and
+agent-workforce flow
+
+12
+3.4
+
+PLANNER AND DAG EXECUTION
+
+The planner retrieves relevant agent descriptions, requests a
+structured execution plan, and applies a fallback plan when the provider is
+unavailable. Each step includes an identifier, agent name, description, and
+dependency list.
+
+The validator canonicalises identifiers, rejects unknown
+
+dependencies and cycles, and supplies a sequential fallback only when a
+plan omits dependencies. The executor runs only steps whose prerequisites
+are complete. Figure 3.3 summarises this path. The frontend uses the same
+validated plan to generate Mermaid source and draw the plan graph, ensuring
+that displayed edges represent dependencies rather than decorative links.
+
+User task
+(natural-language prompt)
+
+Semantic agent
+candidate retrieval
+
+Compact planner
+context
+
+Structured LLM
+plan
+
+Plan validation
+(agents, IDs, dependencies, cycles)
+invalid / unavailable
+
+Semantic / sequential
+fallback
+
+valid
+
+Validated execution DAG
+
+Dependency-aware
+DAG executor
+
+Agent runtime
+and result recording
+
+Figure 3.3: Planner, validation, and dependency-aware execution flow
+
+13
+3.5
+
+CONTEXT PAGING
+
+The context pager keeps a bounded active message window. When
+the window is exceeded, older or less relevant messages are embedded and
+stored in the ChromaDB swap collection. A later query retrieves semantically
+related pages and injects them into the active context. ChromaDB’s cosine space
+returns distance; the implementation converts it as s = 1 − d, where d is the
+returned cosine distance. Figure 3.4 presents the page-out and page-in flow.
+This mechanism reduces active prompt growth but does not guarantee perfect
+recall.
+
+Figure 3.4: Context page-out, vector-store retrieval, and semantic page-in
+flow
+
+3.6
+
+GLOBAL SCHEDULER AND RESOURCE MANAGER
+
+The scheduler maintains ready records and selects work globally
+
+14
+across active tasks. Effective priority is computed from base priority and queue
+waiting time, bounded by a maximum. Before dispatch, the resource manager
+checks the global slot limit, per-task slot limit, and token budget. The current
+defaults are three global execution slots, two slots per task, and a configurable
+50,000-token task budget. Dispatch is cooperative: a running remote LLM
+request is not forcibly killed. Figure 3.5 shows the decision path.
+
+Figure 3.5: Global agent scheduler, lifecycle events, resource checks, and
+runtime feedback
+
+3.7
+
+RESOURCE MANAGEMENT
+
+The resource-manager design in Figure 3.6 expands the admission
+point in the scheduler. It separates token-bucket accounting, quota monitoring,
+process monitoring, resource checking, and the final decision. In the current
+implementation, the corresponding resource manager enforces global and
+per-task execution slots and a token budget; the policy store, process monitor,
+
+15
+and hard preemption shown in the figure are design extensions.
+
+Figure 3.6: Resource-manager decision flow supplied for the AgentOS
+design
+
+3.8
+
+TOOL MANAGEMENT
+
+Figure 3.7 shows the intended tool-manager boundary between an
+agent, a tool registry, permission policy, and local or external services. AgentOS
+currently exposes bounded tools through the runtime and code runner; a
+complete permission store and MCP-compatible tool manager remain proposed
+components.
+
+16
+
+Figure 3.7: Tool selection, permission checking, invocation, and result
+return
+
+3.9
+
+AGENT LIFECYCLE AND EVENTS
+
+An agent step progresses from CREATED to READY, RUNNING,
+and COMPLETED. It can move to WAITING when a resource or dependency
+is unavailable, or to BLOCKED/FAILED when execution cannot proceed.
+The scheduler and runtime publish structured lifecycle events containing
+task, step, agent, execution, status, priority, queue wait, and attempt
+information.
+
+Figure 3.8 shows the state model.
+
+Complete RBAC and
+
+comprehensive state-machine enforcement remain extensions beyond the
+current implementation boundary.
+
+17
+
+WAITING
+CREATED
+
+READY
+RUNNING
+
+COMPLETED
+
+BLOCKED
+
+FAILED
+
+Figure 3.8: Agent lifecycle transitions
+
+3.10
+
+SANDBOXED CODE RUNNER
+
+The code runner receives generated Python, writes it into a scoped
+working directory, and invokes it through an asynchronous subprocess. It
+bounds execution time and captured output. A non-zero exit code or traceback
+is returned to the coder/tester agent, which may produce a corrected version
+for at most three attempts. Output lines can be published as kernel events for
+live frontend observation. Figure 3.9 shows this flow. The current isolation
+is process and directory scoping; hardened container or microVM isolation is
+future work.
+exit 0
+Output
+
+Request
+
+Coder & Tester Agent
+
+subprocess
+time + output limits
+
+max 3 retries
+
+Done
+
+traceback
+Repair
+
+Figure 3.9: Sandboxed Python execution and bounded self-healing loop
+
+18
+3.11
+
+IMPLEMENTED AGENTOS MODULES
+
+Table 3.1 summarises the modules implemented and exercised in the
+current AgentOS runtime.
+Table 3.1: Implemented AgentOS modules
+Module
+
+Current implementation
+
+Status / limitation
+
+Frontend and gateway
+
+Next.js, FastAPI,
+WebSocket activity
+Structured plan, validation,
+Mermaid graph
+Priority aging, slots, token
+admission
+ChromaDB semantic swap
+and retrieval
+Events, queue metadata, task
+history
+Bounded Python subprocess
+and retries
+
+Implemented
+
+Planner and DAG
+Scheduler and
+resources
+Context paging
+Redis and MongoDB
+Code runner
+
+Implemented
+Implemented;
+cooperative only
+Implemented
+Implemented
+Implemented; not
+microVM isolation
+
+19
+
+CHAPTER 4
+IMPLEMENTATION
+
+4.1
+
+IMPLEMENTATION ENVIRONMENT
+
+The kernel is implemented in Python using asynchronous services.
+The backend is FastAPI-based and the frontend is implemented with Next.js
+and TypeScript. Redis provides task/event channels and scheduler metadata;
+MongoDB stores task records and event history; ChromaDB provides persistent
+vector collections for planning and context swap. Provider-specific LLM usage
+is treated as optional metadata because some providers do not return reliable
+token counts.
+
+4.2
+
+SEMANTIC AGENT RETRIEVAL
+
+Agent descriptions are embedded in a persistent ChromaDB
+collection. A task description is used as a query, and the top candidate records
+are returned with their distances and metadata. In the configured cosine space,
+ChromaDB returns d = 1 − cos(θ), so the implementation reports s = 1 − d.
+It does not divide by two; that transformation would be appropriate for a
+different distance normalisation. An LRU cache reduces repeated retrieval for
+identical descriptions. Algorithm 4.1 summarises this candidate-retrieval and
+cosine-distance conversion procedure.
+
+20
+Algorithm 4.1 Semantic Agent Retrieval
+Require: task description q, agent collection C, result count k
+1: r ← C.query(q, k)
+2: for all candidate distances di in r do
+3:
+si ← 1 − d i
+4:
+attach (agenti , si , descriptioni ) to candidate
+5: end for
+6: sort candidates by si descending
+7: return top candidates
+
+4.3
+
+PLANNER AND FALLBACK
+
+The planner asks the configured LLM for a structured execution plan.
+The response is parsed into steps and normalised against the agent registry. If the
+LLM request fails, exceeds quota, or produces invalid structure, a deterministic
+fallback creates a usable plan from the best retrieved agent(s). This maintains
+task execution and observability without pretending that the fallback has the
+same reasoning quality as the provider.
+Figure 4.1 illustrates the complete optimized planning path, from
+semantic candidate retrieval through structured plan validation, fallback routing,
+DAG construction, scheduling, and runtime execution.
+
+21
+
+Figure 4.1: Optimized semantic planner and DAG construction
+
+4.4
+
+DAG VALIDATION
+
+Every step has a unique identifier and a list of prerequisite
+identifiers. Validation rejects duplicate identifiers, unknown agents, unknown
+dependencies, and cycles. A Kahn-style topological pass counts nodes removed
+from the ready set. If the count is smaller than the number of steps, the
+dependency graph contains a cycle and is rejected.
+
+The same validated
+
+dependency lists are used to generate Mermaid edges. Algorithm 4.2 specifies
+the cycle-detection procedure.
+
+22
+Algorithm 4.2 Dependency Validation by Cycle Detection
+Require: step set S
+1: build adjacency list and indegree for every step
+2: Q ← all steps with indegree zero
+3: visited ← 0
+4: while Q is not empty do
+5:
+remove a step u from Q; visited ← visited + 1
+6:
+for all successors v of u do
+7:
+decrement indegree(v)
+8:
+if indegree(v) = 0 then add v to Q
+9:
+end if
+10:
+end for
+11: end while
+12: if visited ̸= |S| then return invalid cyclic plan
+13: elsereturn valid plan
+14: end if
+
+4.5
+
+PRIORITY-AGING SCHEDULER
+
+The scheduler stores ready records in a Redis sorted set and keeps
+execution metadata in hashes. The selection score is conceptually computed as:
+Pe f f ective = min(Pbase + αW, Pmax ),
+
+(4.1)
+
+where W is queue waiting time. The implementation uses an in-process pending
+set for dispatch coordination and persists the record so that ready and waiting
+work is visible and recoverable. A selected record is marked RUNNING,
+dispatched once, and then completed, requeued, or failed according to the result.
+Algorithm 4.3 gives the corresponding cooperative scheduling procedure.
+
+23
+Algorithm 4.3 Global Priority-Aging Cooperative Scheduler
+1: while scheduler is active do
+2:
+receive and persist READY records
+3:
+if ready queue is empty then wait for event; continue
+4:
+end if
+5:
+for all ready records ai do calculate Pe f f ective,i using Equation 4.1
+6:
+end for
+7:
+a∗ ← arg max Pe f f ective,i
+8:
+if resource manager denies a∗ temporarily then mark WAITING and
+requeue
+9:
+else if resource manager denies permanently then mark FAILED and
+publish event
+10:
+elsedispatch a∗ cooperatively and publish RUNNING
+11:
+if execution completes then publish COMPLETED
+12:
+else if execution waits or is requeued then publish WAITING or
+PREEMPTED
+13:
+elsepublish FAILED
+14:
+end if
+15:
+end if
+16:
+release resource reservations and record metrics
+17: end while
+
+4.6
+
+RESOURCE ADMISSION AND TOKEN BUDGETS
+
+The resource manager checks active global slots, active slots for the
+task, and the cumulative estimated token reservation for the task. A temporary
+denial leaves work waiting; an exhausted task budget is converted into a
+blocked/failed outcome rather than leaving the task silently pending. Actual
+provider usage, when available, is recorded separately from estimated admission
+tokens. This distinction explains why a provider such as Groq may display
+zero usage metadata even while the scheduler correctly enforces its configured
+estimate.
+
+4.7
+
+REDIS EVENTS AND BACKEND FORWARDING
+
+24
+Events are JSON records containing task identifier,
+
+step
+
+identifier, agent name, execution identifier, status, timestamp, priority,
+effective priority, queue wait, and attempt. The kernel publishes them on
+kernel events; the backend subscribes and forwards them over WebSocket.
+Scheduler records use keys such as agentos:scheduler:ready and
+agentos:scheduler:job:<execution id>. MongoDB persists task history
+and event records for later inspection. Table 4.1 summarises the Redis channels
+and scheduler keys used for task transport, lifecycle events, queue persistence,
+and recovery.
+Table 4.1: Principal Redis channels and keys
+Name
+
+Purpose
+
+New task/submission
+messages
+Lifecycle, scheduler, and
+kernel events
+execution events
+agentos:scheduler: Ready queue sorted-set
+ready
+metadata
+agentos:scheduler: Per-execution state hash
+job:<id>
+agentos:task:<id> Task-level scheduler state
+backend tasks
+
+4.8
+
+Durability role
+Transport
+Transport plus Mongo
+persistence
+Recovery aid
+Recovery aid
+Inspection/recovery
+
+CONTEXT PAGE-OUT AND PAGE-IN
+
+The pager moves messages from the active conversation state to a
+persistent ChromaDB collection after a configured window is exceeded. Each
+page stores message content, task metadata, and an embedding. On a later turn,
+the current query is embedded and the collection is searched; selected messages
+are reintroduced in relevance order. The implementation emits page-out and
+page-in metrics, allowing the UI or logs to verify that paging occurred.
+
+25
+4.9
+
+SANDBOXED EXECUTION AND SELF-HEALING
+
+The code runner creates a scoped temporary script, launches it with
+asyncio.create subprocess exec, captures stdout/stderr, and terminates the
+subprocess after a strict timeout. Output size is limited to prevent unbounded
+memory use. On a traceback, the error is supplied to the coder/tester agent and a
+revised script is attempted, up to three times. The runner publishes line-oriented
+output and final status as kernel events. No claim is made that an ordinary
+subprocess is equivalent to a container or microVM security boundary.
+
+4.10
+
+FRONTEND OBSERVABILITY
+
+The task activity panel displays lifecycle events, scheduler state,
+queue position, effective priority, waiting time, attempt number, resource
+decisions, and token totals when provider metadata is present.
+
+The plan
+
+graph modal displays the structured graph and Mermaid source. Token fields
+distinguish input, output, total, and configured budget; when the provider omits
+usage, the interface reports that the metadata is unavailable rather than inventing
+a count.
+
+4.11
+
+CONFIGURATION AND VERIFICATION
+
+Table 4.2 lists the important policy values. Verification for this phase
+consists of Python compilation, TypeScript type checking, scheduler/resource
+smoke tests, DAG validation checks, the seeded priority-versus-FIFO scheduler
+workload benchmark reported in Appendix 6, and manual event/graph
+inspection. The benchmark is a same-host scheduler comparison with stubbed
+persistence; it is not a production capacity or model-quality claim.
+
+26
+Table 4.2: Selected AgentOS configuration values
+Configuration
+
+Default
+
+Role
+
+Global execution slots
+
+3
+
+Per-task execution slots
+Task token budget
+
+2
+50,000
+
+Maximum scheduler
+priority
+Context active window
+Self-healing attempts
+
+configurable
+
+Maximum
+simultaneously
+admitted jobs
+Fairness/isolation across tasks
+Cumulative
+estimated
+admission limit
+Upper bound for aging
+
+configurable
+3
+
+Number of active messages
+Maximum code repair retries
+
+4.12
+
+AGENTOS ALGORITHMIC SPECIFICATION
+
+The following algorithm sheets define the AgentOS execution
+design. Together they specify the relationship between the planner, executor,
+lifecycle manager, context pager, dependency-aware DAG executor, scheduler,
+and priority-aging model. They complement the executable implementation
+described above. The sheets that describe full execution-context restoration,
+hard time-slice suspension, permission stores, or preemption represent planned
+extensions where the current implementation remains cooperative or partial.
+Algorithms 4.1, 4.2, and 4.3 describe the implemented retrieval, validation,
+and scheduler procedures.
+
+Algorithms 4.4, 4.5, 4.6, 4.7, 4.8, and 4.9
+
+present the lifecycle, context-paging, cooperative execution, semantic planning,
+DAG, and global scheduling specifications in that order.
+
+The separate
+
+priority-aging/time-slice model previously shown as Figure 4.7 has been
+removed; the implemented priority equation and scheduler procedure are
+documented earlier in this chapter.
+
+27
+Algorithm 4.4 Agent Lifecycle Management
+Require: agent id, agent type, task id
+Ensure: Managed agent runtime
+1: runtime store[agent id] = (id,type,task id, run f n, status)
+2: status ∈ {CREATED, RUNNING, COMPLETED, FAILED}
+3: function C REATE AGENT (agent id, agent type,task id)
+4:
+if agent id ∈ runtime store then
+5:
+raise “Agent already exists”
+6:
+end if
+7:
+run f n ← G ETAGENT RUN F UNCTION(agent type)
+8:
+runtime store[agent id] ← (agent id, agent type,task id, run f n, CREATED)
+9:
+return runtime store[agent id]
+10: end function
+11: function S ETAGENT S TATUS (agent id, status)
+12:
+runtime store[agent id].status ← status
+13: end function
+14: function D ESTROYAGENT (agent id)
+15:
+D ELETE(runtime store[agent id])
+16: end function
+
+28
+Algorithm 4.5 Virtual Memory Context Paging
+Require: Tid , query q, messages M = ⟨m1 , . . . , mN ⟩, window W , threshold τ,
+top-K limit K, embedding function Φ
+Ensure: C f inal , the context supplied to the LLM
+/
+1: C f inal ← [SystemMessage(SYSTEM PROMPT)]; Pin ← 0
+2: if N > W then
+3:
+Pover f low ← M[1 : N −W ]
+4:
+for all mi ∈ Pover f low do
+5:
+page key ← Tid ∥ msg ∥i
+6:
+if not E XISTS(page key) then
+7:
+vi ← Φ(mi .content)
+8:
+metadata ← {Tid , mi .role, mi .timestamp, i}
+9:
+V ECTOR S TORE .I NSERT(page key, vi , mi .content, metadata)
+10:
+E MIT E VENT(context.PAGE OUT, Tid , i)
+11:
+end if
+12:
+end for
+13:
+Mactive ← M[N −W + 1 : N]
+14: else
+15:
+Mactive ← M
+16: end if
+/ then
+17: if N > W and Trim(q) ̸= 0
+18:
+vq ← Φ(q); Candidates ← V ECTOR S TORE .S EARCH(Tid , vq , K)
+19:
+for all p ∈ Candidates do
+vq · v p
+20:
+s(p) ←
+∥vq ∥∥v p ∥
+21:
+if s(p) ≥ τ then
+22:
+Pin ← Pin ∪ {p}
+23:
+E MIT E VENT(context.PAGE IN, Tid , s(p), p.text)
+24:
+end if
+25:
+end for
+26: end if
+/ then
+27: if Pin ̸= 0
+28:
+R ← F ORMAT PAGED M EMORY(Pin )
+29:
+C f inal ← C f inal ∪ {SystemMessage(R)}
+30: end if
+31: for all m ∈ Mactive do
+32:
+if m.role = human then
+33:
+C f inal .A PPEND(HumanMessage(m.content))
+34:
+else if m.role = ai then
+35:
+C f inal .A PPEND(AIMessage(m.content))
+36:
+end if
+37: end for
+38: return C f inal
+
+29
+Algorithm 4.6 Cooperative Time-Sliced Agent Execution
+Require: Agent A∗ and time quantum Tq
+Ensure: Status in {COMPLETED, WAITING, PREEMPTED, FAILED}
+1: procedure E XECUTE AGENT (A∗ , Tq )
+2:
+if A∗ .execution context exists then
+3:
+runtime ← R ESTORE E XECUTION C ONTEXT(A∗ )
+4:
+else
+5:
+runtime ← I NITIALIZE AGENT RUNTIME(A∗ )
+6:
+end if
+7:
+start time ← G ET C URRENT T IME; S ETAGENT S TATUS(A∗ .id, RUNNING)
+8:
+while true do
+9:
+if AGENT E XECUTION FAILED(runtime) then
+10:
+S AVE E XECUTION C ONTEXT(A∗ , runtime); return FAILED
+11:
+end if
+12:
+if AGENT I S WAITING(runtime) then
+13:
+S AVE E XECUTION C ONTEXT(A∗ , runtime); return WAITING
+14:
+end if
+15:
+if G ET C URRENT T IME − start time ≥ Tq then
+16:
+S AVE E XECUTION C ONTEXT(A∗ , runtime);
+S USPENDAGENT E XECUTION(runtime); return PREEMPTED
+17:
+end if
+18:
+result ← E XECUTE N EXT S TEP(runtime)
+19:
+if result = COMPLETED then
+20:
+A∗ .result
+←
+G ET E XECUTION R ESULT(runtime);
+D ESTROY E XECUTION C ONTEXT(runtime); return COMPLETED
+21:
+else if result = WAITING then
+22:
+S AVE E XECUTION C ONTEXT(A∗ , runtime); return WAITING
+23:
+else if result = FAILED then
+24:
+S AVE E XECUTION C ONTEXT(A∗ , runtime); return FAILED
+25:
+end if
+26:
+end while
+27: end procedure
+
+30
+Algorithm 4.7 Semantic Dependency-Aware Agent Planning
+Require: User task q, registry A, top-K limit K, planner model L
+Ensure: Valid execution DAG G = (V, E)
+1: if capability index is not initialized then
+2:
+for all ai ∈ A do
+3:
+di ← capability description; ei ← Embed(di ); store (ai , di , ei )
+4:
+end for
+5: end if
+6: eq ← Embed(q); C ← SelectTopKAgents(A, CosineSimilarity(eq , ei ), K)
+7: P ← BuildPlannerPrompt(q,C); R ← LanguageModelGenerateJSON(L, P)
+8: if R contains valid DAG steps then
+9:
+S ← R.steps
+10: else
+11:
+S ← ConvertAgentListToSequentialSteps(R.agents)
+12: end if
+13: S ← RemoveUnknownAgents(S, A)
+14: S ← RemoveAgentsNotInCandidates(S,C)
+15: S ← RemoveDuplicateStepIDs(S); S ← RemoveInvalidDependencies(S)
+16: S ← ValidateAcyclicity(S)
+17: if S contains a cycle then
+18:
+S ← ConvertAgentListToSequentialSteps(R.agents)
+19: end if
+20: G ← BuildGraph(S); M ← GenerateMermaidDiagram(G)
+21: Persist(G, M); EmitPlanningEvent(G, M)
+22: return G
+
+31
+Algorithm 4.8 Dependency-Aware Agent DAG Execution
+Require: Execution DAG G = (V, E) and task state
+Ensure: Results produced by all executed agents
+/
+1: completed ← 0
+2: while completed ̸= V do
+3:
+ready ← 0/
+4:
+for all v ∈ V do
+5:
+if v ∈
+/ completed and Dependencies(v) ⊆ completed then
+6:
+ready ← ready ∪ {v}
+7:
+end if
+8:
+end for
+9:
+if ready = 0/ then
+10:
+raise InvalidPlanCycle
+11:
+end if
+12:
+v ← SchedulerSelect(ready); result ← ExecuteAgent(v.agent)
+13:
+StoreResult(v, result); completed ← completed ∪ {v}
+14: end while
+15: return all results
+
+32
+Algorithm 4.9 Global Priority-Aging Cooperative Agent Scheduler
+Require: Redis ready queue Q, aging factor α, maximum priority Pmax ,
+quantum Tq , resource manager R
+Ensure: Scheduled agent execution
+1: while AgentOS is active do
+2:
+Receive AGENT READY events and insert agents into Q
+3:
+if Q = 0/ then
+4:
+Wait for the next scheduler event; continue
+5:
+end if
+6:
+t ← CurrentTime()
+7:
+for all Ai ∈ Q do
+8:
+Wi ← t − Ai .ready time; Pie f f ← min(Pibase + αWi , Pmax )
+9:
+end for
+10:
+A∗ ← arg maxAi ∈Q Pie f f ; auth ← R. request(A∗ )
+11:
+if auth = DENIED then
+12:
+if denial is temporary then
+13:
+Mark A∗ WAITING and reinsert into Q
+14:
+else
+15:
+Mark A∗ FAILED and publish AGENT FAILED
+16:
+end if
+17:
+continue
+18:
+end if
+19:
+Remove A∗ from Q; mark RUNNING; publish AGENT RUNNING
+20:
+r ← Dispatch(A∗ , Tq )
+21:
+if r = COMPLETED then
+22:
+Mark COMPLETED; publish AGENT COMPLETED
+23:
+else if r = WAITING then
+24:
+Mark WAITING
+25:
+else if r = PREEMPTED then
+26:
+Mark READY, update ready time, reinsert into Q, publish
+AGENT PREEMPTED
+27:
+else
+28:
+Mark FAILED; publish AGENT FAILED
+29:
+end if
+30:
+ReleaseResources(A∗ ); RecordMetrics(A∗ , r)
+31: end while
+
+33
+
+CHAPTER 5
+RESULTS AND PERFORMANCE ANALYSIS
+
+This chapter reports the planner’s model-backed tool-selection
+evaluation.
+
+The experiment evaluates whether the model can select the
+
+registered AgentOS agent functions needed to execute a task. It is deliberately
+distinguished from the official Berkeley Function Calling Leaderboard (BFCL):
+the benchmark cases, tool catalogue, and expected agent mappings are
+AgentOS-specific.
+
+The evaluation is therefore reported as an AgentOS
+
+tool-selection adapter study rather than as a BFCL leaderboard score.
+
+5.1
+
+EXPERIMENTAL CONFIGURATION
+
+The evaluation used the AgentOS function catalogue generated
+from the registered agent registry. Each registered agent was exposed as an
+OpenAI-compatible function with a task argument and an optional context
+argument. The model endpoint was Groq using openai/gpt-oss-120b. The
+same catalogue and system prompt were used for every trial. Because every
+task in this dataset required at least one registered agent, the request used
+required tool-call mode. A 25-second inter-request delay was applied to avoid
+token-per-minute throttling.
+The 50-trial evaluation covered nine task categories: date and
+time, system information, weather, research, code execution, email delivery,
+multi-agent coordination, financial calculation, and document workflow.
+Category sample sizes ranged from five to six trials.
+
+The evaluation is
+
+intended as a reliability-oriented project benchmark rather than as a statistically
+representative estimate of general function-calling ability.
+
+34
+5.2
+
+EVALUATION MEASURES
+
+Exact tool-set accuracy is the fraction of trials for which the selected
+agent functions exactly matched the expected set. Required-tool recall is the
+fraction of trials in which every expected function was selected. The end-to-end
+measures count a failed model tool call as an incorrect outcome. Provider
+errors and model tool-call failures are recorded separately so that infrastructure
+problems are not confused with routing errors.
+
+5.3
+
+RESULTS
+
+Table 5.1 summarises the 50-trial run. Thirty-eight trials produced
+the expected tool set, while twelve trials failed at the tool-call stage. No provider
+errors were recorded. The aggregate latency, computed from the category-level
+means weighted by their trial counts, was 1003.36 ms.
+Table 5.1: AgentOS tool-selection adapter results
+Measure
+Total trials
+Successful API trials
+Correct tool sets
+End-to-end exact tool-set accuracy
+End-to-end required-tool recall
+Model tool-call failures
+Provider or transport errors
+Weighted mean latency
+
+Result
+50
+50
+38/50 (76.0%)
+38/50 (76.0%)
+38/50 (76.0%)
+12 (24.0%)
+0
+1003.36 ms
+
+35
+
+Figure 5.1: Overall outcomes and per-category end-to-end accuracy for the
+AgentOS tool-selection adapter.
+
+The category results indicate strong performance in code execution,
+with 100% exact-match accuracy, followed by date and time, weather, system
+information, and financial calculation at 83.3% each. Research achieved 80.0%.
+Email delivery and document workflow achieved 60.0% each, while multi-agent
+coordination was the weakest category at 40.0%. The same categories also
+exhibited comparatively high latency, with multi-agent coordination averaging
+1338 ms and research and document workflow averaging 1287 ms and 1272
+ms, respectively. These results suggest that the principal limitation is tool-call
+compliance and routing complexity rather than provider availability.
+
+The
+
+required-call setting made these failures explicit instead of allowing a prose
+response to be counted as a successful request.
+
+5.3.1
+
+Rule-based baseline comparison
+
+To contextualise the model-backed result, a deterministic rule-based
+keyword baseline was evaluated on the same 50 trials. The baseline applies
+transparent ordered rules that map task terms such as “weather”, “research”,
+“email”, “Python”, “loan”, and “document summary” to the corresponding
+
+36
+AgentOS tool set. It performs no model inference, provider request, retrieval,
+or external tool call. The comparison is shown in Table 5.2.
+Table 5.2: Comparison between the model-backed planner and the
+deterministic keyword baseline
+System
+
+Exact-match accuracy Required-tool recall
+
+Deterministic keyword baseline
+Model-backed AgentOS planner
+
+50/50 (100.0%)
+38/50 (76.0%)
+
+50/50 (100.0%)
+38/50 (76.0%)
+
+The baseline exceeds the model-backed planner by 24 percentage
+points on both measures. This result should not be interpreted as evidence that
+keyword routing is generally superior to model-based planning. The baseline
+rules were designed for a small, hand-authored dataset whose vocabulary and
+expected mappings are known in advance; consequently, the result primarily
+demonstrates that the current benchmark is sufficiently regular for deterministic
+routing. It also identifies a practical engineering opportunity: explicit intent
+detection and deterministic safeguards could handle high-confidence requests,
+while the model is reserved for paraphrased, ambiguous, or genuinely multi-step
+tasks. Future experiments should evaluate both systems on a separately held-out
+paraphrase set to measure generalisation and reduce the risk of rule overfitting.
+
+5.4
+
+INTERPRETATION AND LIMITATIONS
+
+The 76.0% end-to-end result should be interpreted as a preliminary
+AgentOS routing measurement. It is not an official BFCL score, because
+the evaluation uses the AgentOS registry, a project-specific task set, and
+AgentOS-specific expected tool mappings. The aggregate score includes all 50
+trials and therefore incorporates the 12 tool-call failures. The more informative
+system-level result is consequently 38 correct outcomes out of 50 total trials,
+together with a 24.0% tool-call failure rate and zero provider errors.
+
+37
+The next evaluation increment should expand the task set with
+paraphrased email, document, research, financial, and multi-agent cases,
+repeat every category equally, and compare required-call mode with automatic
+tool-choice mode. The keyword baseline should be frozen before evaluating
+a new held-out set.
+
+Error analysis should distinguish missing tool calls
+
+from incorrect tool selection and should report confidence intervals once the
+sample size is increased. A small official BFCL pilot may be added later as
+an external model-level comparison, but it should remain separate from this
+AgentOS-specific result.
+
+38
+
+CHAPTER 6
+EVALUATION FRAMEWORK AND METRICS
+
+This appendix defines the metrics used to evaluate AgentOS
+and reports the controlled scheduler benchmark completed for this phase.
+The metrics specify how planning quality, execution reliability, scheduling
+behaviour, resource control, context paging, event delivery, and user-facing
+observability are measured. Experimental values are reported only for the
+scheduler workload benchmark; the remaining metrics remain a measurement
+protocol for future experiments.
+
+6.1
+
+EVALUATION NOTATION
+
+Let N be the number of evaluated tasks, S the number of planned
+steps, and E the number of emitted events. For each task, the expected result,
+required agents, dependency relationships, and final status must be recorded
+before execution. A task is counted as successful only when its required output
+is produced and all mandatory steps complete without an unrecovered error.
+
+6.2
+
+PLANNING QUALITY METRICS
+
+Table 6.1 defines the planning-quality measures used to assess agent
+selection, plan validity, and dependency correctness.
+
+39
+Table 6.1: Metrics for evaluating planner quality
+Metric
+
+Definition and formula
+
+Agent-selection
+accuracy
+Agent precision
+Agent recall
+Agent F1-score
+
+Fraction of tasks for which the planner selects the
+agent set
+complete required agent set: tasks with correct
+.
+N
+TP
+Fraction of selected agents that are relevant: T P+FP .
+TP
+Fraction of required agents that are selected: T P+FN
+.
+Harmonic mean of selection precision and recall:
+PR
+.
+F1 = 2 P+R
+Fraction of generated plans that pass schema,
+agent-identifier, dependency, and cycle validation:
+valid plans
+generated plans .
+Fraction of dependency relations that match the
+correct dependency edges
+expected relations: expected
+dependency edges .
+Fraction of tasks executed using semantic fallback:
+fallback tasks
+.
+N
+
+Plan validity rate
+
+Dependency
+correctness
+Fallback rate
+
+For benchmark tasks with more than one acceptable plan,
+agent-selection accuracy should use set-based comparison and dependency
+correctness should use the union of all accepted dependency graphs.
+
+40
+6.3
+
+EXECUTION RELIABILITY METRICS
+
+Table 6.2 defines the reliability measures used to assess task
+completion, failures, retries, recovery, ordering, and latency.
+Table 6.2: Metrics for execution reliability
+Metric
+
+Definition and formula
+
+Task success rate
+Step success rate
+Failure rate
+
+tasks completed with the expected result
+.
+N
+successfully completed steps
+.
+dispatched steps
+tasks ending in FAILED
+, reported separately from
+N
+
+Retry rate
+Recovery correctness
+Dependency-order
+violation rate
+End-to-end task
+latency
+
+6.4
+
+temporary WAITING or BLOCKED states.
+steps executed more than once
+.
+dispatched steps
+interrupted steps safely requeued without duplicate completion
+.
+interrupted steps requiring recovery
+steps started before all prerequisites completed
+. The desired
+started steps
+
+value is zero.
+Tcomplete − Tcreated , reported using mean, median,
+and percentile values such as P95 .
+
+SCHEDULER AND RESOURCE METRICS
+
+Table 6.3 defines the scheduler and resource measures used to
+assess waiting time, fairness, concurrency, denial handling, and token-budget
+compliance.
+
+41
+Table 6.3: Metrics for scheduling and resource admission
+Metric
+
+Definition and formula
+
+Mean queue waiting
+time
+Scheduling response
+time
+Starvation rate
+
+1 S
+S ∑i=1 (Tstart,i − Tready,i ).
+
+Fairness across tasks
+
+Tdispatch − Tready for each admitted step.
+ready steps exceeding the starvation threshold
+.
+ready steps
+(∑i xi )2
+Jain’s fairness index: J = n ∑ x2 , where xi is the
+i i
+
+service received by task i.
+Concurrency-limit
+violations
+Temporary-denial
+handling rate
+Token-budget
+compliance
+Token utilisation
+
+dispatches exceeding global or per-task limits
+. The desired
+dispatches
+
+value is zero.
+temporarily denied jobs correctly waiting and requeued
+.
+temporary denials
+tasks whose admitted estimate remains within budget
+.
+N
+consumed or reported tokens
+configured token budget , reported separately for
+
+estimated and provider-reported usage.
+
+6.5
+
+SCHEDULER WORKLOAD BENCHMARK
+
+The scheduler benchmark compares the implemented priority-aging
+policy with an admission-aware first-in-first-out (FIFO) baseline.
+
+Both
+
+policies receive the same seeded workload sequence, service-time range,
+task distribution, and priority values.
+
+The comparison therefore isolates
+
+queue-selection policy rather than changing the offered workload.
+
+The
+
+benchmark uses two profiles: steady-state execution with four global slots and
+queue contention with two global slots. Each policy and profile was repeated
+ten times, producing 40 trials in total. Persistence adapters were stubbed,
+so the measurements capture in-process scheduling and asynchronous runner
+behaviour rather than Redis or MongoDB network overhead.
+Table 6.4 reports the principal aggregate measurements. Throughput
+
+42
+is calculated over completed jobs.
+
+Queue-wait and end-to-end values are
+
+reported at the 95th percentile across jobs within each trial and then averaged
+across the ten repetitions.
+Table 6.4: Priority-aging scheduler versus FIFO baseline
+
+Workload
+
+Policy
+
+Steady state
+Steady state
+Queue contention
+Queue contention
+
+Priority aging
+FIFO
+Priority aging
+FIFO
+
+Throughput
+(jobs/s)
+
+Queue
+P95 (ms)
+
+High-priority queue
+P95 (ms)
+
+End-to-end
+P95 (ms)
+
+254.27
+258.00
+85.92
+85.84
+
+218.06
+214.48
+511.92
+508.35
+
+65.18
+206.00
+101.41
+459.55
+
+233.44
+229.96
+537.25
+536.64
+
+Figure 6.1: Measured scheduler throughput under steady-state and
+queue-contention workloads
+
+43
+
+Figure 6.2: High- and low-priority queue-wait P95 under priority aging and
+FIFO
+
+The results show a clear policy trade-off. Priority aging reduced
+high-priority queue-wait P95 by 140.82 ms in the steady-state profile and
+by 358.14 ms under queue contention, corresponding to reductions of
+approximately 68% and 78% relative to FIFO. Aggregate throughput remained
+effectively unchanged under contention (+0.10% for priority aging) and
+decreased by 1.45% in the steady-state profile. Overall queue-wait P95 increased
+by approximately 3.6 ms in both profiles because the policy deliberately
+allows lower-priority jobs to wait longer in order to protect urgent work. No
+concurrency-limit violations or cross-task completion imbalance were observed
+in the recorded trials.
+These results should be interpreted as a controlled same-host
+comparison, not as a production capacity claim.
+
+The workload uses
+
+deterministic synthetic service times and stubbed persistence; a future
+evaluation should replay anonymised production arrival traces and
+include persistence and provider latency.
+
+The raw trial records and
+
+reproducible benchmark command are retained in the repository under
+
+44
+evaluations/agent scheduler/results/benchmark trials.jsonl
+
+and
+
+evaluations/agent scheduler/scripts/run benchmark.py.
+
+6.6
+
+CONTEXT PAGING AND RETRIEVAL METRICS
+
+The context-paging experiment should compare a bounded-context
+run with a run in which the complete conversation is available.
+
+paged out
+• Page-out rate = messages
+messages received .
+
+• Page-in precision@k = relevant pages amongk top-k retrieved pages .
+pages retrieved
+• Page-in recall = relevant
+relevant pages required .
+
+• Context-retrieval mean similarity = m1 ∑mj=1 s j , where s j = 1 − d j and
+d j is the ChromaDB cosine distance.
+tokens with paging
+• Context token reduction = 1 − active-context
+.
+full-context tokens
+
+• Paging latency = Tpage-in − Tquery .
+
+6.7
+
+EVENT AND OBSERVABILITY METRICS
+
+Redis and WebSocket behaviour will be evaluated by correlating
+the event identifier and execution identifier in Redis, MongoDB, the backend
+stream, and the frontend activity log.
+
+intended consumer
+.
+• Event delivery rate = events received by the
+E
+
+• Event loss rate = 1 − event delivery rate.
+records
+• Event duplication rate = duplicate event
+.
+E
+
+45
+transitions observed in valid order
+• Event ordering accuracy = lifecycleobserved
+.
+lifecycle transitions
+
+• WebSocket propagation latency = T f rontend receives − Tkernel publishes .
+• Observability completeness = events containingEall required fields .
+
+The required event fields are task identifier, step identifier, agent name,
+execution identifier, status, timestamp, priority, effective priority, queue wait,
+and attempt number.
+
+6.8
+
+CODE RUNNER SAFETY METRICS
+
+terminated within the policy window
+.
+• Timeout enforcement rate = timed-out processestimed-out
+processes
+stdout and stderr
+• Output-capture completeness = runs with correctly captured
+.
+runs
+scripts repaired within the retry limit
+• Self-healing repair success = failed failed
+.
+scripts eligible for repair
+after the maximum retries
+.
+• Retry exhaustion rate = scripts still failing
+failed scripts
+
+• Working-directory escape count: number of executions writing
+outside the configured working directory. The desired value is zero.
+
+6.9
+
+REPORTING PROTOCOL
+
+The evaluation shall use a fixed task set and a documented procedure
+for every configuration.
+
+1. Define and repeat the test. Record the prompts, expected outputs,
+required agents, dependency relations, configuration, number of
+
+46
+tasks, and number of independent repetitions. Keep the planner
+model, candidate limit, context window, scheduler limits, resource
+limits, and retry policy fixed within a comparison.
+2. Record raw evidence. Store the task identifier, prompt, expected
+result, candidates, generated plan, validation result, lifecycle events,
+attempts, timestamps, resource decisions, token metadata, and final
+status. Retain raw events so metrics can be recomputed.
+3. Compute task-level outcomes. Mark a trial as successful only when
+the expected result is produced and all mandatory steps complete.
+Record whether the trial failed, waited, was retried, used fallback
+planning, violated dependency order, or exceeded a resource limit.
+4. Aggregate and report. Report accuracy, success, failure, retry,
+fallback, and violation measures as percentages. For latency, queue
+waiting time, token usage, and other continuous measurements,
+report the mean, median, standard deviation, and 95th percentile
+(P95 ), together with the number of trials and tasks.
+For a rate, use the pooled value 100 × (∑ numerator/ ∑ denominator)
+and state how missing or timed-out observations were handled. A
+zero denominator must be reported as not applicable, not as zero.
+5. Document annotations and usage. Explain labels for expected
+agents or relevant context pages, including the annotation procedure
+and number of labelled tasks. Distinguish provider-reported token
+usage from estimated admission usage.
+
+Each configuration summary should therefore include task and
+repetition counts, success or accuracy rate, failure and retry rates, latency
+statistics, and relevant scheduler, resource, context-paging, and token-usage
+measures. No experimental values are reported in this appendix.
+
+47
+
+CHAPTER 7
+CONCLUSION
+
+This project presented AgentOS, a modular runtime for multi-agent
+applications in which planning, semantic agent selection, DAG execution,
+context management, scheduling, resource admission, sandboxed code
+execution, and frontend observability are treated as shared system services. The
+implemented system connects the Next.js interface, FastAPI gateway, Python
+kernel, planner, Redis event path, MongoDB task history, ChromaDB retrieval,
+scheduler, resource manager, agent runtime, and frontend activity interface into
+one observable execution pipeline.
+The implementation demonstrates that operating-system-inspired
+services can be composed around heterogeneous agents without placing
+scheduling, memory, execution, and observability logic inside each individual
+agent.
+
+Structured plans and dependency validation provide predictable
+
+execution order; semantic context paging reduces the prompt context presented
+to the model; priority aging and resource admission coordinate runnable work;
+and bounded subprocess execution provides a controlled path for coding and
+testing tasks. The frontend activity stream makes these decisions visible to the
+user.
+The current implementation also has defined limitations. Scheduler
+dispatch is cooperative, provider token usage may be unavailable when metadata
+is omitted, and restart recovery detects interrupted work without restoring every
+active coroutine. Evaluation results should therefore be interpreted together with
+their dataset scope, provider conditions, and telemetry coverage rather than as
+universal claims of system performance.
+
+48
+Future work will focus on durable restart resumption, true
+checkpoints inside long-running agents, complete capability enforcement,
+a hybrid local/cloud model router, cost-aware scheduling, production-trace
+scheduler evaluation, stronger external function-calling evaluation, and
+additional autonomous event triggers.
+
+These extensions can be added
+
+without changing the central separation between planner, scheduler, runtime,
+persistence, and observability layers.
+
+49
+
+CHAPTER 8
+AGENT CATALOGUE AND INTERNAL
+WORKFLOWS
+
+This
+
+appendix
+
+documents
+
+server/kernel/Agents/agents/.
+
+the
+
+agent
+
+implementations
+
+in
+
+The diagrams describe the internal
+
+responsibility of each agent and its actual tool or model interaction. The
+planner, scheduler, global execution state, and frontend are intentionally not
+shown here because they are documented in the system-design chapter.
+Agent
+
+Implemented responsibility
+
+A1
+A2
+A3
+A4
+
+System information and resource inspection.
+Date, time, and timezone queries.
+Factual and academic research with sources.
+File and document operations with deletion
+confirmation.
+Text drafting, rewriting, and formatting.
+Email dispatch and delivery.
+Current weather and forecast retrieval.
+EMI and amortisation calculation.
+Cryptocurrency trade PnL and ROI reporting.
+Python generation, execution, capture, and repair.
+Creation and registration of new specialised agents.
+
+Content Creator
+Email
+Weather
+Loan EMI
+Crypto PnL
+Code Runner
+Agent Creator
+
+Figure 8.1: AgentOS agent catalogue
+
+50
+8.1
+
+Agent A1: System Information Agent
+
+The A1 implementation creates a LangChain agent with the single
+registered tool get system info. The tool reports the operating-system name
+and release, machine architecture, and processor descriptor using Python’s
+platform module. The agent therefore provides a compact host identity report;
+process enumeration and detailed resource monitoring are not implemented by
+the current tool.
+System
+information request
+
+Invoke
+get system info
+
+Operating system
+and release
+
+Machine architecture
+
+Processor descriptor
+
+Assemble system
+information report
+
+Figure 8.2: A1 system-information logic
+
+51
+8.2
+
+Agent A2: Date and Time Agent
+
+The A2 implementation creates a LangChain agent with get time.
+The tool returns the host’s current datetime.now() value as a formatted string.
+It does not currently accept an explicit timezone or location, so its answer
+represents the runtime host clock.
+Date or time request
+
+Invoke get time
+
+Runtime host clock
+datetime.now()
+
+Figure 8.3: A2 date-and-time logic
+
+Return formatted
+date/time string
+
+52
+8.3
+
+Agent A3: Research Agent
+
+The A3 implementation uses two tools: wikipedia search calls the
+Wikipedia search and summary APIs and returns article titles, extracts, and
+URLs; trusted web search restricts search results to configured academic
+and scientific domains, validates result URLs, removes duplicates, and returns
+source snippets. The agent prompt requires concise evidence and prohibits
+fabricated citations or URLs.
+Research question
+
+Wikipedia API search
+and article summary
+
+Titles, extracts,
+and URLs
+
+Validate domains,
+remove duplicate
+URLs, and
+select evidence
+
+Trusted-domain
+web search
+
+Filtered academic
+source snippets
+
+Concise factual
+answer with sources
+
+Figure 8.4: A3 research and source-verification logic
+
+53
+8.4
+
+Agent A4: File and Document Agent
+
+The A4 implementation exposes file discovery, bounded document
+reading, TXT/DOCX creation, append and exact replacement, folder creation,
+rename, move, metadata, directory listing, document comparison, and
+heuristic classification.
+
+PDF and DOCX readers are supported through
+
+pypdf and python-docx.
+
+There is deliberately no direct delete tool:
+
+request delete confirmation records a fingerprint in Redis, publishes a
+frontend confirmation event, and uses a 300-second expiry before the backend
+performs or cancels the operation.
+File or document
+request
+
+Deletion requested?
+no
+Search, read,
+create, modify,
+compare, classify,
+or manage path
+
+Return file
+operation result
+
+yes
+Resolve path
+and compute
+object fingerprint
+
+Create Redis
+confirmation record and
+emit confirmation event
+
+Wait for backend
+decision: deleted,
+cancelled, failed,
+or expired
+
+Figure 8.5: A4 file-operation and deletion-confirmation logic
+
+54
+8.5
+
+Content Creator Agent
+
+The Content Creator implementation creates a tool-free LangChain
+agent. It loads the current user name and email for sender context, selects
+the requested genre, and drafts, rewrites, summarises, or formats text. It is
+intentionally not an email-delivery component and must not send messages or
+emit unresolved placeholders.
+Content request
+
+Requested genre?
+
+Email, report, message,
+article, summary,
+or documentation
+
+Explicit user
+format and tone
+Draft, rewrite,
+structure, and
+remove placeholders
+
+Return completed
+text only
+
+Figure 8.6: Content Creator drafting logic
+
+55
+8.6
+
+Email Agent
+
+The Email Agent uses send email. The tool reads SMTP host, port,
+username, password, TLS, and sender settings from the environment. It sends
+through SMTP when credentials are available; otherwise it returns an explicit
+simulation-mode response and does not send network mail. The agent extracts
+the recipient, subject, and body, removes unresolved placeholders, and returns
+the tool’s delivery status.
+Email task and
+previous draft
+
+Extract recipient,
+subject, and body
+
+Remove unresolved
+placeholders
+
+SMTP credentials available?
+yes
+
+no
+Return safe
+simulation notice
+
+Send through SMTP
+
+Return delivery status
+
+Figure 8.7: Email delivery and simulation-mode logic
+
+56
+8.7
+
+Weather Agent
+
+The
+
+Weather
+
+Agent
+
+uses
+
+Open-Meteo
+
+get current weather and get weather forecast.
+
+through
+
+Each operation
+
+geocodes the city first, then requests current or daily forecast data, maps
+WMO weather codes to readable conditions, and reports Celsius/Fahrenheit
+temperatures, humidity, wind, and precipitation. Forecast length is bounded to
+one through seven days.
+Weather request
+and city
+
+Geocode city
+with Open-Meteo
+
+Current conditions or forecast?
+current
+
+forecast
+
+Current temperature,
+feels-like, humidity,
+wind, precipitation
+
+Daily high, low,
+weather code,
+and precipitation
+Map WMO
+codes and format
+Celsius/Fahrenheit
+report
+
+Figure 8.8: Weather retrieval and reporting logic
+
+57
+8.8
+
+Loan EMI Calculator Agent
+
+The Loan EMI Agent uses compute emi and schedule. It converts
+the annual percentage rate to a monthly rate, computes the fixed-payment EMI,
+derives total payment and interest, and produces a monthly schedule for short
+tenures or an annual amortisation breakdown for longer tenures.
+Principal, annual
+rate, and tenure
+
+Convert annual rate
+to monthly rate and
+compute fixed EMI
+
+Compute total payment
+and total interest
+
+Tenure at most 12 months?
+yes
+
+no
+Annual amortisation
+breakdown
+
+Monthly
+amortisation table
+Return calculation
+summary and schedule
+
+Figure 8.9: Loan EMI and amortisation logic
+
+58
+8.9
+
+Crypto PnL Agent
+
+The Crypto PnL Agent uses calculate crypto pnl. It calculates
+buy and sell notional values, applies the fee percentage to both sides, derives net
+profit, and computes ROI relative to total purchase outflow.
+Quantity, buy price,
+sell price, and fee rate
+
+Buy notional plus
+purchase fee
+
+Net profit = net
+proceeds minus
+total outflow
+
+Sell notional
+minus sale fee
+
+ROI = net profit
+divided by total outflow
+
+Return PnL
+and ROI report
+
+Figure 8.10: Cryptocurrency PnL and ROI logic
+
+59
+8.10
+
+Code Runner Agent
+
+The Code Runner Agent uses build run python code tool. It
+limits source code to 20,000 characters, executes Python with isolated mode
+and a sanitised environment, bounds runtime to ten seconds, captures at most
+64,000 output characters, publishes terminal events, and limits concurrent runs
+to two. The agent repairs failures for at most three attempts.
+Coding or
+testing request
+
+Generate standalone
+Python script
+
+Run isolated
+Python subprocess
+
+Exit code zero?
+yes
+Return stdout
+and duration
+
+no
+
+Fewer than three attempts?
+no
+yes
+Return failure report
+Repair script
+using traceback
+
+Figure 8.11: Code generation, sandbox execution, and repair logic
+
+60
+8.11
+
+Agent Creator
+
+The Agent Creator implementation is responsible for unsupported
+capabilities. save tool file parses generated source with the Python AST
+before writing and registering it. create and register agent generates the
+agent module, updates the agent registry and planner constants, validates the
+changes, and rolls them back on failure. run generated agent then loads and
+executes the new agent. The implementation is present in the source directory
+but is commented out of the default registry.
+Unsupported
+specialised capability
+
+Generate tool source,
+AST-validate,
+save, and register
+
+Generate agent source
+and update registries
+
+Registration succeeds?
+yes
+
+no
+Restore registry
+and agent files
+
+Load and execute
+generated agent
+Return
+generated-agent result
+
+Figure 8.12: Dynamic agent creation and registration logic
+
+REFERENCES
+
+61
+
+[1] K. Mei, X. Zhu, W. Xu, W. Hua, M. Jin, Z. Li, S. Xu, R. Ye, Y. Ge, and Y. Zhang, “AIOS:
+LLM Agent Operating System,” arXiv:2403.16971, 2024.
+[2] L. Wang, C. Ma, X. Feng, Z. Zhang, H. Yang, J.-S. Zhang, Z. Chen, J. Tang, X. Chen,
+Y. Lin, W. X. Zhao, Z. Wei, and J.-R. Wen, “A Survey on Large Language Model
+Based Autonomous Agents,” Frontiers of Computer Science, vol. 18, no. 6, 2024, doi:
+10.1007/s11704-024-40231-1.
+[3] B. Liu, Y. Jiang, X. Zhang, Q. Liu, S. Zhang, J. Biswas, and P. Stone,
+“LLM+P: Empowering Large Language Models With Optimal Planning Proficiency,”
+arXiv:2304.11477, 2023.
+[4] Q. Wu, G. Bansal, J. Zhang, Y. Wu, B. Li, E. Zhu, L. Jiang, X. Zhang, S. Zhang, J. Liu,
+A. H. Awadallah, R. W. White, D. Burger, and C. Wang, “AutoGen: Enabling Next-Gen
+LLM Applications via Multi-Agent Conversation,” arXiv:2308.08155, 2023.
+[5] LangChain, “LangGraph Documentation,” 2026. [Online]. Available:
+langchain-ai.github.io/langgraph/ [Accessed: Oct. 6, 2026].
+
+https : / /
+
+[6] C. Packer, S. Wooders, K. Lin, V. Fang, S. G. Patil, I. Stoica, and J. E. Gonzalez,
+“MemGPT: Towards LLMs as Operating Systems,” arXiv:2310.08560, 2023.
+[7] J. Kang, M. Ji, Z. Zhao, and T. Bai, “Memory OS of AI Agent,” in Proc. 2025
+Conf. Empirical Methods in Natural Language Processing, 2025, pp. 25961–25970, doi:
+10.18653/v1/2025.emnlp-main.1318.
+[8] P. Lewis, E. Perez, A. Piktus, F. Petroni, V. Karpukhin, N. Goyal, H. Küttler, M. Lewis,
+W.-t. Yih, T. Rocktäschel, S. Riedel, and D. Kiela, “Retrieval-Augmented Generation
+for Knowledge-Intensive NLP Tasks,” in Advances in Neural Information Processing
+Systems, vol. 33, 2020.
+[9] Chroma, “Chroma Documentation: Collections and Configuration,” 2026. [Online].
+Available: https://docs.trychroma.com/ [Accessed: Oct. 6, 2026].
+[10] S. Yao, J. Zhao, D. Yu, N. Du, I. Shafran, K. Narasimhan, and Y. Cao, “ReAct:
+Synergizing Reasoning and Acting in Language Models,” in Proc. Int. Conf. Learning
+Representations, 2023.
+[11] T. Schick, J. Dwivedi-Yu, R. Dessı̀, R. Raileanu, M. Lomeli, L. Zettlemoyer, N.
+Cancedda, and T. Scialom, “Toolformer: Language Models Can Teach Themselves to
+Use Tools,” in Advances in Neural Information Processing Systems, vol. 36, 2023.
+[12] J. S. Park, J. C. O’Brien, C. J. Cai, M. R. Morris, P. Liang, and M. S. Bernstein,
+“Generative Agents: Interactive Simulacra of Human Behavior,” in Proc. 36th ACM
+Symp. User Interface Software and Technology, 2023, doi: 10.1145/3586183.3606763.
+[13] N. Shinn, F. Cassano, E. Berman, A. Gopinath, K. Narasimhan, and S. Yao, “Reflexion:
+Language Agents With Verbal Reinforcement Learning,” in Advances in Neural
+Information Processing Systems, vol. 36, 2023.
+[14] A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, L. Kaiser, and I.
+Polosukhin, “Attention Is All You Need,” in Advances in Neural Information Processing
+Systems, vol. 30, 2017.
+
+62
+[15] A. Silberschatz, P. B. Galvin, and G. Gagne, Operating System Concepts, 10th ed.
+Hoboken, NJ, USA: Wiley, 2018.
+[16] Linux Kernel Documentation, “Control Group v2,” 2026. [Online]. Available: https:
+//docs.kernel.org/admin-guide/cgroup-v2.html [Accessed: Oct. 6, 2026].
+[17] LangChain, “LangGraph Persistence and Checkpointing,” 2026. [Online]. Available:
+https : / / langchain - ai . github . io / langgraphjs / concepts / persistence/
+[Accessed: Oct. 6, 2026].
+[18] Temporal Technologies, “Temporal Documentation: Durable Execution,” 2026. [Online].
+Available: https://docs.temporal.io/ [Accessed: Oct. 6, 2026].
+[19] Model Context Protocol, “Model Context Protocol Specification,” 2026. [Online].
+Available: https://modelcontextprotocol.io/specification/ [Accessed: Oct.
+6, 2026].
+[20] OWASP Foundation, “OWASP Top 10 for Large Language Model Applications,” 2025.
+[Online]. Available: https : / / owasp . org / www - project - top - 10 - for - large language-model-applications/ [Accessed: Oct. 6, 2026].
+[21] Amazon Web Services, “Firecracker MicroVM Documentation,” 2026. [Online].
+Available: https://github.com/firecracker-microvm/firecracker [Accessed:
+Oct. 6, 2026].
+[22] Redis Ltd., “Redis Pub/Sub Documentation,” 2026. [Online]. Available: https://
+redis.io/docs/latest/develop/interact/pubsub/ [Accessed: Oct. 6, 2026].
+[23] MongoDB Inc., “MongoDB Documentation,” 2026. [Online]. Available: https://www.
+mongodb.com/docs/ [Accessed: Oct. 6, 2026].
+
+

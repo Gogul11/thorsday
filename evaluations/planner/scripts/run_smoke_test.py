@@ -50,6 +50,10 @@ def retrieve_agent_candidates(task: str) -> tuple[dict[str, Any], ...]:
         "similarity": round(0.9 - index * 0.05, 4),
     } for index, name in enumerate(case["retrieved_candidates"]))
 retriever.retrieve_agent_candidates = retrieve_agent_candidates
+# The planner module imports these production lifecycle hooks even though this
+# offline fixture evaluation deliberately does not build a Chroma index.
+retriever.refresh_agent_index = lambda: None
+retriever.register_agent_in_vector_db = lambda *args, **kwargs: None
 sys.modules["planning.agent_retriever"] = retriever
 
 from graphs.constant import build_planner_context, get_explicit_agent_hints  # noqa: E402
@@ -87,11 +91,18 @@ def run_case(case: dict[str, Any], repetition: int) -> dict[str, Any]:
     expected = case["expected_agents"]
     graph_ids = {step["id"] for step in steps}
     graph_valid = all(set(step["depends_on"]).issubset(graph_ids) for step in steps)
+    expected_dependencies = case.get("expected_dependencies")
+    actual_dependencies = {step["agent"]: step["depends_on"] for step in steps}
+    dependency_match = (
+        expected_dependencies is None
+        or actual_dependencies == expected_dependencies
+    )
     trial = {
         "trial_id": f"planner-{case['case_id']}-{repetition}",
         "case_id": case["case_id"],
         "repetition": repetition,
         "task": task,
+        "category": case.get("category", "baseline_mechanics"),
         "retrieved_candidates": case["retrieved_candidates"],
         "planner_candidates": candidates,
         "expected_hints": case["expected_hints"],
@@ -106,13 +117,15 @@ def run_case(case: dict[str, Any], repetition: int) -> dict[str, Any]:
         "explicit_hint_match": set(hints) == set(case["expected_hints"]),
         "plan_match": selected == expected,
         "plan_graph_valid": graph_valid,
+        "dependency_match": dependency_match,
         "mermaid_rendered": mermaid.startswith("flowchart TD") and all(step["id"] in mermaid for step in steps),
         "prompt_chars": len(prompt),
         "latency_ms": round((time.perf_counter() - started) * 1000, 3),
         "mermaid": mermaid,
     }
     trial["success"] = all(trial[key] for key in (
-        "candidate_coverage", "explicit_hint_match", "plan_match", "plan_graph_valid", "mermaid_rendered"
+        "candidate_coverage", "explicit_hint_match", "plan_match", "plan_graph_valid",
+        "dependency_match", "mermaid_rendered"
     )) and invalid_plan_fallback == bool(case.get("expect_fallback", False))
     return trial
 
@@ -137,7 +150,7 @@ def main() -> None:
     trials_path = RESULTS / "smoke_trials.jsonl"
     summary_path = RESULTS / "smoke_summary.json"
     trials_path.write_text("".join(json.dumps(row, ensure_ascii=False) + "\n" for row in trials), encoding="utf-8")
-    metrics = ("candidate_coverage", "explicit_hint_match", "plan_match", "plan_graph_valid", "mermaid_rendered")
+    metrics = ("candidate_coverage", "explicit_hint_match", "plan_match", "plan_graph_valid", "dependency_match", "mermaid_rendered")
     summary = {
         "evaluation": "planner_smoke", "dataset_id": dataset.get("dataset_id"),
         "trial_count": len(trials), "success_count": sum(row["success"] for row in trials),
@@ -150,6 +163,16 @@ def main() -> None:
             case_id: {"trials": len(rows), "success_rate": sum(row["success"] for row in rows) / len(rows)}
             for case_id in sorted({row["case_id"] for row in trials})
             for rows in [[row for row in trials if row["case_id"] == case_id]]
+        },
+        "categories": {
+            category: {
+                "trials": len(rows),
+                "success_rate": sum(row["success"] for row in rows) / len(rows),
+                "plan_match": sum(row["plan_match"] for row in rows) / len(rows),
+                "dependency_match": sum(row["dependency_match"] for row in rows) / len(rows),
+            }
+            for category in sorted({row["category"] for row in trials})
+            for rows in [[row for row in trials if row["category"] == category]]
         },
         "manifest": {
             "config": str(args.config.resolve().relative_to(ROOT)),

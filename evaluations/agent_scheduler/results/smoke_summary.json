@@ -1,34 +1,44 @@
 {
   "evaluation": "agent_scheduler_smoke",
-  "dataset_id": "agent_scheduler_smoke_v1",
-  "trial_count": 15,
-  "success_count": 12,
-  "success_rate": 0.8,
+  "dataset_id": "agent_scheduler_smoke_v2",
+  "trial_count": 21,
+  "success_count": 21,
+  "success_rate": 1.0,
   "scenarios": {
     "concurrency_and_task_limits": {
       "trials": 3,
       "success_rate": 1.0,
-      "mean_elapsed_ms": 190.129
+      "mean_elapsed_ms": 188.964
     },
     "cooperative_preemption": {
       "trials": 3,
       "success_rate": 1.0,
-      "mean_elapsed_ms": 12.972
+      "mean_elapsed_ms": 0.739
+    },
+    "cumulative_task_token_budget": {
+      "trials": 3,
+      "success_rate": 1.0,
+      "mean_elapsed_ms": 0.561
     },
     "oversized_token_job": {
       "trials": 3,
-      "success_rate": 0.0,
-      "mean_elapsed_ms": 0.734
+      "success_rate": 1.0,
+      "mean_elapsed_ms": 0.433
     },
     "priority_queue_order": {
       "trials": 3,
       "success_rate": 1.0,
-      "mean_elapsed_ms": 47.304
+      "mean_elapsed_ms": 1.379
+    },
+    "quota_retry": {
+      "trials": 3,
+      "success_rate": 1.0,
+      "mean_elapsed_ms": 2013.54
     },
     "runner_failure": {
       "trials": 3,
       "success_rate": 1.0,
-      "mean_elapsed_ms": 1.306
+      "mean_elapsed_ms": 0.544
     }
   },
   "manifest": {

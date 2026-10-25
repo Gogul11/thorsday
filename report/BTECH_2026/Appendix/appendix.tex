@@ -1,7 +1,13 @@
 \chapter{\uppercase{Evaluation Framework and Metrics}}
 \label{app:metrics}
 
-This appendix defines the metrics that will be used to evaluate AgentOS. The metrics specify how planning quality, execution reliability, scheduling behaviour, resource control, context paging, event delivery, and user-facing observability will be measured. No experimental values are reported here; the definitions are intended to support a later controlled evaluation.
+This appendix defines the metrics used to evaluate AgentOS and reports the
+controlled scheduler benchmark completed for this phase. The metrics specify
+how planning quality, execution reliability, scheduling behaviour, resource
+control, context paging, event delivery, and user-facing observability are
+measured. The scheduler workload results are reported in Chapter~\ref{chap5};
+the appendix retains the metric definitions and reporting protocol for
+reproducible future experiments.
 
 \section{\uppercase{Evaluation Notation}}
 Let $N$ be the number of evaluated tasks, $S$ the number of planned steps, and $E$ the number of emitted events. For each task, the expected result, required agents, dependency relationships, and final status must be recorded before execution. A task is counted as successful only when its required output is produced and all mandatory steps complete without an unrecovered error.

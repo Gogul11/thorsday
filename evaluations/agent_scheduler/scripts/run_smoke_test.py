@@ -151,7 +151,52 @@ async def execute_scenario(name: str, settings: dict[str, Any]) -> dict[str, Any
                 error = None
             except RuntimeError as exc:
                 error = str(exc)
-            details.update(error=error, expected_success=error is not None and scheduler.snapshot()["metrics"]["failed"] == 1)
+            snapshot = scheduler.snapshot()
+            details.update(
+                error=error,
+                expected_success=(
+                    error == "Estimated execution exceeds the task token budget"
+                    and snapshot["metrics"]["failed"] == 1
+                    and snapshot["resources"]["active_slots"] == 0
+                ),
+            )
+
+        elif name == "cumulative_task_token_budget":
+            scheduler.resources = scheduler_module.ResourceManager(2, 1, 25)
+            first_runs = 0
+            blocked_runs = 0
+            async def first_step():
+                nonlocal first_runs
+                first_runs += 1
+                return "completed"
+            async def blocked_step():
+                nonlocal blocked_runs
+                blocked_runs += 1
+                return "should not run"
+            first_result = await scheduler.submit(
+                job("budgeted", "step-1", first_step, tokens=15)
+            )
+            try:
+                await scheduler.submit(
+                    job("budgeted", "step-2", blocked_step, tokens=15)
+                )
+                second_error = None
+            except RuntimeError as exc:
+                second_error = str(exc)
+            snapshot = scheduler.snapshot()
+            details.update(
+                first_result=first_result,
+                second_error=second_error,
+                first_runner_invocations=first_runs,
+                blocked_runner_invocations=blocked_runs,
+                expected_success=(
+                    first_result == "completed"
+                    and second_error == "Task token budget reached; no more agent steps can be admitted"
+                    and first_runs == 1
+                    and blocked_runs == 0
+                    and snapshot["metrics"]["failed"] == 1
+                ),
+            )
 
         elif name == "runner_failure":
             async def fails():
@@ -176,6 +221,29 @@ async def execute_scenario(name: str, settings: dict[str, Any]) -> dict[str, Any
             details.update(first_result=returned, runner_attempts=attempts,
                            requeued=scheduler.snapshot()["metrics"]["requeued"],
                            expected_success=attempts == 2 and scheduler.snapshot()["metrics"]["requeued"] == 1)
+
+        elif name == "quota_retry":
+            attempts = 0
+            async def flaky():
+                nonlocal attempts
+                attempts += 1
+                if attempts == 1:
+                    raise RuntimeError("synthetic rate limit")
+                return "recovered"
+            returned = await scheduler.submit(job("quota", "retry", flaky))
+            snapshot = scheduler.snapshot()
+            details.update(
+                result=returned,
+                runner_attempts=attempts,
+                requeued=snapshot["metrics"]["requeued"],
+                expected_success=(
+                    returned == "recovered"
+                    and attempts == 2
+                    and snapshot["metrics"]["requeued"] == 1
+                    and snapshot["metrics"]["failed"] == 0
+                    and snapshot["metrics"]["completed"] == 1
+                ),
+            )
         else:
             raise ValueError(f"Unknown scenario: {name}")
 
@@ -200,6 +268,11 @@ async def run(repetitions: int, cases: list[dict[str, Any]], settings: dict[str,
             trial = await execute_scenario(scenario, settings)
             trial["repetition"] = repetition
             trial["trial_id"] = f"scheduler-{scenario}-{repetition}"
+            trial["case_metadata"] = {
+                key: case[key]
+                for key in ("category", "description", "workload")
+                if key in case
+            }
             trial["expected"] = case["expected"]
             trials.append(trial)
     return trials

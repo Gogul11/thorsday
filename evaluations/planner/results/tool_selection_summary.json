@@ -1,0 +1,56 @@
+{
+  "evaluation": "agentos_tool_selection_adapter_smoke",
+  "dataset_id": "agentos_tool_selection_v1",
+  "trial_count": 15,
+  "successful_api_trials": 11,
+  "exact_tool_set_accuracy": 1.0,
+  "required_tool_recall": 1.0,
+  "provider_errors": 4,
+  "tool_choice": "required",
+  "category_metrics": {
+    "code_execution": {
+      "trial_count": 2,
+      "exact_tool_set_accuracy": 1.0,
+      "required_tool_recall": 1.0,
+      "no_tool_call_rate": 0.0,
+      "mean_latency_ms": 656.73
+    },
+    "date_time": {
+      "trial_count": 2,
+      "exact_tool_set_accuracy": 1.0,
+      "required_tool_recall": 1.0,
+      "no_tool_call_rate": 0.0,
+      "mean_latency_ms": 935.095
+    },
+    "financial_calculation": {
+      "trial_count": 2,
+      "exact_tool_set_accuracy": 1.0,
+      "required_tool_recall": 1.0,
+      "no_tool_call_rate": 0.0,
+      "mean_latency_ms": 840.677
+    },
+    "research": {
+      "trial_count": 1,
+      "exact_tool_set_accuracy": 1.0,
+      "required_tool_recall": 1.0,
+      "no_tool_call_rate": 0.0,
+      "mean_latency_ms": 825.612
+    },
+    "system_information": {
+      "trial_count": 2,
+      "exact_tool_set_accuracy": 1.0,
+      "required_tool_recall": 1.0,
+      "no_tool_call_rate": 0.0,
+      "mean_latency_ms": 436.235
+    },
+    "weather": {
+      "trial_count": 2,
+      "exact_tool_set_accuracy": 1.0,
+      "required_tool_recall": 1.0,
+      "no_tool_call_rate": 0.0,
+      "mean_latency_ms": 584.925
+    }
+  },
+  "model": "openai/gpt-oss-120b",
+  "note": "AgentOS tool-catalog adapter smoke test; not an official BFCL leaderboard score."
+}

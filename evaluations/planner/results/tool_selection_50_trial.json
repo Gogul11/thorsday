@@ -1,0 +1,77 @@
+{
+  "evaluation": "agentos_tool_selection_adapter_smoke",
+  "dataset_id": "agentos_tool_selection_v1",
+  "trial_count": 50,
+  "successful_api_trials": 50,
+  "provider_errors": 0,
+  "tool_call_failures": 12,
+  "tool_choice": "required",
+  "end_to_end_exact_tool_set_accuracy": 0.76,
+  "end_to_end_required_tool_recall": 0.76,
+  "mean_latency_ms": 1003.36,
+  "category_metrics": {
+    "code_execution": {
+      "trial_count": 6,
+      "correct_trials": 6,
+      "tool_call_failures": 0,
+      "end_to_end_exact_tool_set_accuracy": 1.0,
+      "mean_latency_ms": 876.0
+    },
+    "date_time": {
+      "trial_count": 6,
+      "correct_trials": 5,
+      "tool_call_failures": 1,
+      "end_to_end_exact_tool_set_accuracy": 0.8333,
+      "mean_latency_ms": 921.0
+    },
+    "weather": {
+      "trial_count": 6,
+      "correct_trials": 5,
+      "tool_call_failures": 1,
+      "end_to_end_exact_tool_set_accuracy": 0.8333,
+      "mean_latency_ms": 833.0
+    },
+    "system_information": {
+      "trial_count": 6,
+      "correct_trials": 5,
+      "tool_call_failures": 1,
+      "end_to_end_exact_tool_set_accuracy": 0.8333,
+      "mean_latency_ms": 711.0
+    },
+    "financial_calculation": {
+      "trial_count": 6,
+      "correct_trials": 5,
+      "tool_call_failures": 1,
+      "end_to_end_exact_tool_set_accuracy": 0.8333,
+      "mean_latency_ms": 887.0
+    },
+    "research": {
+      "trial_count": 5,
+      "correct_trials": 4,
+      "tool_call_failures": 1,
+      "end_to_end_exact_tool_set_accuracy": 0.8,
+      "mean_latency_ms": 1287.0
+    },
+    "email_delivery": {
+      "trial_count": 5,
+      "correct_trials": 3,
+      "tool_call_failures": 2,
+      "end_to_end_exact_tool_set_accuracy": 0.6,
+      "mean_latency_ms": 1063.0
+    },
+    "document_workflow": {
+      "trial_count": 5,
+      "correct_trials": 3,
+      "tool_call_failures": 2,
+      "end_to_end_exact_tool_set_accuracy": 0.6,
+      "mean_latency_ms": 1272.0
+    },
+    "multi_agent": {
+      "trial_count": 5,
+      "correct_trials": 2,
+      "tool_call_failures": 3,
+      "end_to_end_exact_tool_set_accuracy": 0.4,
+      "mean_latency_ms": 1338.0
+    }
+  }
+}

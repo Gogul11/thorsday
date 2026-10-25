@@ -1,0 +1,16 @@
+{
+  "dataset_id": "agentos_tool_selection_v1",
+  "source": "Hand-authored held-out AgentOS tool-selection tasks",
+  "cases": [
+    {"case_id": "time", "category": "date_time", "task": "What is the current time in Tokyo?", "expected_tools": ["a2"]},
+    {"case_id": "hardware", "category": "system_information", "task": "Show the hardware and operating system information.", "expected_tools": ["a1"]},
+    {"case_id": "weather", "category": "weather", "task": "What will the weather be in Chennai tomorrow?", "expected_tools": ["weather_agent"]},
+    {"case_id": "research", "category": "research", "task": "Research the latest battery recycling methods and summarise the findings.", "expected_tools": ["a3"]},
+    {"case_id": "code", "category": "code_execution", "task": "Write and test a Python program that calculates the factorial of a number.", "expected_tools": ["code_runner"]},
+    {"case_id": "email", "category": "email_delivery", "task": "Send an email to the project team saying the evaluation is complete.", "expected_tools": ["email_agent"]},
+    {"case_id": "research_email", "category": "multi_agent", "task": "Research solar-panel recycling and email me a short summary.", "expected_tools": ["a3", "email_agent"]},
+    {"case_id": "loan", "category": "financial_calculation", "task": "Calculate the monthly EMI for a 1,000,000 loan over five years.", "expected_tools": ["loan_emi_agent"]},
+    {"case_id": "crypto", "category": "financial_calculation", "task": "Calculate the profit and loss for these cryptocurrency trades.", "expected_tools": ["crypto_pnl_agent"]},
+    {"case_id": "document", "category": "document_workflow", "task": "Read the attached document and summarise it in plain language.", "expected_tools": ["a4", "content_creator"]}
+  ]
+}

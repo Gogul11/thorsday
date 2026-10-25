@@ -1,21 +1,38 @@
 {
   "evaluation": "planner_smoke",
-  "dataset_id": "agentos_planner_smoke_v1",
-  "trial_count": 21,
-  "success_count": 21,
-  "success_rate": 1.0,
+  "dataset_id": "agentos_planner_smoke_v3",
+  "trial_count": 51,
+  "success_count": 45,
+  "success_rate": 0.8823529411764706,
   "metrics": {
     "candidate_coverage": 1.0,
-    "explicit_hint_match": 1.0,
+    "explicit_hint_match": 0.8823529411764706,
     "plan_match": 1.0,
     "plan_graph_valid": 1.0,
+    "dependency_match": 1.0,
     "mermaid_rendered": 1.0
   },
-  "invalid_plan_fallback_count": 3,
+  "invalid_plan_fallback_count": 6,
   "explicit_hint_repair_count": 0,
-  "mean_latency_ms": 0.1,
+  "mean_latency_ms": 0.052,
   "cases": {
+    "ambiguous_time_and_weather": {
+      "trials": 3,
+      "success_rate": 1.0
+    },
+    "code_and_email": {
+      "trials": 3,
+      "success_rate": 1.0
+    },
     "cyclic_plan_fallback": {
+      "trials": 3,
+      "success_rate": 1.0
+    },
+    "direct_response_no_agent": {
+      "trials": 3,
+      "success_rate": 1.0
+    },
+    "duplicate_step_filtered": {
       "trials": 3,
       "success_rate": 1.0
     },
@@ -35,13 +52,99 @@
       "trials": 3,
       "success_rate": 1.0
     },
+    "implicit_time_synonym": {
+      "trials": 3,
+      "success_rate": 0.0
+    },
+    "implicit_weather_synonym": {
+      "trials": 3,
+      "success_rate": 0.0
+    },
+    "invalid_dependency_normalized": {
+      "trials": 3,
+      "success_rate": 1.0
+    },
+    "missing_email_candidate": {
+      "trials": 3,
+      "success_rate": 1.0
+    },
     "research_and_email": {
+      "trials": 3,
+      "success_rate": 1.0
+    },
+    "research_and_write": {
       "trials": 3,
       "success_rate": 1.0
     },
     "unknown_agent_filtered": {
       "trials": 3,
       "success_rate": 1.0
+    },
+    "unsupported_capability_creator": {
+      "trials": 3,
+      "success_rate": 1.0
+    }
+  },
+  "categories": {
+    "ambiguous_multi_intent": {
+      "trials": 3,
+      "success_rate": 1.0,
+      "plan_match": 1.0,
+      "dependency_match": 1.0
+    },
+    "baseline_mechanics": {
+      "trials": 21,
+      "success_rate": 1.0,
+      "plan_match": 1.0,
+      "dependency_match": 1.0
+    },
+    "conflicting_capabilities": {
+      "trials": 3,
+      "success_rate": 1.0,
+      "plan_match": 1.0,
+      "dependency_match": 1.0
+    },
+    "fallback_routing": {
+      "trials": 3,
+      "success_rate": 1.0,
+      "plan_match": 1.0,
+      "dependency_match": 1.0
+    },
+    "implicit_intent_gap": {
+      "trials": 6,
+      "success_rate": 0.0,
+      "plan_match": 1.0,
+      "dependency_match": 1.0
+    },
+    "invalid_dependency": {
+      "trials": 3,
+      "success_rate": 1.0,
+      "plan_match": 1.0,
+      "dependency_match": 1.0
+    },
+    "invalid_plan_repair": {
+      "trials": 3,
+      "success_rate": 1.0,
+      "plan_match": 1.0,
+      "dependency_match": 1.0
+    },
+    "missing_candidate_recovery": {
+      "trials": 3,
+      "success_rate": 1.0,
+      "plan_match": 1.0,
+      "dependency_match": 1.0
+    },
+    "multi_agent": {
+      "trials": 3,
+      "success_rate": 1.0,
+      "plan_match": 1.0,
+      "dependency_match": 1.0
+    },
+    "no_agent_required": {
+      "trials": 3,
+      "success_rate": 1.0,
+      "plan_match": 1.0,
+      "dependency_match": 1.0
     }
   },
   "manifest": {

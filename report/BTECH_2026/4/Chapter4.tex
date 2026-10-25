@@ -120,7 +120,7 @@ The code runner creates a scoped temporary script, launches it with \texttt{asyn
 The task activity panel displays lifecycle events, scheduler state, queue position, effective priority, waiting time, attempt number, resource decisions, and token totals when provider metadata is present. The plan graph modal displays the structured graph and Mermaid source. Token fields distinguish input, output, total, and configured budget; when the provider omits usage, the interface reports that the metadata is unavailable rather than inventing a count.
 
 \section{\uppercase{Configuration and Verification}}
-Table~\ref{tab:config} lists the important policy values. Verification for this phase consists of Python compilation, TypeScript type checking, scheduler/resource smoke tests, DAG validation checks, and manual event/graph inspection. No throughput, latency, or model-quality benchmark is claimed because a controlled benchmark dataset and repeated measurement harness are not yet part of the repository.
+Table~\ref{tab:config} lists the important policy values. Verification for this phase consists of Python compilation, TypeScript type checking, scheduler/resource smoke tests, DAG validation checks, the seeded priority-versus-FIFO scheduler workload benchmark reported in Chapter~\ref{chap5}, and manual event/graph inspection. The benchmark is a same-host scheduler comparison with stubbed persistence; it is not a production capacity or model-quality claim.
 \begin{table}[H]
 \centering
 \caption{Selected AgentOS configuration values}

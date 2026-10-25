@@ -14,3 +14,4 @@ uv.lock
 .vscode/
 data/
 
+evaluations\planner\bfcl_env

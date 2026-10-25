@@ -1,0 +1,428 @@
+{
+  "format": "OpenAI-compatible function tools",
+  "source": "server/kernel/Agents/agent_registry.py",
+  "created_on": "2026-10-26",
+  "agent_count": 13,
+  "agent_names": [
+    "projectile_agent",
+    "radio_latency_agent",
+    "crypto_pnl_agent",
+    "loan_emi_agent",
+    "a1",
+    "a2",
+    "a3",
+    "a4",
+    "content_creator",
+    "email_agent",
+    "weather_agent",
+    "agent_creator",
+    "code_runner"
+  ],
+  "catalog_sha256": "32547d74d64dfc49d43b9834724ae400d03ea86e6d856fc1d450db5e17439fee",
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "projectile_agent",
+        "description": "Agent that computes projectile motion metrics (range, peak height, total flight time) and can save a summary to a file.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "task": {
+              "type": "string",
+              "description": "The complete user subtask to execute."
+            },
+            "context": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Relevant results or context from earlier steps."
+            }
+          },
+          "required": [
+            "task"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "radio_latency_agent",
+        "description": "Calculates round‑trip radio signal travel time between two celestial bodies given their separation distance in kilometers.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "task": {
+              "type": "string",
+              "description": "The complete user subtask to execute."
+            },
+            "context": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Relevant results or context from earlier steps."
+            }
+          },
+          "required": [
+            "task"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "crypto_pnl_agent",
+        "description": "An agent that calculates net profit and ROI for cryptocurrency trades, formats an investment report, and saves it to a specified file path.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "task": {
+              "type": "string",
+              "description": "The complete user subtask to execute."
+            },
+            "context": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Relevant results or context from earlier steps."
+            }
+          },
+          "required": [
+            "task"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "loan_emi_agent",
+        "description": "Calculates loan EMI and provides amortization schedule as plain text.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "task": {
+              "type": "string",
+              "description": "The complete user subtask to execute."
+            },
+            "context": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Relevant results or context from earlier steps."
+            }
+          },
+          "required": [
+            "task"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "a1",
+        "description": "A1 is responsible for gathering information about the system\nand analyzing the current system state.\n\nA1 should:\n- Gather information about the system\n- Inspect system resources and configuration\n- Check running processes and services\n- Check system status and environment\n- Retrieve hardware and software information\n- Analyze system-level information\n- Report relevant system information clearly\n\nA1 should use its available system tools whenever\nadditional information about the system is required.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "task": {
+              "type": "string",
+              "description": "The complete user subtask to execute."
+            },
+            "context": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Relevant results or context from earlier steps."
+            }
+          },
+          "required": [
+            "task"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "a2",
+        "description": "A2 is responsible for handling date and time related queries.\n\nUse A2 when the task requires:\n- Getting the current date\n- Getting the current time\n- Getting the current date and time\n- Determining the day of the week\n- Answering questions about dates or times\n- Providing date and time information for a specified location or timezone\n\nA2 should use its available date and time tools whenever\naccurate or current date/time information is required.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "task": {
+              "type": "string",
+              "description": "The complete user subtask to execute."
+            },
+            "context": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Relevant results or context from earlier steps."
+            }
+          },
+          "required": [
+            "task"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "a3",
+        "description": "A3 is a specialized Research Agent responsible for gathering factual,\nacademic, scientific, and verified information.\n\nUse A3 when the task requires:\n- Academic, scientific, or technical literature research\n- Finding verified facts, historical records, and encyclopedic data\n- Searching Wikipedia for concepts, biographies, definitions, and overviews\n- Searching trusted academic repositories and peer-reviewed journals\n  (e.g., arXiv, Nature, ScienceDirect, IEEE, Springer, NIH, ACM)\n- Fact-checking claims and summarizing verified sources with citations\n\nA3 should strictly gather and report factual information using its provided\nresearch tools (Wikipedia Search and Trusted Web Search). It must never\nfabricate information, citations, or URLs.\n\nA3 handles research, source discovery, fact-checking, academic or scientific\nevidence, and sourced factual findings. It does not perform calculations,\nconversions, code generation, file operations, writing, or other tasks that do\nnot require research.\n\nJudge the request by its meaning, not by individual keywords. If the requested\nwork is outside A3's research responsibility, do not attempt to answer it or\ncall a research tool. State briefly that A3 handles sourced research only.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "task": {
+              "type": "string",
+              "description": "The complete user subtask to execute."
+            },
+            "context": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Relevant results or context from earlier steps."
+            }
+          },
+          "required": [
+            "task"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "a4",
+        "description": "A4 is the File & Document Agent.\n\nA4 manages files and documents on the user's local computer.\n\nUse A4 when the user asks to:\n\n- Search for files by name, type, location, or keyword.\n- Find documents across directories.\n- Read TXT, Markdown, CSV, JSON, PDF, DOCX and other supported files.\n- Read relevant sections of documents.\n- Create text, Markdown, JSON, CSV and DOCX documents.\n- Modify existing text-based files.\n- Append information to files.\n- Rename files and folders.\n- Move files and folders.\n- Create directories.\n- List directory contents.\n- Delete files or directories.\n- Compare two documents.\n- Extract information from documents.\n- Summarize documents.\n- Classify documents.\n- Retrieve file metadata.\n\nIMPORTANT DELETION RULE:\n\nA4 must NEVER directly delete a file or directory.\n\nWhen the user requests deletion:\n\n1. Verify the requested path using the available tools.\n2. Call request_delete_confirmation.\n3. Tell the system that confirmation is required.\n4. Wait for the user's Delete/Cancel decision.\n5. Never claim deletion before the confirmation result says deleted.\n6. Never invent or fabricate a confirmation.\n7. Never use a frontend-supplied path for deletion.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "task": {
+              "type": "string",
+              "description": "The complete user subtask to execute."
+            },
+            "context": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Relevant results or context from earlier steps."
+            }
+          },
+          "required": [
+            "task"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "content_creator",
+        "description": "Content Creator is a text drafting, writing, and formatting agent ONLY.\n\n    Its responsibility is to create, draft, rewrite, refine, summarize, format,\n    and structure written content based on the user's instruction.\n\n    It drafts content such as:\n    - Email drafts and subjects\n    - Messages and chat replies\n    - Announcements\n    - Reports and memos\n    - Documentation and summaries\n    - Articles and blog posts\n    - Social media posts\n    - LinkedIn posts\n    - Meeting notes\n    - Proposals\n    - Statements\n    - Presentations or slide content\n    - Marketing copy\n    - Technical explanations\n    - Instructions and guides\n    - Bullet-point content\n    - Markdown documents\n    - Other text-based content\n\n    IMPORTANT:\n    - Content Creator ONLY writes and formats text.\n    - Content Creator CANNOT send emails or communicate with mail servers.\n    - If an email needs to be physically sent, Content Creator should draft the content first, and Email Agent must be used to send it.\n    - Do not use unfilled bracketed placeholders such as [Your Name], [Recipient], [Company], [Date], [Link].",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "task": {
+              "type": "string",
+              "description": "The complete user subtask to execute."
+            },
+            "context": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Relevant results or context from earlier steps."
+            }
+          },
+          "required": [
+            "task"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "email_agent",
+        "description": "Email Agent is responsible for SENDING, DISPATCHING, and DELIVERING emails to recipients.\n\n    Use Email Agent whenever a task requires:\n    - Sending an email to an email address (e.g. \"send an email to...\", \"email test@example.com\", \"mail someone...\")\n    - Dispatching drafted messages, invitations, announcements, or notifications via email\n    - Forwarding generated text (such as drafts prepared by Content Creator) to a recipient inbox\n\n    Email Agent should:\n    - Extract the recipient email address(es) from the user's prompt or context\n    - Extract or determine the subject line and email body from prior agent results (such as Content Creator)\n    - Ensure the email body is completely free of any bracketed placeholder tokens (e.g. [Your Name]) before sending\n    - Email Agent ALWAYS executes its `send_email` tool to deliver the email.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "task": {
+              "type": "string",
+              "description": "The complete user subtask to execute."
+            },
+            "context": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Relevant results or context from earlier steps."
+            }
+          },
+          "required": [
+            "task"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "weather_agent",
+        "description": "Weather Agent is responsible for fetching, analyzing, and reporting live weather conditions,\nforecasts, temperatures, and meteorological data for any city, region, or location worldwide.\n\nUse Weather Agent whenever a task requires:\n- Checking the current weather or temperature in a city (e.g., \"what's the weather in London?\", \"how hot is it in Tokyo?\")\n- Getting multi-day weather forecasts (e.g., \"3-day forecast for Paris\", \"will it rain this weekend in Seattle?\")\n- Checking humidity, wind speeds, precipitation, or apparent (\"feels like\") temperatures\n- Answering questions about weather conditions, storms, rain, snow, or sunshine\n\nWeather Agent should:\n- Extract the target city or location name from the user's prompt or context\n- Call `get_current_weather` when current conditions, temperature, or humidity are requested\n- Call `get_weather_forecast` when future days or upcoming weather forecasts are requested\n- Present the meteorological data clearly and concisely, including temperature in both Celsius and Fahrenheit",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "task": {
+              "type": "string",
+              "description": "The complete user subtask to execute."
+            },
+            "context": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Relevant results or context from earlier steps."
+            }
+          },
+          "required": [
+            "task"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "agent_creator",
+        "description": "agent_creator builds, validates, registers, and runs agents for meaningful new tasks routed by the planner.\n\nUse agent_creator whenever:\n- The planner routes a substantial, actionable request here.\n- New agent code and tools must be written, saved, registered, and executed to fulfill the request.\n\nCreate an agent for the task's core capability.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "task": {
+              "type": "string",
+              "description": "The complete user subtask to execute."
+            },
+            "context": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Relevant results or context from earlier steps."
+            }
+          },
+          "required": [
+            "task"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "code_runner",
+        "description": "The Coder & Tester Agent writes and tests standalone Python programs in a\nconstrained sandbox. It reads stdout and stderr and repairs failures up to\nthree attempts. It must never claim success unless exit_code is zero.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "task": {
+              "type": "string",
+              "description": "The complete user subtask to execute."
+            },
+            "context": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Relevant results or context from earlier steps."
+            }
+          },
+          "required": [
+            "task"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "warning": "This is an AgentOS tool catalog for an adapter evaluation, not an official BFCL score."
+}

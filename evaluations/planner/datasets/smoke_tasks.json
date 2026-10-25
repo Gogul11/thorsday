@@ -1,5 +1,5 @@
 {
-  "dataset_id": "agentos_planner_smoke_v1",
+  "dataset_id": "agentos_planner_smoke_v3",
   "source": "Hand-authored deterministic planner fixtures",
   "cases": [
     {
@@ -65,9 +65,138 @@
       "case_id": "general_task_candidate",
       "task": "Summarize the attached document in plain language.",
       "retrieved_candidates": ["a4", "content_creator"],
-      "expected_hints": [],
+      "expected_hints": ["a4"],
       "plan_steps": [{"id": "read", "agent": "a4", "depends_on": []}],
       "expected_agents": ["a4"]
+    },
+    {
+      "case_id": "ambiguous_time_and_weather",
+      "category": "ambiguous_multi_intent",
+      "task": "What is the weather in Tokyo and what is the current time there?",
+      "retrieved_candidates": ["weather_agent", "a2"],
+      "expected_hints": ["weather_agent", "a2"],
+      "proposed_agents": ["weather_agent"],
+      "plan_steps": [
+        {"id": "weather", "agent": "weather_agent", "depends_on": []},
+        {"id": "time", "agent": "a2", "depends_on": ["weather"]}
+      ],
+      "expected_agents": ["weather_agent", "a2"],
+      "expected_dependencies": {"weather_agent": [], "a2": ["weather"]}
+    },
+    {
+      "case_id": "research_and_write",
+      "category": "multi_agent",
+      "task": "Research battery recycling and write a concise technical report.",
+      "retrieved_candidates": ["a3", "content_creator"],
+      "expected_hints": ["a3"],
+      "proposed_agents": ["a3", "content_creator"],
+      "plan_steps": [
+        {"id": "research", "agent": "a3", "depends_on": []},
+        {"id": "write", "agent": "content_creator", "depends_on": ["research"]}
+      ],
+      "expected_agents": ["a3", "content_creator"],
+      "expected_dependencies": {"a3": [], "content_creator": ["research"]}
+    },
+    {
+      "case_id": "missing_email_candidate",
+      "category": "missing_candidate_recovery",
+      "task": "Research solar-panel recycling and email me the summary.",
+      "retrieved_candidates": ["a3"],
+      "expected_hints": ["a3", "email_agent"],
+      "proposed_agents": ["a3"],
+      "plan_steps": [
+        {"id": "research", "agent": "a3", "depends_on": []},
+        {"id": "send", "agent": "email_agent", "depends_on": ["research"]}
+      ],
+      "expected_agents": ["a3", "email_agent"],
+      "expected_dependencies": {"a3": [], "email_agent": ["research"]}
+    },
+    {
+      "case_id": "code_and_email",
+      "category": "conflicting_capabilities",
+      "task": "Write Python code, test it, and email me the test results.",
+      "retrieved_candidates": ["code_runner", "email_agent"],
+      "expected_hints": ["email_agent", "code_runner"],
+      "proposed_agents": ["code_runner"],
+      "plan_steps": [
+        {"id": "code", "agent": "code_runner", "depends_on": []},
+        {"id": "send", "agent": "email_agent", "depends_on": ["code"]}
+      ],
+      "expected_agents": ["code_runner", "email_agent"],
+      "expected_dependencies": {"code_runner": [], "email_agent": ["code"]}
+    },
+    {
+      "case_id": "invalid_dependency_normalized",
+      "category": "invalid_dependency",
+      "task": "Research recent battery technology and summarise it.",
+      "retrieved_candidates": ["a3", "content_creator"],
+      "expected_hints": ["a3"],
+      "proposed_agents": ["a3", "content_creator"],
+      "plan_steps": [
+        {"id": "research", "agent": "a3", "depends_on": []},
+        {"id": "summary", "agent": "content_creator", "depends_on": ["missing_step"]}
+      ],
+      "expected_agents": ["a3", "content_creator"],
+      "expected_dependencies": {"a3": [], "content_creator": ["research"]}
+    },
+    {
+      "case_id": "duplicate_step_filtered",
+      "category": "invalid_plan_repair",
+      "task": "Research quantum networking.",
+      "retrieved_candidates": ["a3"],
+      "expected_hints": ["a3"],
+      "proposed_agents": ["a3"],
+      "plan_steps": [
+        {"id": "research", "agent": "a3", "depends_on": []},
+        {"id": "research", "agent": "a3", "depends_on": []}
+      ],
+      "expected_agents": ["a3"],
+      "expected_dependencies": {"a3": []}
+    },
+    {
+      "case_id": "unsupported_capability_creator",
+      "category": "fallback_routing",
+      "task": "Create a specialised agent for a capability not currently registered.",
+      "retrieved_candidates": ["agent_creator"],
+      "expected_hints": [],
+      "proposed_agents": ["agent_creator"],
+      "plan_steps": [{"id": "create", "agent": "agent_creator", "depends_on": []}],
+      "expected_agents": ["agent_creator"],
+      "expected_dependencies": {"agent_creator": []}
+    },
+    {
+      "case_id": "direct_response_no_agent",
+      "category": "no_agent_required",
+      "task": "Say hello politely.",
+      "retrieved_candidates": [],
+      "expected_hints": [],
+      "proposed_agents": [],
+      "plan_steps": [],
+      "expected_agents": [],
+      "expect_fallback": true,
+      "expected_dependencies": {}
+    },
+    {
+      "case_id": "implicit_time_synonym",
+      "category": "implicit_intent_gap",
+      "task": "What time is it in Tokyo?",
+      "retrieved_candidates": ["a2"],
+      "expected_hints": ["a2"],
+      "proposed_agents": ["a2"],
+      "plan_steps": [{"id": "time", "agent": "a2", "depends_on": []}],
+      "expected_agents": ["a2"],
+      "expected_dependencies": {"a2": []}
+    },
+    {
+      "case_id": "implicit_weather_synonym",
+      "category": "implicit_intent_gap",
+      "task": "Is Chennai expecting rain tomorrow?",
+      "retrieved_candidates": ["weather_agent"],
+      "expected_hints": ["weather_agent"],
+      "proposed_agents": ["weather_agent"],
+      "plan_steps": [{"id": "weather", "agent": "weather_agent", "depends_on": []}],
+      "expected_agents": ["weather_agent"],
+      "expected_dependencies": {"weather_agent": []}
     }
   ]
 }

@@ -1,0 +1,38 @@
+{
+  "dataset_id": "agent_scheduler_workloads_v1",
+  "dataset_type": "seeded_performance_workloads",
+  "methodology": "Closed-loop async workloads with deterministic service-time and priority distributions.",
+  "purpose": "Measure scheduler throughput, queueing latency, utilization, and cross-task fairness under representative contention.",
+  "limitations": [
+    "Synthetic service times stand in for agent execution and do not measure provider latency.",
+    "Results are machine-dependent and should be compared on the same host profile.",
+    "The benchmark does not include Redis, MongoDB, or network overhead."
+  ],
+  "repetitions": 10,
+  "profiles": [
+    {
+      "profile": "steady_state",
+      "description": "Moderate mixed-priority load across six independent tasks.",
+      "jobs": 60,
+      "tasks": 6,
+      "global_slots": 4,
+      "task_slots": 2,
+      "token_budget": 10000,
+      "service_time_ms": [3, 9],
+      "priorities": [1, 5, 9],
+      "seed": 20261026
+    },
+    {
+      "profile": "queue_contention",
+      "description": "High fan-in load with only two global slots and longer service times.",
+      "jobs": 48,
+      "tasks": 8,
+      "global_slots": 2,
+      "task_slots": 1,
+      "token_budget": 10000,
+      "service_time_ms": [10, 25],
+      "priorities": [1, 1, 5, 9],
+      "seed": 20261027
+    }
+  ]
+}

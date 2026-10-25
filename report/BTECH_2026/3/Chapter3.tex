@@ -71,7 +71,7 @@ Figure~\ref{fig:tool-manager} shows the intended tool-manager boundary between a
 \end{figure}
 
 \section{\uppercase{Agent Lifecycle and Events}}
-An agent step progresses from CREATED to READY, RUNNING, and COMPLETED. It can move to WAITING when a resource or dependency is unavailable, or to BLOCKED/FAILED when execution cannot proceed. The scheduler and runtime publish structured lifecycle events containing task, step, agent, execution, status, priority, queue wait, and attempt information. Figure~\ref{fig:lifecycle} shows the state model. RBAC, distributed mutex locking, and complete state-machine enforcement are architectural extensions rather than claims of full implementation in this phase.
+An agent step progresses from CREATED to READY, RUNNING, and COMPLETED. It can move to WAITING when a resource or dependency is unavailable, or to BLOCKED/FAILED when execution cannot proceed. The scheduler and runtime publish structured lifecycle events containing task, step, agent, execution, status, priority, queue wait, and attempt information. Figure~\ref{fig:lifecycle} shows the state model. Complete RBAC and comprehensive state-machine enforcement remain extensions beyond the current implementation boundary.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.9\textwidth]{3/figures/lifecycle.pdf}
@@ -88,12 +88,12 @@ The code runner receives generated Python, writes it into a scoped working direc
 \label{fig:runner}
 \end{figure}
 
-\section{\uppercase{Implemented and Proposed Boundaries}}
+\section{\uppercase{Implemented AgentOS Modules}}
 \label{sec:implementation-status}
-Table~\ref{tab:boundary} records the design boundary used throughout the report.
+Table~\ref{tab:boundary} summarises the modules implemented and exercised in the current AgentOS runtime.
 \begin{table}[H]
 \centering
-\caption{Implemented and future AgentOS modules}
+\caption{Implemented AgentOS modules}
 \label{tab:boundary}
 \begin{tabular}{>{\raggedright\arraybackslash}p{4.2cm}>{\raggedright\arraybackslash}p{5.3cm}>{\raggedright\arraybackslash}p{4.2cm}}
 \toprule
@@ -105,10 +105,6 @@ Scheduler and resources & Priority aging, slots, token admission & Implemented; 
 Context paging & ChromaDB semantic swap and retrieval & Implemented \\
 Redis and MongoDB & Events, queue metadata, task history & Implemented \\
 Code runner & Bounded Python subprocess and retries & Implemented; not microVM isolation \\
-RBAC / capability policy & Architecture documented & Proposed \\
-Distributed locks / workers & Architecture documented & Future \\
-Hybrid model routing & Provider abstraction is partial & Future \\
-Durable coroutine restoration & Interrupted records are detected/requeued policy is partial & Future \\
 \bottomrule
 \end{tabular}
 \end{table}
