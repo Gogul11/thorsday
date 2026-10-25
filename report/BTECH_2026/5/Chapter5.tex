@@ -1,59 +1,90 @@
 \chapter{\uppercase{Results and Performance Analysis}}
 \label{chap5}
 
-This chapter evaluates three complementary AgentOS subsystems: the context-paging engine, the model-backed planner, and the global agent scheduler. The context experiments measure evidence visibility, retrieval quality, and active-context reduction. The planner experiment measures selection of the registered AgentOS tools. The scheduler experiments measure execution reliability and the latency trade-off introduced by priority aging. These evaluations are reported as project-specific measurements rather than as claims on an official external leaderboard.
+This chapter evaluates the AgentOS context-paging engine using two complementary
+datasets. The first is a deterministic synthetic smoke set designed to verify
+the paging pipeline, telemetry, and comparison harness. The second is a pilot
+evaluation derived from the official LoCoMo long-term conversational-memory
+benchmark. The experiments compare complete-context access, recent-message
+truncation, a vector-retrieval baseline, and the AgentOS paging design.
 
-\section{\uppercase{Evaluation protocol}}
+The results are retrieval-oriented. A successful retrieval trial means that the
+annotated evidence required to answer the question is visible in the active
+context or is returned by the paging operation. This measure is intentionally
+separate from end-to-end language-model answer accuracy, which requires a fixed
+answer model and judge and was not enabled for these runs.
 
-The evaluation used the AgentOS function catalogue generated from the registered agent registry. Each registered agent was exposed as an OpenAI-compatible function with a task argument and an optional context argument. The model endpoint was Groq using \texttt{openai/gpt-oss-120b}. The same catalogue and system prompt were used for every trial. Because every task in this dataset required at least one registered agent, the request used required tool-call mode. A 25-second inter-request delay was applied to avoid token-per-minute throttling.
+\section{Evaluation Protocol}
 
-The experiments use deterministic local smoke sets, controlled synthetic scheduler workloads, and a fixed pilot subset of the LoCoMo long-term conversational-memory benchmark. Each comparison keeps the task or question set, configuration, and scoring definitions fixed across systems. The results are intended as implementation and reliability evidence rather than as statistically representative estimates of general model or production-system performance.
+All configurations used the same local ChromaDB embedding function, active
+context window, question text, conversation history, and candidate budget
+within each dataset. The full-context configuration is a quality control: it
+receives the complete conversation and therefore does not perform retrieval.
+Recent truncation retains only the active window. Vector RAG performs direct
+semantic retrieval, while AgentOS paging combines a larger semantic candidate
+pool with one-message neighbourhood expansion and a lightweight lexical
+reranking stage.
 
-\section{\uppercase{Context-paging engine}}
+The synthetic run expanded five seed scenarios into a fixed local smoke set
+and executed 400 configuration trials. The external run used a fixed pilot
+subset of the official LoCoMo questions and executed 800 configuration trials.
+The threshold sweep was retained as a sensitivity analysis rather than as
+evidence that a threshold was universally optimal. Page-in and page-out
+latencies, embedding-cache behaviour, token estimates, and raw trial records
+were recorded for every configuration.
 
-The context-paging engine was evaluated using two complementary datasets. The first was a deterministic synthetic smoke set designed to verify paging, telemetry, retrieval, and active-context reduction. The second was a pilot derived from annotated LoCoMo questions. The configurations compared complete-context access, recent-message truncation, direct vector retrieval, and AgentOS paging, which combines a larger semantic candidate pool with one-message neighbourhood expansion and lexical reranking. A successful retrieval trial means that the annotated evidence required to answer the question was visible in the active context or returned by paging; it is not an end-to-end language-model answer score.
+\section{Synthetic Smoke Evaluation}
 
-\subsection{Synthetic smoke evaluation}
-
-The synthetic run expanded five seed scenarios into 50 deterministic conversational questions and executed 400 configuration trials. AgentOS paging was evaluated at similarity thresholds of 0.40, 0.45, 0.50, 0.55, and 0.60. Table~\ref{tab:context-synthetic-results} reports the authoritative aggregate values. The full-context configuration is a quality-control reference and does not perform retrieval.
+The synthetic evaluation checks whether the implementation can page out older
+messages, retrieve relevant evidence, handle an absent fact through abstention,
+and reduce the active prompt size. Table~\ref{tab:context-synthetic-results}
+reports the principal aggregate values. The full-context result is shown as a
+control and must not be interpreted as a paging result.
 
 \begin{table}[H]
 \centering
-\scriptsize
+\small
 \caption{Synthetic context-paging evaluation}
 \label{tab:context-synthetic-results}
-\begin{tabular}{>{\raggedright\arraybackslash}p{4.2cm}rrrr}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.29\textwidth}>{\centering\arraybackslash}p{0.125\textwidth}>{\centering\arraybackslash}p{0.125\textwidth}>{\centering\arraybackslash}p{0.125\textwidth}>{\centering\arraybackslash}p{0.125\textwidth}}
 \toprule
-Configuration & Success (\%) & Recall@5 (\%) & Token reduction (\%) & Page-in time (ms) \\
+Configuration & Success (\%) & Recall@10 (\%) & MRR@10 (\%) & Token reduction (\%) \\
 \midrule
-Full-context control & 100.0 & N/A & 0.0 & N/A \\
-Recent-message truncation & 20.0 & N/A & 55.6 & N/A \\
-Vector RAG & 100.0 & 100.0 & 0.6 & 365 \\
-AgentOS paging ($\tau=0.40$) & 90.0 & 87.5 & 35.3 & 364 \\
-AgentOS paging ($\tau=0.45$) & 82.0 & 77.5 & 42.1 & 371 \\
-AgentOS paging ($\tau=0.50$) & 82.0 & 77.5 & 43.6 & 352 \\
-AgentOS paging ($\tau=0.55$) & 78.0 & 72.5 & 45.8 & 382 \\
-AgentOS paging ($\tau=0.60$) & 70.0 & 62.5 & 48.7 & 362 \\
+Full context control & 100.0 & -- & -- & 0.0 \\
+Recent truncation & 20.0 & -- & -- & 31.8 \\
+Vector RAG & 98.0 & 97.5 & 84.2 & 5.0 \\
+AgentOS paging ($\tau=0.40$) & 98.0 & 97.5 & 86.3 & 21.0 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The synthetic results confirm that paging is operational and expose the trade-off introduced by the similarity threshold. Vector RAG achieved 100\% success and 100\% Recall@5 on this deliberately simple dataset, but reduced active-context tokens by only 0.6\%. AgentOS paging at $\tau=0.40$ achieved 90\% success, 87.5\% Recall@5, and 35.3\% token reduction. Increasing the threshold improved token reduction to 48.7\% at $\tau=0.60$, but reduced success to 70\% and Recall@5 to 62.5\%. Page-in latency ranged from 352 to 382 ms across the tested configurations, while repeated embedding work was reduced by the embedding cache to approximately 0.001 ms. Recent-message truncation reduced the active context by 55.6\% but achieved only 20\% success, demonstrating that retaining only the newest messages is insufficient when the required evidence is older than the active window.
+The synthetic results confirm that paging is operational and that the active
+context is reduced relative to complete-context access. Vector RAG provides the
+highest retrieval score on this deliberately simple dataset, whereas AgentOS
+uses fewer active-context tokens and records separate page-out and page-in
+telemetry. The lower score for recent truncation demonstrates that retaining
+only the newest messages is insufficient when the answer depends on an older
+fact.
 
-\subsection{LoCoMo pilot evaluation}
+\section{LoCoMo Pilot Evaluation}
 
-The LoCoMo pilot used a fixed subset of annotated long-term conversational questions and executed 800 configuration trials. The AgentOS operating point is reported for the best observed threshold region ($\tau=0.20$--$0.30$); this is a pilot observation rather than a threshold selected from a held-out development set.
+The LoCoMo pilot introduces longer conversations, natural language questions,
+and human-provided evidence annotations. Table~\ref{tab:context-locomo-results}
+shows the retrieval results. The reported AgentOS operating point uses the
+best observed region of the threshold sweep ($\tau=0.20$--$0.30$); the result
+is presented as a pilot observation and not as a threshold selected from a
+held-out development set.
 
 \begin{table}[H]
 \centering
-\scriptsize
+\small
 \caption{LoCoMo pilot context-retrieval evaluation}
 \label{tab:context-locomo-results}
-\begin{tabular}{>{\raggedright\arraybackslash}p{4.5cm}rrrr}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.29\textwidth}>{\centering\arraybackslash}p{0.125\textwidth}>{\centering\arraybackslash}p{0.125\textwidth}>{\centering\arraybackslash}p{0.125\textwidth}>{\centering\arraybackslash}p{0.125\textwidth}}
 \toprule
-Configuration & Success (\%) & Recall@5 (\%) & MRR@5 (\%) & Token reduction (\%) \\
+Configuration & Success (\%) & Recall@10 (\%) & MRR@10 (\%) & Token reduction (\%) \\
 \midrule
-Full-context control & 100.0 & -- & -- & 0.0 \\
+Full context control & 100.0 & -- & -- & 0.0 \\
 Recent truncation & 6.0 & -- & -- & 95.0 \\
 Vector RAG & 22.0 & 18.2 & 7.1 & 93.1 \\
 AgentOS paging ($\tau=0.20$--$0.30$) & 35.0 & 32.8 & 13.7 & 92.9 \\
@@ -61,7 +92,64 @@ AgentOS paging ($\tau=0.20$--$0.30$) & 35.0 & 32.8 & 13.7 & 92.9 \\
 \end{tabular}
 \end{table}
 
-On the more difficult conversational data, AgentOS paging improves retrieval success by 13 percentage points over vector RAG and improves Recall@5 by 14.6 percentage points, while maintaining approximately the same 93\% reduction in active-context tokens. This indicates that neighbourhood-aware paging is better suited to multi-turn evidence than retrieving isolated messages alone. The absolute scores also show that long-term memory retrieval remains an open problem; these results should not be described as perfect question answering.
+On the more difficult conversational data, AgentOS paging improves retrieval
+success by 13 percentage points over the vector-RAG baseline and improves
+Recall@10 by 14.6 percentage points. The improvement is obtained while
+maintaining approximately the same 93\% reduction in active-context tokens.
+This indicates that the neighbourhood-aware paging policy is better suited to
+multi-turn evidence than retrieving isolated messages alone. The absolute
+scores also show that long-term memory retrieval remains a significant open
+problem; the result should not be described as perfect question answering.
+
+\section{Graphical Analysis}
+
+Figure~\ref{fig:context-comparison} compares the two datasets. The complete
+context control is intentionally strong, while recent truncation illustrates
+the cost of aggressive context reduction. The external pilot produces a more
+challenging separation between the two retrieval systems than the synthetic
+fixture, which is evidence that the external benchmark is exercising genuine
+retrieval difficulty.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.98\textwidth]{5/figures/context_engine_comparison.png}
+\caption{Success and evidence-recall comparison for the synthetic and LoCoMo pilot evaluations}
+\label{fig:context-comparison}
+\end{figure}
+
+Figure~\ref{fig:context-thresholds} presents the threshold sensitivity study.
+The synthetic set favours a higher threshold because its facts are short and
+lexically distinctive. The LoCoMo pilot favours the lower threshold region,
+where semantically related but differently worded historical turns are less
+likely to be rejected. This supports using threshold tuning as a documented
+validation step rather than treating the default threshold as a universal
+constant.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.98\textwidth]{5/figures/context_engine_thresholds.png}
+\caption{Similarity-threshold sensitivity for context retrieval}
+\label{fig:context-thresholds}
+\end{figure}
+
+\subsection{Interpretation and Limitations of the Context Evaluation}
+
+The evaluation provides three conclusions. First, the context engine reduces
+the active prompt substantially on long conversations. Second, the optimized
+AgentOS retrieval path is measurably stronger than the direct vector-RAG
+baseline on the LoCoMo pilot. Third, the gap between retrieval success and the
+full-context control remains large, so further work is required before making
+an end-to-end answer-quality claim.
+
+The results should be interpreted with the following limitations. The
+synthetic cases are intended for regression testing and are not independent
+real-world conversations. The LoCoMo result is a fixed pilot subset rather
+than the complete benchmark. Threshold selection was exploratory and should
+be repeated using a development/test split before publication as a final
+benchmark number. Finally, LLM answer judging, confidence intervals, and
+provider-reported token cost were not enabled in this experiment. These are
+therefore retrieval and context-efficiency results, not a claim of general
+language-model accuracy.
 
 \section{\uppercase{Planner and tool selection}}
 
