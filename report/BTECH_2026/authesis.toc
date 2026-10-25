@@ -1,8 +1,8 @@
 \contentsline {section}{\bfseries \uppercase {Abstract}}{iii}{chapter*.2}%
 \contentsline {section}{\bfseries \uppercase {Acknowledgement}}{iv}{chapter*.3}%
-\contentsline {section}{\bfseries LIST OF TABLES}{vii}{chapter*.3}%
-\contentsline {section}{\bfseries LIST OF FIGURES}{viii}{chapter*.3}%
-\contentsline {section}{\bfseries LIST OF SYMBOLS AND ABBREVIATIONS}{ix}{chapter*.4}%
+\contentsline {section}{\bfseries LIST OF TABLES}{viii}{chapter*.3}%
+\contentsline {section}{\bfseries LIST OF FIGURES}{ix}{chapter*.3}%
+\contentsline {section}{\bfseries LIST OF SYMBOLS AND ABBREVIATIONS}{x}{chapter*.4}%
 \contentsline {chapter}{\numberline {1}\uppercase {Introduction}}{1}{chapter.1}%
 \contentsline {section}{\numberline {1.1} \uppercase {Background}}{1}{section.1.1}%
 \contentsline {section}{\numberline {1.2} \uppercase {Motivation}}{1}{section.1.2}%
@@ -55,4 +55,17 @@
 \contentsline {section}{\numberline {5.7} \uppercase {Code Runner Safety Metrics}}{37}{section.5.7}%
 \contentsline {section}{\numberline {5.8} \uppercase {Reporting Protocol}}{38}{section.5.8}%
 \contentsline {chapter}{\numberline {6}\uppercase {Summary and Future Work}}{40}{chapter.6}%
-\contentsline {chapter}{REFERENCES}{41}{section*.22}%
+\contentsline {chapter}{\numberline {7}\uppercase {Agent Catalogue and Internal Workflows}}{41}{chapter.7}%
+\contentsline {chapter}{AGENT CATALOGUE AND INTERNAL WORKFLOWS}{41}{chapter.7}%
+\contentsline {section}{\numberline {7.1} Agent A1: System Information Agent}{42}{section.7.1}%
+\contentsline {section}{\numberline {7.2} Agent A2: Date and Time Agent}{43}{section.7.2}%
+\contentsline {section}{\numberline {7.3} Agent A3: Research Agent}{44}{section.7.3}%
+\contentsline {section}{\numberline {7.4} Agent A4: File and Document Agent}{45}{section.7.4}%
+\contentsline {section}{\numberline {7.5} Content Creator Agent}{46}{section.7.5}%
+\contentsline {section}{\numberline {7.6} Email Agent}{47}{section.7.6}%
+\contentsline {section}{\numberline {7.7} Weather Agent}{48}{section.7.7}%
+\contentsline {section}{\numberline {7.8} Loan EMI Calculator Agent}{49}{section.7.8}%
+\contentsline {section}{\numberline {7.9} Crypto PnL Agent}{50}{section.7.9}%
+\contentsline {section}{\numberline {7.10} Code Runner Agent}{51}{section.7.10}%
+\contentsline {section}{\numberline {7.11} Agent Creator}{52}{section.7.11}%
+\contentsline {chapter}{REFERENCES}{53}{section*.34}%
