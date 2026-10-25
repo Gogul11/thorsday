@@ -1,0 +1,31 @@
+{
+  "dataset_id": "agent_scheduler_smoke_v1",
+  "source": "Hand-authored deterministic scheduler scenarios",
+  "cases": [
+    {
+      "scenario": "concurrency_and_task_limits",
+      "description": "Nine jobs across three tasks should honor global and per-task slot limits.",
+      "expected": {"job_count": 9, "max_global_active": 3, "max_task_active": 2}
+    },
+    {
+      "scenario": "priority_queue_order",
+      "description": "When one slot opens, the queued higher-priority job should start first.",
+      "expected": {"queued_start_order": ["high", "low"]}
+    },
+    {
+      "scenario": "oversized_token_job",
+      "description": "An estimate larger than the token budget should be rejected without running.",
+      "expected": {"outcome": "failed", "reason": "token_budget"}
+    },
+    {
+      "scenario": "runner_failure",
+      "description": "A runner exception should be surfaced and counted as a failed job.",
+      "expected": {"outcome": "failed", "error": "synthetic failure"}
+    },
+    {
+      "scenario": "cooperative_preemption",
+      "description": "A cooperative checkpoint should requeue and execute the runner again.",
+      "expected": {"runner_attempts": 2, "requeued": 1, "outcome": "completed"}
+    }
+  ]
+}
