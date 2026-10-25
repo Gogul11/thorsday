@@ -15,7 +15,6 @@ _AGENT_PURPOSES = {
     "content_creator": "Writing and report generation.",
     "email_agent": "Email delivery.",
     "weather_agent": "Weather and forecast retrieval.",
-    "agent_creator": "Creating new specialized agents.",
     "code_runner": "Generating, testing, and repairing Python code.",
     "loan_emi_agent": "EMI and amortization calculations.",
     "crypto_pnl_agent": "Cryptocurrency profit/loss analysis.",
@@ -53,6 +52,7 @@ def validate_steps(steps: Iterable[dict], valid_agents: set[str], candidates: se
                 "agent": agent,
                 "depends_on": list(dict.fromkeys(raw.get("depends_on") or [])),
                 "purpose": purpose,
+                **({"task": str(raw["task"])} if raw.get("task") else {}),
             }
         )
 

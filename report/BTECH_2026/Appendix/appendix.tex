@@ -105,6 +105,183 @@ The required event fields are task identifier, step identifier, agent name, exec
 \item Working-directory escape count: number of executions writing outside the configured working directory. The desired value is zero.
 \end{itemize}
 
+\iffalse
+\clearpage
+\section{\uppercase{Agent Catalogue and Operational Diagrams}}
+
+This section documents the agent implementations currently present in
+\texttt{server/kernel/Agents/agents/}. Each agent is shown using two diagrams.
+The architecture diagram identifies the agent's position between the planner,
+the available tools, and the execution result. The flow diagram shows the
+normal control path from task receipt to the returned result. The diagrams are
+intentionally schematic so that they remain readable when printed.
+
+\begin{figure}[H]
+\centering
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.22\textwidth}>{\raggedright\arraybackslash}X}
+\toprule
+Agent & Primary responsibility \\
+\midrule
+A1 & System information, resources, processes, configuration, and environment inspection. \\
+A2 & Current date, time, timezone, and calendar-related queries. \\
+A3 & Factual, academic, scientific, technical, and web research with sources. \\
+A4 & Local file and document search, reading, creation, modification, and confirmation-controlled deletion. \\
+Content Creator & Drafting, rewriting, summarising, formatting, and structuring text. \\
+Email & Sending and delivering email messages using prepared content. \\
+Weather & Current weather and forecast retrieval for a location. \\
+Loan EMI & Loan EMI computation and amortisation reporting. \\
+Crypto PnL & Cryptocurrency trade profit, loss, return, and report generation. \\
+Code Runner & Python generation, sandboxed execution, output capture, and bounded repair. \\
+Agent Creator & Creation, registration, and immediate execution of new specialised agents. \\
+\bottomrule
+\end{tabularx}
+\caption{AgentOS agent inventory}
+\label{tab:agent-inventory}
+\end{figure}
+
+\newcommand{\AgentArchitectureDiagram}[3]{%
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  node distance=8mm and 12mm,
+  box/.style={draw, rounded corners, align=center, minimum height=13mm, text width=32mm, fill=blue!8},
+  agentbox/.style={draw, rounded corners, align=center, minimum height=19mm, text width=43mm, fill=orange!20, very thick},
+  store/.style={draw, cylinder, shape border rotate=90, aspect=0.25, align=center, minimum height=16mm, text width=30mm, fill=green!10},
+  line/.style={-{Latex[length=2mm]}, thick}
+]
+\node[box] (task) {User task\\\scriptsize prompt and context};
+\node[box, right=of task] (planner) {Planner\\\scriptsize selection and dependencies};
+\node[agentbox, right=of planner] (agent) {#1\\\scriptsize #2};
+\node[box, right=of agent] (tools) {Tools / model\\\scriptsize #3};
+\node[store, below=of agent] (state) {Execution state\\\scriptsize events and result};
+\draw[line] (task) -- (planner);
+\draw[line] (planner) -- (agent);
+\draw[line] (agent) -- (tools);
+\draw[line] (tools) |- (state);
+\draw[line] (state) -| node[near start, below, align=center] {result returned} (task);
+\end{tikzpicture}}
+\caption{Architecture of #1}
+\label{fig:#1-architecture}
+\end{figure}%
+}
+
+\newcommand{\AgentFlowDiagram}[4]{%
+\begin{figure}[H]
+\centering
+\resizebox{0.92\textwidth}{!}{%
+\begin{tikzpicture}[
+  node distance=9mm,
+  flow/.style={draw, rounded corners, align=center, minimum height=12mm, text width=43mm, fill=blue!8},
+  decision/.style={draw, diamond, aspect=2.1, align=center, inner sep=2pt, fill=yellow!20},
+  line/.style={-{Latex[length=2mm]}, thick}
+]
+\node[flow] (receive) {1. Receive\\\scriptsize #2};
+\node[flow, right=of receive] (prepare) {2. Prepare\\\scriptsize validate task and context};
+\node[flow, right=of prepare] (execute) {3. Execute\\\scriptsize #3};
+\node[decision, below=of execute] (check) {success?};
+\node[flow, left=of check] (repair) {4. Recover / clarify\\\scriptsize handle failure or confirmation};
+\node[flow, right=of check] (format) {4. Format\\\scriptsize #4};
+\node[flow, below=of format] (return) {5. Return\\\scriptsize result and observability events};
+\draw[line] (receive) -- (prepare);
+\draw[line] (prepare) -- (execute);
+\draw[line] (execute) -- (check);
+\draw[line] (check) -- node[above] {yes} (format);
+\draw[line] (check) -- node[above] {no} (repair);
+\draw[line] (repair) |- (execute);
+\draw[line] (format) -- (return);
+\end{tikzpicture}}
+\caption{Execution flow of #1}
+\label{fig:#1-flow}
+\end{figure}%
+}
+
+\subsection{Agent A1: System Information Agent}
+Agent A1 gathers system information, including hardware, software, running
+processes, services, environment values, and current resource state. It uses
+the registered system-information tools and reports the collected state.
+\AgentArchitectureDiagram{Agent A1}{system inspection and analysis}{system information tools}
+\AgentFlowDiagram{Agent A1}{a system-state request}{inspect resources, processes, and configuration}{summarise system state clearly}
+
+\subsection{Agent A2: Date and Time Agent}
+Agent A2 handles current date, time, timezone, day-of-week, and location-aware
+date and time queries. It relies on date and time tools whenever a current or
+timezone-sensitive value is required.
+\AgentArchitectureDiagram{Agent A2}{date, time, and timezone queries}{date and time tools}
+\AgentFlowDiagram{Agent A2}{a date or time request}{resolve location and call the appropriate time tool}{return a precise date/time answer}
+
+\subsection{Agent A3: Research Agent}
+Agent A3 gathers factual, academic, scientific, historical, and technical
+information. It uses Wikipedia and trusted web-search tools, prefers reliable
+sources, and includes source links when available. It is instructed not to
+fabricate facts, citations, or URLs.
+\AgentArchitectureDiagram{Agent A3}{factual research and source verification}{Wikipedia and trusted web-search tools}
+\AgentFlowDiagram{Agent A3}{a research or fact-checking request}{search, verify, and extract only relevant facts}{summarise findings with sources}
+
+\subsection{Agent A4: File and Document Agent}
+Agent A4 manages local files and documents. It can search, read, create,
+modify, move, rename, compare, summarise, and classify supported files. Delete
+operations are deliberately separated into a confirmation flow: the path is
+verified, confirmation is requested, and deletion is not claimed before the
+backend confirms it.
+\AgentArchitectureDiagram{Agent A4}{file and document operations}{file, document, and confirmation tools}
+\AgentFlowDiagram{Agent A4}{a file or document request}{inspect, transform, or request deletion confirmation}{return the file result or confirmation state}
+
+\subsection{Content Creator Agent}
+The Content Creator drafts and formats text such as reports, documentation,
+emails, messages, articles, proposals, summaries, and social posts. It does
+not send emails and does not use external tools for ordinary text generation.
+\AgentArchitectureDiagram{Content Creator Agent}{drafting and text formatting}{language model; no external tool required}
+\AgentFlowDiagram{Content Creator Agent}{a writing or formatting request}{select the requested genre and structure}{return only the completed content}
+
+\subsection{Email Agent}
+The Email Agent sends messages to recipients. It extracts the recipient,
+subject, and body from the task and previous agent results, removes unresolved
+placeholders, invokes the email-delivery tool, and returns its delivery
+confirmation.
+\AgentArchitectureDiagram{Email Agent}{email dispatch and delivery}{email delivery tools}
+\AgentFlowDiagram{Email Agent}{a request to send email}{extract recipient, subject, and clean body; send}{return the delivery confirmation}
+
+\subsection{Weather Agent}
+The Weather Agent retrieves and reports current conditions and forecasts for a
+specified location. It selects current-weather or forecast tools based on the
+requested time horizon and presents the result with clear meteorological data.
+\AgentArchitectureDiagram{Weather Agent}{current conditions and forecasts}{current-weather and forecast tools}
+\AgentFlowDiagram{Weather Agent}{a weather request}{identify location and time horizon; call weather tool}{format temperature and forecast details}
+
+\subsection{Loan EMI Calculator Agent}
+The Loan EMI Calculator Agent computes loan instalments and produces an
+amortisation schedule. It receives the financial parameters through the task,
+uses the registered calculation tools, and returns a formatted financial
+result.
+\AgentArchitectureDiagram{Loan EMI Calculator Agent}{EMI and amortisation calculation}{loan calculation tools}
+\AgentFlowDiagram{Loan EMI Calculator Agent}{a loan calculation request}{validate principal, rate, and tenure; calculate EMI}{return EMI and amortisation details}
+
+\subsection{Crypto PnL Agent}
+The Crypto PnL Agent calculates cryptocurrency trade profit or loss and return
+on investment. It formats the calculation as an investment report and can save
+the report through its registered tools.
+\AgentArchitectureDiagram{Crypto PnL Agent}{crypto trade PnL and ROI}{crypto PnL and report tools}
+\AgentFlowDiagram{Crypto PnL Agent}{a crypto trade analysis request}{process trades, fees, and prices; calculate PnL}{return a formatted investment report}
+
+\subsection{Code Runner Agent}
+The Code Runner Agent generates standalone Python programs, executes them in a
+constrained runner, captures standard output and errors, and repairs failures
+for at most three attempts. It reports success only when execution exits
+successfully.
+\AgentArchitectureDiagram{Code Runner Agent}{code generation and bounded repair}{sandboxed Python runner}
+\AgentFlowDiagram{Code Runner Agent}{a coding or testing request}{generate and execute code; inspect output and traceback}{return output on success or bounded failure details}
+
+\subsection{Agent Creator}
+The Agent Creator handles capabilities that are not covered by registered
+agents. It creates a new tool file, creates and registers a new agent, updates
+the relevant registries, and executes the generated agent. In the current
+registry it is available as an implementation but is disabled from the default
+runtime registry until explicitly enabled.
+\AgentArchitectureDiagram{Agent Creator}{agent and tool generation}{file creation and registry tools}
+\AgentFlowDiagram{Agent Creator}{an unsupported specialised task}{create tools, create agent, register, and execute}{return the generated agent's result}
+
+\fi
 \section{\uppercase{Reporting Protocol}}
 The evaluation shall use a fixed task set and a documented procedure for every configuration.
 

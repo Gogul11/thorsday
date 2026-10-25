@@ -3,7 +3,11 @@
 import re
 
 from Agents.agent_registry import get_agent_descriptions, list_agent_types
-from planning.agent_retriever import retrieve_agent_candidates
+from planning.agent_retriever import (
+    retrieve_agent_candidates,
+    refresh_agent_index,
+    register_agent_in_vector_db,
+)
 
 
 _EXPLICIT_INTENT_RULES = (
@@ -15,7 +19,6 @@ _EXPLICIT_INTENT_RULES = (
     ("email_agent", ("email", "e-mail", "send it to", "send this to", "mail it to")),
     ("code_runner", ("python", "write code", "python code", "program", "test them", "test it", "add two numbers", "execute code")),
 )
-
 
 def get_explicit_agent_hints(user_task: str) -> list[str]:
     """Return registered capabilities explicitly requested by the user."""
@@ -44,6 +47,14 @@ def build_planner_context(user_task: str) -> tuple[str, list[str]]:
                 "similarity": None,
                 "selection": "explicit user intent",
             })
+    # Planner-only fallback: it is not a semantic retrieval result.
+    if "agent_creator" in valid_types and "agent_creator" not in candidate_map:
+        candidates.append({
+            "name": "agent_creator",
+            "description": f"Agent: agent_creator\nCapabilities:\n{descriptions['agent_creator']}",
+            "similarity": None,
+            "selection": "fallback for unsupported subtasks (not a retrieval match)",
+        })
     candidate_names = [
         candidate["name"]
         for candidate in candidates

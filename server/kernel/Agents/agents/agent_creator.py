@@ -1,11 +1,14 @@
 """Create and run agents for substantial tasks needing an unsupported capability."""
 from __future__ import annotations
 
-from langchain.agents import create_agent
-from tools.tool_registry import AGENT_CREATOR_TOOLS
-from logger import logger
+from pydantic import BaseModel, Field
 
-_NAME = "Agent Creator"
+from tools.agent_creator_tools import (
+    create_and_register_agent,
+    rollback_generated_tool,
+    run_generated_agent,
+    save_tool_file,
+)
 
 AGENT_CREATOR_DESCRIPTION = """
 agent_creator builds, validates, registers, and runs agents for meaningful new tasks routed by the planner.
@@ -16,6 +19,19 @@ Use agent_creator whenever:
 
 Create an agent for the task's core capability.
 """
+
+_MAX_GENERATION_ATTEMPTS = 3
+
+
+class GeneratedAgentSpec(BaseModel):
+    agent_stem: str = Field(description="Reusable snake_case domain name ending in _agent")
+    display_name: str
+    description: str = Field(description="Precise reusable capability description for future retrieval")
+    agent_prompt: str = Field(description="Precise system prompt that instructs this agent how to perform its domain task")
+    tool_file_stem: str = Field(description="snake_case tool module name ending in _tools")
+    tools_var_name: str = Field(description="Uppercase tool list name ending in _TOOLS")
+    tool_function_names: list[str] = Field(description="Names of all @tool functions in the generated module")
+    tool_code: str = Field(description="Complete Python source for the tool module")
 
 
 async def run_agent_creator(
@@ -53,6 +69,3 @@ CREATION RULES:
         {"messages": [{"role": "user", "content": prompt}]},
         config={"callbacks": callbacks} if callbacks else None,
     )
-
-    return result["messages"][-1].content
-
