@@ -15,6 +15,7 @@ import os
 import sys
 import time
 import urllib.request
+import argparse
 from collections import defaultdict
 from pathlib import Path
 from statistics import mean, median, pstdev
@@ -22,10 +23,8 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[3]
-DATASET_PATH = ROOT / "evaluations/context_engine/datasets/smoke_questions.json"
+DEFAULT_DATASET_PATH = ROOT / "evaluations/context_engine/datasets/smoke_questions.json"
 RESULTS_DIR = ROOT / "evaluations/context_engine/results"
-TRIALS_PATH = RESULTS_DIR / "smoke_trials.jsonl"
-SUMMARY_PATH = RESULTS_DIR / "smoke_summary.json"
 RUN_ID = os.getenv("AOS_SMOKE_RUN_ID", time.strftime("%Y%m%d-%H%M%S"))
 ISOLATED_SWAP_DIR = RESULTS_DIR / "smoke_swap_space" / RUN_ID
 
@@ -53,10 +52,10 @@ VECTOR_RAG_TOP_K = 5
 LLM_SCORING_ENABLED = os.getenv("AOS_SMOKE_LLM_SCORING", "0") == "1"
 LLM_MODEL = os.getenv("AOS_SMOKE_LLM_MODEL", "gpt-4o-mini")
 LLM_BASE_URL = os.getenv("AOS_SMOKE_LLM_BASE_URL", "https://api.openai.com/v1/chat/completions")
-# The production window is 20 messages. The five-message fixture is kept
-# intentionally small, so the smoke test uses a four-message window to force
-# page-out/page-in behaviour. The production value is tested in the full run.
-ACTIVE_WINDOW = 4
+# The production window is 20 messages. The expanded smoke conversations are
+# deliberately longer than this window so page-out/page-in is exercised using
+# the same active-window size as production.
+ACTIVE_WINDOW = 20
 
 
 def token_estimate(text: str) -> int:
@@ -99,9 +98,13 @@ def score_with_llm(question: dict[str, Any], active_text: str) -> tuple[bool | N
         return None, f"LLM scoring error: {type(exc).__name__}: {exc}"
 
 
-def load_questions() -> list[dict[str, Any]]:
-    with DATASET_PATH.open(encoding="utf-8") as handle:
+def load_questions(dataset_path: Path, expand_smoke: bool) -> list[dict[str, Any]]:
+    with dataset_path.open(encoding="utf-8") as handle:
         questions = json.load(handle)
+    if not expand_smoke:
+        if not isinstance(questions, list) or not questions:
+            raise ValueError(f"Dataset must contain a non-empty JSON array: {dataset_path}")
+        return questions
     if len(questions) != 5:
         raise ValueError(f"Expected exactly 5 seed questions, found {len(questions)}")
     variants = [
@@ -126,6 +129,21 @@ def load_questions() -> list[dict[str, Any]]:
                 {"id": f"distractor-{index}-a", "role": "human", "content": "The dashboard layout uses a dark theme."},
                 {"id": f"distractor-{index}-b", "role": "ai", "content": "The unrelated demo task completed successfully."},
             ]
+            # Keep the seed fact near the beginning and make the conversation
+            # longer than the production active window. This ensures that
+            # recent truncation genuinely loses historical evidence instead
+            # of testing only a tiny toy conversation.
+            for filler_index in range(1, 25):
+                item["messages"].append(
+                    {
+                        "id": f"filler-{index}-{filler_index:02d}",
+                        "role": "human" if filler_index % 2 else "ai",
+                        "content": (
+                            f"Unrelated conversation note {filler_index}: "
+                            "the interface review recorded no change to the current task."
+                        ),
+                    }
+                )
             expanded.append(item)
     return expanded
 
@@ -198,7 +216,8 @@ def run_trial(
             question, configuration, retrieved_indices
         )
         active_text = "\n".join(message["content"] for message in visible)
-        active_text += "\n" + "\n".join(page["text"] for page in retrieved)
+        if retrieved:
+            active_text += "\n" + "\n".join(page["text"] for page in retrieved)
         retrieval_latency_ms = (time.perf_counter() - started) * 1000
     except Exception as exc:  # smoke test records failures instead of stopping
         retrieved_indices = set()
@@ -219,6 +238,15 @@ def run_trial(
     precision = len(relevant_retrieved) / len(retrieved_ids) if retrieved_ids else 0.0
     is_retrieval_configuration = configuration == "vector_rag" or configuration.startswith("agentos_paging")
     recall = len(relevant_retrieved) / len(relevant) if relevant and is_retrieval_configuration else None
+    reciprocal_rank = None
+    if relevant and is_retrieval_configuration:
+        for rank, page in enumerate(retrieved, start=1):
+            page_index = int(page["message_index"])
+            if messages[page_index]["id"] in relevant:
+                reciprocal_rank = 1.0 / rank
+                break
+        if reciprocal_rank is None:
+            reciprocal_rank = 0.0
 
     return {
         "trial_id": f"{task_id}",
@@ -235,7 +263,10 @@ def run_trial(
         "page_out_count": page_out_count,
         "page_in_count": len(retrieved),
         "retrieval_recall_at_5": recall,
+        "retrieval_mrr_at_5": reciprocal_rank,
         "retrieval_precision_at_5": precision if retrieved and is_retrieval_configuration else None,
+        "full_message_count": len(messages),
+        "active_message_count": len(visible),
         "full_context_tokens_estimate": full_tokens,
         "active_context_tokens_estimate": active_tokens,
         "context_token_reduction": 1 - active_tokens / full_tokens if full_tokens else None,
@@ -269,11 +300,19 @@ def percentile(values: list[float], percentile_value: float) -> float | None:
     return ordered[index]
 
 
-def aggregate(trials: list[dict[str, Any]]) -> dict[str, Any]:
+def aggregate(trials: list[dict[str, Any]], dataset_name: str) -> dict[str, Any]:
     grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for trial in trials:
         grouped[trial["configuration"]].append(trial)
-    summary: dict[str, Any] = {"trial_count": len(trials), "configurations": {}}
+    summary: dict[str, Any] = {
+        "trial_count": len(trials),
+        "unique_question_cases": len({trial["question_id"] for trial in trials}),
+        "unique_seed_questions": len({trial["question_id"].split("-v")[0] for trial in trials}),
+        "active_window_messages": ACTIVE_WINDOW,
+        "dataset": dataset_name,
+        "evaluation_type": "deterministic retrieval and visibility benchmark",
+        "configurations": {},
+    }
     for configuration, rows in grouped.items():
         latencies = [row["page_in_latency_ms"] for row in rows if row["page_in_latency_ms"] > 0]
         page_out_latencies = [row["page_out_latency_ms"] for row in rows if row["page_out_latency_ms"] > 0]
@@ -292,6 +331,9 @@ def aggregate(trials: list[dict[str, Any]]) -> dict[str, Any]:
             "mean_recall_at_5": mean(
                 [row["retrieval_recall_at_5"] for row in rows if row["retrieval_recall_at_5"] is not None]
             ) if any(row["retrieval_recall_at_5"] is not None for row in rows) else None,
+            "mean_mrr_at_5": mean(
+                [row["retrieval_mrr_at_5"] for row in rows if row["retrieval_mrr_at_5"] is not None]
+            ) if any(row["retrieval_mrr_at_5"] is not None for row in rows) else None,
             "mean_token_reduction": mean(reductions) if reductions else None,
             "page_in_latency_ms": latency_stats(latencies),
             "page_out_latency_ms": latency_stats(page_out_latencies),
@@ -326,8 +368,27 @@ def latency_stats(values: list[float]) -> dict[str, float | None]:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--dataset",
+        type=Path,
+        default=DEFAULT_DATASET_PATH,
+        help="JSON dataset in the normalized AgentOS format",
+    )
+    parser.add_argument(
+        "--expand-smoke",
+        action="store_true",
+        help="Expand the five local smoke seeds into synthetic variants (default dataset only)",
+    )
+    parser.add_argument("--repetitions", type=int, default=1)
+    args = parser.parse_args()
+    dataset_path = args.dataset if args.dataset.is_absolute() else ROOT / args.dataset
+    expand_smoke = args.expand_smoke or dataset_path.resolve() == DEFAULT_DATASET_PATH.resolve()
+    result_stem = "smoke" if expand_smoke else dataset_path.stem
+    trials_path = RESULTS_DIR / f"{result_stem}_trials.jsonl"
+    summary_path = RESULTS_DIR / f"{result_stem}_summary.json"
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    questions = load_questions()
+    questions = load_questions(dataset_path, expand_smoke=expand_smoke)
     # Initialize the embedding model and Chroma path before recording timing.
     warmup_id = "smoke-warmup"
     context_pager.page_out_messages(
@@ -336,7 +397,7 @@ def main() -> None:
     context_pager.page_in_relevant_context(warmup_id, "warmup context", top_k=1, threshold=0.0)
 
     trials: list[dict[str, Any]] = []
-    for repetition in range(1, 2):
+    for repetition in range(1, args.repetitions + 1):
         for question in questions:
             for configuration in BASE_CONFIGURATIONS:
                 trials.append(run_trial(question, configuration, repetition))
@@ -349,14 +410,14 @@ def main() -> None:
                         threshold=threshold,
                     )
                 )
-    with TRIALS_PATH.open("w", encoding="utf-8") as handle:
+    with trials_path.open("w", encoding="utf-8") as handle:
         for trial in trials:
             handle.write(json.dumps(trial, ensure_ascii=False) + "\n")
-    summary = aggregate(trials)
-    with SUMMARY_PATH.open("w", encoding="utf-8") as handle:
+    summary = aggregate(trials, dataset_path.stem)
+    with summary_path.open("w", encoding="utf-8") as handle:
         json.dump(summary, handle, indent=2)
-    print(f"Wrote {len(trials)} trials from {len(questions)} questions to {TRIALS_PATH}")
-    print(f"Wrote summary to {SUMMARY_PATH}")
+    print(f"Wrote {len(trials)} trials from {len(questions)} questions to {trials_path}")
+    print(f"Wrote summary to {summary_path}")
     for configuration, result in summary["configurations"].items():
         print(
             f"{configuration}: success={result['visible_or_abstention_success_rate']:.1%}, "

@@ -20,8 +20,8 @@
   },
   "agentos_paging": {
     "active_ram_window_messages": 20,
-    "page_in_top_k": 3,
-    "page_in_similarity_threshold": 0.55
+    "page_in_top_k": 5,
+    "page_in_similarity_threshold": 0.40
   },
   "metrics": [
     "answer_accuracy",

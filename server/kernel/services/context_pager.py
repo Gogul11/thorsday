@@ -1,39 +1,3 @@
-"""
-context_pager.py — Virtual Memory Context Paging Engine
-========================================================
-
-OS-inspired context paging system for AgentOS.
-
-Implements Algorithm VM-Paging from the AgentOS design specification:
-
-  * Page-Out (Swap-Out): When total stored messages |M| exceed the
-    active RAM window W, overflow pages are embedded via a dense vector
-    mapping Φ: String → ℝᵈ and persisted in a local ChromaDB swap
-    partition so they are never lost.
-
-  * Page-In (Swap-In / Page Fault Handler): When a new user query q
-    arrives, the pager performs a vector similarity search over the
-    swap partition and retrieves the top-K historical pages whose
-    cosine
-    similarity Sim(q, pᵢ) ≥ τ, injecting them into the active
-    context window as supplementary system memory.
-
-  Similarity metric (cosine):
-      Sim(q, pᵢ) = (v_q · v_pᵢ) / (‖v_q‖ · ‖v_pᵢ‖)
-
-Architecture
-------------
-  MongoDB (persistent store)
-      ↓  get_context fetches M = <m₁ … mₙ>
-  ContextPager.page_out_messages()
-      ↓  indexes P_overflow into ChromaDB swap partition
-  ChromaDB (swap partition on disk)
-      ↓  vector similarity search on query embedding Φ(q)
-  ContextPager.page_in_relevant_context()
-      ↓  returns top-K paged-in snippets to context.py
-  LLM Context Window (composed and returned to task_runner)
-"""
-
 from __future__ import annotations
 
 from pathlib import Path
@@ -61,7 +25,8 @@ ACTIVE_RAM_WINDOW: int = 20
 PAGE_IN_SIMILARITY_THRESHOLD: float = 0.4
 
 # K: Maximum number of swapped pages to inject per query turn.
-MAX_PAGE_IN_RESULTS: int = 3
+MAX_PAGE_IN_RESULTS: int = 5
+
 
 # Chroma accepts batches, but keeping a bounded batch avoids oversized writes
 # when a long conversation is first paged out.
@@ -84,13 +49,6 @@ _SWAP_SPACE_DIR = Path(os.getenv("AOS_CONTEXT_SWAP_DIR", str(_DEFAULT_SWAP_SPACE
 
 # Redis telemetry helpers
 def _emit_page_event(event: str, task_id: str, req_id: str = "", **data: Any) -> None:
-    """
-    Publish a context paging lifecycle event to the Redis kernel_events
-    channel so the Next.js activity panel can display PAGE_OUT / PAGE_IN
-    operations in real time.
-
-    Errors are swallowed to ensure the pager never crashes the kernel loop.
-    """
     try:
         from Redis.redis_connection import publish
         from repository.task_repo import DB_add_task_event
@@ -111,29 +69,6 @@ def _emit_page_event(event: str, task_id: str, req_id: str = "", **data: Any) ->
 
 # ContextPager — singleton paging engine
 class ContextPager:
-    """
-    Virtual Memory Context Paging Engine.
-
-    Manages a persistent ChromaDB collection as a swap partition.
-    Each record in the collection represents one swapped-out conversation
-    page identified by a composite page_key:
-
-        page_key = f"{task_id}_msg_{message_index}"
-
-    The embedding function defaults to ChromaDB's built-in
-    DefaultEmbeddingFunction (all-MiniLM-L6-v2 via ONNX) so there are
-    no additional API keys required — all embedding computation is local.
-
-    Usage
-    -----
-    This class should be accessed through the module-level singleton
-    ``context_pager`` defined at the bottom of this file.
-
-        from services.context_pager import context_pager
-
-        context_pager.page_out_messages(task_id, overflow_messages)
-        hits = context_pager.page_in_relevant_context(task_id, query)
-    """
 
     def __init__(self) -> None:
         _SWAP_SPACE_DIR.mkdir(parents=True, exist_ok=True)
@@ -173,12 +108,6 @@ class ContextPager:
         )
 
     async def enqueue_page_out(self, task_id: str, req_id: str = "") -> None:
-        """Schedule asynchronous indexing for a task's overflow messages.
-
-        Scheduling is deduplicated per task. If several messages are persisted
-        during one turn, the worker reads the latest overflow prefix once and
-        the existing page-out watermark skips anything already indexed.
-        """
         if not task_id:
             return
 
@@ -196,7 +125,6 @@ class ContextPager:
         await self._page_out_queue.put((task_id, req_id))
 
     async def _page_out_worker(self) -> None:
-        """Continuously index overflow messages outside request handling."""
         from repository.task_repo import DB_get_task_overflow_messages
 
         while True:
@@ -237,34 +165,6 @@ class ContextPager:
         base_index: int = 0,
         req_id: str = "",
     ) -> int:
-        """
-        Embed and persist overflow messages into the swap partition.
-
-        Implements Phase 1 of Algorithm VM-Paging:
-
-            for each mᵢ in P_overflow:
-                page_key ← CONCATENATE(T_id, "_msg_", i)
-                if NOT EXISTS_IN_VECTOR_STORE(page_key):
-                    vᵢ ← Φ(mᵢ.content)
-                    VECTOR_STORE_INSERT(page_key, vᵢ, mᵢ.content, metadata)
-                    EMIT_REDIS_EVENT("context.PAGE_OUT", …)
-
-        Parameters
-        ----------
-        task_id:
-            Unique task identifier used as the namespace key.
-        overflow_messages:
-            Ordered list of message dicts from MongoDB (role, content, …)
-            that exceed the active RAM window and must be swapped out.
-        base_index:
-            The absolute message index of overflow_messages[0] within the
-            full conversation history (used to construct stable page_keys).
-
-        Returns
-        -------
-        int
-            Number of newly-indexed pages (skips already-indexed pages).
-        """
         if not overflow_messages:
             return 0
 
@@ -395,19 +295,11 @@ class ContextPager:
         return count
 
     def get_last_page_out_metrics(self) -> dict[str, Any]:
-        """Return timing and deduplication data for the most recent page-out."""
         return dict(self._last_page_out_metrics)
 
     def _get_cached_embeddings(
         self, documents: list[str]
     ) -> tuple[list[list[float]], float, int, int]:
-        """Return embeddings while reusing exact-content vectors.
-
-        The cache is process-local because the configured embedding function
-        is process-local. Chroma remains the durable store for page vectors;
-        this cache avoids repeating model inference before those vectors are
-        written for another page or task.
-        """
         keys = [
             hashlib.sha256(document.encode("utf-8")).hexdigest()
             for document in documents
@@ -468,38 +360,6 @@ class ContextPager:
         threshold: float = PAGE_IN_SIMILARITY_THRESHOLD,
         req_id: str = "",
     ) -> list[dict]:
-        """
-        Perform a vector similarity search over the swap partition and
-        return relevant historical pages for injection into the context window.
-
-        Implements Phase 2 of Algorithm VM-Paging:
-
-            v_q ← Φ(q)
-            Candidates ← VECTOR_STORE_SEARCH(filter={task_id}, v_q, top_k=K)
-            for each pᵢ in Candidates:
-                similarity ← (v_q · v_pᵢ) / (‖v_q‖ · ‖v_pᵢ‖)
-                if similarity ≥ τ:
-                    P_in ← P_in ∪ { pᵢ }
-                    EMIT_REDIS_EVENT("context.PAGE_IN", …)
-
-        Parameters
-        ----------
-        task_id:
-            Namespace filter — only pages belonging to this task are searched.
-        query:
-            The current user prompt used as the similarity search key.
-        top_k:
-            Maximum candidates to retrieve from ChromaDB before threshold
-            filtering.
-        threshold:
-            Minimum cosine similarity τ required for a page to be paged in.
-
-        Returns
-        -------
-        list[dict]
-            Ordered list of accepted page dicts:
-            {text, role, timestamp, message_index, similarity}
-        """
         query = query.strip()
         if not query:
             return []
@@ -574,29 +434,10 @@ class ContextPager:
 
         return accepted
 
-    # ------------------------------------------------------------------
     # Phase 3 helper — Format paged-in block for LLM context injection
-    # ------------------------------------------------------------------
 
     @staticmethod
     def format_page_in_block(pages: list[dict]) -> str:
-        """
-        Serialise accepted page-in results into a system-level context
-        injection block for prepending to the active LLM context window.
-
-        The block uses a clear visual delimiter so the LLM can distinguish
-        between actively cached context and virtually-recalled memory.
-
-        Parameters
-        ----------
-        pages:
-            Accepted page-in results from page_in_relevant_context().
-
-        Returns
-        -------
-        str
-            Formatted system message content string.
-        """
         if not pages:
             return ""
 
@@ -624,10 +465,7 @@ class ContextPager:
         )
         return "\n".join(lines)
 
-    # ------------------------------------------------------------------
     # Utility
-    # ------------------------------------------------------------------
-
     def get_swap_stats(self, task_id: str | None = None) -> dict:
         """
         Return diagnostic statistics about the swap partition.

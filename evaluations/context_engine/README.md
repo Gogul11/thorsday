@@ -110,8 +110,8 @@ as external comparisons only after the four local configurations are stable.
 ## Current AgentOS implementation notes
 
 - Active context window: `ACTIVE_RAM_WINDOW = 20` messages.
-- Page-in default: top 3 results.
-- Page-in threshold: similarity `0.55`.
+- Page-in default: top 5 results.
+- Page-in threshold: similarity `0.40`.
 - Local embedding: ChromaDB `DefaultEmbeddingFunction`.
 - Implementation: `server/kernel/services/context_pager.py` and
   `server/kernel/services/context.py`.
@@ -134,10 +134,13 @@ Run from the repository root after installing the dependencies in
 python evaluations/context_engine/scripts/run_smoke_test.py
 ```
 
-The runner expands the five seed scenarios into 50 deterministic local cases,
-performs one unrecorded warm-up, measures page-out and page-in separately, and
-sweeps AgentOS thresholds `0.40`, `0.45`, `0.50`, `0.55`, and `0.60` with five
-retrieval candidates. Results are written to `results/smoke_trials.jsonl` and
+The runner expands the five seed scenarios into 50 deterministic local cases.
+Each case contains 32 messages, uses the production 20-message active window,
+and includes an early relevant fact plus distractor messages. It performs one
+unrecorded warm-up, measures page-out and page-in separately, records MRR@5,
+and sweeps AgentOS thresholds `0.40`, `0.45`, `0.50`, `0.55`, and `0.60` with
+five retrieval candidates. This produces 400 trials: 50 cases across eight
+configurations. Results are written to `results/smoke_trials.jsonl` and
 `results/smoke_summary.json`.
 
 Each run uses a timestamped isolated Chroma swap directory, so cold page-out
@@ -155,3 +158,51 @@ python evaluations/context_engine/scripts/run_smoke_test.py
 
 The smoke score is a diagnostic only. The public benchmark should use a fixed
 judge, record the model and prompt, and report judge cost separately.
+
+## External benchmark workflow
+
+The smoke dataset is intentionally small and synthetic. It must not be used
+as the final quality claim. External benchmark runs use the original questions
+without generated paraphrases.
+
+### LoCoMo
+
+Download the official `data/locomo10.json` from the
+[LoCoMo repository](https://github.com/snap-research/locomo), then convert it:
+
+```powershell
+python evaluations/context_engine/scripts/convert_locomo.py `
+  --input path/to/locomo10.json `
+  --output evaluations/context_engine/datasets/locomo.json
+python evaluations/context_engine/scripts/run_smoke_test.py `
+  --dataset evaluations/context_engine/datasets/locomo.json `
+  --repetitions 1
+```
+
+The converter preserves LoCoMo evidence dialog IDs and writes a checksum
+manifest. It does not add synthetic questions. Retrieval scores should be
+reported by LoCoMo category and by conversation, with no questions from the
+same conversation split between development and test data.
+
+### LongMemEval
+
+LongMemEval is the larger follow-up benchmark. Use the official
+[LongMemEval-V2 repository](https://github.com/xiaowu0162/LongMemEval-V2) and
+convert a release containing explicit evidence annotations:
+
+```powershell
+python evaluations/context_engine/scripts/convert_longmemeval.py `
+  --input path/to/longmemeval.json `
+  --output evaluations/context_engine/datasets/longmemeval.json
+python evaluations/context_engine/scripts/run_smoke_test.py `
+  --dataset evaluations/context_engine/datasets/longmemeval.json `
+  --repetitions 1
+```
+
+The converter fails if evidence annotations are missing. This is deliberate:
+without evidence, answer scoring may still be possible, but retrieval Recall
+and MRR would not be a valid measurement.
+
+External runs should report the dataset release/checksum, model and embedding
+model, threshold selected on development data, test categories, answer judge,
+confidence intervals, and cold versus warm cache timings.
