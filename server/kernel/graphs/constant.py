@@ -11,9 +11,11 @@ from planning.agent_retriever import (
 
 
 _EXPLICIT_INTENT_RULES = (
+    ("weather_agent", ("weather", "forecast", "temperature", "humidity", "wind speed", "will it rain", "precipitation")),
     ("a2", ("current time", "current date", "date and time", "time and date", "timezone", "time zone")),
     ("a1", ("system information", "system info", "machine information", "machine info", "hardware", "running processes", "operating system")),
     ("a3", ("wikipedia", "search for", "research", "black hole", "blackhole", "information about")),
+    ("a4", ("file", "files", "document", "documents", "folder", "folders", "directory", "directories")),
     ("email_agent", ("email", "e-mail", "send it to", "send this to", "mail it to")),
     ("code_runner", ("python", "write code", "python code", "program", "test them", "test it", "add two numbers", "execute code")),
 )
@@ -41,7 +43,7 @@ def build_planner_context(user_task: str) -> tuple[str, list[str]]:
         if agent_name in valid_types and agent_name not in candidate_map:
             candidates.append({
                 "name": agent_name,
-                "description": f"Agent: {agent_name}\nCapabilities:\n{descriptions[agent_name]}",
+                "description": f"Agent: {agent_name}\nCapabilities:\n{descriptions.get(agent_name, '')}",
                 "similarity": None,
                 "selection": "explicit user intent",
             })
@@ -67,35 +69,21 @@ def build_planner_context(user_task: str) -> tuple[str, list[str]]:
     prompt = f"""
 You are the AgentOS planning engine.
 
-Create the smallest correct ordered execution plan for the user's task.
-First identify every distinct requested sub-task, then map each sub-task to
-the candidate agent that can perform it. Include all required agents for
-multi-task prompts. Put each concrete sub-task not covered by any candidate in
-unhandled_tasks; do not omit it merely because no candidate can perform it.
-Preserve the order in which the user requests sub-tasks, especially words such
-as before, after, then, first, and once. For a mixed task, include an
-agent_creator step where the unsupported sub-task belongs in that sequence,
-and set that step's task field to only the unsupported sub-task(s). Add
-dependencies to enforce the requested order. Agent Creator is a fallback for
-unsupported work, not a general-purpose semantic match. If no existing agent
-can handle any part, leave agents and steps empty; Prompt_type will decide
-whether this is conversation or a wholly new task.
-Return an empty plan only when all parts are conversational or need no agent.
-Select A3 only when the requested work itself is research, source gathering,
-fact-checking, or sourced academic/scientific findings. Do not select A3 merely
-for a factual question or an unsupported calculation/task; put unsupported work
-in unhandled_tasks so Agent Creator can handle it.
+Break the user's request into its meaningful requested tasks, then create the
+smallest correct ordered execution plan for the parts covered by the candidates.
 Use only the candidate agents below. Do not invent agent names.
-Return an empty plan for a general question that needs no specialized agent.
+List any meaningful actionable parts that no candidate can perform in
+uncovered_tasks. Do not list greetings, ordinary questions, or simple requests
+that a normal LLM can answer directly. Group related uncovered parts that need
+the same core capability into one item.
 Order agents according to dependencies. Select multiple agents only when the
 output of one is needed by another. When the task explicitly requests multiple
 capabilities, include every matching candidate. Do not drop a requested
 research, email, or code-execution step just because another step is sufficient
 for part of the task.
 Return a JSON object with these fields: agents (array of strings), steps (array
-of objects with id, agent, depends_on, purpose, and optional task), unhandled_tasks (array of
-concrete unsupported subtasks), confidence (number from 0 to 1), and rationale
-(string). Each purpose must explain the concrete responsibility
+of objects with id, agent, depends_on, purpose), uncovered_tasks (array of
+strings), confidence (number from 0 to 1), and rationale (string). Each purpose must explain the concrete responsibility
 of that node; do not use generic text such as "Execute the selected agent.".
 Do not call tools.
 

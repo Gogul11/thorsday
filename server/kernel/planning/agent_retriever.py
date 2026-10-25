@@ -21,9 +21,12 @@ _collection = None
 
 def _sync_index(collection) -> None:
     descriptions = get_agent_descriptions()
-    # Agent Creator is dispatched by Prompt_type after an empty plan; it must
-    # not compete with task specialists in semantic capability retrieval.
-    ids = [name for name in descriptions if name not in _EXCLUDED_FROM_RETRIEVAL]
+    ids = list(descriptions)
+    existing_ids = _collection.get(include=["metadatas"]).get("ids", [])
+    stale_ids = [agent_id for agent_id in existing_ids if agent_id not in descriptions]
+    if stale_ids:
+        _collection.delete(ids=stale_ids)
+        logger.info("Removed stale agent capability entries | agents=%s", stale_ids)
     documents = [f"Agent: {name}\nCapabilities:\n{descriptions[name]}" for name in ids]
     metadatas = [
         {
@@ -93,8 +96,8 @@ def _get_collection():
 
 
 @lru_cache(maxsize=128)
-def retrieve_agent_candidates(task: str) -> tuple[dict, ...]:
-    """Return the most semantically relevant agent candidates for a task."""
+def retrieve_agent_candidates(task: str, threshold: float = 0.35) -> tuple[dict, ...]:
+    """Return candidates whose cosine similarity meets the acceptance threshold."""
     collection = _get_collection()
     total = collection.count()
     if total == 0:
@@ -116,8 +119,8 @@ def retrieve_agent_candidates(task: str) -> tuple[dict, ...]:
             "similarity": round(1 - distance, 4),
         }
         for document, metadata, distance in zip(documents, metadatas, distances)
-        if metadata.get("agent_name") not in _EXCLUDED_FROM_RETRIEVAL
-    )[:_TOP_K]
+        if 1 - distance >= threshold
+    )
     logger.info(
         "Planner candidates retrieved | task_chars=%d | candidates=%s",
         len(task),

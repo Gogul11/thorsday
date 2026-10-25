@@ -1,4 +1,5 @@
-"""Create and immediately run specialized agents for unsupported tasks."""
+"""Create and run agents for substantial tasks needing an unsupported capability."""
+from __future__ import annotations
 
 from pydantic import BaseModel, Field
 
@@ -10,10 +11,13 @@ from tools.agent_creator_tools import (
 )
 
 AGENT_CREATOR_DESCRIPTION = """
-Creates a reusable specialized agent and the Python tools it needs when a task
-cannot be performed by the existing agents. Validates generated Python syntax,
-registers the new tool and agent in their registries, indexes the new capability
-for future retrieval, and immediately runs the newly created agent for the task.
+agent_creator builds, validates, registers, and runs agents for meaningful new tasks routed by the planner.
+
+Use agent_creator whenever:
+- The planner routes a substantial, actionable request here.
+- New agent code and tools must be written, saved, registered, and executed to fulfill the request.
+
+Create an agent for the task's core capability.
 """
 
 _MAX_GENERATION_ATTEMPTS = 3
@@ -37,97 +41,31 @@ async def run_agent_creator(
     callbacks: list | None = None,
     **kwargs,
 ) -> str:
-    """Generate, register, and directly execute an agent for an unsupported task."""
-    feedback = "No previous generation attempt."
-    generated = None
+    """Create, register, and execute an agent for a task routed here by the planner."""
+    logger.info("agent_creator starting creation for task: %s", task[:100])
+    agent = create_agent(model=model, tools=AGENT_CREATOR_TOOLS)
 
-    for attempt in range(1, _MAX_GENERATION_ATTEMPTS + 1):
-        spec_prompt = f"""You are AgentOS Agent Creator. Existing agents cannot perform this task.
-Create a reusable domain agent and an efficient, functional tool that performs
-the requested computation or operation. Do not create a one-off name based on
-specific numbers or entities in this request.
+    prompt = f"""You are {_NAME} of AgentOS.
 
-Requirements:
-- Return complete Python source for a module in server/kernel/tools/.
-- Define each listed tool function with @tool from langchain_core.tools and useful argument docstrings.
-- Define the listed tools variable as a list containing every generated tool function.
-- Use only imports required by the task; avoid placeholder or unimplemented functions.
-- Set agent_stem to a lowercase snake_case reusable name ending in _agent and tool_file_stem to the corresponding name ending in _tools.
-- Write a concise but precise description and agent_prompt that make the generated agent handle this domain task correctly.
-- The agent will be assembled using the existing AgentOS create_agent structure and the generated tools variable.
-- Do not attempt to perform the user's task in this generation step.
+The planner routed this meaningful new task here. Determine its core function, then build and run an agent that performs it.
 
-The json object must contain every schema field with these exact names:
-agent_stem, display_name, description, agent_prompt, tool_file_stem,
-tools_var_name, tool_function_names, and tool_code. Do not replace
-tool_function_names with `tools`. `tool_code` must contain the complete source
-code for the tool module, not a summary or an empty value.
+User Task:
+{task}
 
-User task:\n{task}
+Previous Context:
+{context}
 
-Context:\n{context}
-
-Previous attempt feedback:\n{feedback}
-
-Generation attempt: {attempt} of {_MAX_GENERATION_ATTEMPTS}
-
-Return only a valid json object matching the GeneratedAgentSpec schema. The
-response must be json, with no surrounding prose or markdown fences.
+CREATION RULES:
+1. Identify the core function needed to complete this meaningful task. Name the agent after that capability, not after the user's exact input values. Keep the implementation useful for related tasks with the same core function.
+2. Write Python tools that perform the needed work. Each tool must have clear inputs, validation, useful error handling, and a LangChain @tool docstring.
+3. Call save_tool_file(filename='<capability>_tools.py', code=...) to validate and save the tools.
+4. Call create_and_register_agent with a matching '<capability>_agent' stem, display name, capability description, tool file stem, tools variable name, and short planner summary. This validates, saves, and registers the new agent.
+5. Call run_generated_agent with the new agent's file stem, run function name, the user's task, and the previous context. Return the generated agent's result.
 """
-        try:
-            generated: GeneratedAgentSpec = await model.with_structured_output(
-                GeneratedAgentSpec, method="json_mode"
-            ).ainvoke(spec_prompt)
-        except Exception as exc:
-            feedback = (
-                "The previous response did not match GeneratedAgentSpec. "
-                "Return every required field using its exact name, especially "
-                "display_name, tools_var_name, tool_function_names, and complete "
-                f"tool_code. Validation error: {exc}"
-            )
-            continue
-        tool_message = str(await save_tool_file.ainvoke(
-            {
-                "filename": f"{generated.tool_file_stem}.py",
-                "code": generated.tool_code,
-                "tools_var_name": generated.tools_var_name,
-                "function_names": generated.tool_function_names,
-            },
-            config={"callbacks": callbacks} if callbacks else None,
-        ))
-        if "SUCCESS:" in tool_message:
-            agent_message = str(await create_and_register_agent.ainvoke(
-                {
-                    "agent_stem": generated.agent_stem,
-                    "display_name": generated.display_name,
-                    "description": generated.description,
-                    "agent_prompt": generated.agent_prompt,
-                    "tool_file_stem": generated.tool_file_stem,
-                    "tools_var_name": generated.tools_var_name,
-                },
-                config={"callbacks": callbacks} if callbacks else None,
-            ))
-            if "SUCCESS:" in agent_message:
-                break
-            rollback_generated_tool(
-                generated.tool_file_stem,
-                generated.tools_var_name,
-                generated.tool_function_names,
-            )
-            feedback = agent_message
-            continue
-        feedback = tool_message
-    else:
-        return (
-            f"Could not create and register an agent after {_MAX_GENERATION_ATTEMPTS} attempts. "
-            f"Last error: {feedback}"
-        )
 
-    return await run_generated_agent(
-        model=model,
-        agent_file_stem=generated.agent_stem,
-        run_fn_name=f"run_{generated.agent_stem}",
-        task=task,
-        context=context,
-        callbacks=callbacks,
+    logger.info("agent_creator creating agent for task: %s", task[:80])
+
+    result = await agent.ainvoke(
+        {"messages": [{"role": "user", "content": prompt}]},
+        config={"callbacks": callbacks} if callbacks else None,
     )
