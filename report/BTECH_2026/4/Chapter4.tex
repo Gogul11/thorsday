@@ -25,11 +25,11 @@ Agent descriptions are embedded in a persistent ChromaDB collection. A task desc
 \section{\uppercase{Planner and Fallback}}
 The planner asks the configured LLM for a structured execution plan. The response is parsed into steps and normalised against the agent registry. If the LLM request fails, exceeds quota, or produces invalid structure, a deterministic fallback creates a usable plan from the best retrieved agent(s). This maintains task execution and observability without pretending that the fallback has the same reasoning quality as the provider.
 
-Figure~\ref{fig:optimized-planner} illustrates the complete optimized planning path, from semantic candidate retrieval through structured plan validation, fallback routing, DAG construction, scheduling, and runtime execution.
-\begin{figure}[H]
+Figure~\ref{fig:optimized-planner} illustrates the complete optimised planning path, from semantic candidate retrieval through structured plan validation, fallback routing, DAG construction, scheduling, and runtime execution.
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\textwidth]{4/figures/optimized_planner.png}
-\caption{Optimized semantic planner and DAG construction}
+\caption{Optimised semantic planner and DAG construction}
 \label{fig:optimized-planner}
 \end{figure}
 
@@ -92,7 +92,7 @@ The resource manager checks active global slots, active slots for the task, and 
 Events are JSON records containing task identifier, step identifier, agent name, execution identifier, status, timestamp, priority, effective priority, queue wait, and attempt. The kernel publishes them on \texttt{kernel\_events}; the backend subscribes and forwards them over WebSocket. Scheduler records use keys such as \texttt{agentos:scheduler:ready} and \texttt{agentos:scheduler:job:<execution\_id>}. MongoDB persists task history and event records for later inspection.
 Table~\ref{tab:rediskeys} summarises the Redis channels and scheduler keys used for task transport, lifecycle events, queue persistence, and recovery.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \caption{Principal Redis channels and keys}
 \label{tab:rediskeys}
@@ -112,7 +112,6 @@ Name & Purpose & Durability role \\
 \section{\uppercase{Context Page-Out and Page-In}}
 The pager moves messages from the active conversation state to a persistent ChromaDB collection after a configured window is exceeded. Each page stores message content, task metadata, and an embedding. On a later turn, the current query is embedded and the collection is searched; selected messages are reintroduced in relevance order. The implementation emits page-out and page-in metrics, allowing the UI or logs to verify that paging occurred.
 
-\clearpage
 \section{\uppercase{Sandboxed Execution and Self-Healing}}
 The code runner creates a scoped temporary script, launches it with \texttt{asyncio.create\_subprocess\_exec}, captures stdout/stderr, and terminates the subprocess after a strict timeout. Output size is limited to prevent unbounded memory use. On a traceback, the error is supplied to the coder/tester agent and a revised script is attempted, up to three times. The runner publishes line-oriented output and final status as kernel events. No claim is made that an ordinary subprocess is equivalent to a container or microVM security boundary.
 
@@ -121,7 +120,7 @@ The task activity panel displays lifecycle events, scheduler state, queue positi
 
 \section{\uppercase{Configuration and Verification}}
 Table~\ref{tab:config} lists the important policy values. Verification for this phase consists of Python compilation, TypeScript type checking, scheduler/resource smoke tests, DAG validation checks, the seeded priority-versus-FIFO scheduler workload benchmark reported in Chapter~\ref{chap5}, and manual event/graph inspection. The benchmark is a same-host scheduler comparison with stubbed persistence; it is not a production capacity or model-quality claim.
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \caption{Selected AgentOS configuration values}
 \label{tab:config}
@@ -140,7 +139,7 @@ Self-healing attempts & 3 & Maximum code repair retries \\
 \end{table}
 
 \section{\uppercase{AgentOS Algorithmic Specification}}
-The following algorithm sheets define the AgentOS execution design. Together they specify the relationship between the planner, executor, lifecycle manager, context pager, dependency-aware DAG executor, scheduler, and priority-aging model. They complement the executable implementation described above. The sheets that describe full execution-context restoration, hard time-slice suspension, permission stores, or preemption represent planned extensions where the current implementation remains cooperative or partial.
+The following algorithm sheets define the AgentOS execution design. Together they specify the relationship between the planner, executor, lifecycle manager, context pager, dependency-aware DAG executor, scheduler, and priority-aging model. They complement the executable implementation described above, but should be read as algorithmic specifications rather than as evidence that every operation is fully realised in the current runtime. In particular, the sheets that describe full execution-context restoration, hard time-slice suspension, permission stores, or preemption represent planned extensions where the current implementation remains cooperative or partial.
 Algorithms~\ref{alg:semantic-agent-retrieval}, \ref{alg:dependency-validation}, and \ref{alg:priority-aging-scheduler} describe the implemented retrieval, validation, and scheduler procedures. Algorithms~\ref{alg:lifecycle}, \ref{alg:vm-context-paging}, \ref{alg:execute-agent}, \ref{alg:semantic-agent-planning}, \ref{alg:execute-plan-dag}, and \ref{alg:global-priority-aging-scheduler} present the lifecycle, context-paging, cooperative execution, semantic planning, DAG, and global scheduling specifications in that order. The separate priority-aging/time-slice model previously shown as Figure 4.7 has been removed; the implemented priority equation and scheduler procedure are documented earlier in this chapter.
 
 \begin{algorithm}[H]

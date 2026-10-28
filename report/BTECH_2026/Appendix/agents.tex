@@ -1,14 +1,31 @@
-\chapter{\uppercase{Agent Catalogue and Internal Workflows}}
+\refstepcounter{chapter}
+\chapter*{\uppercase{APPENDIX}}
+\hypertarget{appendix-heading}{}
+\makeatletter
+\def\@currentHref{appendix-heading}
+\addcontentsline{toc}{chapter}{APPENDIX}
+\makeatother
+\vspace{-0.4cm}
+\hypertarget{appendix-a-heading}{}
+\begin{center}
+{\Large\bfseries APPENDIX \thechapter\\[0.25em]
+Agent Catalogue and Internal Workflows}
+\end{center}
+\makeatletter
+\def\@currentHref{appendix-a-heading}
+\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}\uppercase{Agent Catalogue and Internal Workflows}}
+\makeatother
 \label{app:agents}
-\addcontentsline{toc}{chapter}{AGENT CATALOGUE AND INTERNAL WORKFLOWS}
 
 This appendix documents the agent implementations in
 \texttt{server/kernel/Agents/agents/}. The diagrams describe the internal
 responsibility of each agent and its actual tool or model interaction. The
 planner, scheduler, global execution state, and frontend are intentionally not
 shown here because they are documented in the system-design chapter.
+The registered agents and their implemented responsibilities are summarised in
+Table~\ref{tab:agent-catalogue}.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}X}
 \toprule
@@ -32,7 +49,7 @@ Agent Creator & Creation and registration of new specialised agents. \\
 \end{figure}
 
 \newcommand{\AgentArchitecture}[6]{%
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
@@ -57,7 +74,7 @@ Agent Creator & Creation and registration of new specialised agents. \\
 }
 
 \newcommand{\AgentFlow}[5]{%
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \resizebox{0.92\textwidth}{!}{%
 \begin{tikzpicture}[
@@ -106,8 +123,9 @@ and release, machine architecture, and processor descriptor using Python's
 \texttt{platform} module. The agent therefore provides a compact host
 identity report; process enumeration and detailed resource monitoring are not
 implemented by the current tool.
+The system-information processing logic is shown in Figure~\ref{fig:a1-logic}.
 \AgentArchitecture{Agent A1}{system-state question}{system inspection and analysis}{\texttt{A1\_TOOLS}}{clear system report}{a1}
-\begin{figure}[H]\centering
+\begin{figure}[!htbp]\centering
 \begin{tikzpicture}[node distance=8mm, logiclabel]
 \node[logicstep] (request) {System information request};
 \node[logicstep, below=of request] (call) {Invoke \texttt{get\_system\_info}};
@@ -134,8 +152,9 @@ The A2 implementation creates a LangChain agent with \texttt{get\_time}. The
 tool returns the host's current \texttt{datetime.now()} value as a formatted
 string. It does not currently accept an explicit timezone or location, so its
 answer represents the runtime host clock.
+The date-and-time processing logic is shown in Figure~\ref{fig:a2-logic}.
 \AgentArchitecture{Agent A2}{date, time, or timezone question}{resolve the requested time information}{\texttt{A2\_TOOLS}}{precise date/time response}{a2}
-\begin{figure}[H]\centering
+\begin{figure}[!htbp]\centering
 \begin{tikzpicture}[node distance=10mm, logiclabel]
 \node[logicstep] (request) {Date or time request};
 \node[logicstep, right=of request] (invoke) {Invoke \texttt{get\_time}};
@@ -158,8 +177,9 @@ URLs; \texttt{trusted\_web\_search} restricts search results to configured
 academic and scientific domains, validates result URLs, removes duplicates,
 and returns source snippets. The agent prompt requires concise evidence and
 prohibits fabricated citations or URLs.
+The research and source-verification flow is shown in Figure~\ref{fig:a3-logic}.
 \AgentArchitecture{Agent A3}{research question}{search, verify, and extract factual evidence}{Wikipedia and trusted web-search tools}{concise facts with source URL}{a3}
-\begin{figure}[H]\centering
+\begin{figure}[!htbp]\centering
 \begin{tikzpicture}[node distance=9mm and 14mm, logiclabel]
 \node[logicstep] (query) {Research question};
 \node[logicstep, below left=of query] (wiki) {Wikipedia API search and article summary};
@@ -191,8 +211,9 @@ classification. PDF and DOCX readers are supported through \texttt{pypdf} and
 \texttt{request\_delete\_confirmation} records a fingerprint in Redis,
 publishes a frontend confirmation event, and uses a 300-second expiry before
 the backend performs or cancels the operation.
+The file-operation and deletion-confirmation flow is shown in Figure~\ref{fig:a4-logic}.
 \AgentArchitecture{Agent A4}{file path and requested operation}{inspect or transform the requested file; protect deletion}{file/document tools and confirmation service}{file result or confirmation state}{a4}
-\begin{figure}[H]\centering
+\begin{figure}[!htbp]\centering
 \begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (request) {File or document request};
 \node[logicdecision, below=of request] (delete) {Deletion requested?};
@@ -220,8 +241,9 @@ loads the current user name and email for sender context, selects the requested
 genre, and drafts, rewrites, summarises, or formats text. It is intentionally
 not an email-delivery component and must not send messages or emit unresolved
 placeholders.
+The content-creation flow is shown in Figure~\ref{fig:content-creator-logic}.
 \AgentArchitecture{Content Creator Agent}{writing request and sender context}{choose genre, tone, structure, and format}{language model without external tools}{completed text without placeholders}{content-creator}
-\begin{figure}[H]\centering
+\begin{figure}[!htbp]\centering
 \begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (request) {Content request};
 \node[logicdecision, below=of request] (type) {Requested genre?};
@@ -249,8 +271,9 @@ through SMTP when credentials are available; otherwise it returns an explicit
 simulation-mode response and does not send network mail. The agent extracts
 the recipient, subject, and body, removes unresolved placeholders, and returns
 the tool's delivery status.
+The email-delivery and simulation flow is shown in Figure~\ref{fig:email-logic}.
 \AgentArchitecture{Email Agent}{recipient, subject, body, or prior draft}{clean and prepare a deliverable email}{\texttt{EMAIL\_TOOLS} and \texttt{send\_email}}{delivery confirmation}{email}
-\begin{figure}[H]\centering
+\begin{figure}[!htbp]\centering
 \begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (request) {Email task and previous draft};
 \node[logicstep, below=of request] (fields) {Extract recipient, subject, and body};
@@ -274,13 +297,18 @@ the tool's delivery status.
 \clearpage
 \section{Weather Agent}
 
+\begingroup
+\setlength{\emergencystretch}{3em}
 The Weather Agent uses Open-Meteo through \texttt{get\_current\_weather} and
 \texttt{get\_weather\_forecast}. Each operation geocodes the city first, then
 requests current or daily forecast data, maps WMO weather codes to readable
 conditions, and reports Celsius/Fahrenheit temperatures, humidity, wind, and
 precipitation. Forecast length is bounded to one through seven days.
+\par
+\endgroup
+The weather-retrieval and reporting logic is shown in Figure~\ref{fig:weather-logic}.
 \AgentArchitecture{Weather Agent}{location and weather request}{resolve location and requested time horizon}{current-weather and forecast tools}{weather report in clear units}{weather}
-\begin{figure}[H]\centering
+\begin{figure}[!htbp]\centering
 \begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (request) {Weather request and city};
 \node[logicstep, below=of request] (geo) {Geocode city with Open-Meteo};
@@ -306,8 +334,9 @@ The Loan EMI Agent uses \texttt{compute\_emi\_and\_schedule}. It converts the
 annual percentage rate to a monthly rate, computes the fixed-payment EMI,
 derives total payment and interest, and produces a monthly schedule for short
 tenures or an annual amortisation breakdown for longer tenures.
+The loan-EMI and amortisation logic is shown in Figure~\ref{fig:loan-emi-logic}.
 \AgentArchitecture{Loan EMI Calculator Agent}{principal, rate, and tenure}{validate financial parameters and calculate repayment}{\texttt{LOAN\_EMI\_TOOLS}}{EMI and amortisation result}{loan-emi}
-\begin{figure}[H]\centering
+\begin{figure}[!htbp]\centering
 \begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (input) {Principal, annual rate, and tenure};
 \node[logicdata, below=of input] (emi) {Convert annual rate to monthly rate and compute fixed EMI};
@@ -334,8 +363,9 @@ tenures or an annual amortisation breakdown for longer tenures.
 The Crypto PnL Agent uses \texttt{calculate\_crypto\_pnl}. It calculates buy
 and sell notional values, applies the fee percentage to both sides, derives
 net profit, and computes ROI relative to total purchase outflow.
+The cryptocurrency PnL and ROI logic is shown in Figure~\ref{fig:crypto-pnl-logic}.
 \AgentArchitecture{Crypto PnL Agent}{trade details and report request}{calculate net PnL and return on investment}{\texttt{CRYPTO\_PNL\_TOOLS}}{formatted investment report}{crypto-pnl}
-\begin{figure}[H]\centering
+\begin{figure}[!htbp]\centering
 \begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (input) {Quantity, buy price, sell price, and fee rate};
 \node[logicdata, below left=of input] (buy) {Buy notional plus purchase fee};
@@ -362,8 +392,9 @@ source code to 20,000 characters, executes Python with isolated mode and a
 sanitised environment, bounds runtime to ten seconds, captures at most 64,000
 output characters, publishes terminal events, and limits concurrent runs to
 two. The agent repairs failures for at most three attempts.
+The code-generation, sandbox-execution, and repair logic is shown in Figure~\ref{fig:code-runner-logic}.
 \AgentArchitecture{Code Runner Agent}{programming request and prior feedback}{generate, execute, inspect, and repair Python}{sandboxed Python execution tool}{stdout, duration, or bounded failure report}{code-runner}
-\begin{figure}[H]\centering
+\begin{figure}[!htbp]\centering
 \resizebox{0.82\textwidth}{!}{\begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (request) {Coding or testing request};
 \node[logicstep, below=of request] (generate) {Generate standalone Python script};
@@ -396,8 +427,9 @@ the agent module, updates the agent registry and planner constants, validates
 the changes, and rolls them back on failure. \texttt{run\_generated\_agent}
 then loads and executes the new agent. The implementation is present in the
 source directory but is commented out of the default registry.
+The dynamic agent-creation and registration logic is shown in Figure~\ref{fig:agent-creator-logic}.
 \AgentArchitecture{Agent Creator}{unsupported specialised task}{design capability, create files, and register new components}{tool-file, agent-file, and registry tools}{result from the generated agent}{agent-creator}
-\begin{figure}[H]\centering
+\begin{figure}[!htbp]\centering
 \begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (request) {Unsupported specialised capability};
 \node[logicstep, below=of request] (tool) {Generate tool source, AST-validate, save, and register};

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.10.5)  26 OCT 2026 02:36
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.10.5)  28 OCT 2026 11:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -148,11 +148,6 @@ Package: ragged2e 2023/06/22 v3.6 ragged2e Package
 \RaggedLeftParindent=\skip67
 \RaggedRightParindent=\skip68
 \JustifyingParindent=\skip69
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/hyphenat\hyphenat.sty
-Package: hyphenat 2009/09/02 v2.3c hyphenation utilities
-\langwohyphens=\language79
-LaTeX Info: Redefining \_ on input line 43.
 )
 (algorithm.sty
 Package: algorithm 
@@ -1103,34 +1098,35 @@ File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count374
 ) (authesis.aux (Abstract/abstract.aux) (acknowl.aux)
 (Acronyms/acronyms.aux) (1/Chapter1.aux) (2/Chapter2.aux) (3/Chapter3.aux)
-(4/Chapter4.aux) (5/Chapter5.aux) (Appendix/appendix.aux)
-(Conclusion/conclusion.aux) (Appendix/agents.aux) (References/references.aux))
+(4/Chapter4.aux) (5/Chapter5.aux) (Conclusion/conclusion.aux)
+(declaration_ai.aux) (Appendix/agents.aux) (Appendix/ai_prompts.aux)
+(References/references.aux))
 \openout1 = `authesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 161.
-LaTeX Font Info:    ... okay on input line 161.
-LaTeX Font Info:    Checking defaults for OMS/pzccm/m/n on input line 161.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 160.
+LaTeX Font Info:    ... okay on input line 160.
+LaTeX Font Info:    Checking defaults for OMS/pzccm/m/n on input line 160.
 LaTeX Font Info:    Trying to load font information for OMS+pzccm on input line
- 161.
+ 160.
 
 (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omspzccm.fd
 File: omspzccm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/pzccm.
 )
-LaTeX Font Info:    ... okay on input line 161.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 161.
-LaTeX Font Info:    ... okay on input line 161.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 161.
-LaTeX Font Info:    ... okay on input line 161.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 161.
-LaTeX Font Info:    ... okay on input line 161.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 161.
-LaTeX Font Info:    ... okay on input line 161.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 161.
-LaTeX Font Info:    ... okay on input line 161.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 161.
-LaTeX Font Info:    ... okay on input line 161.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 161.
-LaTeX Font Info:    ... okay on input line 161.
+LaTeX Font Info:    ... okay on input line 160.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 160.
+LaTeX Font Info:    ... okay on input line 160.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 160.
+LaTeX Font Info:    ... okay on input line 160.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 160.
+LaTeX Font Info:    ... okay on input line 160.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 160.
+LaTeX Font Info:    ... okay on input line 160.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 160.
+LaTeX Font Info:    ... okay on input line 160.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 160.
+LaTeX Font Info:    ... okay on input line 160.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 160.
+LaTeX Font Info:    ... okay on input line 160.
 
 (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
 ii
@@ -1157,17 +1153,17 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 fg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-Package hyperref Info: Link coloring OFF on input line 161.
+Package hyperref Info: Link coloring OFF on input line 160.
  (authesis.out) (authesis.out)
 \@outlinefile=\write4
 \openout4 = `authesis.out'.
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-<auemblem.pdf, id=327, 120.45pt x 118.4425pt>
+<auemblem.pdf, id=309, 120.45pt x 118.4425pt>
 File: auemblem.pdf Graphic file (type pdf)
 <use auemblem.pdf>
-Package pdftex.def Info: auemblem.pdf  used on input line 201.
+Package pdftex.def Info: auemblem.pdf  used on input line 200.
 (pdftex.def)             Requested size: 38.54477pt x 37.90236pt.
  [1
 
@@ -1175,19 +1171,7 @@ Package pdftex.def Info: auemblem.pdf  used on input line 201.
 y/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc} <./auemblem.pdf>]
 \aulength=\skip137
 \datewidth=\skip138
-
-Underfull \hbox (badness 1577) in paragraph at lines 223--224
-[]\OT1/ptm/m/n/13 Certified that this project re-port ti-tled \OT1/ptm/b/n/13 A
-gen-tOS - A Hy-brid
- []
-
-
-Underfull \hbox (badness 1132) in paragraph at lines 223--224
-\OT1/ptm/m/n/13 (2023115026), Oviyashree C J (2023115052), and Kudimi Guna Sekh
-ar
- []
-
-[2
+ [2
 
 ]
 \openout2 = `Abstract/abstract.aux'.
@@ -1197,42 +1181,13 @@ ar
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 2.
 
-
-Underfull \hbox (badness 1189) in paragraph at lines 4--5
-\OT1/ptm/m/n/13 mul-ti-ple spe-cialised agents. How-ever, ap-pli-ca-tion de-vel
--op-ers com-monly
- []
-
-
-Underfull \hbox (badness 1521) in paragraph at lines 4--5
-\OT1/ptm/m/n/13 ser-vices around au-tonomous AI ap-pli-ca-tions. The im-ple-men
-ted sys-tem
- []
-
 ) [3
 
 
 ]
 \openout2 = `acknowl.aux'.
 
- (acknowl.tex
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 2.
-
-
-Underfull \hbox (badness 1917) in paragraph at lines 4--5
-\OT1/ptm/m/n/13 Tech-nol-ogy, Anna Uni-ver-sity, Col-lege of En-gi-neer-ing, Gu
-indy, for her
- []
-
-
-Underfull \hbox (badness 1281) in paragraph at lines 6--7
-\OT1/ptm/m/n/13 and fa-cil-i-ties re-quired to un-der-take this project. We als
-o ac-knowl-edge
- []
-
-) [4
+ (acknowl.tex) [4
 
 
 
@@ -1299,23 +1254,8 @@ LaTeX Font Warning: Font shape `U/lasy/m/n' in size <6.5> not available
 \openout6 = `authesis.lot'.
 
  [8] (authesis.lof
-Underfull \hbox (badness 10000) in paragraph at lines 6--6
- [][] [][]\OT1/ptm/m/n/13 Planner, val-i-da-tion, and dependency-aware 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 7--7
- [][] [][]\OT1/ptm/m/n/13 Context page-out, vector-store re-trieval, and 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 12--12
- [][] [][]\OT1/ptm/m/n/13 Sandboxed Python ex-e-cu-tion and bounded 
- []
-
-
-Underfull \hbox (badness 4132) in paragraph at lines 16--16
- [][] [][]\OT1/ptm/m/n/13 Overall out-comes and per-category end-to-end 
+Underfull \hbox (badness 1062) in paragraph at lines 12--12
+ [][] [][]\OT1/ptm/m/n/13 Sandboxed Python ex-e-cu-tion and bounded self- 
  []
 
 [9
@@ -1367,70 +1307,23 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 14.
 
 
-Underfull \hbox (badness 3492) in paragraph at lines 15--16
-\OT1/ptm/m/n/13 that co-or-di-nates het-ero-ge-neous agents across mul-ti-ple c
-on-cur-rent tasks
- []
-
-
-Underfull \hbox (badness 1107) in paragraph at lines 15--16
-\OT1/ptm/m/n/13 while en-forc-ing de-pen-den-cies, ob-serv-ing to-ken and con-c
-ur-rency bud-gets,
- []
-
-
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 17.
-
-
-Underfull \hbox (badness 4556) in paragraph at lines 21--22
-[]\OT1/ptm/m/n/13 Generate struc-tured ex-e-cu-tion plans, re-trieve suit-able 
-agents
- []
-
-
-Underfull \hbox (badness 1286) in paragraph at lines 24--25
-[]\OT1/ptm/m/n/13 Execute agent and code-runner tasks re-li-ably while pub-lish
--ing
- []
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 27.
 
 [2]
-Underfull \hbox (badness 1221) in paragraph at lines 28--29
-\OT1/ptm/m/n/13 Python run-ner. The scope does not claim com-plete RBAC, dis-tr
-ibuted
- []
-
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 30.
 
 
-Underfull \hbox (badness 3168) in paragraph at lines 31--32
-[]\OT1/ptm/m/n/13 The project con-tri-bu-tions are a uni-fied ex-e-cu-tion mode
-l for
- []
-
-
-Underfull \hbox (badness 2608) in paragraph at lines 31--32
-\OT1/ptm/m/n/13 a se-man-tic con-text pag-ing mech-a-nism, a priority-aging sch
-ed-uler with
- []
-
-
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 33.
 
-)
-Underfull \hbox (badness 2735) in paragraph at lines 34--324
-[]\OT1/ptm/m/n/13 Chapter 2 sur-veys re-search and tech-ni-cal sys-tems re-late
-d to
- []
-
-[3]
+) [3]
 \openout2 = `2/Chapter2.aux'.
 
  (2/Chapter2.tex
@@ -1447,112 +1340,41 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 7.
 
-
-Underfull \hbox (badness 4242) in paragraph at lines 8--9
-\OT1/ptm/m/n/13 al-though the cur-rent Agen-tOS im-ple-men-ta-tion is smaller a
-nd uses a
- []
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 12.
-
 [4
 
 
 
 
 ]
-Underfull \hbox (badness 3557) in paragraph at lines 13--14
-[]\OT1/ptm/m/n/13 MemGPT in-tro-duces vir-tual con-text man-age-ment that moves
-
- []
-
-
-Underfull \hbox (badness 1163) in paragraph at lines 13--14
-\OT1/ptm/m/n/13 or-gan-ises mem-ory into short-, mid-, and long-term lay-ers an
-d eval-u-ates
- []
-
-
-Underfull \hbox (badness 1383) in paragraph at lines 13--14
-\OT1/ptm/m/n/13 mem-ory re-ten-tion for con-ver-sa-tional agents [[]]. These wo
-rks mo-ti-vate
- []
-
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 17.
-
-
-Underfull \hbox (badness 1681) in paragraph at lines 18--19
-\OT1/ptm/m/n/13 Re-flex-ion uses ver-bal feed-back to im-prove sub-se-quent at-
-tempts with-out
- []
+(hyperref)                removing `\uppercase' on input line 14.
 
 [5]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 22.
-
-
-Underfull \hbox (badness 2662) in paragraph at lines 25--26
-[]\OT1/ptm/m/n/13 The work-flow and or-ches-tra-tion lit-er-a-ture em-pha-sises
- ex-plicit
- []
-
-
-Underfull \hbox (badness 3148) in paragraph at lines 25--26
-\OT1/ptm/m/n/13 and per-sists task/event ev-i-dence; au-to-matic con-tin-u-a-ti
-on of in-ter-rupted
- []
+(hyperref)                removing `\uppercase' on input line 23.
 
 [6]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 28.
+(hyperref)                removing `\uppercase' on input line 32.
 
+[7]
 
-Underfull \hbox (badness 1389) in paragraph at lines 29--30
-[]\OT1/ptm/m/n/13 The Model Con-text Pro-to-col spec-i-fies a stan-dard way for
- AI
- []
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\uppercase' on input line 37.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 31.
+(hyperref)                removing `\uppercase' on input line 40.
 
+[8]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 34.
+(hyperref)                removing `\uppercase' on input line 43.
 
-)
-Underfull \hbox (badness 2150) in paragraph at lines 35--325
-[]\OT1/ptm/m/n/13 The re-viewed sys-tems pro-vide strong so-lu-tions for in-di-
-vid-ual
- []
-
-
-Underfull \hbox (badness 3919) in paragraph at lines 35--325
-\OT1/ptm/m/n/13 con-cerns: plan-ning, mem-ory, graph or-ches-tra-tion, tool use
-, se-cu-rity,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 35--325
-\OT1/ptm/m/n/13 or work-flow dura-bil-ity. Agen-tOS's con-tri-bu-tion is an in-
-te-grated
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 35--325
-\OT1/ptm/m/n/13 ed-u-ca-tional/runtime pro-to-type that makes these con-cerns o
-b-serv-able
- []
-
-[7
-
-] [8]
+) [9]
 \openout2 = `3/Chapter3.aux'.
 
  (3/Chapter3.tex
@@ -1569,25 +1391,19 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 7.
 
-
-Underfull \hbox (badness 1173) in paragraph at lines 8--9
-[]\OT1/ptm/m/n/13 As shown in Fig-ure []3.1[], Agen-tOS is or-gan-ised as an ov
-er-all
- []
-
-[9
+[10
 
 
 
 
 ]
-<3/figures/agentos_architecture.jpeg, id=638, 1541.76pt x 1027.84pt>
+<3/figures/agentos_architecture.jpeg, id=634, 1541.76pt x 1027.84pt>
 File: 3/figures/agentos_architecture.jpeg Graphic file (type jpg)
 <use 3/figures/agentos_architecture.jpeg>
 Package pdftex.def Info: 3/figures/agentos_architecture.jpeg  used on input lin
 e 12.
 (pdftex.def)             Requested size: 495.09064pt x 330.06042pt.
- [10 <./3/figures/agentos_architecture.jpeg>]
+ [11 <./3/figures/agentos_architecture.jpeg>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 18.
@@ -1596,7 +1412,7 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 
 pdfTeX warning: pdflatex.exe (file ./3/figures/redis-flow-readable.pdf): PDF in
 clusion: found PDF version <1.7>, but at most version <1.5> allowed
-<3/figures/redis-flow-readable.pdf, id=644, 645.41125pt x 664.4825pt>
+<3/figures/redis-flow-readable.pdf, id=640, 645.41125pt x 664.4825pt>
 File: 3/figures/redis-flow-readable.pdf Graphic file (type pdf)
 <use 3/figures/redis-flow-readable.pdf>
 Package pdftex.def Info: 3/figures/redis-flow-readable.pdf  used on input line 
@@ -1606,30 +1422,24 @@ Package pdftex.def Info: 3/figures/redis-flow-readable.pdf  used on input line
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 27.
 
-[11
+[12
 
 
  <./3/figures/redis-flow-readable.pdf>]
 
 pdfTeX warning: pdflatex.exe (file ./3/figures/dag-readable.pdf): PDF inclusion
 : found PDF version <1.7>, but at most version <1.5> allowed
-<3/figures/dag-readable.pdf, id=664, 513.92pt x 1099.10625pt>
+<3/figures/dag-readable.pdf, id=660, 513.92pt x 1099.10625pt>
 File: 3/figures/dag-readable.pdf Graphic file (type pdf)
 <use 3/figures/dag-readable.pdf>
 Package pdftex.def Info: 3/figures/dag-readable.pdf  used on input line 31.
 (pdftex.def)             Requested size: 177.4751pt x 379.56102pt.
-
-Underfull \hbox (badness 3354) in paragraph at lines 28--34
-[]\OT1/ptm/m/n/13 The plan-ner re-trieves rel-e-vant agent de-scrip-tions, re-q
-uests a
- []
-
-[12 <./3/figures/dag-readable.pdf>]
+[13 <./3/figures/dag-readable.pdf>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 37.
 
-<3/figures/context_paging.png, id=678, 1541.76pt x 1027.84pt>
+<3/figures/context_paging.png, id=674, 1541.76pt x 1027.84pt>
 File: 3/figures/context_paging.png Graphic file (type png)
 <use 3/figures/context_paging.png>
 Package pdftex.def Info: 3/figures/context_paging.png  used on input line 41.
@@ -1638,47 +1448,35 @@ Package pdftex.def Info: 3/figures/context_paging.png  used on input line 41.
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 46.
 
-<3/figures/agent_scheduler.png, id=681, 1541.76pt x 1027.84pt>
+<3/figures/agent_scheduler.png, id=677, 1541.76pt x 1027.84pt>
 File: 3/figures/agent_scheduler.png Graphic file (type png)
 <use 3/figures/agent_scheduler.png>
 Package pdftex.def Info: 3/figures/agent_scheduler.png  used on input line 50.
 (pdftex.def)             Requested size: 412.56496pt x 275.04251pt.
-[13
+[14
 
  <./3/figures/context_paging.png>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 55.
 
-<3/figures/resource_manager.png, id=690, 1541.76pt x 1027.84pt>
+<3/figures/resource_manager.png, id=687, 1541.76pt x 1027.84pt>
 File: 3/figures/resource_manager.png Graphic file (type png)
 <use 3/figures/resource_manager.png>
 Package pdftex.def Info: 3/figures/resource_manager.png  used on input line 59.
 
 (pdftex.def)             Requested size: 412.56496pt x 275.04251pt.
 
-Underfull \hbox (badness 1005) in paragraph at lines 60--60
-[][]|\OT1/ptm/b/n/13 Resource-manager de-ci-sion flow sup-plied for the Agen-tO
-S
- []
-
-
-Underfull \hbox (badness 1009) in paragraph at lines 56--62
-\OT1/ptm/m/n/13 im-ple-men-ta-tion, the cor-re-spond-ing re-source man-ager en-
-forces global and
- []
-
-[14 <./3/figures/agent_scheduler.png>]
-
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 64.
 
-<3/figures/tool_manager.png, id=698, 1541.76pt x 1027.84pt>
+[15 <./3/figures/agent_scheduler.png>]
+<3/figures/tool_manager.png, id=694, 1541.76pt x 1027.84pt>
 File: 3/figures/tool_manager.png Graphic file (type png)
 <use 3/figures/tool_manager.png>
 Package pdftex.def Info: 3/figures/tool_manager.png  used on input line 68.
 (pdftex.def)             Requested size: 412.56496pt x 275.04251pt.
-[15 <./3/figures/resource_manager.png>]
+
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 73.
@@ -1687,45 +1485,21 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 
 pdfTeX warning: pdflatex.exe (file ./3/figures/lifecycle.pdf): PDF inclusion: f
 ound PDF version <1.7>, but at most version <1.5> allowed
-<3/figures/lifecycle.pdf, id=705, 449.68pt x 279.0425pt>
+<3/figures/lifecycle.pdf, id=696, 449.68pt x 279.0425pt>
 File: 3/figures/lifecycle.pdf Graphic file (type pdf)
 <use 3/figures/lifecycle.pdf>
 Package pdftex.def Info: 3/figures/lifecycle.pdf  used on input line 77.
 (pdftex.def)             Requested size: 371.30594pt x 230.41727pt.
-
-Underfull \hbox (badness 1117) in paragraph at lines 74--80
-\OT1/ptm/m/n/13 The sched-uler and run-time pub-lish struc-tured life-cy-cle ev
-ents con-tain-ing
- []
-
-
-Underfull \hbox (badness 2521) in paragraph at lines 74--80
-\OT1/ptm/m/n/13 task, step, agent, ex-e-cu-tion, sta-tus, pri-or-ity, queue wai
-t, and at-tempt
- []
-
-
-Underfull \hbox (badness 1048) in paragraph at lines 74--80
-\OT1/ptm/m/n/13 in-for-ma-tion. Fig-ure []3.8[] shows the state model. Com-plet
-e RBAC and
- []
-
-
-Underfull \hbox (badness 2229) in paragraph at lines 74--80
-\OT1/ptm/m/n/13 com-pre-hen-sive state-machine en-force-ment re-main ex-ten-sio
-ns be-yond the
- []
-
-[16 <./3/figures/tool_manager.png>]
+[16 <./3/figures/resource_manager.png>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 82.
 
-
+[17 <./3/figures/tool_manager.png> <./3/figures/lifecycle.pdf>]
 
 pdfTeX warning: pdflatex.exe (file ./3/figures/runner.pdf): PDF inclusion: foun
 d PDF version <1.7>, but at most version <1.5> allowed
-<3/figures/runner.pdf, id=712, 689.57625pt x 191.71625pt>
+<3/figures/runner.pdf, id=715, 689.57625pt x 191.71625pt>
 File: 3/figures/runner.pdf Graphic file (type pdf)
 <use 3/figures/runner.pdf>
 Package pdftex.def Info: 3/figures/runner.pdf  used on input line 86.
@@ -1734,12 +1508,7 @@ Package pdftex.def Info: 3/figures/runner.pdf  used on input line 86.
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 91.
 
-[17 <./3/figures/lifecycle.pdf> <./3/figures/runner.pdf>]
-Overfull \hbox (13.23769pt too wide) in paragraph at lines 98--110
- [][] 
- []
-
-) [18]
+) [18 <./3/figures/runner.pdf>] [19]
 \openout2 = `4/Chapter4.aux'.
 
  (4/Chapter4.tex
@@ -1756,15 +1525,9 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 7.
 
-
-Underfull \hbox (badness 3199) in paragraph at lines 8--9
-[]\OT1/ptm/m/n/13 Agent de-scrip-tions are em-bed-ded in a per-sis-tent Chro-ma
-DB
- []
-
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
 put line 11.
-[19
+[20
 
 
 
@@ -1774,55 +1537,49 @@ put line 11.
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 25.
 
-<4/figures/optimized_planner.png, id=753, 1541.76pt x 1027.84pt>
+<4/figures/optimized_planner.png, id=749, 1541.76pt x 1027.84pt>
 File: 4/figures/optimized_planner.png Graphic file (type png)
 <use 4/figures/optimized_planner.png>
 Package pdftex.def Info: 4/figures/optimized_planner.png  used on input line 31
 .
 (pdftex.def)             Requested size: 404.31189pt x 269.53758pt.
-[20]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 36.
 
-
-Underfull \hbox (badness 2035) in paragraph at lines 37--38
-[]\OT1/ptm/m/n/13 Every step has a unique iden-ti-fier and a list of pre-req-ui
--site
- []
-
-[21 <./4/figures/optimized_planner.png>]
+[21]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 58.
 
-[22]
+[22 <./4/figures/optimized_planner.png>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 88.
 
+[23]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 91.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 92--94
-[]\OT1/ptm/m/n/13 Events are JSON records con-tain-ing task iden-ti-fier, step
+Underfull \hbox (badness 1127) in paragraph at lines 92--94
+[]\OT1/ptm/m/n/13 Events are JSON records con-tain-ing task iden-ti-fier, step 
+iden-
  []
 
 
-Underfull \hbox (badness 2828) in paragraph at lines 92--94
-\OT1/ptm/m/n/13 iden-ti-fier, agent name, ex-e-cu-tion iden-ti-fier, sta-tus, t
-imes-tamp, pri-or-ity,
+Underfull \hbox (badness 1533) in paragraph at lines 92--94
+\OT1/ptm/m/n/13 tive pri-or-ity, queue wait, and at-tempt. The ker-nel pub-lish
+es them on
  []
 
 
-Underfull \hbox (badness 5787) in paragraph at lines 92--94
-\OT1/ptm/m/n/13 Sched-uler records use keys such as \OT1/pcr/m/n/13 agentos:sch
-eduler:ready \OT1/ptm/m/n/13 and
+Underfull \hbox (badness 1881) in paragraph at lines 92--94
+\OT1/pcr/m/n/13 kernel[]events\OT1/ptm/m/n/13 ; the back-end sub-scribes and fo
+r-wards them over Web-
  []
 
-[23]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 112.
@@ -1830,92 +1587,56 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 [24]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 116.
+(hyperref)                removing `\uppercase' on input line 115.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 119.
+(hyperref)                removing `\uppercase' on input line 118.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 122.
+(hyperref)                removing `\uppercase' on input line 121.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 132--133
-[]|\OT1/ptm/m/n/13 Maximum si-mul-ta-ne-ously
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 134--135
-[]|\OT1/ptm/m/n/13 Cumulative es-ti-mated
- []
-
-
-Overfull \hbox (7.54723pt too wide) in paragraph at lines 128--140
+Overfull \hbox (7.54723pt too wide) in paragraph at lines 127--139
  [][] 
  []
 
-[25
-
-]
+[25]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 142.
+(hyperref)                removing `\uppercase' on input line 141.
 
-
-Underfull \hbox (badness 1533) in paragraph at lines 143--145
-[]\OT1/ptm/m/n/13 The fol-low-ing al-go-rithm sheets de-fine the Agen-tOS ex-e-
-cu-tion
- []
-
-
-Underfull \hbox (badness 1168) in paragraph at lines 143--145
-\OT1/ptm/m/n/13 and sched-uler pro-ce-dures. Al-go-rithms []4.4[], []4.5[], []4
-.6[], []4.7[], []4.8[], and []4.9[]
- []
-
-
-Underfull \hbox (badness 1371) in paragraph at lines 143--145
-\OT1/ptm/m/n/13 DAG, and global schedul-ing spec-i-fi-ca-tions in that or-der. 
-The sep-a-rate
- []
-
-
-Underfull \hbox (badness 1215) in paragraph at lines 143--145
-\OT1/ptm/m/n/13 priority-aging/time-slice model pre-vi-ously shown as Fig-ure 4
-.7 has been
- []
-
-
-Overfull \hbox (39.67043pt too wide) in paragraph at lines 159--160
+[26]
+Overfull \hbox (39.67043pt too wide) in paragraph at lines 158--159
 [] $\OML/ptmcm/m/it/13 runtime[]store\OT1/ptmcm/m/n/13 [\OML/ptmcm/m/it/13 agen
 t[]id\OT1/ptmcm/m/n/13 ] \OMS/pzccm/m/n/13   \OT1/ptmcm/m/n/13 (\OML/ptmcm/m/it
 /13 agent[]id; agent[]type; task[]id; run[]fn; []\OT1/ptmcm/m/n/13 )$ 
  []
 
-[26] [27]
-Overfull \hbox (22.13528pt too wide) in paragraph at lines 230--231
+[27]
+Underfull \hbox (badness 10000) in paragraph at lines 229--230
 [] $\OML/ptmcm/m/it/13 start[]time \OMS/pzccm/m/n/13   []$\OT1/ptm/m/n/13 ; \OT
-1/ptm/m/sc/13 Se-tA-gentSta-tus\OT1/ptm/m/n/13 ($\OML/ptmcm/m/it/13 A[]:id; []$
-\OT1/ptm/m/n/13 ) 
+1/ptm/m/sc/13 Se-tA-gentSta-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 239--240
+Underfull \hbox (badness 10000) in paragraph at lines 238--239
 [] \OT1/ptm/m/sc/13 Save-Ex-e-cu-tion-Con-text\OT1/ptm/m/n/13 ($\OML/ptmcm/m/it
-/13 A[]; runtime$\OT1/ptm/m/n/13 );
+/13 A[]; runtime$\OT1/ptm/m/n/13 ); \OT1/ptm/m/sc/13 Sus-pendA-gen-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 243--244
+Underfull \hbox (badness 10000) in paragraph at lines 242--243
 [] $\OML/ptmcm/m/it/13 A[]:result \OMS/pzccm/m/n/13   []\OT1/ptmcm/m/n/13 (\OML
-/ptmcm/m/it/13 runtime\OT1/ptmcm/m/n/13 )$\OT1/ptm/m/n/13 ;
+/ptmcm/m/it/13 runtime\OT1/ptmcm/m/n/13 )$\OT1/ptm/m/n/13 ; \OT1/ptm/m/sc/13 De
+-
  []
 
 [28] [29] [30
 
 ]
-Underfull \hbox (badness 3792) in paragraph at lines 331--332
+Underfull \hbox (badness 3792) in paragraph at lines 330--331
 [] \OT1/ptm/m/n/13 Mark READY, up-date $\OML/ptmcm/m/it/13 ready[]time$\OT1/ptm
 /m/n/13 , rein-sert into $\OML/ptmcm/m/it/13 Q$\OT1/ptm/m/n/13 , pub-lish
  []
@@ -1930,220 +1651,102 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 1.
 
 
-Underfull \hbox (badness 1137) in paragraph at lines 4--5
-\OT1/ptm/m/n/13 qual-ity, and active-context re-duc-tion. The plan-ner ex-per-i
--ment mea-sures
- []
-
-
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 6.
 
 
-Underfull \hbox (badness 1132) in paragraph at lines 10--11
-\OT1/ptm/m/n/13 syn-thetic sched-uler work-loads, and a fixed pi-lot sub-set of
- the Lo-CoMo
- []
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\uppercase' on input line 12.
 
 [33
 
 
 
 
-]
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 12.
-
+] [34]
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 33.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 25.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 33.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 25.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 25.
-[34]
-Underfull \hbox (badness 1354) in paragraph at lines 41--42
-\OT1/ptm/m/n/13 op-er-at-ing point is re-ported for the best ob-served thresh-o
-ld re-gion ($\OML/ptmcm/m/it/13 ^^\ \OT1/ptmcm/m/n/13 =
- []
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 33.
+ [35]
+<5/figures/context_engine_comparison.png, id=844, 766.96538pt x 333.34537pt>
+File: 5/figures/context_engine_comparison.png Graphic file (type png)
+<use 5/figures/context_engine_comparison.png>
+Package pdftex.def Info: 5/figures/context_engine_comparison.png  used on input
+ line 76.
+(pdftex.def)             Requested size: 404.31189pt x 175.7312pt.
+ [36
 
-
-Underfull \hbox (badness 3209) in paragraph at lines 60--61
-\OT1/ptm/m/n/13 Re-call@5 by 14.6 per-cent-age points, while main-tain-ing ap-p
-rox-i-mately
- []
-
-
-Underfull \hbox (badness 1983) in paragraph at lines 60--61
-\OT1/ptm/m/n/13 the same 93% re-duc-tion in active-context to-kens. This in-di-
-cates that
- []
-
-
-Underfull \hbox (badness 1331) in paragraph at lines 60--61
-\OT1/ptm/m/n/13 neighbourhood-aware pag-ing is bet-ter suited to multi-turn ev-
-i-dence than
- []
-
-
-Underfull \hbox (badness 1102) in paragraph at lines 60--61
-\OT1/ptm/m/n/13 re-triev-ing iso-lated mes-sages alone. The ab-so-lute scores a
-lso show that
- []
-
+]
+<5/figures/context_engine_thresholds.png, id=850, 766.96538pt x 318.89137pt>
+File: 5/figures/context_engine_thresholds.png Graphic file (type png)
+<use 5/figures/context_engine_thresholds.png>
+Package pdftex.def Info: 5/figures/context_engine_thresholds.png  used on input
+ line 85.
+(pdftex.def)             Requested size: 404.31189pt x 168.11142pt.
+ [37 <./5/figures/context_engine_comparison.png> <./5/figures/context_engine_th
+resholds.png>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 62.
+(hyperref)                removing `\uppercase' on input line 90.
 
-[35]
+<5/figures/planner_tool_selection_overall.png, id=858, 639.89063pt x 587.19376p
+t>
+File: 5/figures/planner_tool_selection_overall.png Graphic file (type png)
+<use 5/figures/planner_tool_selection_overall.png>
+Package pdftex.def Info: 5/figures/planner_tool_selection_overall.png  used on 
+input line 120.
+(pdftex.def)             Requested size: 342.30392pt x 314.1142pt.
+<5/figures/planner_tool_selection_category.png, id=859, 1008.76875pt x 587.1937
+6pt>
+File: 5/figures/planner_tool_selection_category.png Graphic file (type png)
+<use 5/figures/planner_tool_selection_category.png>
+Package pdftex.def Info: 5/figures/planner_tool_selection_category.png  used on
+ input line 127.
+(pdftex.def)             Requested size: 354.79832pt x 206.5244pt.
+[38
+
+] [39 <./5/figures/planner_tool_selection_overall.png> <./5/figures/planner_too
+l_selection_category.png>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 66.
+(hyperref)                removing `\uppercase' on input line 136.
 
-<5/figures/planner_tool_selection_results.png, id=850, 1204.5pt x 542.025pt>
-File: 5/figures/planner_tool_selection_results.png Graphic file (type png)
-<use 5/figures/planner_tool_selection_results.png>
-Package pdftex.def Info: 5/figures/planner_tool_selection_results.png  used on 
-input line 92.
-(pdftex.def)             Requested size: 404.31189pt x 181.9372pt.
-[36]
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 99.
-
-[37 <./5/figures/planner_tool_selection_results.png>]
-Overfull \hbox (82.40472pt too wide) in paragraph at lines 109--119
- [][] 
- []
-
-<5/figures/scheduler_throughput_baseline.png, id=860, 513.117pt x 296.307pt>
+[40]
+<5/figures/scheduler_throughput_baseline.png, id=881, 513.117pt x 296.307pt>
 File: 5/figures/scheduler_throughput_baseline.png Graphic file (type png)
 <use 5/figures/scheduler_throughput_baseline.png>
 Package pdftex.def Info: 5/figures/scheduler_throughput_baseline.png  used on i
-nput line 123.
+nput line 179.
 (pdftex.def)             Requested size: 354.8061pt x 204.89513pt.
 
-Underfull \hbox (badness 6808) in paragraph at lines 124--124
-[][]|\OT1/ptm/b/n/13 Mea-sured sched-uler through-put un-der steady-state and
+Underfull \hbox (badness 1014) in paragraph at lines 180--180
+[][]|\OT1/ptm/m/n/13 Mea-sured sched-uler through-put un-der steady-state and q
+ueue-
  []
 
-<5/figures/scheduler_priority_latency.png, id=861, 1129.21875pt x 602.25pt>
+<5/figures/scheduler_priority_latency.png, id=882, 1129.21875pt x 602.25pt>
 File: 5/figures/scheduler_priority_latency.png Graphic file (type png)
 <use 5/figures/scheduler_priority_latency.png>
 Package pdftex.def Info: 5/figures/scheduler_priority_latency.png  used on inpu
-t line 130.
+t line 186.
 (pdftex.def)             Requested size: 363.05917pt x 193.6337pt.
-[38 <./5/figures/scheduler_throughput_baseline.png>]
+[41 <./5/figures/scheduler_throughput_baseline.png>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 137.
+(hyperref)                removing `\uppercase' on input line 195.
 
-[39 <./5/figures/scheduler_priority_latency.png>])
-Underfull \hbox (badness 1024) in paragraph at lines 141--328
-[]\OT1/ptm/m/n/13 The next eval-u-a-tion in-cre-ment should ex-pand the plan-ne
-r task
- []
+) [42 <./5/figures/scheduler_priority_latency.png>] [43]
+\openout2 = `Conclusion/conclusion.aux'.
 
-[40]
-\openout2 = `Appendix/appendix.aux'.
 
- (Appendix/appendix.tex
+(Conclusion/conclusion.tex
 CHAPTER 6.
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 1.
-
-
-Underfull \hbox (badness 2073) in paragraph at lines 4--11
-[]\OT1/ptm/m/n/13 This ap-pendix de-fines the met-rics used to eval-u-ate Agen-
-tOS
- []
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 12.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 15.
-
-[41
-
-
-
-
-
-]
-Underfull \hbox (badness 4752) in paragraph at lines 36--37
-[]\OT1/ptm/m/n/13 For bench-mark tasks with more than one ac-cept-able plan,
- []
-
-[42]
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 39.
-
-
-Underfull \hbox (badness 1496) in paragraph at lines 40--58
-[]\OT1/ptm/m/n/13 Table []6.2[] de-fines the re-li-a-bil-ity mea-sures used to 
-as-sess task
- []
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 60.
-
-[43
-
-]
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 82.
-
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 8
-5.
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
-File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-)
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 93.
-
-[44]
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 105.
-
-
-Overfull \hbox (6.644pt too wide) in paragraph at lines 107--108
-[]\OT1/ptm/m/n/13 Timeout en-force-ment rate $\OT1/ptmcm/m/n/13 = []$\OT1/ptm/m
-/n/13 . 
- []
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 291.
-
-[45] [46])
-Underfull \hbox (badness 1019) in paragraph at lines 308--331
-[]\OT1/ptm/m/n/13 Each con-fig-u-ra-tion sum-mary should there-fore in-clude ta
-sk and
- []
-
-[47]
-\openout2 = `Conclusion/conclusion.aux'.
-
- (Conclusion/conclusion.tex
-CHAPTER 7.
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 1.
-
-
-Underfull \hbox (badness 4193) in paragraph at lines 4--5
-\OT1/ptm/m/n/13 con-text man-age-ment, schedul-ing, re-source ad-mis-sion, sand
--boxed code
- []
 
 
 Underfull \hbox (badness 1028) in paragraph at lines 6--7
@@ -2157,34 +1760,44 @@ Underfull \hbox (badness 1590) in paragraph at lines 6--7
 out plac-ing
  []
 
+[44
 
-Underfull \hbox (badness 1845) in paragraph at lines 6--7
-\OT1/ptm/m/n/13 agent. Struc-tured plans and de-pen-dency val-i-da-tion pro-vid
-e pre-dictable
- []
 
+
+
+]) [45]
+\openout2 = `declaration_ai.aux'.
+
+ (declaration_ai.tex
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 1
+0.
+
+(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-Underfull \hbox (badness 3838) in paragraph at lines 10--332
-[]\OT1/ptm/m/n/13 Future work will fo-cus on durable restart re-sump-tion, true
+[46
 
+
+
+
+
+]) [47]
+\openout2 = `Appendix/agents.aux'.
+
+ (Appendix/agents.tex
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\uppercase' on input line 16.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--27
+[]\OT1/ptm/m/n/13 This ap-pendix doc-u-ments the agent im-ple-men-ta-tions in
  []
 
 
-Underfull \hbox (badness 1264) in paragraph at lines 10--332
-\OT1/ptm/m/n/13 check-points in-side long-running agents, com-plete ca-pa-bil-i
-ty en-force-ment,
- []
-
-
-Underfull \hbox (badness 4072) in paragraph at lines 10--332
-\OT1/ptm/m/n/13 sched-uler eval-u-a-tion, stronger ex-ter-nal function-calling 
-eval-u-a-tion, and
- []
-
-
-Underfull \hbox (badness 1953) in paragraph at lines 10--332
-\OT1/ptm/m/n/13 ad-di-tional au-tonomous event trig-gers. These ex-ten-sions ca
-n be added
+Underfull \hbox (badness 2486) in paragraph at lines 20--27
+\OT1/pcr/m/n/13 server/kernel/Agents/agents/\OT1/ptm/m/n/13 . The di-a-grams de
+-scribe the in-ter-nal
  []
 
 [48
@@ -2192,131 +1805,103 @@ n be added
 
 
 
-] [49]
-\openout2 = `Appendix/agents.aux'.
+] [49
 
- (Appendix/agents.tex
-CHAPTER 8.
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 1.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 5--10
-[]\OT1/ptm/m/n/13 This ap-pendix doc-u-ments the agent im-ple-men-ta-tions in
- []
-
-
-Underfull \hbox (badness 2486) in paragraph at lines 5--10
-\OT1/pcr/m/n/13 server/kernel/Agents/agents/\OT1/ptm/m/n/13 . The di-a-grams de
--scribe the in-ter-nal
+]
+Overfull \hbox (52.92764pt too wide) in paragraph at lines 166--167
+ [][] 
  []
 
 [50
 
-
-
-
 ] [51
 
 ]
-Overfull \hbox (52.92764pt too wide) in paragraph at lines 147--148
- [][] 
+Underfull \hbox (badness 1019) in paragraph at lines 206--235
+[]\OT1/ptm/m/n/13 The A4 im-ple-men-ta-tion ex-poses file dis-cov-ery, bounded 
+doc-u-
+ []
+
+
+Underfull \hbox (badness 1577) in paragraph at lines 206--235
+\OT1/ptm/m/n/13 cre-ation, re-name, move, meta-data, di-rec-tory list-ing, doc-
+u-ment com-par-i-
  []
 
 [52
 
 ] [53
 
-]
-Underfull \hbox (badness 2951) in paragraph at lines 186--213
-\OT1/ptm/m/n/13 re-name, move, meta-data, di-rec-tory list-ing, doc-u-ment com-
-par-i-son, and
- []
-
-
-Underfull \hbox (badness 1253) in paragraph at lines 186--213
-\OT1/ptm/m/n/13 heuris-tic clas-si-fi-ca-tion. PDF and DOCX read-ers are sup-po
-rted through
- []
-
-
-Underfull \hbox (badness 1831) in paragraph at lines 186--213
-\OT1/pcr/m/n/13 pypdf \OT1/ptm/m/n/13 and \OT1/pcr/m/n/13 python-docx\OT1/ptm/m
-/n/13 . There is de-lib-er-ately no di-rect delete tool:
- []
-
-[54
-
-] [55
-
-] [56
+] [54
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 277--300
+Underfull \hbox (badness 10000) in paragraph at lines 302--307
 []\OT1/ptm/m/n/13 The Weather Agent uses Open-Meteo through
  []
 
+[55
 
-Underfull \hbox (badness 10000) in paragraph at lines 277--300
-\OT1/pcr/m/n/13 get[]-current[]-weather \OT1/ptm/m/n/13 and \OT1/pcr/m/n/13 get
-[]-weather[]-forecast\OT1/ptm/m/n/13 . Each op-er-a-tion
- []
+] [56
 
-[57
+] [57
 
 ] [58
 
-] [59
+]) [59
 
-] [60
+]
+\openout2 = `Appendix/ai_prompts.aux'.
 
-]) [61
+ (Appendix/ai_prompts.tex
+APPENDIX B.
+\aipromptbox=\box129
+LaTeX Font Info:    Font shape `OT1/phv/m/n' will be
+(Font)              scaled to size 11.69992pt on input line 19.
+LaTeX Font Info:    Font shape `OT1/phv/m/it' in size <13> not available
+(Font)              Font shape `OT1/phv/m/sl' tried instead on input line 22.
+LaTeX Font Info:    Font shape `OT1/phv/m/sl' will be
+(Font)              scaled to size 11.69992pt on input line 22.
+
+Overfull \hbox (2.30016pt too wide) in paragraph at lines 31--31
+ [] 
+ []
+
+[60
+
+
+
+
+]
+Overfull \hbox (2.30016pt too wide) in paragraph at lines 46--46
+ [] 
+ []
+
+[61]
+Overfull \hbox (2.30016pt too wide) in paragraph at lines 66--66
+ [] 
+ []
+
+) [62
 
 ]
 \openout2 = `References/references.aux'.
 
  (References/references.tex
-Underfull \hbox (badness 3735) in paragraph at lines 15--16
-[]\OT1/ptm/m/n/10.95 B. Liu, Y. Jiang, X. Zhang, Q. Liu, S. Zhang, J. Biswas, a
-nd P. Stone,
- []
-
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 19.
-
 Underfull \hbox (badness 1817) in paragraph at lines 19--20
 []\OT1/ptm/m/n/10.95 LangChain, ``Lang-Graph Doc-u-men-ta-tion,'' 2026. [On-lin
 e]. Avail-able: []$\OT1/pcr/m/n/10.95 https : / /
  []
 
-
-Underfull \hbox (badness 1675) in paragraph at lines 35--36
-\OT1/ptm/m/n/10.95 Lan-guage Agents With Ver-bal Re-in-force-ment Learn-ing,'' 
-in \OT1/ptm/m/it/10.95 Ad-vances in Neu-ral
- []
-
-[62
+[63
 
 
 
 
-]
-Underfull \hbox (badness 3078) in paragraph at lines 43--44
-[]$\OT1/pcr/m/n/10.95 https : / / langchain -[] ai . github . io / langgraphjs 
-/ concepts / persistence/$[]
- []
-
-
-Underfull \hbox (badness 2237) in paragraph at lines 51--52
-[]\OT1/ptm/m/n/10.95 Amazon Web Ser-vices, ``Fire-cracker Mi-croVM Doc-u-men-ta
--tion,'' 2026. [On-line].
- []
-
-) [63] (authesis.aux (Abstract/abstract.aux) (acknowl.aux)
+] [64]) [65] (authesis.aux (Abstract/abstract.aux) (acknowl.aux)
 (Acronyms/acronyms.aux) (1/Chapter1.aux) (2/Chapter2.aux) (3/Chapter3.aux)
-(4/Chapter4.aux) (5/Chapter5.aux) (Appendix/appendix.aux)
-(Conclusion/conclusion.aux) (Appendix/agents.aux) (References/references.aux))
+(4/Chapter4.aux) (5/Chapter5.aux) (Conclusion/conclusion.aux)
+(declaration_ai.aux) (Appendix/agents.aux) (Appendix/ai_prompts.aux)
+(References/references.aux))
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
@@ -2324,65 +1909,34 @@ L3 programming layer <2025-12-24>
 
 
 LaTeX Font Warning: Size substitutions with differences
-(Font)              up to 1.75pt have occurred.
+(Font)              up to 1.0pt have occurred.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-
-Package rerunfilecheck Warning: File `authesis.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `authesis.out':
-(rerunfilecheck)             Before: BAA00143A550B7B9B07BBAFBBD3D5CA8;14526
-(rerunfilecheck)             After:  80EDA5F9C5772063268310C9FDC88BD2;14317.
+Package rerunfilecheck Info: File `authesis.out' has not changed.
+(rerunfilecheck)             Checksum: E8E1870AEDC66E7C18BC351A82F6F3FD;13683.
  ) 
 Here is how much of TeX's memory you used:
- 27247 strings out of 467871
- 511050 string characters out of 5418376
- 899382 words of memory out of 5000000
- 55261 multiletter control sequences out of 15000+600000
- 701212 words of font info for 196 fonts, out of 8000000 for 9000
+ 27223 strings out of 467871
+ 512061 string characters out of 5418376
+ 899576 words of memory out of 5000000
+ 55242 multiletter control sequences out of 15000+600000
+ 685289 words of font info for 154 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 88i,17n,104p,1529b,827s stack positions out of 10000i,1000n,20000p,200000b,200000s
-
-pdfTeX warning (dest): name{figure.caption.41} has been referenced but does not
- exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{figure.caption.28} has been referenced but does not
- exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{table.caption.25} has been referenced but does not 
-exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{table.caption.24} has been referenced but does not 
-exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{section*.42} has been referenced but does not exist
-, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{section.6.9} has been referenced but does not exist
-, replaced by a fixed one
-
-<C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cm
-mi10.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfo
-nts/cm/cmr10.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/publ
-ic/amsfonts/cm/cmsy10.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/t
-ype1/urw/courier/ucrr8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts
-/type1/urw/symbol/usyr.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/
-type1/urw/times/utmb8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/
-type1/urw/times/utmbi8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts
-/type1/urw/times/utmr8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts
-/type1/urw/times/utmri8a.pfb>
-Output written on authesis.pdf (74 pages, 9222180 bytes).
+ 88i,17n,104p,1540b,835s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
+cmmi10.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
+fonts/cm/cmr10.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/pu
+blic/amsfonts/cm/cmsy10.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts
+/type1/urw/courier/ucrr8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fon
+ts/type1/urw/helvetic/uhvr8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/
+fonts/type1/urw/helvetic/uhvro8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiK
+TeX/fonts/type1/urw/symbol/usyr.pfb><C:/Users/curvy/AppData/Local/Programs/MiKT
+eX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKT
+eX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiK
+TeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiK
+TeX/fonts/type1/urw/times/utmri8a.pfb>
+Output written on authesis.pdf (76 pages, 9516423 bytes).
 PDF statistics:
- 1097 PDF objects out of 1200 (max. 8388607)
- 240 named destinations out of 1000 (max. 500000)
- 737 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1147 PDF objects out of 1200 (max. 8388607)
+ 242 named destinations out of 1000 (max. 500000)
+ 712 words of extra memory for PDF output out of 10000 (max. 10000000)
 

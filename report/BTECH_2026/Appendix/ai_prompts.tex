@@ -1,0 +1,67 @@
+\chapter{\texorpdfstring{\uppercase{AI-Assisted Prompts}}{AI-Assisted Prompts}}
+\label{app:ai-prompts}
+
+\newsavebox{\aipromptbox}
+\newenvironment{aiprompt}
+{\par\medskip\noindent\begin{center}\begin{lrbox}{\aipromptbox}\begin{minipage}{0.96\textwidth}\sffamily\normalsize\setlength{\parindent}{0pt}\setlength{\parskip}{0.45em}}
+{\end{minipage}\end{lrbox}\setlength{\fboxsep}{9pt}\fbox{\usebox{\aipromptbox}}\end{center}\medskip}
+
+This appendix records representative prompts corresponding to the limited uses of
+AI tools declared in the report. The prompts are provided for transparency and
+reproducibility. They define the intended scope of assistance and require the
+author to verify all scholarly claims, sources, and editorial changes before
+incorporation into the report.
+
+\section{\texorpdfstring{\uppercase{Literature-Survey Support}}{Literature-Survey Support}}
+
+\noindent\textbf{Prompt B.1: Identification of relevant scholarly sources}
+
+\begin{aiprompt}
+Identify peer-reviewed papers, authoritative conference publications, or
+official technical documentation relevant to the following literature-survey
+topics: \textit{context paging for agent memory and optimized planning}. For each suggested source,
+provide the complete bibliographic details, publication venue and year, DOI or
+stable URL where available, and a concise explanation of its relevance. Do not
+invent sources, bibliographic information, results, or quotations. Distinguish
+clearly between peer-reviewed research, preprints, and technical documentation.
+Suggest only sources that can be independently verified by the author. Do not
+write unsupported claims for direct inclusion in the report; instead, identify
+which claims each verified source can reasonably support and note any important
+limitations or differences from the present project.
+\end{aiprompt}
+
+\section{\texorpdfstring{\uppercase{Language and Editorial Support}}{Language and Editorial Support}}
+
+\noindent\textbf{Prompt B.2: Academic language and grammar review}
+
+\begin{aiprompt}
+Review the following report passage for grammar, spelling, punctuation,
+sentence structure, clarity, consistency, and formal academic style. Preserve
+the author's technical meaning, numerical results, citations, terminology,
+section structure, and stated limitations. Do not add new claims, references,
+experimental results, or interpretations. Identify any sentence whose meaning
+is ambiguous and explain the issue before proposing a revision. Return: (1) a
+revised passage with only necessary editorial changes, and (2) a concise list of
+the substantive edits made.
+\end{aiprompt}
+\clearpage
+\section{\texorpdfstring{\uppercase{Synthetic Test-Case Support}}{Synthetic Test-Case Support}}
+
+\noindent\textbf{Prompt B.3: Development of candidate synthetic test cases}
+
+\begin{aiprompt}
+Using the following approved evaluation objective and system description,
+propose a set of deterministic synthetic test cases for evaluating
+\textit{context paging for agent memory, priority-aging scheduling of multi-agent systems, and optimized planning}. Each case
+should specify a unique identifier, the input scenario, the relevant context
+or task information, the expected system behaviour, and the measurable success
+criteria. Ensure that the cases cover both normal operation and meaningful
+edge conditions, such as missing context, irrelevant retrieved context,
+repeated information, dependency constraints, and invalid or ambiguous plans.
+Do not invent implementation capabilities that are not stated in the system
+description. Do not include private, sensitive, or personally identifying
+information. Avoid duplicate cases and avoid wording that reveals the expected
+answer unless it is required for deterministic evaluation. Return the cases in
+a structured table and clearly identify assumptions.
+\end{aiprompt}
+

@@ -7,7 +7,7 @@ Large-language-model (LLM) applications have progressed from reactive question-a
 Operating-system concepts provide a useful design analogy. A task is submitted to a gateway, a planner decomposes it into executable steps, a scheduler selects runnable agent work, a resource manager performs admission control, and an event path exposes state transitions. AgentOS applies this analogy to LLM-powered agents while retaining the uncertainty and latency of model calls.
 
 \section{\uppercase{Motivation}}
-In a conventional chatbot, application logic, conversation state, tool invocation, and error handling are often tightly coupled. This makes it difficult to run independent work concurrently or to explain why an agent was selected. Long conversations also exceed the practical context window of a model, while blindly truncating history can remove information needed by later steps. Finally, direct code execution or unrestricted tools create safety and observability risks.
+In a conventional chatbot, application logic, conversation state, tool invocation, and error handling are often tightly coupled. This makes it difficult to run independent work concurrently or to explain why an agent was selected. Long conversations also exceed the practical context window of a model, while blindly truncating history can remove information needed by later steps. Finally, unrestricted execution services and tools create safety and observability risks.
 
 AgentOS is motivated by the need for a reusable runtime layer. The project investigates how planning, agent retrieval, DAG execution, semantic context paging, global scheduling, resource accounting, event streaming, and sandboxed execution can be composed into one observable system.
 
@@ -21,14 +21,14 @@ The objectives of AgentOS are:
 \item Generate structured execution plans, retrieve suitable agents semantically, and validate their dependencies as a DAG;
 \item Manage bounded conversational context through semantic page-out and page-in using a vector-backed swap space;
 \item Schedule runnable work with priority aging, fairness, cooperative dispatch, concurrency limits, and token budgets; and
-\item Execute agent and code-runner tasks reliably while publishing lifecycle events and measurable activity to the user interface.
+\item Execute agent tasks reliably while publishing lifecycle events and measurable activity to the user interface.
 \end{enumerate}
 
 \section{\uppercase{Scope}}
-The current phase covers a Next.js frontend, FastAPI gateway, Python kernel, Redis event transport, MongoDB task persistence, ChromaDB retrieval, structured planning, DAG validation and Mermaid generation, context paging, a global in-process scheduler, resource admission, and a sandboxed Python runner. The scope does not claim complete RBAC, distributed scheduler workers, forced termination of active LLM calls, automatic coroutine restoration, or a production-grade hybrid model router. These are documented as future work.
+The current phase covers a Next.js frontend, FastAPI gateway, Python kernel, Redis event transport, MongoDB task persistence, ChromaDB retrieval, structured planning, DAG validation and Mermaid generation, context paging, a global in-process scheduler, resource admission, hybrid local/cloud model routing, and a registry of specialised agents for information, research, documents, communication, calculation, and bounded execution tasks. The scope does not claim complete RBAC, distributed scheduler workers, forced termination of active LLM calls, or automatic coroutine restoration. These are documented as future work.
 
 \section{\uppercase{Contributions}}
-The project contributions are a unified execution model for heterogeneous agents, a visible plan graph, a Redis-mediated activity stream, a semantic context paging mechanism, a priority-aging scheduler with resource admission, and a bounded code-execution/self-healing path. The implementation also makes a deliberate distinction between design aspirations and features that are present and testable in the repository.
+The project contributions are a unified execution model for heterogeneous agents, a visible plan graph, a Redis-mediated activity stream, a semantic context paging mechanism, a priority-aging scheduler with resource admission, and a bounded execution and recovery path for specialised agents. The implementation also makes a deliberate distinction between design aspirations and features that are present and testable in the repository.
 
 \section{\uppercase{Report Organization}}
-Chapter 2 surveys research and technical systems related to autonomous agents, memory, planning, scheduling, tool use, security, event transport, and vector retrieval. Chapter 3 presents the AgentOS architecture and data flows. Chapter 4 describes the implementation algorithms, storage conventions, events, and verification evidence. The conclusion records current limitations and future extensions.
+Chapter 2 reviews related work on autonomous agents, memory, planning, scheduling, tool use, security, event transport, and vector retrieval. Chapter 3 presents the AgentOS architecture and data flows, while Chapter 4 describes its algorithms, storage, events, and verification evidence. Chapter 5 reports the evaluation protocol and results for context paging, planner tool selection, and agent scheduling. The conclusion synthesises the findings and future work; the appendix documents the registered agents and internal workflows.

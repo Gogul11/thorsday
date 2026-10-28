@@ -79,6 +79,11 @@ class KernelEvent(BaseModel):
     scheduler_metrics: Optional[dict] = None
     token_usage: Optional[dict] = None
 
+    # Hybrid LLM routing
+    provider: Optional[str] = None
+    sensitive: Optional[bool] = None
+    operation: Optional[str] = None
+
     # Delete confirmation fields
     confirmation_id: Optional[str] = None
     path: Optional[str] = None

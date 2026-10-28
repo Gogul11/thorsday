@@ -176,6 +176,22 @@ async def _emit(event: str, state: dict, **data) -> None:
     await DB_add_task_event(state["task_id"], payload)
 
 
+async def _emit_llm_route(model, state: dict, input_value, operation: str) -> None:
+    """Publish the router's actual provider decision for frontend telemetry."""
+    decide = getattr(model, "decide", None)
+    if not callable(decide):
+        return
+    decision = decide(input_value)
+    await _emit(
+        "llm.ROUTED",
+        state,
+        provider=decision.provider,
+        sensitive=decision.sensitive,
+        reason=decision.reason,
+        operation=operation,
+    )
+
+
 # ---------------------------------------------------------------------------
 # Graph nodes
 # ---------------------------------------------------------------------------
@@ -207,6 +223,7 @@ async def _node_planner(state: dict, model) -> dict:
         no_retrieved_candidates = not candidate_names
         if not candidate_names:
             try:
+                await _emit_llm_route(model, state, state["task"], "agent_type_check")
                 decision = await check_agent_type(model, state["task"])
             except Exception as exc:
                 # If classification is unavailable, avoid creating an agent
@@ -233,6 +250,7 @@ async def _node_planner(state: dict, model) -> dict:
                 plan = ExecutionPlan(agents=[], confidence=0.9, rationale=rationale)
         else:
             planner = model.with_structured_output(ExecutionPlan, method="json_mode")
+            await _emit_llm_route(model, state, prompt, "planner")
             plan = await planner.ainvoke(prompt)
         plan_agents = []
         for agent_name in plan.agents:
@@ -279,6 +297,7 @@ async def _node_planner(state: dict, model) -> dict:
                 " ".join(item.split()) for item in plan.uncovered_tasks if item.strip()
             ):
                 try:
+                    await _emit_llm_route(model, state, uncovered_task, "agent_type_check")
                     decision = await check_agent_type(model, uncovered_task)
                 except Exception as exc:
                     logger.warning("Agent type check failed for uncovered task: %s", exc)
@@ -350,6 +369,7 @@ async def _node_planner(state: dict, model) -> dict:
     prompt_type = None
     if not plan_agents:
         try:
+            await _emit_llm_route(model, state, state["task"], "prompt_type_check")
             prompt_type = await Prompt_type(state["task"], model)
         except Exception as exc:
             logger.warning("Prompt type classifier failed: %s. Keeping the direct response route.", exc)
@@ -435,6 +455,12 @@ async def _node_executor(state: dict, model) -> dict:
                 if agent_name == "agent_creator"
                 else state["task"]
             )
+            await _emit_llm_route(
+                model,
+                state,
+                f"{agent_task}\n{step_context}",
+                f"agent:{agent_name}",
+            )
             result = await run_fn(
                 model=model,
                 task=agent_task,
@@ -508,6 +534,7 @@ async def _node_response(state: dict, model) -> dict:
 
     messages_for_llm.append(HumanMessage(content=user_turn_content))
 
+    await _emit_llm_route(model, state, messages_for_llm, "response")
     result = await model.ainvoke(messages_for_llm)
     response = result.content
 

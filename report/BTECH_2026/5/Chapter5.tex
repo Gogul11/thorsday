@@ -1,47 +1,31 @@
 \chapter{\uppercase{Results and Performance Analysis}}
 \label{chap5}
 
-This chapter evaluates the AgentOS context-paging engine using two complementary
-datasets. The first is a deterministic synthetic smoke set designed to verify
-the paging pipeline, telemetry, and comparison harness. The second is a pilot
-evaluation derived from the official LoCoMo long-term conversational-memory
-benchmark. The experiments compare complete-context access, recent-message
-truncation, a vector-retrieval baseline, and the AgentOS paging design.
+This chapter reports the evaluation of three AgentOS subsystems: the context-paging engine, the model-backed planner, and the global agent scheduler. The results are presented in a consistent order. First, the reporting protocol defines the datasets, comparison conditions, and metrics. The chapter then evaluates context paging, planner tool selection, and scheduler behaviour in sequence. The final section consolidates the findings and states the limitations of the measurements.
 
-The results are retrieval-oriented. A successful retrieval trial means that the
-annotated evidence required to answer the question is visible in the active
-context or is returned by the paging operation. This measure is intentionally
-separate from end-to-end language-model answer accuracy, which requires a fixed
-answer model and judge and was not enabled for these runs.
+\section{\uppercase{Reporting protocol}}
 
-\section{Evaluation Protocol}
+The evaluations use fixed task or question sets, documented configurations, and reproducible scoring rules. For each experiment, the expected evidence, tool set, or scheduler outcome was defined before the trial. Raw trial records were retained so that aggregate values could be recomputed. Percentages are pooled over the reported trials; latency values are reported using the aggregate statistic available for each run, with percentile values used for queueing measurements.
 
-All configurations used the same local ChromaDB embedding function, active
-context window, question text, conversation history, and candidate budget
-within each dataset. The full-context configuration is a quality control: it
-receives the complete conversation and therefore does not perform retrieval.
-Recent truncation retains only the active window. Vector RAG performs direct
-semantic retrieval, while AgentOS paging combines a larger semantic candidate
-pool with one-message neighbourhood expansion and a lightweight lexical
-reranking stage.
+The context-paging experiments use deterministic synthetic conversations and a fixed pilot subset of the LoCoMo long-term conversational-memory dataset and benchmark~\cite{locomo2024}. The planner experiment uses the AgentOS function catalogue and a fixed 50-trial task-selection run. The scheduler experiment uses deterministic smoke scenarios and seeded synthetic workloads. These are project-level implementation and reliability evaluations, not claims of production capacity or general performance.
 
-The synthetic run expanded five seed scenarios into a fixed local smoke set
-and executed 400 configuration trials. The external run used a fixed pilot
-subset of the official LoCoMo questions and executed 800 configuration trials.
-The threshold sweep was retained as a sensitivity analysis rather than as
-evidence that a threshold was universally optimal. Page-in and page-out
-latencies, embedding-cache behaviour, token estimates, and raw trial records
-were recorded for every configuration.
+\section{\uppercase{Context-paging engine}}
 
-\section{Synthetic Smoke Evaluation}
+The context engine was evaluated using two complementary datasets. The first is a deterministic synthetic smoke set designed to verify the paging pipeline, telemetry, and comparison harness. The second is a pilot evaluation derived from the LoCoMo benchmark. The configurations compare complete-context access, recent-message truncation, vector retrieval, and AgentOS paging.
 
-The synthetic evaluation checks whether the implementation can page out older
-messages, retrieve relevant evidence, handle an absent fact through abstention,
-and reduce the active prompt size. Table~\ref{tab:context-synthetic-results}
-reports the principal aggregate values. The full-context result is shown as a
-control and must not be interpreted as a paging result.
+The results are retrieval-oriented. A successful retrieval trial means that the annotated evidence required to answer the question is visible in the active context or is returned by the paging operation. This measure is intentionally separate from end-to-end language-model answer accuracy, which requires a fixed answer model and judge and was not enabled for these runs.
 
-\begin{table}[H]
+\subsection{Evaluation protocol}
+
+All configurations used the same local ChromaDB embedding function, active context window, question text, conversation history, and candidate budget within each dataset. The full-context configuration is a quality control: it receives the complete conversation and therefore does not perform retrieval. Recent truncation retains only the active window. Vector RAG performs direct semantic retrieval, while AgentOS paging combines a larger semantic candidate pool with one-message neighbourhood expansion and a lightweight lexical reranking stage.
+
+The synthetic run expanded five seed scenarios into a fixed local smoke set and executed 400 configuration trials. The external run used a fixed pilot subset of the official LoCoMo questions and executed 800 configuration trials. The threshold sweep was retained as a sensitivity analysis rather than as evidence that a threshold was universally optimal. Page-in and page-out latencies, embedding-cache behaviour, token estimates, and raw trial records were recorded for every configuration.
+
+\subsection{Synthetic smoke evaluation}
+
+The synthetic evaluation checks whether the implementation can page out older messages, retrieve relevant evidence, handle an absent fact through abstention, and reduce the active prompt size. Table~\ref{tab:context-synthetic-results} reports the principal aggregate values. The full-context result is shown as a control and must not be interpreted as a paging result.
+
+\begin{table}[!htbp]
 \centering
 \small
 \caption{Synthetic context-paging evaluation}
@@ -58,24 +42,13 @@ AgentOS paging ($\tau=0.40$) & 98.0 & 97.5 & 86.3 & 21.0 \\
 \end{tabular}
 \end{table}
 
-The synthetic results confirm that paging is operational and that the active
-context is reduced relative to complete-context access. Vector RAG provides the
-highest retrieval score on this deliberately simple dataset, whereas AgentOS
-uses fewer active-context tokens and records separate page-out and page-in
-telemetry. The lower score for recent truncation demonstrates that retaining
-only the newest messages is insufficient when the answer depends on an older
-fact.
+The synthetic results confirm that paging is operational and that the active context is reduced relative to complete-context access. Vector RAG provides the highest retrieval score on this deliberately simple dataset, whereas AgentOS uses fewer active-context tokens and records separate page-out and page-in telemetry. The lower score for recent truncation demonstrates that retaining only the newest messages is insufficient when the answer depends on an older fact.
+\clearpage
+\subsection{LoCoMo pilot evaluation}
 
-\section{LoCoMo Pilot Evaluation}
+The LoCoMo pilot introduces longer conversations, natural-language questions, and human-provided evidence annotations. Table~\ref{tab:context-locomo-results} shows the retrieval results. The reported AgentOS operating point uses the best observed region of the threshold sweep ($\tau=0.20$--$0.30$); the result is presented as a pilot observation and not as a threshold selected from a held-out development set.
 
-The LoCoMo pilot introduces longer conversations, natural language questions,
-and human-provided evidence annotations. Table~\ref{tab:context-locomo-results}
-shows the retrieval results. The reported AgentOS operating point uses the
-best observed region of the threshold sweep ($\tau=0.20$--$0.30$); the result
-is presented as a pilot observation and not as a threshold selected from a
-held-out development set.
-
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \small
 \caption{LoCoMo pilot context-retrieval evaluation}
@@ -92,74 +65,37 @@ AgentOS paging ($\tau=0.20$--$0.30$) & 35.0 & 32.8 & 13.7 & 92.9 \\
 \end{tabular}
 \end{table}
 
-On the more difficult conversational data, AgentOS paging improves retrieval
-success by 13 percentage points over the vector-RAG baseline and improves
-Recall@10 by 14.6 percentage points. The improvement is obtained while
-maintaining approximately the same 93\% reduction in active-context tokens.
-This indicates that the neighbourhood-aware paging policy is better suited to
-multi-turn evidence than retrieving isolated messages alone. The absolute
-scores also show that long-term memory retrieval remains a significant open
-problem; the result should not be described as perfect question answering.
+On the more difficult conversational data, AgentOS paging improves retrieval success by 13 percentage points over the vector-RAG baseline and improves Recall@10 by 14.6 percentage points. The improvement is obtained while maintaining approximately the same 93\% reduction in active-context tokens. This indicates that the neighbourhood-aware paging policy is better suited to multi-turn evidence than retrieving isolated messages alone. The absolute scores also show that long-term memory retrieval remains a significant open problem; the result should not be described as perfect question answering.
 
-\section{Graphical Analysis}
+\subsection{Graphical analysis}
 
-Figure~\ref{fig:context-comparison} compares the two datasets. The complete
-context control is intentionally strong, while recent truncation illustrates
-the cost of aggressive context reduction. The external pilot produces a more
-challenging separation between the two retrieval systems than the synthetic
-fixture, which is evidence that the external benchmark is exercising genuine
-retrieval difficulty.
+Figure~\ref{fig:context-comparison} compares the two datasets. The complete-context control is intentionally strong, while recent truncation illustrates the cost of aggressive context reduction. The external pilot produces a more challenging separation between the two retrieval systems than the synthetic fixture, which is evidence that the external benchmark is exercising genuine retrieval difficulty.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\textwidth]{5/figures/context_engine_comparison.png}
 \caption{Success and evidence-recall comparison for the synthetic and LoCoMo pilot evaluations}
 \label{fig:context-comparison}
 \end{figure}
 
-Figure~\ref{fig:context-thresholds} presents the threshold sensitivity study.
-The synthetic set favours a higher threshold because its facts are short and
-lexically distinctive. The LoCoMo pilot favours the lower threshold region,
-where semantically related but differently worded historical turns are less
-likely to be rejected. This supports using threshold tuning as a documented
-validation step rather than treating the default threshold as a universal
-constant.
+Figure~\ref{fig:context-thresholds} presents the threshold sensitivity study. The synthetic set favours a higher threshold because its facts are short and lexically distinctive. The LoCoMo pilot favours the lower threshold region, where semantically related but differently worded historical turns are less likely to be rejected. This supports using threshold tuning as a documented validation step rather than treating the default threshold as a universal constant.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\textwidth]{5/figures/context_engine_thresholds.png}
 \caption{Similarity-threshold sensitivity for context retrieval}
 \label{fig:context-thresholds}
 \end{figure}
-
-\subsection{Interpretation and Limitations of the Context Evaluation}
-
-The evaluation provides three conclusions. First, the context engine reduces
-the active prompt substantially on long conversations. Second, the optimized
-AgentOS retrieval path is measurably stronger than the direct vector-RAG
-baseline on the LoCoMo pilot. Third, the gap between retrieval success and the
-full-context control remains large, so further work is required before making
-an end-to-end answer-quality claim.
-
-The results should be interpreted with the following limitations. The
-synthetic cases are intended for regression testing and are not independent
-real-world conversations. The LoCoMo result is a fixed pilot subset rather
-than the complete benchmark. Threshold selection was exploratory and should
-be repeated using a development/test split before publication as a final
-benchmark number. Finally, LLM answer judging, confidence intervals, and
-provider-reported token cost were not enabled in this experiment. These are
-therefore retrieval and context-efficiency results, not a claim of general
-language-model accuracy.
-
+\clearpage
 \section{\uppercase{Planner and tool selection}}
 
-Exact tool-set accuracy is the fraction of trials for which the selected agent functions exactly matched the expected set. Required-tool recall is the fraction of trials in which every expected function was selected. The end-to-end measures count a failed model tool call as an incorrect outcome. Provider errors and model tool-call failures are recorded separately so that infrastructure problems are not confused with routing errors.
+The planner evaluation measures whether the model selects the registered AgentOS functions required by a task. The model endpoint was Groq using \texttt{openai/gpt-oss-120b}. Each registered agent was exposed as an OpenAI-compatible function. The same catalogue and routing prompt were used for every trial, and required tool-call mode was enabled because every task required at least one registered agent.
 
-\section{\uppercase{Results}}
+Exact tool-set accuracy is the fraction of trials for which the selected agent functions exactly matched the expected set. Required-tool recall is the fraction of trials in which every expected function was selected. The end-to-end measures count a failed model tool call as an incorrect outcome. Provider errors and model tool-call failures are recorded separately.
 
-Table~\ref{tab:planner-tool-results} summarises the 50-trial run. Thirty-eight trials produced the expected tool set, while twelve trials failed at the tool-call stage. No provider errors were recorded. The aggregate latency, computed from the category-level means weighted by their trial counts, was 1003.36 ms.
+Table~\ref{tab:planner-tool-results} summarises the 50-trial run. Thirty-eight trials produced the expected tool set, while twelve trials failed at the tool-call stage. No provider errors were recorded. The aggregate latency, computed from category-level means weighted by trial count, was 1003.36 ms.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \caption{AgentOS tool-selection adapter results}
 \label{tab:planner-tool-results}
@@ -179,55 +115,85 @@ Weighted mean latency & 1003.36 ms \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{5/figures/planner_tool_selection_results.png}
-\caption{Overall outcomes and per-category end-to-end accuracy for the AgentOS tool-selection adapter.}
-\label{fig:planner-tool-selection-results}
+\includegraphics[width=0.86\textwidth,height=0.48\textheight,keepaspectratio]{5/figures/planner_tool_selection_overall.png}
+\caption{Overall outcomes for the 50-trial AgentOS tool-selection evaluation}
+\label{fig:planner-tool-selection-overall}
 \end{figure}
 
-The category results indicate strong performance in code execution, with 100\% exact-match accuracy, followed by date and time, weather, system information, and financial calculation at 83.3\% each. Research achieved 80.0\%. Email delivery and document workflow achieved 60.0\% each, while multi-agent coordination was the weakest category at 40.0\%. The same categories also exhibited comparatively high latency, with multi-agent coordination averaging 1338 ms and research and document workflow averaging 1287 ms and 1272 ms, respectively. These results suggest that the principal limitation is tool-call compliance and routing complexity rather than provider availability. The required-call setting made these failures explicit instead of allowing a prose response to be counted as a successful request.
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.86\textwidth,height=0.48\textheight,keepaspectratio]{5/figures/planner_tool_selection_category.png}
+\caption{End-to-end exact-match accuracy by task category}
+\label{fig:planner-tool-selection-category}
+\end{figure}
+
+The category results indicate strong performance in code execution, with 100\% exact-match accuracy, followed by date and time, weather, system information, and financial calculation at 83.3\% each. Research achieved 80.0\%. Email delivery and document workflow achieved 60.0\% each, while multi-agent coordination was the weakest category at 40.0\%. These results suggest that the principal limitation is tool-call compliance and routing complexity rather than provider availability.
+
+Figures~\ref{fig:planner-tool-selection-overall} and~\ref{fig:planner-tool-selection-category} visualise the overall outcome distribution and the category-level exact-match results, respectively.
 
 \section{\uppercase{Agent scheduler}}
 \label{sec:agent-scheduler-evaluation}
 
-The scheduler evaluation consisted of a deterministic smoke suite and a controlled workload benchmark. The smoke suite executed 21 trials covering concurrency and task limits, cooperative preemption, cumulative token budgets, oversized jobs, priority ordering, quota retry, and runner failure; all 21 completed successfully. The workload benchmark compared the implemented priority-aging policy with an admission-aware FIFO policy using the same seeded workloads, service-time distributions, and priority values. Each policy and workload profile was repeated ten times, producing 40 trials in total. Persistence was stubbed, so the measurements capture in-process scheduling and asynchronous runner behaviour rather than Redis or MongoDB network overhead.
+The scheduler evaluation consists of a deterministic smoke suite and a controlled workload benchmark. The smoke suite executed 21 trials covering concurrency and task limits, cooperative preemption, cumulative token budgets, oversized jobs, priority ordering, quota retry, and runner failure; all 21 completed successfully.
 
-\begin{table}[H]
+The workload benchmark compared the implemented priority-aging policy with an admission-aware FIFO policy using the same seeded workloads, service-time distributions, and priority values. Each policy and workload profile was repeated ten times, producing 40 trials in total. Persistence was stubbed, so the measurements capture in-process scheduling and asynchronous runner behaviour rather than Redis or MongoDB network overhead. To preserve readability, the results are separated by workload profile: steady-state results are reported in Table~\ref{tab:scheduler-steady-state}, and queue-contention results are reported in Table~\ref{tab:scheduler-contention}.
+
+\begin{table}[!htbp]
 \centering
-\scriptsize
-\caption{Priority-aging scheduler versus FIFO}
-\label{tab:chapter-scheduler-results}
-\begin{tabular}{>{\raggedright\arraybackslash}p{3.0cm}>{\raggedright\arraybackslash}p{2.3cm}rrrr}
+\small
+\caption{Priority-aging scheduler versus FIFO under steady-state workload}
+\label{tab:scheduler-steady-state}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.2cm}>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \toprule
-Workload & Policy & Throughput (jobs/s) & Queue $P_{95}$ (ms) & High-priority queue $P_{95}$ (ms) & End-to-end $P_{95}$ (ms) \\
+Policy & \shortstack{Throughput\\(jobs/s)} & \shortstack{Queue\\$P_{95}$ (ms)} & \shortstack{High-priority\\$P_{95}$ (ms)} & \shortstack{End-to-end\\$P_{95}$ (ms)} \\
 \midrule
-Steady state & Priority aging & 254.27 & 218.06 & 65.18 & 233.44 \\
-Steady state & FIFO & 258.00 & 214.48 & 206.00 & 229.96 \\
-Queue contention & Priority aging & 85.92 & 511.92 & 101.41 & 537.25 \\
-Queue contention & FIFO & 85.84 & 508.35 & 459.55 & 536.64 \\
+Priority aging & 254.27 & 218.06 & 65.18 & 233.44 \\
+FIFO & 258.00 & 214.48 & 206.00 & 229.96 \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
-\begin{figure}[H]
+Table~\ref{tab:scheduler-steady-state} shows that priority aging reduces the high-priority queue-wait percentile under steady-state load, while overall throughput remains close to FIFO. The corresponding queue-contention results are presented separately in Table~\ref{tab:scheduler-contention}.
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Priority-aging scheduler versus FIFO under queue-contention workload}
+\label{tab:scheduler-contention}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.2cm}>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\toprule
+Policy & \shortstack{Throughput\\(jobs/s)} & \shortstack{Queue\\$P_{95}$ (ms)} & \shortstack{High-priority\\$P_{95}$ (ms)} & \shortstack{End-to-end\\$P_{95}$ (ms)} \\
+\midrule
+Priority aging & 85.92 & 511.92 & 101.41 & 537.25 \\
+FIFO & 85.84 & 508.35 & 459.55 & 536.64 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Under contention, the separated results make the main scheduling trade-off explicit: priority aging substantially lowers high-priority waiting time while maintaining nearly identical throughput and end-to-end latency.
+
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.86\textwidth]{5/figures/scheduler_throughput_baseline.png}
 \caption{Measured scheduler throughput under steady-state and queue-contention workloads}
 \label{fig:chapter-scheduler-throughput}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.88\textwidth]{5/figures/scheduler_priority_latency.png}
-\caption{High- and low-priority queue-wait $P_{95}$ under priority aging and FIFO; the legend is positioned above the plotting area for clarity}
+\caption{High- and low-priority queue-wait $P_{95}$ under priority aging and FIFO}
 \label{fig:chapter-scheduler-latency}
 \end{figure}
 
 Priority aging reduced high-priority queue-wait $P_{95}$ by 140.82 ms in steady state and by 358.14 ms under contention, corresponding to approximate reductions of 68\% and 78\% relative to FIFO. Throughput remained effectively unchanged under contention (+0.10\%) and decreased by 1.45\% in steady state. Overall queue-wait $P_{95}$ increased by approximately 3.6 ms in both profiles because the policy protects urgent work by allowing lower-priority jobs to wait longer. No concurrency-limit violations or cross-task completion imbalance were observed. These measurements should be interpreted as a controlled same-host comparison, not as a production-capacity claim.
 
-\section{\uppercase{Interpretation and limitations}}
+Figures~\ref{fig:chapter-scheduler-throughput} and~\ref{fig:chapter-scheduler-latency} provide the corresponding throughput and queue-latency visualisations.
 
-The 76.0\% end-to-end result should be interpreted as a preliminary AgentOS routing measurement. It is not an official BFCL score, because the evaluation uses the AgentOS registry, a project-specific task set, and AgentOS-specific expected tool mappings. The aggregate score includes all 50 trials and therefore incorporates the 12 tool-call failures. The more informative system-level result is consequently 38 correct outcomes out of 50 total trials, together with a 24.0\% tool-call failure rate and zero provider errors.
+\section{\uppercase{Integrated interpretation and limitations}}
 
-The next evaluation increment should expand the planner task set with paraphrased email, document, research, financial, and multi-agent cases, and compare required-call mode with automatic tool-choice mode. The context engine should be evaluated on a larger held-out LoCoMo or LongMemEval sample with a fixed development/test threshold split and an answer-quality judge. The scheduler should be replayed using anonymised production-like arrival traces, non-stubbed persistence, and provider latency. Across all three tracks, future reporting should include confidence intervals, raw trial identifiers, and a clear separation between smoke-test conformance and externally generalisable performance.
+The context engine demonstrates measurable active-context reduction and improved retrieval over direct vector RAG on the LoCoMo pilot, although the synthetic smoke set remains easier than the external conversational data. The planner achieves 76.0\% end-to-end exact tool-set accuracy and required-tool recall across 50 trials; its main failure mode is missing required tool calls rather than provider unavailability. The scheduler preserves throughput while substantially reducing high-priority queue waiting under contention.
+
+These results have important limitations. The context experiments use a deterministic synthetic set and a fixed LoCoMo pilot rather than the complete benchmark; threshold selection is exploratory, and no answer-model judging or confidence intervals were enabled. The planner evaluation uses an AgentOS-specific task set and should not be generalized beyond that scope. The scheduler benchmark uses deterministic service times and stubbed persistence, so it is not a production-capacity claim. Accordingly, the findings establish implementation behaviour under the stated conditions, not universal superiority over alternative systems. Future work should evaluate held-out planner tasks and thresholds, add answer judging, replace stubbed persistence, and use production-like scheduler traces.

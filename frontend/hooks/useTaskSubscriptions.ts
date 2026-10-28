@@ -23,6 +23,7 @@ function buildMessage(ev: KernelEvent): string {
     "task.PLANNING": "Planning execution steps…",
     "task.PLANNED": `Plan ready: [${(ev.plan ?? []).join(", ")}]${typeof ev.confidence === "number" ? ` · confidence ${(ev.confidence * 100).toFixed(0)}%` : ""}`,
     "task.COMPLETED": "Task completed.",
+    "llm.ROUTED": `LLM routed to ${ev.provider === "ollama" ? "Ollama (local)" : "Groq (cloud)"}${ev.sensitive ? " · privacy-sensitive" : ""}${ev.operation ? ` · ${ev.operation}` : ""}.`,
 
     "agent.STARTED": `Agent ${agent} started.`,
     "agent.COMPLETED": `Agent ${agent} completed.`,
@@ -100,6 +101,9 @@ function toDisplayEvent(ev: KernelEvent): DisplayEvent {
     occurred_at: new Date().toISOString(),
     agent_id: ev.agent_name ?? ev.agent_id ?? null,
     raw_event: ev.event,
+    provider: ev.provider,
+    sensitive: ev.sensitive,
+    operation: ev.operation,
   };
 }
 

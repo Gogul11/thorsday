@@ -138,15 +138,19 @@ server/kernel/
 
 ### `models/model.py`
 
-**Role:** LLM factory — returns a configured `ChatGroq` instance.
+**Role:** Privacy-aware hybrid LLM factory.
 
 **What it does:**
-- `get_model()` — lazy singleton. On first call reads `GROQ_API_KEY` from env,
-  creates a `ChatGroq` instance (`openai/gpt-oss-120b`, temperature 0.2),
-  caches it in `_model`, and returns it. Subsequent calls return the cached instance.
+- `get_model()` returns a lazy singleton `HybridChatModel`.
+- Non-sensitive orchestration requests use Groq when `GROQ_API_KEY` is set.
+- Prompts containing local files, code/repository work, academic or personal
+  data, credentials, or other sensitive-data indicators use Ollama.
+- Groq failures retry through Ollama, and local-only mode works without a Groq key.
+- Tool binding and structured output are routed at invocation time, so the
+  planner, agents, and final response can make independent privacy decisions.
 
-**Why a function instead of a class:** No state to manage. A module-level singleton
-function is simpler and easier to mock in tests.
+**Configuration:** `LLM_ROUTING_MODE=hybrid|local|cloud`, `GROQ_MODEL`,
+`OLLAMA_MODEL`, and `OLLAMA_BASE_URL`. See `server/.env.example`.
 
 **Used by:** `services/task_runner.py` → passed into `build_graph(model)`.
 

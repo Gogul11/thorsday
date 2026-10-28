@@ -36,7 +36,6 @@
 \usepackage{tabularx}
 \usepackage{ragged2e}
 % Keep words intact while allowing TeX extra flexibility to justify paragraphs.
-\usepackage[none]{hyphenat}
 \usepackage[chapter]{algorithm}
 \usepackage{algpseudocode}
 \usepackage{multirow}
@@ -63,7 +62,7 @@
 \usepackage{enumerate}
 \usepackage{lscape}
 
-\usepackage[format=hang,labelfont=bf,textfont=bf]{caption}
+\usepackage[format=hang,labelfont=bf,textfont=normalfont]{caption}
 \PassOptionsToPackage{linktocpage}{hyperref}
 \tocloftpagestyle{myheadings}
 \newcommand{\PreserveBackslash}[1]{\let\temp=\\#1\let\\=\temp}
@@ -187,7 +186,7 @@
   \vspace{-0.1\baselineskip}
   \normalsize{\textit{submitted to the Faculty of}} \\
   \vspace{0.5\baselineskip}
-  \normalsize{\textbf{INFORMATION SCIENCE AND TECHNOLOGY}} \\
+  \normalsize{\textbf{COMPUTER SCIENCE AND INFORMATION ENGINEERING}} \\
   \vspace{0.4\baselineskip}
   \normalsize{\textit{in partial fulfillment  for the award of the degree}}\\
   \normalsize{\textit{\textbf{of}}}\\
@@ -225,8 +224,8 @@ BONA FIDE CERTIFICATE}
 \end{spacing}
 \vspace{-0.3 cm}
 \begin{flushleft}
- \parbox[t]{\datewidth}{\small{\textbf{PLACE: }}\\
- \small{\textbf{DATE: }}}
+ \parbox[t]{\datewidth}{\small{\textbf{PLACE: Chennai}}\\
+ \small{\textbf{DATE: 29/10/2026}}}
  \hfill
  \parbox[t]{6 cm}{\small{\textbf{Dr. SELVI RAVINDRAN}} \\
  \small{\textbf{ASSOCIATE PROFESSOR}}\\
@@ -326,11 +325,13 @@ LIST OF FIGURES} \listoffigures
 \include{3/Chapter3}
 \include{4/Chapter4}
 \include{5/Chapter5}
+\include{Conclusion/conclusion}
 \cleardoublepage
 \phantomsection 
-\include{Appendix/appendix}
-\include{Conclusion/conclusion}
+\include{declaration_ai}
+\appendix
 \include{Appendix/agents}
+\include{Appendix/ai_prompts}
 
 
 %\bibliographystyle{auapalike}

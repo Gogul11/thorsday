@@ -86,6 +86,11 @@ export type KernelEvent = {
   estimated_tokens?: number;
   scheduler_metrics?: SchedulerMetrics;
   token_usage?: TokenUsage;
+
+  // Hybrid LLM routing
+  provider?: "groq" | "ollama" | string;
+  sensitive?: boolean;
+  operation?: string;
 };
 
 export type PlanStep = {
@@ -131,6 +136,11 @@ export type DisplayEvent = {
 
   /** Original raw event type for programmatic checks */
   raw_event: string;
+
+  /** Provider metadata for llm.ROUTED events */
+  provider?: string;
+  sensitive?: boolean;
+  operation?: string;
 };
 
 

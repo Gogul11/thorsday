@@ -17,7 +17,7 @@ As shown in Figure~\ref{fig:architecture}, AgentOS is organised as an overall ru
 
 \section{\uppercase{Frontend, Gateway, and Event Flow}}
 The frontend sends task prompts over HTTP and receives live activity over WebSocket. The backend listener subscribes to the kernel event channel and forwards events to connected clients. Figure~\ref{fig:redisflow} shows the separation between the task submission channel and the kernel event channel. MongoDB persistence is performed by the kernel/repository layer so the UI can later query task history.
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=1.0\textwidth,height=0.62\textheight,keepaspectratio]{3/figures/redis-flow-readable.pdf}
 \caption{Frontend, FastAPI gateway, Redis channels, AI kernel, and agent-workforce flow}
@@ -26,7 +26,7 @@ The frontend sends task prompts over HTTP and receives live activity over WebSoc
 
 \section{\uppercase{Planner and DAG Execution}}
 The planner retrieves relevant agent descriptions, requests a structured execution plan, and applies a fallback plan when the provider is unavailable. Each step includes an identifier, agent name, description, and dependency list. The validator canonicalises identifiers, rejects unknown dependencies and cycles, and supplies a sequential fallback only when a plan omits dependencies. The executor runs only steps whose prerequisites are complete. Figure~\ref{fig:dag} summarises this path. The frontend uses the same validated plan to generate Mermaid source and draw the plan graph, ensuring that displayed edges represent dependencies rather than decorative links.
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.90\textwidth,height=0.58\textheight,keepaspectratio]{3/figures/dag-readable.pdf}
 \caption{Planner, validation, and dependency-aware execution flow}
@@ -36,7 +36,7 @@ The planner retrieves relevant agent descriptions, requests a structured executi
 \clearpage
 \section{\uppercase{Context Paging}}
 The context pager keeps a bounded active message window. When the window is exceeded, older or less relevant messages are embedded and stored in the ChromaDB swap collection. A later query retrieves semantically related pages and injects them into the active context. ChromaDB's cosine space returns distance; the implementation converts it as $s=1-d$, where $d$ is the returned cosine distance. Figure~\ref{fig:context} presents the page-out and page-in flow. This mechanism reduces active prompt growth but does not guarantee perfect recall.
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=1.0\textwidth]{3/figures/context_paging.png}
 \caption{Context page-out, vector-store retrieval, and semantic page-in flow}
@@ -45,7 +45,7 @@ The context pager keeps a bounded active message window. When the window is exce
 
 \section{\uppercase{Global Scheduler and Resource Manager}}
 The scheduler maintains ready records and selects work globally across active tasks. Effective priority is computed from base priority and queue waiting time, bounded by a maximum. Before dispatch, the resource manager checks the global slot limit, per-task slot limit, and token budget. The current defaults are three global execution slots, two slots per task, and a configurable 50,000-token task budget. Dispatch is cooperative: a running remote LLM request is not forcibly killed. Figure~\ref{fig:scheduler} shows the decision path.
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=1.0\textwidth]{3/figures/agent_scheduler.png}
 \caption{Global agent scheduler, lifecycle events, resource checks, and runtime feedback}
@@ -54,7 +54,7 @@ The scheduler maintains ready records and selects work globally across active ta
 
 \section{\uppercase{Resource Management}}
 The resource-manager design in Figure~\ref{fig:resource-manager} expands the admission point in the scheduler. It separates token-bucket accounting, quota monitoring, process monitoring, resource checking, and the final decision. In the current implementation, the corresponding resource manager enforces global and per-task execution slots and a token budget; the policy store, process monitor, and hard preemption shown in the figure are design extensions.
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=1.0\textwidth]{3/figures/resource_manager.png}
 \caption{Resource-manager decision flow supplied for the AgentOS design}
@@ -63,7 +63,7 @@ The resource-manager design in Figure~\ref{fig:resource-manager} expands the adm
 
 \section{\uppercase{Tool Management}}
 Figure~\ref{fig:tool-manager} shows the intended tool-manager boundary between an agent, a tool registry, permission policy, and local or external services. AgentOS currently exposes bounded tools through the runtime and code runner; a complete permission store and MCP-compatible tool manager remain proposed components.
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=1.0\textwidth]{3/figures/tool_manager.png}
 \caption{Tool selection, permission checking, invocation, and result return}
@@ -72,7 +72,7 @@ Figure~\ref{fig:tool-manager} shows the intended tool-manager boundary between a
 
 \section{\uppercase{Agent Lifecycle and Events}}
 An agent step progresses from CREATED to READY, RUNNING, and COMPLETED. It can move to WAITING when a resource or dependency is unavailable, or to BLOCKED/FAILED when execution cannot proceed. The scheduler and runtime publish structured lifecycle events containing task, step, agent, execution, status, priority, queue wait, and attempt information. Figure~\ref{fig:lifecycle} shows the state model. Complete RBAC and comprehensive state-machine enforcement remain extensions beyond the current implementation boundary.
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{3/figures/lifecycle.pdf}
 \caption{Agent lifecycle transitions}
@@ -81,7 +81,7 @@ An agent step progresses from CREATED to READY, RUNNING, and COMPLETED. It can m
 
 \section{\uppercase{Sandboxed Code Runner}}
 The code runner receives generated Python, writes it into a scoped working directory, and invokes it through an asynchronous subprocess. It bounds execution time and captured output. A non-zero exit code or traceback is returned to the coder/tester agent, which may produce a corrected version for at most three attempts. Output lines can be published as kernel events for live frontend observation. Figure~\ref{fig:runner} shows this flow. The current isolation is process and directory scoping; hardened container or microVM isolation is future work.
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[trim=0.7cm 0.7cm 0.7cm 0.7cm,clip,width=1.0\textwidth,height=0.82\textheight,keepaspectratio]{3/figures/runner.pdf}
 \caption{Sandboxed Python execution and bounded self-healing loop}
@@ -90,21 +90,27 @@ The code runner receives generated Python, writes it into a scoped working direc
 
 \section{\uppercase{Implemented AgentOS Modules}}
 \label{sec:implementation-status}
-Table~\ref{tab:boundary} summarises the modules implemented and exercised in the current AgentOS runtime.
-\begin{table}[H]
+Table~\ref{tab:boundary} summarises the principal modules implemented and exercised in the current AgentOS runtime.
+\begin{table}[!htbp]
 \centering
 \caption{Implemented AgentOS modules}
 \label{tab:boundary}
-\begin{tabular}{>{\raggedright\arraybackslash}p{4.2cm}>{\raggedright\arraybackslash}p{5.3cm}>{\raggedright\arraybackslash}p{4.2cm}}
+\normalsize
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{5pt}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.1cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{3.0cm}}
 \toprule
-Module & Current implementation & Status / limitation \\
+Module & Principal responsibility & Status \\
 \midrule
-Frontend and gateway & Next.js, FastAPI, WebSocket activity & Implemented \\
-Planner and DAG & Structured plan, validation, Mermaid graph & Implemented \\
-Scheduler and resources & Priority aging, slots, token admission & Implemented; cooperative only \\
-Context paging & ChromaDB semantic swap and retrieval & Implemented \\
-Redis and MongoDB & Events, queue metadata, task history & Implemented \\
-Code runner & Bounded Python subprocess and retries & Implemented; not microVM isolation \\
+Frontend and gateway & User interface, task API, and live activity stream & Implemented \\
+Planner and DAG execution & Structured plans, agent selection, and dependency validation & Implemented \\
+Hybrid model router & Local/cloud model selection and provider fallback & Implemented \\
+Agent and tool registry & Capability descriptions, function schemas, and candidate retrieval & Implemented \\
+Context paging & ChromaDB swap, semantic retrieval, and bounded context & Implemented \\
+Scheduler and resource admission & Priority aging, concurrency limits, and token budgets & Implemented; cooperative dispatch \\
+Persistence and events & MongoDB task history and Redis lifecycle transport & Implemented \\
+Code runner & Bounded subprocess execution and repair retries & Implemented; not microVM isolation \\
+Observability & Lifecycle, queue, priority, and resource activity & Implemented \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
