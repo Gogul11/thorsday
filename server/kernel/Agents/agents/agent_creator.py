@@ -9,6 +9,7 @@ from tools.agent_creator_tools import (
     run_generated_agent,
     save_tool_file,
 )
+from logger import logger
 
 AGENT_CREATOR_DESCRIPTION = """
 agent_creator builds, validates, registers, and runs agents for meaningful new tasks routed by the planner.
@@ -21,6 +22,7 @@ Create an agent for the task's core capability.
 """
 
 _MAX_GENERATION_ATTEMPTS = 3
+_NAME = "Agent Creator"
 
 
 class GeneratedAgentSpec(BaseModel):

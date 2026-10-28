@@ -162,10 +162,16 @@ def get_model() -> HybridChatModel:
 
     mode = os.getenv("LLM_ROUTING_MODE", "hybrid").lower().strip()
     local_model = os.getenv("OLLAMA_MODEL", "llama3.2")
+    ollama_timeout = float(os.getenv("OLLAMA_TIMEOUT_SECONDS", "120"))
+    ollama_num_predict = int(os.getenv("OLLAMA_NUM_PREDICT", "512"))
     local = ChatOllama(
         model=local_model,
         base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"),
         temperature=0.2,
+        num_predict=ollama_num_predict,
+        keep_alive="10m",
+        async_client_kwargs={"timeout": ollama_timeout},
+        sync_client_kwargs={"timeout": ollama_timeout},
     )
 
     api_key = os.getenv("GROQ_API_KEY")
@@ -178,5 +184,11 @@ def get_model() -> HybridChatModel:
         logger.info("Groq unavailable; using Ollama for all requests")
 
     _model = HybridChatModel(cloud=cloud, local=local, mode=mode)
-    logger.info("Ollama configured | model=%s | routing_mode=%s", local_model, mode)
+    logger.info(
+        "Ollama configured | model=%s | routing_mode=%s | timeout=%ss | max_output=%s",
+        local_model,
+        mode,
+        ollama_timeout,
+        ollama_num_predict,
+    )
     return _model
