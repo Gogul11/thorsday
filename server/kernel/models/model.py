@@ -6,6 +6,7 @@ import asyncio
 import os
 import re
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 from dotenv import load_dotenv
@@ -15,7 +16,7 @@ from langchain_ollama import ChatOllama
 
 from logger import logger
 
-load_dotenv()
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 _model: HybridChatModel | None = None
 
@@ -41,7 +42,7 @@ class HybridChatModel:
         re.compile(r"\b(?:medical|health|financial|bank|credit card|ssn|social security|email inbox)\b", re.I),
     )
 
-    def __init__(self, cloud: Any | None, local: Any, mode: str = "hybrid") -> None:
+    def __init__(self, cloud: Any | None, local: Any | None, mode: str = "hybrid") -> None:
         self.cloud = cloud
         self.local = local
         self.mode = mode.lower().strip()
@@ -57,10 +58,12 @@ class HybridChatModel:
 
     def decide(self, value: Any) -> RoutingDecision:
         sensitive = self.is_sensitive(value)
+        if self.mode == "cloud":
+            if self.cloud is None:
+                raise RuntimeError("Cloud routing is enabled, but Groq is not configured")
+            return RoutingDecision("groq", sensitive, "cloud mode")
         if self.mode == "local" or sensitive:
             return RoutingDecision("ollama", sensitive, "privacy-sensitive input" if sensitive else "local mode")
-        if self.cloud is not None and self.mode == "cloud":
-            return RoutingDecision("groq", False, "cloud mode")
         if self.cloud is not None:
             return RoutingDecision("groq", False, "non-sensitive orchestration input")
         return RoutingDecision("ollama", False, "Groq is not configured")
@@ -75,7 +78,7 @@ class HybridChatModel:
         try:
             return provider.invoke(input, config=config, **kwargs)
         except Exception:
-            if decision.provider == "groq":
+            if decision.provider == "groq" and self.mode != "cloud":
                 logger.warning("Groq invocation failed; retrying with Ollama")
                 return self.local.invoke(input, config=config, **kwargs)
             raise
@@ -86,7 +89,7 @@ class HybridChatModel:
         try:
             return await provider.ainvoke(input, config=config, **kwargs)
         except Exception:
-            if decision.provider == "groq":
+            if decision.provider == "groq" and self.mode != "cloud":
                 logger.warning("Groq invocation failed; retrying with Ollama")
                 return await self.local.ainvoke(input, config=config, **kwargs)
             raise
@@ -104,7 +107,7 @@ class HybridChatModel:
             try:
                 return provider.bind(**kwargs).invoke(value, config=config)
             except Exception:
-                if decision.provider == "groq":
+                if decision.provider == "groq" and self.mode != "cloud":
                     logger.warning("Groq bound-model invocation failed; retrying with Ollama")
                     return self.local.bind(**kwargs).invoke(value, config=config)
                 raise
@@ -114,7 +117,7 @@ class HybridChatModel:
             try:
                 return await provider.bind(**kwargs).ainvoke(value, config=config)
             except Exception:
-                if decision.provider == "groq":
+                if decision.provider == "groq" and self.mode != "cloud":
                     logger.warning("Groq bound-model invocation failed; retrying with Ollama")
                     return await self.local.bind(**kwargs).ainvoke(value, config=config)
                 raise
@@ -128,7 +131,7 @@ class HybridChatModel:
             try:
                 return provider.bind_tools(tools, **kwargs).invoke(value, config=config)
             except Exception:
-                if decision.provider == "groq":
+                if decision.provider == "groq" and self.mode != "cloud":
                     logger.warning("Groq tool invocation failed; retrying with Ollama")
                     return self.local.bind_tools(tools, **kwargs).invoke(value, config=config)
                 raise
@@ -138,7 +141,7 @@ class HybridChatModel:
             try:
                 return await provider.bind_tools(tools, **kwargs).ainvoke(value, config=config)
             except Exception:
-                if decision.provider == "groq":
+                if decision.provider == "groq" and self.mode != "cloud":
                     logger.warning("Groq tool invocation failed; retrying with Ollama")
                     return await self.local.bind_tools(tools, **kwargs).ainvoke(value, config=config)
                 raise
@@ -152,7 +155,7 @@ class HybridChatModel:
             try:
                 return provider.with_structured_output(schema, **kwargs).invoke(value, config=config)
             except Exception as exc:
-                if decision.provider == "groq":
+                if decision.provider == "groq" and self.mode != "cloud":
                     logger.warning(
                         "Groq structured invocation failed; retrying with Ollama | error_type=%s | error=%s",
                         type(exc).__name__,
@@ -169,7 +172,7 @@ class HybridChatModel:
                     return await asyncio.wait_for(request, timeout=self.groq_timeout_seconds)
                 return await request
             except Exception as exc:
-                if decision.provider == "groq":
+                if decision.provider == "groq" and self.mode != "cloud":
                     logger.warning(
                         "Groq structured invocation failed; retrying with Ollama | error_type=%s | error=%s",
                         type(exc).__name__,
@@ -210,15 +213,17 @@ def get_model() -> HybridChatModel:
     local_model = os.getenv("OLLAMA_MODEL", "llama3.2")
     ollama_timeout = float(os.getenv("OLLAMA_TIMEOUT_SECONDS", "120"))
     ollama_num_predict = int(os.getenv("OLLAMA_NUM_PREDICT", "512"))
-    local = ChatOllama(
-        model=local_model,
-        base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"),
-        temperature=0.2,
-        num_predict=ollama_num_predict,
-        keep_alive="10m",
-        async_client_kwargs={"timeout": ollama_timeout},
-        sync_client_kwargs={"timeout": ollama_timeout},
-    )
+    local = None
+    if mode != "cloud":
+        local = ChatOllama(
+            model=local_model,
+            base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"),
+            temperature=0.2,
+            num_predict=ollama_num_predict,
+            keep_alive="10m",
+            async_client_kwargs={"timeout": ollama_timeout},
+            sync_client_kwargs={"timeout": ollama_timeout},
+        )
 
     api_key = os.getenv("GROQ_API_KEY")
     cloud = None
@@ -229,11 +234,16 @@ def get_model() -> HybridChatModel:
     else:
         logger.info("Groq unavailable; using Ollama for all requests")
 
+    if mode == "cloud" and cloud is None:
+        raise RuntimeError("LLM_ROUTING_MODE=cloud requires GROQ_API_KEY")
+
     _model = HybridChatModel(cloud=cloud, local=local, mode=mode)
     logger.info(
-        "Ollama configured | model=%s | routing_mode=%s | timeout=%ss | max_output=%s",
+        "LLM routing configured | cloud_model=%s | local_model=%s | routing_mode=%s | local_fallback=%s | timeout=%ss | max_output=%s",
+        os.getenv("GROQ_MODEL", "openai/gpt-oss-120b") if cloud is not None else "disabled",
         local_model,
         mode,
+        mode != "cloud",
         ollama_timeout,
         ollama_num_predict,
     )
