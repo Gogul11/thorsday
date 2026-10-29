@@ -8,7 +8,18 @@ import { TaskList } from '@/components/sidebar/TaskList'
 import { useTaskSubscriptions } from '@/hooks/useTaskSubscriptions'
 import { createTask, getTasks, getTask } from '@/api/tasks'
 
-import type { TaskRecord } from '@/types'
+import type { DisplayEvent, TaskRecord } from '@/types'
+
+function planningEvent(): DisplayEvent {
+  return {
+    stage: 'task',
+    status: 'planning',
+    message: 'Planning execution steps…',
+    occurred_at: new Date().toISOString(),
+    agent_id: null,
+    raw_event: 'task.PLANNING'
+  }
+}
 
 export default function ChatPage () {
   const [tasks, setTasks] = useState<TaskRecord[]>([])
@@ -145,6 +156,7 @@ export default function ChatPage () {
                   error: null,
                   response: null,
                   delete_confirmation: null,
+                  events: [...task.events, planningEvent()],
                   messages: [
                     ...(task.messages ?? []),
                     {
@@ -184,7 +196,7 @@ export default function ChatPage () {
         ],
         response: null,
         error: null,
-        events: [],
+        events: [planningEvent()],
         plan: [],
         delete_confirmation: null
       }
@@ -254,7 +266,7 @@ export default function ChatPage () {
       className={`grid h-dvh min-h-screen overflow-hidden ${
         sidebarCollapsed
           ? 'grid-cols-[64px_minmax(420px,1fr)_310px]'
-          : 'grid-cols-[228px_minmax(420px,1fr)_310px]'
+          : 'grid-cols-[158px_minmax(420px,1fr)_220px]'
       }`}
     >
       {/* Sidebar */}

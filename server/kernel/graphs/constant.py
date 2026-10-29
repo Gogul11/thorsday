@@ -18,6 +18,11 @@ _EXPLICIT_INTENT_RULES = (
     ("a4", ("file", "files", "document", "documents", "folder", "folders", "directory", "directories")),
     ("email_agent", ("email", "e-mail", "send it to", "send this to", "mail it to")),
     ("code_runner", ("python", "write code", "python code", "program", "test them", "test it", "add two numbers", "execute code")),
+    ("data_analysis", ("analyze the csv", "analyze the data", "analyze this", "sales data", "sales analysis", "data analysis", "dataset", "statistics", "spreadsheet data", "json data", "best-performing product", "concerning trends")),
+    ("decision_support", ("compare options", "trade-offs", "tradeoffs", "recommendation", "prioritize", "make a decision", "decision matrix")),
+    ("summarizer", ("summarize", "summary", "key points", "brief this", "tl;dr", "main points")),
+    ("translator", ("translate", "translation", "in spanish", "in hindi", "in french", "rewrite in", "change the tone")),
+    ("checklist", ("checklist", "step-by-step", "action items", "break this down", "requirements list", "to-do list")),
 )
 
 def get_explicit_agent_hints(user_task: str) -> list[str]:

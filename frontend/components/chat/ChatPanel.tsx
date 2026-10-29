@@ -20,14 +20,47 @@ type ChatPanelProps = {
 
 function EmptyConversation() {
   return (
-    <div className="flex h-full items-center justify-center px-6">
-      <div className="max-w-md text-center">
-        <h2 className="text-lg font-semibold text-gray-900">
-          Start a conversation
+    <div className="flex h-full items-center justify-center px-6 pb-16">
+      <div className="-mt-10 w-full max-w-[620px] text-center">
+        <div className="text-[31px] font-bold tracking-[-0.06em] text-[#1e1e1c]">
+          Agent<span className="font-normal text-[#74746f]">OS</span>
+        </div>
+        <div className="mt-1 text-[9px] font-bold uppercase tracking-[0.28em] text-[#a0a09a]">
+          Your AI workspace
+        </div>
+
+        <h2 className="mt-7 text-[25px] font-semibold leading-[1.08] tracking-[-0.035em] text-[#1e1e1c]">
+          What can I help you
+          <br />
+          get done today?
         </h2>
 
-        <p className="mt-2 text-sm text-gray-500">
-          Ask the agent to research, analyze, create files, or perform a task.
+        <p className="mx-auto mt-3 max-w-[430px] text-[11px] leading-[1.55] text-[#74746f]">
+          Give AgentOS a goal, it can plan the work, use the right tools, and keep
+          you updated along the way.
+        </p>
+
+        <div className="mx-auto mt-9 grid max-w-[510px] grid-cols-3 gap-2 text-left">
+          {[
+            ["01", "Research", "Compare options and bring back a clear summary."],
+            ["02", "Analyze", "Turn files and information into useful insights."],
+            ["03", "Create", "Draft a plan, a document, or your next idea."],
+          ].map(([number, title, description]) => (
+            <div
+              key={number}
+              className="min-h-[99px] rounded-[9px] border border-[#e2e2dd] bg-white p-3 shadow-[0_1px_2px_rgba(30,30,28,0.02)]"
+            >
+              <span className="inline-flex rounded-[5px] bg-[#edf4ef] px-1.5 py-1 text-[9px] font-semibold text-[#5f806d]">
+                {number}
+              </span>
+              <h3 className="mt-2 text-[11px] font-semibold text-[#1e1e1c]">{title}</h3>
+              <p className="mt-1 text-[9px] leading-[1.45] text-[#74746f]">{description}</p>
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-4 text-[9px] text-[#a0a09a]">
+          Start by describing what you need in the box below.
         </p>
       </div>
     </div>

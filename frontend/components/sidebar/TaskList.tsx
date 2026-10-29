@@ -83,8 +83,9 @@ export function TaskList({
 
       {/* Section heading */}
       {!collapsed && (
-        <div className="mt-7 mb-2.5 mx-2 text-[#74746f] text-[11px] font-bold tracking-[0.08em] uppercase">
-          Tasks
+        <div className="mt-7 mb-2.5 mx-2 flex items-center justify-between text-[#74746f] text-[9px] font-bold tracking-[0.1em] uppercase">
+          <span>Recent tasks</span>
+          <span className="font-normal tracking-normal text-[#a0a09a]">{tasks.length}</span>
         </div>
       )}
 

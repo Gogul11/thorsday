@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import os
 import re
 from dataclasses import dataclass
@@ -44,6 +45,10 @@ class HybridChatModel:
         self.cloud = cloud
         self.local = local
         self.mode = mode.lower().strip()
+        try:
+            self.groq_timeout_seconds = float(os.getenv("GROQ_TIMEOUT_SECONDS", "8"))
+        except ValueError:
+            self.groq_timeout_seconds = 8.0
 
     @classmethod
     def is_sensitive(cls, value: Any) -> bool:
@@ -86,6 +91,36 @@ class HybridChatModel:
                 return await self.local.ainvoke(input, config=config, **kwargs)
             raise
 
+    def bind(self, **kwargs: Any) -> RunnableLambda:
+        """Bind model settings while retaining per-call provider selection.
+
+        LangChain's ``create_agent`` calls ``bind`` even for tool-free agents.
+        The hybrid facade previously implemented ``bind_tools`` and
+        ``with_structured_output`` only, so those agents failed before their
+        first model request with ``HybridChatModel has no attribute bind``.
+        """
+        def invoke_bound(value: Any, config: dict | None = None) -> Any:
+            provider, decision = self._provider(value)
+            try:
+                return provider.bind(**kwargs).invoke(value, config=config)
+            except Exception:
+                if decision.provider == "groq":
+                    logger.warning("Groq bound-model invocation failed; retrying with Ollama")
+                    return self.local.bind(**kwargs).invoke(value, config=config)
+                raise
+
+        async def ainvoke_bound(value: Any, config: dict | None = None) -> Any:
+            provider, decision = self._provider(value)
+            try:
+                return await provider.bind(**kwargs).ainvoke(value, config=config)
+            except Exception:
+                if decision.provider == "groq":
+                    logger.warning("Groq bound-model invocation failed; retrying with Ollama")
+                    return await self.local.bind(**kwargs).ainvoke(value, config=config)
+                raise
+
+        return RunnableLambda(invoke_bound, afunc=ainvoke_bound)
+
     def bind_tools(self, tools: list[Any], **kwargs: Any) -> RunnableLambda:
         """Bind tools while retaining per-call provider selection."""
         def invoke_bound(value: Any, config: dict | None = None) -> Any:
@@ -116,19 +151,30 @@ class HybridChatModel:
             provider, decision = self._provider(value)
             try:
                 return provider.with_structured_output(schema, **kwargs).invoke(value, config=config)
-            except Exception:
+            except Exception as exc:
                 if decision.provider == "groq":
-                    logger.warning("Groq structured invocation failed; retrying with Ollama")
+                    logger.warning(
+                        "Groq structured invocation failed; retrying with Ollama | error_type=%s | error=%s",
+                        type(exc).__name__,
+                        exc,
+                    )
                     return self.local.with_structured_output(schema, **kwargs).invoke(value, config=config)
                 raise
 
         async def ainvoke_structured(value: Any, config: dict | None = None) -> Any:
             provider, decision = self._provider(value)
             try:
-                return await provider.with_structured_output(schema, **kwargs).ainvoke(value, config=config)
-            except Exception:
+                request = provider.with_structured_output(schema, **kwargs).ainvoke(value, config=config)
                 if decision.provider == "groq":
-                    logger.warning("Groq structured invocation failed; retrying with Ollama")
+                    return await asyncio.wait_for(request, timeout=self.groq_timeout_seconds)
+                return await request
+            except Exception as exc:
+                if decision.provider == "groq":
+                    logger.warning(
+                        "Groq structured invocation failed; retrying with Ollama | error_type=%s | error=%s",
+                        type(exc).__name__,
+                        exc,
+                    )
                     return await self.local.with_structured_output(schema, **kwargs).ainvoke(value, config=config)
                 raise
 

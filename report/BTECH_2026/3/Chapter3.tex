@@ -15,6 +15,13 @@ As shown in Figure~\ref{fig:architecture}, AgentOS is organised as an overall ru
 \end{figure}
 \end{landscape}
 
+\section{\uppercase{Hybrid LLM Reasoning Engine}}
+AgentOS uses a privacy-aware hybrid reasoning engine to balance cloud-model capability with local data protection. The model factory exposes one LangChain-compatible facade to the planner, agents, and response generator, while the facade selects a provider for each invocation. Groq is used for non-sensitive orchestration work when a cloud credential is configured; Ollama is used for privacy-sensitive work such as local file inspection, repository or code analysis, academic material, personal information, credentials, and other locally scoped data. The local path is configured with an Ollama model such as \texttt{llama3.2} or \texttt{qwen3:8b} and communicates with the host-local Ollama service.
+
+The router applies conservative input classification before a model call. It extracts text from strings, message lists, and structured inputs, then checks privacy and local-resource indicators. A sensitive classification has precedence over cloud routing, so the request remains local even when Groq is available. The router also supports explicit \texttt{local}, \texttt{cloud}, and \texttt{hybrid} modes. In hybrid mode, an unavailable or failed Groq request is retried through Ollama, providing a local continuity path. This design makes the provider choice a kernel concern rather than a frontend concern: the UI reports the decision emitted by the kernel instead of attempting to infer privacy from the prompt.
+
+The same facade preserves structured-output and tool-binding interfaces. Consequently, planning, agent tool calls, and final response generation can all use the routing policy without requiring separate graph implementations. Each selected route produces an \texttt{llm.ROUTED} event containing the provider, sensitivity flag, reason, and operation. These events are persisted with the task and forwarded to the frontend, making the privacy boundary auditable during execution.
+
 \section{\uppercase{Frontend, Gateway, and Event Flow}}
 The frontend sends task prompts over HTTP and receives live activity over WebSocket. The backend listener subscribes to the kernel event channel and forwards events to connected clients. Figure~\ref{fig:redisflow} shows the separation between the task submission channel and the kernel event channel. MongoDB persistence is performed by the kernel/repository layer so the UI can later query task history.
 \begin{figure}[!htbp]

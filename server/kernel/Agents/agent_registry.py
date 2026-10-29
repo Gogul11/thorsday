@@ -12,6 +12,11 @@ from Agents.agents.email_agent import run_email_agent, E_AGENT_DESCRIPTION
 from Agents.agents.weather_agent import run_weather_agent, WEATHER_AGENT_DESCRIPTION
 from Agents.agents.code_runner_agent import run_code_runner_agent, CODE_RUNNER_AGENT_DESCRIPTION
 from Agents.agents.agent_creator import run_agent_creator, AGENT_CREATOR_DESCRIPTION
+from Agents.agents.data_analysis_agent import run_data_analysis_agent, DATA_ANALYSIS_AGENT_DESCRIPTION
+from Agents.agents.decision_support_agent import run_decision_support_agent, DECISION_SUPPORT_AGENT_DESCRIPTION
+from Agents.agents.summarizer_agent import run_summarizer_agent, SUMMARIZER_AGENT_DESCRIPTION
+from Agents.agents.translator_agent import run_translator_agent, TRANSLATOR_AGENT_DESCRIPTION
+from Agents.agents.checklist_agent import run_checklist_agent, CHECKLIST_AGENT_DESCRIPTION
 
 # Registry maps agent_type → (run_fn, description)
 _REGISTRY: dict[str, dict] = {
@@ -32,6 +37,11 @@ _REGISTRY: dict[str, dict] = {
     "weather_agent": {"run": run_weather_agent, "description": WEATHER_AGENT_DESCRIPTION},
     "agent_creator": {"run": run_agent_creator, "description": AGENT_CREATOR_DESCRIPTION},
     "code_runner": {"run": run_code_runner_agent, "description": CODE_RUNNER_AGENT_DESCRIPTION},
+    "data_analysis": {"run": run_data_analysis_agent, "description": DATA_ANALYSIS_AGENT_DESCRIPTION},
+    "decision_support": {"run": run_decision_support_agent, "description": DECISION_SUPPORT_AGENT_DESCRIPTION},
+    "summarizer": {"run": run_summarizer_agent, "description": SUMMARIZER_AGENT_DESCRIPTION},
+    "translator": {"run": run_translator_agent, "description": TRANSLATOR_AGENT_DESCRIPTION},
+    "checklist": {"run": run_checklist_agent, "description": CHECKLIST_AGENT_DESCRIPTION},
     "agent_creator": {"run": run_agent_creator, "description": AGENT_CREATOR_DESCRIPTION},
 }
 

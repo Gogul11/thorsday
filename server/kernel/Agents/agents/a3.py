@@ -2,7 +2,7 @@
 
 import asyncio
 
-from pydantic import BaseModel, Field
+from pydantic import AliasChoices, BaseModel, Field
 
 from tools.research_tools import trusted_web_search, wikipedia_search
 
@@ -40,8 +40,16 @@ class ResearchSearchPlan(BaseModel):
     is_research_task: bool = Field(description="Whether the requested work is research that A3 is responsible for")
     use_wikipedia: bool = Field(description="Whether Wikipedia is useful for this task")
     wikipedia_query: str = Field(default="", description="One focused Wikipedia search query")
-    use_trusted_web: bool = Field(description="Whether trusted academic or authoritative web search is useful")
-    trusted_web_query: str = Field(default="", description="One focused trusted-web search query")
+    use_trusted_web: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("use_trusted_web", "use_web"),
+        description="Whether trusted academic or authoritative web search is useful",
+    )
+    trusted_web_query: str = Field(
+        default="",
+        validation_alias=AliasChoices("trusted_web_query", "web_query"),
+        description="One focused trusted-web search query",
+    )
 
 
 async def run_agent_a3(
@@ -71,7 +79,9 @@ Task:\n{task}
 
 Results from previous agents:\n{context}
 
-Return a valid json object matching the ResearchSearchPlan schema.
+Return a valid JSON object matching the ResearchSearchPlan schema. Use these
+exact field names: is_research_task, use_wikipedia, wikipedia_query,
+use_trusted_web, and trusted_web_query.
 """
 
     try:

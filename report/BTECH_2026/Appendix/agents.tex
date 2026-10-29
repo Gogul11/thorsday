@@ -42,6 +42,11 @@ Loan EMI & EMI and amortisation calculation. \\
 Crypto PnL & Cryptocurrency trade PnL and ROI reporting. \\
 Code Runner & Python generation, execution, capture, and repair. \\
 Agent Creator & Creation and registration of new specialised agents. \\
+Data Analysis & Structured-data inspection, calculation, and evidence-based findings. \\
+Decision Support & Evidence synthesis, option comparison, and actionable recommendations. \\
+Summarizer & Concise summaries of supplied text, conversations, and agent results. \\
+Translator & Translation and tone-preserving text transformation. \\
+Checklist & Ordered action checklists with dependencies and acceptance checks. \\
 \bottomrule
 \end{tabularx}
 \caption{AgentOS agent catalogue}
@@ -415,6 +420,135 @@ The code-generation, sandbox-execution, and repair logic is shown in Figure~\ref
 \end{tikzpicture}}
 \caption{Code generation, sandbox execution, and repair logic}
 \label{fig:code-runner-logic}
+\end{figure}
+
+\clearpage
+\section{Data Analysis Agent}
+
+The Data Analysis Agent is a lightweight structured-data agent for CSV, JSON,
+TSV, and tabular text. It uses the file tools to locate and read the requested
+source and the bounded Python execution tool for reproducible calculations.
+The agent is instructed to inspect the source before calculating, state its
+assumptions, preserve the source data, and report only evidence-supported
+findings. It does not use a retry loop or modify data by default.
+The data-analysis flow is shown in Figure~\ref{fig:data-analysis-logic}.
+\AgentArchitecture{Data Analysis Agent}{structured-data request and source context}{inspect data, calculate requested measures, and explain findings}{file tools and bounded Python tool}{concise findings with assumptions}{data-analysis}
+\begin{figure}[!htbp]\centering
+\begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
+\node[logicstep] (request) {Structured-data request};
+\node[logicstep, below=of request] (inspect) {Locate and read the source data};
+\node[logicdecision, below=of inspect] (source) {Source available and readable?};
+\node[logicdata, below left=of source] (calculate) {Run bounded Python calculations};
+\node[logicwarning, below right=of source] (missing) {Report the missing or unreadable source};
+\node[logicstep, below=18mm of source] (report) {Return findings, assumptions, and requested metrics};
+\draw[logicline] (request) -- (inspect);
+\draw[logicline] (inspect) -- (source);
+\draw[logicline] (source) -- node[above left] {yes} (calculate);
+\draw[logicline] (source) -- node[above right] {no} (missing);
+\draw[logicline] (calculate) |- (report);
+\draw[logicline] (missing) |- (report);
+\end{tikzpicture}
+\caption{Data-analysis inspection and calculation logic}
+\label{fig:data-analysis-logic}
+\end{figure}
+
+\clearpage
+\section{Decision Support Agent}
+
+The Decision Support Agent is a lightweight, tool-free synthesis agent. It
+operates on the task and results supplied by the planner and preceding agents.
+It compares alternatives, weighs trade-offs, identifies assumptions and
+uncertainty, and produces a recommendation followed by the most important
+reasons and next action. It does not retrieve external evidence or invent
+facts that are not present in the supplied context.
+The decision-support flow is shown in Figure~\ref{fig:decision-support-logic}.
+\AgentArchitecture{Decision Support Agent}{decision request and prior results}{separate facts, assumptions, constraints, and trade-offs}{single tool-free model call}{recommendation and practical next action}{decision-support}
+\begin{figure}[!htbp]\centering
+\begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
+\node[logicstep] (request) {Decision request and prior results};
+\node[logicdata, below=of request] (evidence) {Extract facts, constraints, and uncertainty};
+\node[logicstep, below=of evidence] (compare) {Compare options and weigh trade-offs};
+\node[logicstep, below=of compare] (recommend) {Select the best-supported recommendation};
+\node[logicdata, below=of recommend] (result) {Return reasons, assumptions, and next action};
+\draw[logicline] (request) -- (evidence);
+\draw[logicline] (evidence) -- (compare);
+\draw[logicline] (compare) -- (recommend);
+\draw[logicline] (recommend) -- (result);
+\end{tikzpicture}
+\caption{Decision-support synthesis logic}
+\label{fig:decision-support-logic}
+\end{figure}
+
+\clearpage
+\section{Summarizer Agent}
+
+The Summarizer Agent is a lightweight, tool-free agent for supplied text,
+conversation excerpts, documents already loaded into context, and prior agent
+results. It preserves important facts, decisions, dates, risks, and action
+items while removing repetition. The prompt explicitly prohibits adding facts
+that are absent from the supplied material and returns a concise summary.
+The summarization flow is shown in Figure~\ref{fig:summarizer-logic}.
+\AgentArchitecture{Summarizer Agent}{text or prior-result context}{identify important facts, decisions, risks, and actions}{single tool-free model call}{concise faithful summary}{summarizer}
+\begin{figure}[!htbp]\centering
+\begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
+\node[logicstep] (input) {Supplied text or prior results};
+\node[logicdata, below=of input] (select) {Select facts, decisions, dates, risks, and actions};
+\node[logicstep, below=of select] (compress) {Remove repetition without adding facts};
+\node[logicstep, below=of compress] (output) {Return concise summary};
+\draw[logicline] (input) -- (select);
+\draw[logicline] (select) -- (compress);
+\draw[logicline] (compress) -- (output);
+\end{tikzpicture}
+\caption{Summarization and fact-preservation logic}
+\label{fig:summarizer-logic}
+\end{figure}
+
+\clearpage
+\section{Translator Agent}
+
+The Translator Agent is a lightweight, tool-free agent for translation and
+tone-preserving rewriting. It preserves meaning, names, numbers, formatting,
+and placeholders while following the requested target language, audience, and
+tone. It returns only the transformed text unless the user explicitly asks
+for an explanation.
+The translation flow is shown in Figure~\ref{fig:translator-logic}.
+\AgentArchitecture{Translator Agent}{source text, target language, and tone request}{translate or rewrite while preserving meaning and formatting}{single tool-free model call}{requested translated or transformed text}{translator}
+\begin{figure}[!htbp]\centering
+\begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
+\node[logicstep] (input) {Source text and transformation request};
+\node[logicdata, below=of input] (interpret) {Identify target language, audience, and tone};
+\node[logicstep, below=of interpret] (transform) {Translate or rewrite while preserving content};
+\node[logicstep, below=of transform] (output) {Return transformed text};
+\draw[logicline] (input) -- (interpret);
+\draw[logicline] (interpret) -- (transform);
+\draw[logicline] (transform) -- (output);
+\end{tikzpicture}
+\caption{Translation and tone-preserving transformation logic}
+\label{fig:translator-logic}
+\end{figure}
+
+\clearpage
+\section{Checklist Agent}
+
+The Checklist Agent is a lightweight, tool-free agent that converts a goal,
+set of requirements, or plan into a short ordered checklist. It includes
+dependencies, acceptance checks, and likely risks when they are present, while
+avoiding unnecessary steps or invented requirements. The result is designed
+to be directly actionable by a user or a downstream agent.
+The checklist flow is shown in Figure~\ref{fig:checklist-logic}.
+\AgentArchitecture{Checklist Agent}{goal, requirements, or plan}{extract actions, dependencies, and acceptance criteria}{single tool-free model call}{ordered actionable checklist}{checklist}
+\begin{figure}[!htbp]\centering
+\begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
+\node[logicstep] (input) {Goal or requirements};
+\node[logicdata, below=of input] (extract) {Extract concrete actions and dependencies};
+\node[logicstep, below=of extract] (order) {Order steps and add acceptance checks};
+\node[logicstep, below=of order] (output) {Return concise numbered checklist};
+\draw[logicline] (input) -- (extract);
+\draw[logicline] (extract) -- (order);
+\draw[logicline] (order) -- (output);
+\end{tikzpicture}
+\caption{Checklist construction logic}
+\label{fig:checklist-logic}
 \end{figure}
 
 \clearpage

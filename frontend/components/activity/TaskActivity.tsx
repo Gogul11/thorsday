@@ -108,6 +108,7 @@ export function TaskActivity({ task }: TaskActivityProps) {
   const [copiedId, setCopiedId] = useState(false);
   const [activityFilter, setActivityFilter] = useState<ActivityFilter>("all");
   const latestEvent = task?.events.at(-1);
+  const activePrompt = [...(task?.messages ?? [])].reverse().find((message) => message.role === "human")?.content ?? task?.title ?? "";
   const latestRoute = [...(task?.events ?? [])].reverse().find((event) => event.raw_event === "llm.ROUTED");
   const agents = task ? getAgentNames(task) : [];
   const visibleEvents = useMemo(() => {
@@ -141,49 +142,61 @@ export function TaskActivity({ task }: TaskActivityProps) {
   return (
     <aside className="bg-white border-l border-[#deded9] px-4 py-[22px] h-dvh overflow-y-auto min-w-0">
       {/* Panel heading */}
-      <div className="mt-0 mb-2.5 mx-2 text-[#74746f] text-[11px] font-bold tracking-[0.08em] uppercase">
-        Task activity
+      <div className="mt-0 mb-3 mx-0 flex items-center gap-2 text-[#74746f] text-[10px] font-bold tracking-[0.1em] uppercase">
+        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#edf4ef] text-[9px] text-[#71907d]" aria-hidden="true">
+          ↯
+        </span>
+        <span>Task activity</span>
       </div>
 
       {!task ? (
-        <p className="mx-2 text-[#74746f] text-xs leading-relaxed">
-          Select or create a task to inspect it.
-        </p>
+        <div className="mx-0 mt-8 rounded-[10px] border border-dashed border-[#dfe4df] bg-[#fcfcfa] px-4 py-7 text-center">
+          <span className="mx-auto flex h-7 w-7 items-center justify-center rounded-full bg-[#edf4ef] text-[12px] text-[#71907d]" aria-hidden="true">
+            ◷
+          </span>
+          <p className="mt-3 text-[10px] font-semibold text-[#74746f]">Your activity will appear here</p>
+          <p className="mt-1 text-[9px] leading-[1.45] text-[#a0a09a]">Select a task to follow its progress and details.</p>
+        </div>
       ) : (
         <>
           {/* Task summary */}
-          <div className="flex gap-2 mx-2 mb-5">
-            <span
-              aria-hidden="true"
-              className={`flex-none w-2 h-2 mt-[5px] rounded-full ${
-                task.status === "running"
-                  ? "bg-[#5e5e58]"
-                  : task.status === "completed"
-                    ? "bg-[#242422]"
+          <div className="mx-0 mb-3 rounded-[11px] border border-[#e2e6e1] bg-white px-3 py-2.5 shadow-[0_2px_6px_rgba(30,30,28,0.03)]">
+            <div className="flex items-center justify-between gap-2">
+              <span
+                className={`inline-flex rounded-full px-2 py-1 text-[9px] font-semibold capitalize ${
+                  task.status === "completed"
+                    ? "bg-[#edf7ef] text-[#317044]"
                     : task.status === "failed"
-                      ? "bg-[#b84343]"
-                      : "bg-[#b0b0aa]"
-              }`}
-            />
-            <div>
-              <p className="m-0 mb-1 text-sm capitalize">{task.status}</p>
-              <div className="flex items-center gap-1.5">
-                <code className="text-[10px] text-[#5a5a54] font-mono overflow-wrap-anywhere">
-                  {shortId(task.task_id || task.req_id)}
-                </code>
-                {task.task_id && (
-                  <button type="button" onClick={() => void copyTaskId()} className="text-[10px] text-[#0f766e] hover:underline">
-                    {copiedId ? "Copied" : "Copy ID"}
-                  </button>
-                )}
-              </div>
+                      ? "bg-[#fff0ef] text-[#b84343]"
+                      : task.status === "running"
+                        ? "bg-[#f1f3f0] text-[#5e5e58]"
+                        : "bg-[#f3f3f0] text-[#74746f]"
+                }`}
+              >
+                <span className="mr-1" aria-hidden="true">•</span>
+                {task.status}
+              </span>
+              <span className="text-[8px] font-bold uppercase tracking-[0.08em] text-[#a0a09a]">Task</span>
+            </div>
+            <p className="mt-3 max-h-[42px] overflow-hidden break-words text-[11px] leading-[1.4] text-[#1e1e1c]" title={activePrompt}>
+              {activePrompt}
+            </p>
+            <div className="mt-2.5 flex items-center justify-between gap-2 border-t border-[#edf0eb] pt-2">
+              <code className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-[9px] text-[#74746f] font-mono">
+                {shortId(task.task_id || task.req_id)}
+              </code>
+              {task.task_id && (
+                <button type="button" onClick={() => void copyTaskId()} className="flex-none text-[10px] text-[#0f766e] hover:underline">
+                  {copiedId ? "Copied" : "Copy ID"}
+                </button>
+              )}
             </div>
           </div>
 
           {/* Task facts */}
-          <dl className="grid gap-[11px] mx-2 mb-[21px]">
+          <dl className="grid gap-1.5 mx-0 mb-4">
             {task.scheduler && (
-              <div className="border-b border-[#f0f0ec] pb-2">
+              <div className="rounded-[9px] border border-[#e2e6e1] bg-white px-2.5 py-2">
                 <dt className="mb-[3px] text-[#74746f] text-[10px] font-bold tracking-[0.06em] uppercase">
                   Scheduler
                 </dt>
@@ -214,7 +227,7 @@ export function TaskActivity({ task }: TaskActivityProps) {
               </div>
             )}
             {latestRoute?.provider && (
-              <div className="border-b border-[#f0f0ec] pb-2">
+              <div className="rounded-[9px] border border-[#e2e6e1] bg-white px-2.5 py-2">
                 <dt className="mb-[3px] text-[#74746f] text-[10px] font-bold tracking-[0.06em] uppercase">
                   LLM routing
                 </dt>
@@ -236,7 +249,7 @@ export function TaskActivity({ task }: TaskActivityProps) {
               </div>
             )}
             {task.scheduler && (
-              <div className="border-b border-[#f0f0ec] pb-2">
+              <div className="rounded-[9px] border border-[#e2e6e1] bg-white px-2.5 py-2">
                 <dt className="mb-[3px] text-[#74746f] text-[10px] font-bold tracking-[0.06em] uppercase">
                   Token usage
                 </dt>
@@ -262,7 +275,7 @@ export function TaskActivity({ task }: TaskActivityProps) {
                 </dd>
               </div>
             )}
-            <div className="border-b border-[#f0f0ec] pb-2">
+            <div className="rounded-[9px] border border-[#e2e6e1] bg-white px-2.5 py-2">
               <dt className="mb-[3px] text-[#74746f] text-[10px] font-bold tracking-[0.06em] uppercase">
                 Current step
               </dt>
@@ -270,7 +283,7 @@ export function TaskActivity({ task }: TaskActivityProps) {
                 {latestEvent?.message ?? "Waiting to start."}
               </dd>
             </div>
-            <div className="border-b border-[#f0f0ec] pb-2">
+            <div className="rounded-[9px] border border-[#e2e6e1] bg-white px-2.5 py-2">
               <dt className="mb-[3px] text-[#74746f] text-[10px] font-bold tracking-[0.06em] uppercase">
                 Agents
               </dt>
@@ -278,7 +291,7 @@ export function TaskActivity({ task }: TaskActivityProps) {
                 {formatAgents(agents, task.status)}
               </dd>
             </div>
-            <div className="border-b border-[#f0f0ec] pb-2">
+            <div className="rounded-[9px] border border-[#e2e6e1] bg-white px-2.5 py-2">
               <dt className="mb-[3px] text-[#74746f] text-[10px] font-bold tracking-[0.06em] uppercase">
                 Activity
               </dt>
@@ -286,7 +299,7 @@ export function TaskActivity({ task }: TaskActivityProps) {
                 {task.events.length} events recorded
               </dd>
             </div>
-            <div className="border-b border-[#f0f0ec] pb-2">
+            <div className="rounded-[9px] border border-[#e2e6e1] bg-white px-2.5 py-2">
               <dt className="mb-[3px] text-[#74746f] text-[10px] font-bold tracking-[0.06em] uppercase">
                 Submitted
               </dt>
@@ -297,8 +310,8 @@ export function TaskActivity({ task }: TaskActivityProps) {
           </dl>
 
           {/* Timeline heading */}
-          <div className="mt-0 mb-2.5 mx-2 flex items-center justify-between">
-            <div className="text-[#74746f] text-[11px] font-bold tracking-[0.08em] uppercase">Timeline</div>
+          <div className="mt-0 mb-1.5 mx-2 flex items-center justify-between">
+            <div className="text-[#74746f] text-[10px] font-bold tracking-[0.08em] uppercase">Timeline</div>
             {task.plan_graph && (
               <button type="button" onClick={() => setShowPlanGraph(true)} className="rounded-md border border-[#c9d8d6] px-2 py-1 text-[10px] font-semibold text-[#0f766e] hover:bg-[#edf7f5]">
                 View graph
@@ -306,13 +319,13 @@ export function TaskActivity({ task }: TaskActivityProps) {
             )}
           </div>
 
-          <div className="mx-2 mb-3 flex flex-wrap gap-1" role="group" aria-label="Activity filters">
+          <div className="mx-2 mb-2 flex flex-wrap items-center gap-1" role="group" aria-label="Activity filters">
             {(["all", "scheduler", "agents", "tools"] as ActivityFilter[]).map((filter) => (
               <button
                 key={filter}
                 type="button"
                 onClick={() => setActivityFilter(filter)}
-                className={`rounded-full border px-2 py-1 text-[10px] capitalize transition-colors ${
+                className={`rounded-full border px-1.5 py-0.5 text-[9px] capitalize transition-colors ${
                   activityFilter === filter
                     ? "border-[#0f766e] bg-[#edf7f5] font-semibold text-[#0f766e]"
                     : "border-[#deded9] text-[#74746f] hover:bg-[#f7f7f5]"
@@ -322,7 +335,7 @@ export function TaskActivity({ task }: TaskActivityProps) {
               </button>
             ))}
             {activityFilter !== "all" && (
-              <span className="self-center text-[10px] text-[#a0a09a]">
+              <span className="self-center text-[9px] text-[#a0a09a]">
                 {visibleEvents.length} shown
               </span>
             )}
@@ -334,7 +347,7 @@ export function TaskActivity({ task }: TaskActivityProps) {
               before:content-[''] before:absolute before:top-[5px] before:bottom-[10px] before:left-[11px] before:w-px before:bg-[#deded9]"
           >
             {visibleEvents.length === 0 ? (
-              <li className="text-[#74746f] text-xs leading-relaxed">
+              <li className="text-[#74746f] text-[11px] leading-relaxed">
                 {task.events.length === 0 ? "Waiting for task activity." : "No events match this filter."}
               </li>
             ) : (

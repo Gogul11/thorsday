@@ -36,10 +36,7 @@ def warmup() -> None:
     _get_graph()
 
 
-# ---------------------------------------------------------------------------
 # Core task runner
-# ---------------------------------------------------------------------------
-
 async def run_task(prompt: str, req_id: str, task_id: str = "") -> str:
     logger.info(
         "Task started | req=%s | task=%s | follow_up=%s | prompt_chars=%d",

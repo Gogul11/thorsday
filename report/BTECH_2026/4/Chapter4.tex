@@ -2,7 +2,7 @@
 \label{chap4}
 
 \section{\uppercase{Implementation Environment}}
-The kernel is implemented in Python using asynchronous services. The backend is FastAPI-based and the frontend is implemented with Next.js and TypeScript. Redis provides task/event channels and scheduler metadata; MongoDB stores task records and event history; ChromaDB provides persistent vector collections for planning and context swap. Provider-specific LLM usage is treated as optional metadata because some providers do not return reliable token counts.
+The kernel is implemented in Python using asynchronous services. The backend is FastAPI-based and the frontend is implemented with Next.js and TypeScript. Redis provides task/event channels and scheduler metadata; MongoDB stores task records and event history; ChromaDB provides persistent vector collections for planning and context swap. The LLM layer is provider-independent at the graph boundary: a hybrid model facade presents one asynchronous LangChain interface while selecting Groq or Ollama per invocation. Provider-specific LLM usage is treated as optional metadata because some providers do not return reliable token counts.
 
 \section{\uppercase{Semantic Agent Retrieval}}
 Agent descriptions are embedded in a persistent ChromaDB collection. A task description is used as a query, and the top candidate records are returned with their distances and metadata. In the configured cosine space, ChromaDB returns $d=1-\cos(\theta)$, so the implementation reports $s=1-d$. It does not divide by two; that transformation would be appropriate for a different distance normalisation. An LRU cache reduces repeated retrieval for identical descriptions. Algorithm~\ref{alg:semantic-agent-retrieval} summarises this candidate-retrieval and cosine-distance conversion procedure.
@@ -26,12 +26,42 @@ Agent descriptions are embedded in a persistent ChromaDB collection. A task desc
 The planner asks the configured LLM for a structured execution plan. The response is parsed into steps and normalised against the agent registry. If the LLM request fails, exceeds quota, or produces invalid structure, a deterministic fallback creates a usable plan from the best retrieved agent(s). This maintains task execution and observability without pretending that the fallback has the same reasoning quality as the provider.
 
 Figure~\ref{fig:optimized-planner} illustrates the complete optimised planning path, from semantic candidate retrieval through structured plan validation, fallback routing, DAG construction, scheduling, and runtime execution.
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.98\textwidth]{4/figures/optimized_planner.png}
 \caption{Optimised semantic planner and DAG construction}
 \label{fig:optimized-planner}
 \end{figure}
+
+
+\section{\uppercase{Hybrid Provider Routing}}
+The hybrid model implementation is centred in \texttt{kernel/models/model.py}. \texttt{HybridChatModel} wraps a \texttt{ChatGroq} instance when \texttt{GROQ\_API\_KEY} is available and a \texttt{ChatOllama} instance configured with \texttt{OLLAMA\_MODEL} and \texttt{OLLAMA\_BASE\_URL}. The default mode is \texttt{hybrid}; \texttt{local} forces all calls to Ollama, while \texttt{cloud} permits Groq for non-sensitive calls. Sensitive input always overrides cloud selection. The Ollama client uses a configurable request timeout, bounded output length, and a short keep-alive interval so local failures do not remain indefinitely pending.
+
+Sensitivity is currently implemented as a conservative deterministic classifier rather than a second LLM call. It examines the text extracted from the invocation and matches indicators for personal or confidential data, academic work, local paths and files, repositories and code, credentials, and medical or financial information. This avoids sending the classification question itself to a cloud provider. When a Groq call is selected but fails, the facade retries the same operation with Ollama. Structured-output and tool-bound runnables are created through the facade, so the policy is applied consistently to planner JSON, agent tool calls, and final responses.
+
+\begin{algorithm}[H]
+\caption{Privacy-Aware Hybrid LLM Routing}
+\label{alg:hybrid-routing}
+\begin{algorithmic}[1]
+\Require invocation input $x$, routing mode $m$, local model $L$, optional cloud model $G$
+\Ensure provider response $y$
+\State $t \gets \Call{ExtractText}{x}$
+\State $s \gets \Call{SensitiveMatch}{t}$
+\If{$m=\texttt{local}$ \textbf{or} $s=\textsc{true}$}
+    \State $p \gets L$
+\ElsIf{$G$ exists and $m \in \{\texttt{hybrid},\texttt{cloud}\}$}
+    \State $p \gets G$
+\Else
+    \State $p \gets L$
+\EndIf
+\State emit \texttt{llm.ROUTED} with provider, sensitivity, reason, and operation
+\State $y \gets \Call{Invoke}{p,x}$
+\If{$p=G$ and invocation fails}
+    \State $y \gets \Call{Invoke}{L,x}$
+\EndIf
+\State \Return $y$
+\end{algorithmic}
+\end{algorithm}
 
 \section{\uppercase{DAG Validation}}
 Every step has a unique identifier and a list of prerequisite identifiers. Validation rejects duplicate identifiers, unknown agents, unknown dependencies, and cycles. A Kahn-style topological pass counts nodes removed from the ready set. If the count is smaller than the number of steps, the dependency graph contains a cycle and is rejected. The same validated dependency lists are used to generate Mermaid edges. Algorithm~\ref{alg:dependency-validation} specifies the cycle-detection procedure.
@@ -88,6 +118,8 @@ where $W$ is queue waiting time. The implementation uses an in-process pending s
 \section{\uppercase{Resource Admission and Token Budgets}}
 The resource manager checks active global slots, active slots for the task, and the cumulative estimated token reservation for the task. A temporary denial leaves work waiting; an exhausted task budget is converted into a blocked/failed outcome rather than leaving the task silently pending. Actual provider usage, when available, is recorded separately from estimated admission tokens. This distinction explains why a provider such as Groq may display zero usage metadata even while the scheduler correctly enforces its configured estimate.
 
+
+\clearpage
 \section{\uppercase{Redis Events and Backend Forwarding}}
 Events are JSON records containing task identifier, step identifier, agent name, execution identifier, status, timestamp, priority, effective priority, queue wait, and attempt. The kernel publishes them on \texttt{kernel\_events}; the backend subscribes and forwards them over WebSocket. Scheduler records use keys such as \texttt{agentos:scheduler:ready} and \texttt{agentos:scheduler:job:<execution\_id>}. MongoDB persists task history and event records for later inspection.
 Table~\ref{tab:rediskeys} summarises the Redis channels and scheduler keys used for task transport, lifecycle events, queue persistence, and recovery.
@@ -112,11 +144,12 @@ Name & Purpose & Durability role \\
 \section{\uppercase{Context Page-Out and Page-In}}
 The pager moves messages from the active conversation state to a persistent ChromaDB collection after a configured window is exceeded. Each page stores message content, task metadata, and an embedding. On a later turn, the current query is embedded and the collection is searched; selected messages are reintroduced in relevance order. The implementation emits page-out and page-in metrics, allowing the UI or logs to verify that paging occurred.
 
+\clearpage
 \section{\uppercase{Sandboxed Execution and Self-Healing}}
 The code runner creates a scoped temporary script, launches it with \texttt{asyncio.create\_subprocess\_exec}, captures stdout/stderr, and terminates the subprocess after a strict timeout. Output size is limited to prevent unbounded memory use. On a traceback, the error is supplied to the coder/tester agent and a revised script is attempted, up to three times. The runner publishes line-oriented output and final status as kernel events. No claim is made that an ordinary subprocess is equivalent to a container or microVM security boundary.
 
 \section{\uppercase{Frontend Observability}}
-The task activity panel displays lifecycle events, scheduler state, queue position, effective priority, waiting time, attempt number, resource decisions, and token totals when provider metadata is present. The plan graph modal displays the structured graph and Mermaid source. Token fields distinguish input, output, total, and configured budget; when the provider omits usage, the interface reports that the metadata is unavailable rather than inventing a count.
+The task activity panel displays lifecycle events, scheduler state, queue position, effective priority, waiting time, attempt number, resource decisions, and token totals when provider metadata is present. It also displays the latest hybrid routing decision as \texttt{Groq / cloud} or \texttt{Ollama / local}, including a privacy-sensitive message when applicable. The \texttt{llm.ROUTED} events appear in the live timeline and are persisted with task history, so the provider selected for planning, agent execution, and response generation can be inspected after completion. The plan graph modal displays the structured graph and Mermaid source. Token fields distinguish input, output, total, and configured budget; when the provider omits usage, the interface reports that the metadata is unavailable rather than inventing a count.
 
 \section{\uppercase{Configuration and Verification}}
 Table~\ref{tab:config} lists the important policy values. Verification for this phase consists of Python compilation, TypeScript type checking, scheduler/resource smoke tests, DAG validation checks, the seeded priority-versus-FIFO scheduler workload benchmark reported in Chapter~\ref{chap5}, and manual event/graph inspection. The benchmark is a same-host scheduler comparison with stubbed persistence; it is not a production capacity or model-quality claim.
@@ -134,6 +167,11 @@ Task token budget & 50,000 & Cumulative estimated admission limit \\
 Maximum scheduler priority & configurable & Upper bound for aging \\
 Context active window & configurable & Number of active messages \\
 Self-healing attempts & 3 & Maximum code repair retries \\
+LLM routing mode & \texttt{hybrid} & \texttt{hybrid}, \texttt{local}, or \texttt{cloud} provider policy \\
+Ollama model & \texttt{llama3.2} & Local model used for sensitive input and fallback \\
+Ollama endpoint & \texttt{localhost} & Host-local Ollama service at port 11434 \\
+Ollama output limit & 512 tokens & Maximum generated tokens per local call \\
+Ollama timeout & 120 seconds & Maximum local provider request duration \\
 \bottomrule
 \end{tabular}
 \end{table}
