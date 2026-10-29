@@ -79,11 +79,11 @@ function buildMessage(ev: KernelEvent): string {
 // ---------------------------------------------------------------------------
 
 function stageAndStatus(eventType: string): [string, string] {
-  const [prefix, suffix] = eventType.split(".");
+  const [prefix, suffix] = (eventType ?? "").split(".");
 
   return [
     (prefix ?? "task").toLowerCase(),
-    (suffix ?? eventType).toLowerCase(),
+    (suffix ?? eventType ?? "").toLowerCase(),
   ];
 }
 
@@ -91,19 +91,36 @@ function stageAndStatus(eventType: string): [string, string] {
 // Kernel event → DisplayEvent
 // ---------------------------------------------------------------------------
 
-function toDisplayEvent(ev: KernelEvent): DisplayEvent {
-  const [stage, status] = stageAndStatus(ev.event);
+export function toDisplayEvent(ev: KernelEvent | DisplayEvent): DisplayEvent {
+  if ("stage" in ev && "occurred_at" in ev && "raw_event" in ev) {
+    return ev as DisplayEvent;
+  }
+
+  const rawEvent = (ev as any).raw_event ?? (ev as KernelEvent).event ?? "unknown";
+  const [stage, status] = stageAndStatus(rawEvent);
+
+  let occurred_at = new Date().toISOString();
+  const rawTime = (ev as any).occurred_at ?? (ev as any).timestamp;
+  if (rawTime) {
+    if (typeof rawTime === "string") {
+      occurred_at = rawTime;
+    } else if (typeof rawTime === "number") {
+      occurred_at = new Date(rawTime < 1e11 ? rawTime * 1000 : rawTime).toISOString();
+    } else if (rawTime instanceof Date) {
+      occurred_at = rawTime.toISOString();
+    }
+  }
 
   return {
-    stage,
-    status,
-    message: buildMessage(ev),
-    occurred_at: new Date().toISOString(),
-    agent_id: ev.agent_name ?? ev.agent_id ?? null,
-    raw_event: ev.event,
-    provider: ev.provider,
-    sensitive: ev.sensitive,
-    operation: ev.operation,
+    stage: (ev as any).stage ?? stage,
+    status: (ev as any).status ?? status,
+    message: (ev as any).message ?? buildMessage(ev as KernelEvent),
+    occurred_at,
+    agent_id: (ev as KernelEvent).agent_name ?? (ev as KernelEvent).agent_id ?? null,
+    raw_event: rawEvent,
+    provider: (ev as KernelEvent).provider,
+    sensitive: (ev as KernelEvent).sensitive,
+    operation: (ev as KernelEvent).operation,
   };
 }
 

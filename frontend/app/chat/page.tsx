@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import ChatPanel from '@/components/chat/ChatPanel'
 import { TaskActivity } from '@/components/activity/TaskActivity'
 import { TaskList } from '@/components/sidebar/TaskList'
-import { useTaskSubscriptions } from '@/hooks/useTaskSubscriptions'
+import { toDisplayEvent, useTaskSubscriptions } from '@/hooks/useTaskSubscriptions'
 import { createTask, getTasks, getTask } from '@/api/tasks'
 
 import type { DisplayEvent, TaskRecord } from '@/types'
@@ -110,7 +110,9 @@ export default function ChatPage () {
             ? {
                 ...task,
                 messages: full.messages ?? [],
-                events: full.events ?? task.events,
+                events: (full.events && full.events.length > 0)
+                  ? full.events.map(toDisplayEvent)
+                  : task.events,
                 response: full.response ?? task.response,
                 plan_graph: full.plan_graph ?? task.plan_graph,
                 plan_mermaid: full.plan_mermaid ?? task.plan_mermaid,

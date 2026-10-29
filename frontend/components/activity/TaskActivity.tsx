@@ -115,7 +115,7 @@ export function TaskActivity({ task }: TaskActivityProps) {
     if (!task || activityFilter === "all") return task?.events ?? [];
     return task.events.filter((event) => {
       if (activityFilter === "scheduler") {
-        return event.raw_event.startsWith("AGENT_") || event.raw_event.startsWith("RESOURCE_");
+        return Boolean(event.raw_event?.startsWith("AGENT_") || event.raw_event?.startsWith("RESOURCE_"));
       }
       if (activityFilter === "agents") return event.stage === "agent";
       return event.stage === "tool";

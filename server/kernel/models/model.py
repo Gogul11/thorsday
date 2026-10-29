@@ -35,7 +35,7 @@ class HybridChatModel:
     _SENSITIVE_PATTERNS = (
         re.compile(r"\b(personal|private|confidential|proprietary|secret|internal)\b", re.I),
         re.compile(r"\b(academic assignment|homework|thesis|student|resume|cv)\b", re.I),
-        re.compile(r"\b(read|open|inspect|summari[sz]e|analy[sz]e|edit|write|modify)\b.{0,80}\b(file|folder|directory|document|pdf|docx|csv|json|code|repository|repo)\b", re.I),
+        re.compile(r"\b(read|open|inspect|summari[sz]e|edit|write|modify)\b.{0,80}\b(file|folder|directory|document|pdf|docx|csv|json|code|repository|repo)\b", re.I),
         re.compile(r"(?:[A-Za-z]:[\\/]|(?:\\\\|//)|\b(?:src|server|frontend|docs|tmp)[\\/])", re.I),
         re.compile(r"\b(?:\.env|id_rsa|credentials|secrets?\.(?:json|ya?ml)|password|api[_ -]?key|token)\b", re.I),
         re.compile(r"\b(?:medical|health|financial|bank|credit card|ssn|social security|email inbox)\b", re.I),
