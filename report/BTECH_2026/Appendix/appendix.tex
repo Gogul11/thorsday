@@ -18,18 +18,16 @@ Table~\ref{tab:planning-metrics} defines the planning-quality measures used to a
 \centering
 \caption{Metrics for evaluating planner quality}
 \label{tab:planning-metrics}
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.27\textwidth}>{\raggedright\arraybackslash}X}
-\toprule
-Metric & Definition and formula \\
-\midrule
-Agent-selection accuracy & Fraction of tasks for which the planner selects the complete required agent set: $\frac{\text{tasks with correct agent set}}{N}$. \\
-Agent precision & Fraction of selected agents that are relevant: $\frac{TP}{TP+FP}$. \\
-Agent recall & Fraction of required agents that are selected: $\frac{TP}{TP+FN}$. \\
-Agent F1-score & Harmonic mean of selection precision and recall: $F_1=2\frac{PR}{P+R}$. \\
-Plan validity rate & Fraction of generated plans that pass schema, agent-identifier, dependency, and cycle validation: $\frac{\text{valid plans}}{\text{generated plans}}$. \\
-Dependency correctness & Fraction of dependency relations that match the expected relations: $\frac{\text{correct dependency edges}}{\text{expected dependency edges}}$. \\
-Fallback rate & Fraction of tasks executed using semantic fallback: $\frac{\text{fallback tasks}}{N}$. \\
-\bottomrule
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.27\textwidth}|>{\raggedright\arraybackslash}X|}
+\hline
+Metric & Definition and formula \\ \hline
+Agent-selection accuracy & Fraction of tasks for which the planner selects the complete required agent set: $\frac{\text{tasks with correct agent set}}{N}$. \\ \hline
+Agent precision & Fraction of selected agents that are relevant: $\frac{TP}{TP+FP}$. \\ \hline
+Agent recall & Fraction of required agents that are selected: $\frac{TP}{TP+FN}$. \\ \hline
+Agent F1-score & Harmonic mean of selection precision and recall: $F_1=2\frac{PR}{P+R}$. \\ \hline
+Plan validity rate & Fraction of generated plans that pass schema, agent-identifier, dependency, and cycle validation: $\frac{\text{valid plans}}{\text{generated plans}}$. \\ \hline
+Dependency correctness & Fraction of dependency relations that match the expected relations: $\frac{\text{correct dependency edges}}{\text{expected dependency edges}}$. \\ \hline
+Fallback rate & Fraction of tasks executed using semantic fallback: $\frac{\text{fallback tasks}}{N}$. \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -42,18 +40,16 @@ Table~\ref{tab:execution-metrics} defines the reliability measures used to asses
 \centering
 \caption{Metrics for execution reliability}
 \label{tab:execution-metrics}
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.29\textwidth}>{\raggedright\arraybackslash}X}
-\toprule
-Metric & Definition and formula \\
-\midrule
-Task success rate & $\frac{\text{tasks completed with the expected result}}{N}$. \\
-Step success rate & $\frac{\text{successfully completed steps}}{\text{dispatched steps}}$. \\
-Failure rate & $\frac{\text{tasks ending in FAILED}}{N}$, reported separately from temporary WAITING or BLOCKED states. \\
-Retry rate & $\frac{\text{steps executed more than once}}{\text{dispatched steps}}$. \\
-Recovery correctness & $\frac{\text{interrupted steps safely requeued without duplicate completion}}{\text{interrupted steps requiring recovery}}$. \\
-Dependency-order violation rate & $\frac{\text{steps started before all prerequisites completed}}{\text{started steps}}$. The desired value is zero. \\
-End-to-end task latency & $T_{complete}-T_{created}$, reported using mean, median, and percentile values such as $P_{95}$. \\
-\bottomrule
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.29\textwidth}|>{\raggedright\arraybackslash}X|}
+\hline
+Metric & Definition and formula \\ \hline
+Task success rate & $\frac{\text{tasks completed with the expected result}}{N}$. \\ \hline
+Step success rate & $\frac{\text{successfully completed steps}}{\text{dispatched steps}}$. \\ \hline
+Failure rate & $\frac{\text{tasks ending in FAILED}}{N}$, reported separately from temporary WAITING or BLOCKED states. \\ \hline
+Retry rate & $\frac{\text{steps executed more than once}}{\text{dispatched steps}}$. \\ \hline
+Recovery correctness & $\frac{\text{interrupted steps safely requeued without duplicate completion}}{\text{interrupted steps requiring recovery}}$. \\ \hline
+Dependency-order violation rate & $\frac{\text{steps started before all prerequisites completed}}{\text{started steps}}$. The desired value is zero. \\ \hline
+End-to-end task latency & $T_{complete}-T_{created}$, reported using mean, median, and percentile values such as $P_{95}$. \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -63,19 +59,17 @@ Table~\ref{tab:scheduler-metrics} defines the scheduler and resource measures us
 \centering
 \caption{Metrics for scheduling and resource admission}
 \label{tab:scheduler-metrics}
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.30\textwidth}>{\raggedright\arraybackslash}X}
-\toprule
-Metric & Definition and formula \\
-\midrule
-Mean queue waiting time & $\frac{1}{S}\sum_{i=1}^{S}(T_{start,i}-T_{ready,i})$. \\
-Scheduling response time & $T_{dispatch}-T_{ready}$ for each admitted step. \\
-Starvation rate & $\frac{\text{ready steps exceeding the starvation threshold}}{\text{ready steps}}$. \\
-Fairness across tasks & Jain's fairness index: $J=\frac{(\sum_i x_i)^2}{n\sum_i x_i^2}$, where $x_i$ is the service received by task $i$. \\
-Concurrency-limit violations & $\frac{\text{dispatches exceeding global or per-task limits}}{\text{dispatches}}$. The desired value is zero. \\
-Temporary-denial handling rate & $\frac{\text{temporarily denied jobs correctly waiting and requeued}}{\text{temporary denials}}$. \\
-Token-budget compliance & $\frac{\text{tasks whose admitted estimate remains within budget}}{N}$. \\
-Token utilisation & $\frac{\text{consumed or reported tokens}}{\text{configured token budget}}$, reported separately for estimated and provider-reported usage. \\
-\bottomrule
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.30\textwidth}|>{\raggedright\arraybackslash}X|}
+\hline
+Metric & Definition and formula \\ \hline
+Mean queue waiting time & $\frac{1}{S}\sum_{i=1}^{S}(T_{start,i}-T_{ready,i})$. \\ \hline
+Scheduling response time & $T_{dispatch}-T_{ready}$ for each admitted step. \\ \hline
+Starvation rate & $\frac{\text{ready steps exceeding the starvation threshold}}{\text{ready steps}}$. \\ \hline
+Fairness across tasks & Jain's fairness index: $J=\frac{(\sum_i x_i)^2}{n\sum_i x_i^2}$, where $x_i$ is the service received by task $i$. \\ \hline
+Concurrency-limit violations & $\frac{\text{dispatches exceeding global or per-task limits}}{\text{dispatches}}$. The desired value is zero. \\ \hline
+Temporary-denial handling rate & $\frac{\text{temporarily denied jobs correctly waiting and requeued}}{\text{temporary denials}}$. \\ \hline
+Token-budget compliance & $\frac{\text{tasks whose admitted estimate remains within budget}}{N}$. \\ \hline
+Token utilisation & $\frac{\text{consumed or reported tokens}}{\text{configured token budget}}$, reported separately for estimated and provider-reported usage. \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -124,22 +118,20 @@ intentionally schematic so that they remain readable when printed.
 
 \begin{figure}[H]
 \centering
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.22\textwidth}>{\raggedright\arraybackslash}X}
-\toprule
-Agent & Primary responsibility \\
-\midrule
-A1 & System information, resources, processes, configuration, and environment inspection. \\
-A2 & Current date, time, timezone, and calendar-related queries. \\
-A3 & Factual, academic, scientific, technical, and web research with sources. \\
-A4 & Local file and document search, reading, creation, modification, and confirmation-controlled deletion. \\
-Content Creator & Drafting, rewriting, summarising, formatting, and structuring text. \\
-Email & Sending and delivering email messages using prepared content. \\
-Weather & Current weather and forecast retrieval for a location. \\
-Loan EMI & Loan EMI computation and amortisation reporting. \\
-Crypto PnL & Cryptocurrency trade profit, loss, return, and report generation. \\
-Code Runner & Python generation, sandboxed execution, output capture, and bounded repair. \\
-Agent Creator & Creation, registration, and immediate execution of new specialised agents. \\
-\bottomrule
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.22\textwidth}|>{\raggedright\arraybackslash}X|}
+\hline
+Agent & Primary responsibility \\ \hline
+A1 & System information, resources, processes, configuration, and environment inspection. \\ \hline
+A2 & Current date, time, timezone, and calendar-related queries. \\ \hline
+A3 & Factual, academic, scientific, technical, and web research with sources. \\ \hline
+A4 & Local file and document search, reading, creation, modification, and confirmation-controlled deletion. \\ \hline
+Content Creator & Drafting, rewriting, summarising, formatting, and structuring text. \\ \hline
+Email & Sending and delivering email messages using prepared content. \\ \hline
+Weather & Current weather and forecast retrieval for a location. \\ \hline
+Loan EMI & Loan EMI computation and amortisation reporting. \\ \hline
+Crypto PnL & Cryptocurrency trade profit, loss, return, and report generation. \\ \hline
+Code Runner & Python generation, sandboxed execution, output capture, and bounded repair. \\ \hline
+Agent Creator & Creation, registration, and immediate execution of new specialised agents. \\ \hline
 \end{tabularx}
 \caption{AgentOS agent inventory}
 \label{tab:agent-inventory}

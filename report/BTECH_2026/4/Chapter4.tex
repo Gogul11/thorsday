@@ -128,16 +128,14 @@ Table~\ref{tab:rediskeys} summarises the Redis channels and scheduler keys used 
 \centering
 \caption{Principal Redis channels and keys}
 \label{tab:rediskeys}
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.29\textwidth}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{0.29\textwidth}}
-\toprule
-Name & Purpose & Durability role \\
-\midrule
-\texttt{backend\_tasks} & New task/submission messages & Transport \\
-\texttt{kernel\_events} & Lifecycle, scheduler, and execution events & Transport plus Mongo persistence \\
-\texttt{agentos:\allowbreak scheduler:\allowbreak ready} & Ready queue sorted-set metadata & Recovery aid \\
-\texttt{agentos:\allowbreak scheduler:\allowbreak job:\allowbreak <id>} & Per-execution state hash & Recovery aid \\
-\texttt{agentos:\allowbreak task:\allowbreak <id>} & Task-level scheduler state & Inspection/recovery \\
-\bottomrule
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.29\textwidth}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{0.29\textwidth}|}
+\hline
+Name & Purpose & Durability role \\ \hline
+\texttt{backend\_tasks} & New task/submission messages & Transport \\ \hline
+\texttt{kernel\_events} & Lifecycle, scheduler, and execution events & Transport plus Mongo persistence \\ \hline
+\texttt{agentos:\allowbreak scheduler:\allowbreak ready} & Ready queue sorted-set metadata & Recovery aid \\ \hline
+\texttt{agentos:\allowbreak scheduler:\allowbreak job:\allowbreak <id>} & Per-execution state hash & Recovery aid \\ \hline
+\texttt{agentos:\allowbreak task:\allowbreak <id>} & Task-level scheduler state & Inspection/recovery \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -157,22 +155,20 @@ Table~\ref{tab:config} lists the important policy values. Verification for this 
 \centering
 \caption{Selected AgentOS configuration values}
 \label{tab:config}
-\begin{tabular}{>{\raggedright\arraybackslash}p{5cm}p{3cm}p{5.5cm}}
-\toprule
-Configuration & Default & Role \\
-\midrule
-Global execution slots & 3 & Maximum simultaneously admitted jobs \\
-Per-task execution slots & 2 & Fairness/isolation across tasks \\
-Task token budget & 50,000 & Cumulative estimated admission limit \\
-Maximum scheduler priority & configurable & Upper bound for aging \\
-Context active window & configurable & Number of active messages \\
-Self-healing attempts & 3 & Maximum code repair retries \\
-LLM routing mode & \texttt{hybrid} & \texttt{hybrid}, \texttt{local}, or \texttt{cloud} provider policy \\
-Ollama model & \texttt{llama3.2} & Local model used for sensitive input and fallback \\
-Ollama endpoint & \texttt{localhost} & Host-local Ollama service at port 11434 \\
-Ollama output limit & 512 tokens & Maximum generated tokens per local call \\
-Ollama timeout & 120 seconds & Maximum local provider request duration \\
-\bottomrule
+\begin{tabular}{|>{\raggedright\arraybackslash}p{5cm}|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{5.5cm}|}
+\hline
+Configuration & Default & Role \\ \hline
+Global execution slots & 3 & Maximum simultaneously admitted jobs \\ \hline
+Per-task execution slots & 2 & Fairness/isolation across tasks \\ \hline
+Task token budget & 50,000 & Cumulative estimated admission limit \\ \hline
+Maximum scheduler priority & configurable & Upper bound for aging \\ \hline
+Context active window & configurable & Number of active messages \\ \hline
+Self-healing attempts & 3 & Maximum code repair retries \\ \hline
+LLM routing mode & \texttt{hybrid} & \texttt{hybrid}, \texttt{local}, or \texttt{cloud} provider policy \\ \hline
+Ollama model & \texttt{llama3.2} & Local model used for sensitive input and fallback \\ \hline
+Ollama endpoint & \texttt{localhost} & Host-local Ollama service at port 11434 \\ \hline
+Ollama output limit & 512 tokens & Maximum generated tokens per local call \\ \hline
+Ollama timeout & 120 seconds & Maximum local provider request duration \\ \hline
 \end{tabular}
 \end{table}
 

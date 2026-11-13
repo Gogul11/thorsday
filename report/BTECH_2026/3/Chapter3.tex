@@ -105,19 +105,17 @@ Table~\ref{tab:boundary} summarises the principal modules implemented and exerci
 \normalsize
 \renewcommand{\arraystretch}{1.2}
 \setlength{\tabcolsep}{5pt}
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.1cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{3.0cm}}
-\toprule
-Module & Principal responsibility & Status \\
-\midrule
-Frontend and gateway & User interface, task API, and live activity stream & Implemented \\
-Planner and DAG execution & Structured plans, agent selection, and dependency validation & Implemented \\
-Hybrid model router & Local/cloud model selection and provider fallback & Implemented \\
-Agent and tool registry & Capability descriptions, function schemas, and candidate retrieval & Implemented \\
-Context paging & ChromaDB swap, semantic retrieval, and bounded context & Implemented \\
-Scheduler and resource admission & Priority aging, concurrency limits, and token budgets & Implemented; cooperative dispatch \\
-Persistence and events & MongoDB task history and Redis lifecycle transport & Implemented \\
-Code runner & Bounded subprocess execution and repair retries & Implemented; not microVM isolation \\
-Observability & Lifecycle, queue, priority, and resource activity & Implemented \\
-\bottomrule
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.1cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{3.0cm}|}
+\hline
+Module & Principal responsibility & Status \\ \hline
+Frontend and gateway & User interface, task API, and live activity stream & Implemented \\ \hline
+Planner and DAG execution & Structured plans, agent selection, and dependency validation & Implemented \\ \hline
+Hybrid model router & Local/cloud model selection and provider fallback & Implemented \\ \hline
+Agent and tool registry & Capability descriptions, function schemas, and candidate retrieval & Implemented \\ \hline
+Context paging & ChromaDB swap, semantic retrieval, and bounded context & Implemented \\ \hline
+Scheduler and resource admission & Priority aging, concurrency limits, and token budgets & Implemented; cooperative dispatch \\ \hline
+Persistence and events & MongoDB task history and Redis lifecycle transport & Implemented \\ \hline
+Code runner & Bounded subprocess execution and repair retries & Implemented; not microVM isolation \\ \hline
+Observability & Lifecycle, queue, priority, and resource activity & Implemented \\ \hline
 \end{tabularx}
 \end{table}

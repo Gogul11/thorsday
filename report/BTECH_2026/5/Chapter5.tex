@@ -30,15 +30,13 @@ The synthetic evaluation checks whether the implementation can page out older me
 \small
 \caption{Synthetic context-paging evaluation}
 \label{tab:context-synthetic-results}
-\begin{tabular}{>{\raggedright\arraybackslash}p{0.29\textwidth}>{\centering\arraybackslash}p{0.125\textwidth}>{\centering\arraybackslash}p{0.125\textwidth}>{\centering\arraybackslash}p{0.125\textwidth}>{\centering\arraybackslash}p{0.125\textwidth}}
-\toprule
-Configuration & Success (\%) & Recall@10 (\%) & MRR@10 (\%) & Token reduction (\%) \\
-\midrule
-Full context control & 100.0 & -- & -- & 0.0 \\
-Recent truncation & 20.0 & -- & -- & 31.8 \\
-Vector RAG & 98.0 & 97.5 & 84.2 & 5.0 \\
-AgentOS paging ($\tau=0.40$) & 98.0 & 97.5 & 86.3 & 21.0 \\
-\bottomrule
+\begin{tabular}{|>{\raggedright\arraybackslash}p{0.29\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|}
+\hline
+Configuration & Success (\%) & Recall@10 (\%) & MRR@10 (\%) & Token reduction (\%) \\ \hline
+Full context control & 100.0 & -- & -- & 0.0 \\ \hline
+Recent truncation & 20.0 & -- & -- & 31.8 \\ \hline
+Vector RAG & 98.0 & 97.5 & 84.2 & 5.0 \\ \hline
+AgentOS paging ($\tau=0.40$) & 98.0 & 97.5 & 86.3 & 21.0 \\ \hline
 \end{tabular}
 \end{table}
 
@@ -53,15 +51,13 @@ The LoCoMo pilot introduces longer conversations, natural-language questions, an
 \small
 \caption{LoCoMo pilot context-retrieval evaluation}
 \label{tab:context-locomo-results}
-\begin{tabular}{>{\raggedright\arraybackslash}p{0.29\textwidth}>{\centering\arraybackslash}p{0.125\textwidth}>{\centering\arraybackslash}p{0.125\textwidth}>{\centering\arraybackslash}p{0.125\textwidth}>{\centering\arraybackslash}p{0.125\textwidth}}
-\toprule
-Configuration & Success (\%) & Recall@10 (\%) & MRR@10 (\%) & Token reduction (\%) \\
-\midrule
-Full context control & 100.0 & -- & -- & 0.0 \\
-Recent truncation & 6.0 & -- & -- & 95.0 \\
-Vector RAG & 22.0 & 18.2 & 7.1 & 93.1 \\
-AgentOS paging ($\tau=0.20$--$0.30$) & 35.0 & 32.8 & 13.7 & 92.9 \\
-\bottomrule
+\begin{tabular}{|>{\raggedright\arraybackslash}p{0.29\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|}
+\hline
+Configuration & Success (\%) & Recall@10 (\%) & MRR@10 (\%) & Token reduction (\%) \\ \hline
+Full context control & 100.0 & -- & -- & 0.0 \\ \hline
+Recent truncation & 6.0 & -- & -- & 95.0 \\ \hline
+Vector RAG & 22.0 & 18.2 & 7.1 & 93.1 \\ \hline
+AgentOS paging ($\tau=0.20$--$0.30$) & 35.0 & 32.8 & 13.7 & 92.9 \\ \hline
 \end{tabular}
 \end{table}
 
@@ -99,19 +95,17 @@ Table~\ref{tab:planner-tool-results} summarises the 50-trial run. Thirty-eight t
 \centering
 \caption{AgentOS tool-selection adapter results}
 \label{tab:planner-tool-results}
-\begin{tabular}{>{\raggedright\arraybackslash}p{7.2cm}r}
-\toprule
-Measure & Result \\
-\midrule
-Total trials & 50 \\
-Successful API trials & 50 \\
-Correct tool sets & 38/50 (76.0\%) \\
-End-to-end exact tool-set accuracy & 38/50 (76.0\%) \\
-End-to-end required-tool recall & 38/50 (76.0\%) \\
-Model tool-call failures & 12 (24.0\%) \\
-Provider or transport errors & 0 \\
-Weighted mean latency & 1003.36 ms \\
-\bottomrule
+\begin{tabular}{|>{\raggedright\arraybackslash}p{7.2cm}|r|}
+\hline
+Measure & Result \\ \hline
+Total trials & 50 \\ \hline
+Successful API trials & 50 \\ \hline
+Correct tool sets & 38/50 (76.0\%) \\ \hline
+End-to-end exact tool-set accuracy & 38/50 (76.0\%) \\ \hline
+End-to-end required-tool recall & 38/50 (76.0\%) \\ \hline
+Model tool-call failures & 12 (24.0\%) \\ \hline
+Provider or transport errors & 0 \\ \hline
+Weighted mean latency & 1003.36 ms \\ \hline
 \end{tabular}
 \end{table}
 
@@ -145,13 +139,11 @@ The workload benchmark compared the implemented priority-aging policy with an ad
 \small
 \caption{Priority-aging scheduler versus FIFO under steady-state workload}
 \label{tab:scheduler-steady-state}
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.2cm}>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
-\toprule
-Policy & \shortstack{Throughput\\(jobs/s)} & \shortstack{Queue\\$P_{95}$ (ms)} & \shortstack{High-priority\\$P_{95}$ (ms)} & \shortstack{End-to-end\\$P_{95}$ (ms)} \\
-\midrule
-Priority aging & 254.27 & 218.06 & 65.18 & 233.44 \\
-FIFO & 258.00 & 214.48 & 206.00 & 229.96 \\
-\bottomrule
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.2cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+\hline
+Policy & \shortstack{Throughput\\(jobs/s)} & \shortstack{Queue\\$P_{95}$ (ms)} & \shortstack{High-priority\\$P_{95}$ (ms)} & \shortstack{End-to-end\\$P_{95}$ (ms)} \\ \hline
+Priority aging & 254.27 & 218.06 & 65.18 & 233.44 \\ \hline
+FIFO & 258.00 & 214.48 & 206.00 & 229.96 \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -162,13 +154,11 @@ Table~\ref{tab:scheduler-steady-state} shows that priority aging reduces the hig
 \small
 \caption{Priority-aging scheduler versus FIFO under queue-contention workload}
 \label{tab:scheduler-contention}
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.2cm}>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
-\toprule
-Policy & \shortstack{Throughput\\(jobs/s)} & \shortstack{Queue\\$P_{95}$ (ms)} & \shortstack{High-priority\\$P_{95}$ (ms)} & \shortstack{End-to-end\\$P_{95}$ (ms)} \\
-\midrule
-Priority aging & 85.92 & 511.92 & 101.41 & 537.25 \\
-FIFO & 85.84 & 508.35 & 459.55 & 536.64 \\
-\bottomrule
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.2cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+\hline
+Policy & \shortstack{Throughput\\(jobs/s)} & \shortstack{Queue\\$P_{95}$ (ms)} & \shortstack{High-priority\\$P_{95}$ (ms)} & \shortstack{End-to-end\\$P_{95}$ (ms)} \\ \hline
+Priority aging & 85.92 & 511.92 & 101.41 & 537.25 \\ \hline
+FIFO & 85.84 & 508.35 & 459.55 & 536.64 \\ \hline
 \end{tabularx}
 \end{table}
 
