@@ -5,11 +5,23 @@
 AgentOS is designed as a modular runtime. The gateway handles external requests, the orchestrator converts a prompt into a structured plan, and the kernel owns execution concerns. Redis is used for low-latency coordination and event transport, while MongoDB stores task history. ChromaDB stores embeddings used for semantic agent retrieval and context swap. The design keeps the current dependency truth in the DAG executor and treats scheduler decisions as admission and dispatch decisions.
 
 \section{\uppercase{Overall Architecture}}
-As shown in Figure~\ref{fig:architecture}, AgentOS is organised as an overall runtime architecture connecting the user interface, gateway, planner, kernel, storage, tools, agents, and model engines. The figure combines implemented runtime components with architectural modules that are planned or only partially implemented. A user submits a task through the Next.js interface. The FastAPI gateway creates or retrieves task state and communicates with the kernel. The planner selects agents and creates steps; the kernel validates and executes those steps while publishing activity events.
+Figure~\ref{fig:architecture} presents AgentOS as a set of cooperating modules that manage task submission, planning, execution, and feedback. The main modules and their responsibilities are:
+\begin{enumerate}
+\item \textbf{User interface:} The Next.js frontend accepts task requests and displays plans, execution status, and activity updates.
+\item \textbf{API gateway:} The FastAPI backend accepts requests from the frontend, creates or retrieves task state, and passes work to the kernel.
+\item \textbf{Planner and agent selection:} The planner creates structured task steps and retrieves suitable specialised agents from the registry.
+\item \textbf{Kernel and DAG executor:} The Python kernel validates step dependencies and executes each step when its prerequisites are complete.
+\item \textbf{Scheduler and resource manager:} The global scheduler dispatches ready work across tasks, while resource admission applies concurrency and token-budget limits.
+\item \textbf{Context management:} The context pager stores older task messages in ChromaDB and retrieves relevant content when later steps need it.
+\item \textbf{Agent and tool execution:} Registered agents perform specialised work using available tools; the bounded code runner supports controlled Python execution. A complete permission store and MCP-compatible tool manager remain proposed extensions.
+\item \textbf{Model reasoning and routing:} A shared model interface routes requests to configured local or cloud providers according to the hybrid routing policy.
+\item \textbf{Persistence and event communication:} MongoDB stores task records, while Redis supports coordination and event transport to the frontend.
+\end{enumerate}
+In a typical workflow, the user submits a task through the frontend, and the gateway forwards it to the kernel. The planner prepares a structured plan and selects agents. The kernel validates the plan, schedules eligible steps, and coordinates their execution. During this process, the runtime manages context and model routing, records task state, and publishes events that the frontend uses to show progress. The figure includes both implemented components and proposed extensions; the related sections describe the implementation boundary for each module.
 \begin{landscape}
-\begin{figure}[p]
+\begin{figure}[H]
 \centering
-\includegraphics[width=\linewidth,height=0.97\textheight,keepaspectratio]{3/figures/agentos_architecture.jpeg}
+\includegraphics[width=1.05\linewidth,height=1.02\textheight,keepaspectratio]{3/figures/agentos_architecture.jpeg}
 \caption{Overall AgentOS system architecture}
 \label{fig:architecture}
 \end{figure}
@@ -18,13 +30,13 @@ As shown in Figure~\ref{fig:architecture}, AgentOS is organised as an overall ru
 \section{\uppercase{Hybrid LLM Reasoning Engine}}
 AgentOS uses a privacy-aware hybrid reasoning engine to balance cloud-model capability with local data protection. The model factory exposes one LangChain-compatible facade to the planner, agents, and response generator, while the facade selects a provider for each invocation. Groq is used for non-sensitive orchestration work when a cloud credential is configured; Ollama is used for privacy-sensitive work such as local file inspection, repository or code analysis, academic material, personal information, credentials, and other locally scoped data. The local path is configured with an Ollama model such as \texttt{llama3.2} or \texttt{qwen3:8b} and communicates with the host-local Ollama service.
 
-The router applies conservative input classification before a model call. It extracts text from strings, message lists, and structured inputs, then checks privacy and local-resource indicators. A sensitive classification has precedence over cloud routing, so the request remains local even when Groq is available. The router also supports explicit \texttt{local}, \texttt{cloud}, and \texttt{hybrid} modes. In hybrid mode, an unavailable or failed Groq request is retried through Ollama, providing a local continuity path. This design makes the provider choice a kernel concern rather than a frontend concern: the UI reports the decision emitted by the kernel instead of attempting to infer privacy from the prompt.
+The model router applies conservative input classification before a model call. It extracts text from strings, message lists, and structured inputs, then checks privacy and local-resource indicators. A sensitive classification has precedence over cloud routing, so the request remains local even when Groq is available. The router also supports explicit \texttt{local}, \texttt{cloud}, and \texttt{hybrid} modes. In hybrid mode, an unavailable or failed Groq request is retried through Ollama, providing a local continuity path. This design makes the provider choice a kernel concern rather than a frontend concern: the UI reports the decision emitted by the kernel instead of attempting to infer privacy from the prompt.
 
-The same facade preserves structured-output and tool-binding interfaces. Consequently, planning, agent tool calls, and final response generation can all use the routing policy without requiring separate graph implementations. Each selected route produces an \texttt{llm.ROUTED} event containing the provider, sensitivity flag, reason, and operation. These events are persisted with the task and forwarded to the frontend, making the privacy boundary auditable during execution.
+The shared model interface also supports structured outputs and tool binding. Consequently, planning, agent tool calls, and final response generation can all use the routing policy without requiring separate graph implementations. Each selected route produces an \texttt{llm.ROUTED} event containing the provider, sensitivity flag, reason, and operation. These events are persisted with the task and forwarded to the frontend, making the privacy boundary auditable during execution.
 
 \section{\uppercase{Frontend, Gateway, and Event Flow}}
 The frontend sends task prompts over HTTP and receives live activity over WebSocket. The backend listener subscribes to the kernel event channel and forwards events to connected clients. Figure~\ref{fig:redisflow} shows the separation between the task submission channel and the kernel event channel. MongoDB persistence is performed by the kernel/repository layer so the UI can later query task history.
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=1.0\textwidth,height=0.62\textheight,keepaspectratio]{3/figures/redis-flow-readable.pdf}
 \caption{Frontend, FastAPI gateway, Redis channels, AI kernel, and agent-workforce flow}
@@ -33,16 +45,16 @@ The frontend sends task prompts over HTTP and receives live activity over WebSoc
 
 \section{\uppercase{Planner and DAG Execution}}
 The planner retrieves relevant agent descriptions, requests a structured execution plan, and applies a fallback plan when the provider is unavailable. Each step includes an identifier, agent name, description, and dependency list. The validator canonicalises identifiers, rejects unknown dependencies and cycles, and supplies a sequential fallback only when a plan omits dependencies. The executor runs only steps whose prerequisites are complete. Figure~\ref{fig:dag} summarises this path. The frontend uses the same validated plan to generate Mermaid source and draw the plan graph, ensuring that displayed edges represent dependencies rather than decorative links.
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.90\textwidth,height=0.58\textheight,keepaspectratio]{3/figures/dag-readable.pdf}
+\includegraphics[width=\textwidth,height=0.65\textheight,keepaspectratio]{3/figures/dag-readable.pdf}
 \caption{Planner, validation, and dependency-aware execution flow}
 \label{fig:dag}
 \end{figure}
 
 \section{\uppercase{Context Paging}}
 The context pager keeps a bounded active message window. When the window is exceeded, older or less relevant messages are embedded and stored in the ChromaDB swap collection. A later query retrieves semantically related pages and injects them into the active context. ChromaDB's cosine space returns distance; the implementation converts it as $s=1-d$, where $d$ is the returned cosine distance. Figure~\ref{fig:context} presents the page-out and page-in flow. This mechanism reduces active prompt growth but does not guarantee perfect recall.
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=1.0\textwidth]{3/figures/context_paging.png}
 \caption{Context page-out, vector-store retrieval, and semantic page-in flow}
@@ -51,7 +63,7 @@ The context pager keeps a bounded active message window. When the window is exce
 
 \section{\uppercase{Global Scheduler and Resource Manager}}
 The scheduler maintains ready records and selects work globally across active tasks. Effective priority is computed from base priority and queue waiting time, bounded by a maximum. Before dispatch, the resource manager checks the global slot limit, per-task slot limit, and token budget. The current defaults are three global execution slots, two slots per task, and a configurable 50,000-token task budget. Dispatch is cooperative: a running remote LLM request is not forcibly killed. Figure~\ref{fig:scheduler} shows the decision path.
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=1.0\textwidth]{3/figures/agent_scheduler.png}
 \caption{Global agent scheduler, lifecycle events, resource checks, and runtime feedback}
@@ -59,8 +71,10 @@ The scheduler maintains ready records and selects work globally across active ta
 \end{figure}
 
 \section{\uppercase{Resource Management}}
-The resource-manager design in Figure~\ref{fig:resource-manager} expands the admission point in the scheduler. It separates token-bucket accounting, quota monitoring, process monitoring, resource checking, and the final decision. In the current implementation, the corresponding resource manager enforces global and per-task execution slots and a token budget; the policy store, process monitor, and hard preemption shown in the figure are design extensions.
-\begin{figure}[!htbp]
+Figure~\ref{fig:resource-manager} details how resource admission is intended to connect the scheduler, resource manager, agent runtime, and monitoring feedback. First, the scheduler submits a resource request (1), and the manager obtains applicable limits from the resource policy store (2). Within the manager, token accounting, quota checks, and process monitoring provide inputs to the resource checker, which compares the request with the available capacity. The decision engine then selects an outcome: allow the work to proceed, throttle it until capacity is available, or preempt work when a policy requires resources to be reclaimed. An approval is returned to the agent runtime (3). Execution metrics flow from the runtime to monitoring (4); monitoring summarizes usage and feeds those measurements back to the manager (5). The resulting resource decision is returned to the scheduler (6), which can dispatch, defer, or otherwise handle the job.
+
+The diagram represents the broader design, while the current implementation provides a narrower admission mechanism. Its in-process resource manager checks a global limit of three active execution slots, a per-task limit of two slots, and a configurable task token budget that defaults to 50,000 tokens. A job waits in the scheduler queue when a slot is unavailable, and jobs that exceed the token budget are denied and reported through lifecycle events. The separate policy store, process monitor, and hard-preemption path shown in the figure are design extensions; an active remote model request cannot currently be forcibly terminated.
+\begin{figure}[H]
 \centering
 \includegraphics[width=1.0\textwidth]{3/figures/resource_manager.png}
 \caption{Resource-manager decision flow supplied for the AgentOS design}
@@ -69,7 +83,7 @@ The resource-manager design in Figure~\ref{fig:resource-manager} expands the adm
 
 \section{\uppercase{Tool Management}}
 Figure~\ref{fig:tool-manager} shows the intended tool-manager boundary between an agent, a tool registry, permission policy, and local or external services. AgentOS currently exposes bounded tools through the runtime and code runner; a complete permission store and MCP-compatible tool manager remain proposed components.
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=1.0\textwidth]{3/figures/tool_manager.png}
 \caption{Tool selection, permission checking, invocation, and result return}
@@ -78,7 +92,7 @@ Figure~\ref{fig:tool-manager} shows the intended tool-manager boundary between a
 
 \section{\uppercase{Agent Lifecycle and Events}}
 An agent step progresses from CREATED to READY, RUNNING, and COMPLETED. It can move to WAITING when a resource or dependency is unavailable, or to BLOCKED/FAILED when execution cannot proceed. The scheduler and runtime publish structured lifecycle events containing task, step, agent, execution, status, priority, queue wait, and attempt information. Figure~\ref{fig:lifecycle} shows the state model. Complete RBAC and comprehensive state-machine enforcement remain extensions beyond the current implementation boundary.
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.9\textwidth]{3/figures/lifecycle.pdf}
 \caption{Agent lifecycle transitions}
@@ -87,7 +101,7 @@ An agent step progresses from CREATED to READY, RUNNING, and COMPLETED. It can m
 
 \section{\uppercase{Sandboxed Code Runner}}
 The code runner receives generated Python, writes it into a scoped working directory, and invokes it through an asynchronous subprocess. It bounds execution time and captured output. A non-zero exit code or traceback is returned to the coder/tester agent, which may produce a corrected version for at most three attempts. Output lines can be published as kernel events for live frontend observation. Figure~\ref{fig:runner} shows this flow. The current isolation is process and directory scoping; hardened container or microVM isolation is future work.
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[trim=0.7cm 0.7cm 0.7cm 0.7cm,clip,width=1.0\textwidth,height=0.82\textheight,keepaspectratio]{3/figures/runner.pdf}
 \caption{Sandboxed Python execution and bounded self-healing loop}

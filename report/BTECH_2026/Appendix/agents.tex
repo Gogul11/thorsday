@@ -16,18 +16,25 @@ Agent Catalogue and Internal Workflows}
 \addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}\uppercase{Agent Catalogue and Internal Workflows}}
 \makeatother
 \label{app:agents}
+\setlength{\intextsep}{\baselineskip}
 
 This appendix documents the agent implementations in
 \texttt{server/kernel/Agents/agents/}. The diagrams describe the internal
 responsibility of each agent and its actual tool or model interaction. The
 planner, scheduler, global execution state, and frontend are intentionally not
 shown here because they are documented in the system-design chapter.
-The registered agents and their implemented responsibilities are summarised in
-Table~\ref{tab:agent-catalogue}.
+The agents described in this appendix and their implemented responsibilities
+are summarised in Figure~\ref{fig:agent-catalogue}. The registry also contains
+projectile-calculation and radio-latency agents; their workflows are not
+profiled in the following sections.
 
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.24\textwidth}|>{\raggedright\arraybackslash}X|}
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{0.78}
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{0.24\textwidth}|>{\centering\arraybackslash}X|}
 \hline
 Agent & Implemented responsibility \\ \hline
 A1 & System information and resource inspection. \\ \hline
@@ -38,21 +45,22 @@ Content Creator & Text drafting, rewriting, and formatting. \\ \hline
 Email & Email dispatch and delivery. \\ \hline
 Weather & Current weather and forecast retrieval. \\ \hline
 Loan EMI & EMI and amortisation calculation. \\ \hline
-Crypto PnL & Cryptocurrency trade PnL and ROI reporting. \\ \hline
-Code Runner & Python generation, execution, capture, and repair. \\ \hline
-Agent Creator & Creation and registration of new specialised agents. \\ \hline
-Data Analysis & Structured-data inspection, calculation, and evidence-based findings. \\ \hline
-Decision Support & Evidence synthesis, option comparison, and actionable recommendations. \\ \hline
-Summarizer & Concise summaries of supplied text, conversations, and agent results. \\ \hline
-Translator & Translation and tone-preserving text transformation. \\ \hline
-Checklist & Ordered action checklists with dependencies and acceptance checks. \\ \hline
+Crypto PnL & Fee-adjusted trade profit and ROI calculation. \\ \hline
+Code Runner & Python generation, execution, output capture, and repair. \\ \hline
+Agent Creator & Generate, validate, register, and run agents and tools. \\ \hline
+Data Analysis & Structured-data inspection and evidence-based findings. \\ \hline
+Decision Support & Evidence synthesis, option comparison, and recommendations. \\ \hline
+Summarizer & Summaries of supplied text, conversations, and agent results. \\ \hline
+Translator & Translation with tone preservation. \\ \hline
+Checklist & Ordered steps, dependencies, and acceptance checks. \\ \hline
 \end{tabularx}
+\endgroup
 \caption{AgentOS agent catalogue}
-\label{tab:agent-catalogue}
+\label{fig:agent-catalogue}
 \end{figure}
 
 \newcommand{\AgentArchitecture}[6]{%
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
@@ -77,7 +85,7 @@ Checklist & Ordered action checklists with dependencies and acceptance checks. \
 }
 
 \newcommand{\AgentFlow}[5]{%
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \resizebox{0.92\textwidth}{!}{%
 \begin{tikzpicture}[
@@ -117,18 +125,17 @@ Checklist & Ordered action checklists with dependencies and acceptance checks. \
   every picture/.style={scale=0.84, transform shape}
 }
 
-\clearpage
 \section{Agent A1: System Information Agent}
 
-The A1 implementation creates a LangChain agent with the single registered
+The Agent A1 implementation creates a LangChain agent with the single registered
 tool \texttt{get\_system\_info}. The tool reports the operating-system name
 and release, machine architecture, and processor descriptor using Python's
 \texttt{platform} module. The agent therefore provides a compact host
 identity report; process enumeration and detailed resource monitoring are not
 implemented by the current tool.
 The system-information processing logic is shown in Figure~\ref{fig:a1-logic}.
-\AgentArchitecture{Agent A1}{system-state question}{system inspection and analysis}{\texttt{A1\_TOOLS}}{clear system report}{a1}
-\begin{figure}[!htbp]\centering
+\AgentArchitecture{Agent A1}{system-state question}{retrieve host platform and processor details}{\texttt{A1\_TOOLS}}{clear system report}{a1}
+\begin{figure}[H]\centering
 \begin{tikzpicture}[node distance=8mm, logiclabel]
 \node[logicstep] (request) {System information request};
 \node[logicstep, below=of request] (call) {Invoke \texttt{get\_system\_info}};
@@ -148,16 +155,15 @@ The system-information processing logic is shown in Figure~\ref{fig:a1-logic}.
 \label{fig:a1-logic}
 \end{figure}
 
-\clearpage
 \section{Agent A2: Date and Time Agent}
 
 The A2 implementation creates a LangChain agent with \texttt{get\_time}. The
 tool returns the host's current \texttt{datetime.now()} value as a formatted
-string. It does not currently accept an explicit timezone or location, so its
-answer represents the runtime host clock.
+string. It does not accept an explicit timezone or location, so its answer
+represents the runtime host clock.
 The date-and-time processing logic is shown in Figure~\ref{fig:a2-logic}.
-\AgentArchitecture{Agent A2}{date, time, or timezone question}{resolve the requested time information}{\texttt{A2\_TOOLS}}{precise date/time response}{a2}
-\begin{figure}[!htbp]\centering
+\AgentArchitecture{Agent A2}{date, time, or timezone question}{read the runtime host clock}{\texttt{A2\_TOOLS}}{formatted host date/time}{a2}
+\begin{figure}[H]\centering
 \begin{tikzpicture}[node distance=10mm, logiclabel]
 \node[logicstep] (request) {Date or time request};
 \node[logicstep, right=of request] (invoke) {Invoke \texttt{get\_time}};
@@ -171,10 +177,9 @@ The date-and-time processing logic is shown in Figure~\ref{fig:a2-logic}.
 \label{fig:a2-logic}
 \end{figure}
 
-\clearpage
 \section{Agent A3: Research Agent}
 
-The A3 implementation uses two tools: \texttt{wikipedia\_search} calls the
+The Agent A3 implementation uses two tools: \texttt{wikipedia\_search} calls the
 Wikipedia search and summary APIs and returns article titles, extracts, and
 URLs; \texttt{trusted\_web\_search} restricts search results to configured
 academic and scientific domains, validates result URLs, removes duplicates,
@@ -182,7 +187,7 @@ and returns source snippets. The agent prompt requires concise evidence and
 prohibits fabricated citations or URLs.
 The research and source-verification flow is shown in Figure~\ref{fig:a3-logic}.
 \AgentArchitecture{Agent A3}{research question}{search, verify, and extract factual evidence}{Wikipedia and trusted web-search tools}{concise facts with source URL}{a3}
-\begin{figure}[!htbp]\centering
+\begin{figure}[H]\centering
 \begin{tikzpicture}[node distance=9mm and 14mm, logiclabel]
 \node[logicstep] (query) {Research question};
 \node[logicstep, below left=of query] (wiki) {Wikipedia API search and article summary};
@@ -203,10 +208,9 @@ The research and source-verification flow is shown in Figure~\ref{fig:a3-logic}.
 \label{fig:a3-logic}
 \end{figure}
 
-\clearpage
 \section{Agent A4: File and Document Agent}
 
-The A4 implementation exposes file discovery, bounded document reading,
+The Agent A4 implementation exposes file discovery, bounded document reading,
 TXT/DOCX creation, append and exact replacement, folder creation, rename,
 move, metadata, directory listing, document comparison, and heuristic
 classification. PDF and DOCX readers are supported through \texttt{pypdf} and
@@ -216,7 +220,7 @@ publishes a frontend confirmation event, and uses a 300-second expiry before
 the backend performs or cancels the operation.
 The file-operation and deletion-confirmation flow is shown in Figure~\ref{fig:a4-logic}.
 \AgentArchitecture{Agent A4}{file path and requested operation}{inspect or transform the requested file; protect deletion}{file/document tools and confirmation service}{file result or confirmation state}{a4}
-\begin{figure}[!htbp]\centering
+\begin{figure}[H]\centering
 \begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (request) {File or document request};
 \node[logicdecision, below=of request] (delete) {Deletion requested?};
@@ -236,7 +240,6 @@ The file-operation and deletion-confirmation flow is shown in Figure~\ref{fig:a4
 \label{fig:a4-logic}
 \end{figure}
 
-\clearpage
 \section{Content Creator Agent}
 
 The Content Creator implementation creates a tool-free LangChain agent. It
@@ -246,7 +249,7 @@ not an email-delivery component and must not send messages or emit unresolved
 placeholders.
 The content-creation flow is shown in Figure~\ref{fig:content-creator-logic}.
 \AgentArchitecture{Content Creator Agent}{writing request and sender context}{choose genre, tone, structure, and format}{language model without external tools}{completed text without placeholders}{content-creator}
-\begin{figure}[!htbp]\centering
+\begin{figure}[H]\centering
 \begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (request) {Content request};
 \node[logicdecision, below=of request] (type) {Requested genre?};
@@ -265,7 +268,6 @@ The content-creation flow is shown in Figure~\ref{fig:content-creator-logic}.
 \label{fig:content-creator-logic}
 \end{figure}
 
-\clearpage
 \section{Email Agent}
 
 The Email Agent uses \texttt{send\_email}. The tool reads SMTP host, port,
@@ -276,7 +278,7 @@ the recipient, subject, and body, removes unresolved placeholders, and returns
 the tool's delivery status.
 The email-delivery and simulation flow is shown in Figure~\ref{fig:email-logic}.
 \AgentArchitecture{Email Agent}{recipient, subject, body, or prior draft}{clean and prepare a deliverable email}{\texttt{EMAIL\_TOOLS} and \texttt{send\_email}}{delivery confirmation}{email}
-\begin{figure}[!htbp]\centering
+\begin{figure}[H]\centering
 \begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (request) {Email task and previous draft};
 \node[logicstep, below=of request] (fields) {Extract recipient, subject, and body};
@@ -297,7 +299,6 @@ The email-delivery and simulation flow is shown in Figure~\ref{fig:email-logic}.
 \label{fig:email-logic}
 \end{figure}
 
-\clearpage
 \section{Weather Agent}
 
 \begingroup
@@ -311,7 +312,7 @@ precipitation. Forecast length is bounded to one through seven days.
 \endgroup
 The weather-retrieval and reporting logic is shown in Figure~\ref{fig:weather-logic}.
 \AgentArchitecture{Weather Agent}{location and weather request}{resolve location and requested time horizon}{current-weather and forecast tools}{weather report in clear units}{weather}
-\begin{figure}[!htbp]\centering
+\begin{figure}[H]\centering
 \begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (request) {Weather request and city};
 \node[logicstep, below=of request] (geo) {Geocode city with Open-Meteo};
@@ -330,7 +331,6 @@ The weather-retrieval and reporting logic is shown in Figure~\ref{fig:weather-lo
 \label{fig:weather-logic}
 \end{figure}
 
-\clearpage
 \section{Loan EMI Calculator Agent}
 
 The Loan EMI Agent uses \texttt{compute\_emi\_and\_schedule}. It converts the
@@ -339,7 +339,7 @@ derives total payment and interest, and produces a monthly schedule for short
 tenures or an annual amortisation breakdown for longer tenures.
 The loan-EMI and amortisation logic is shown in Figure~\ref{fig:loan-emi-logic}.
 \AgentArchitecture{Loan EMI Calculator Agent}{principal, rate, and tenure}{validate financial parameters and calculate repayment}{\texttt{LOAN\_EMI\_TOOLS}}{EMI and amortisation result}{loan-emi}
-\begin{figure}[!htbp]\centering
+\begin{figure}[H]\centering
 \begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (input) {Principal, annual rate, and tenure};
 \node[logicdata, below=of input] (emi) {Convert annual rate to monthly rate and compute fixed EMI};
@@ -360,7 +360,6 @@ The loan-EMI and amortisation logic is shown in Figure~\ref{fig:loan-emi-logic}.
 \label{fig:loan-emi-logic}
 \end{figure}
 
-\clearpage
 \section{Crypto PnL Agent}
 
 The Crypto PnL Agent uses \texttt{calculate\_crypto\_pnl}. It calculates buy
@@ -368,7 +367,7 @@ and sell notional values, applies the fee percentage to both sides, derives
 net profit, and computes ROI relative to total purchase outflow.
 The cryptocurrency PnL and ROI logic is shown in Figure~\ref{fig:crypto-pnl-logic}.
 \AgentArchitecture{Crypto PnL Agent}{trade details and report request}{calculate net PnL and return on investment}{\texttt{CRYPTO\_PNL\_TOOLS}}{formatted investment report}{crypto-pnl}
-\begin{figure}[!htbp]\centering
+\begin{figure}[H]\centering
 \begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (input) {Quantity, buy price, sell price, and fee rate};
 \node[logicdata, below left=of input] (buy) {Buy notional plus purchase fee};
@@ -387,17 +386,17 @@ The cryptocurrency PnL and ROI logic is shown in Figure~\ref{fig:crypto-pnl-logi
 \label{fig:crypto-pnl-logic}
 \end{figure}
 
-\clearpage
 \section{Code Runner Agent}
 
 The Code Runner Agent uses \texttt{build\_run\_python\_code\_tool}. It limits
 source code to 20,000 characters, executes Python with isolated mode and a
 sanitised environment, bounds runtime to ten seconds, captures at most 64,000
 output characters, publishes terminal events, and limits concurrent runs to
-two. The agent repairs failures for at most three attempts.
+two. The agent makes at most three execution attempts in total, including the
+initial run, and uses the returned error output to revise failed code.
 The code-generation, sandbox-execution, and repair logic is shown in Figure~\ref{fig:code-runner-logic}.
 \AgentArchitecture{Code Runner Agent}{programming request and prior feedback}{generate, execute, inspect, and repair Python}{sandboxed Python execution tool}{stdout, duration, or bounded failure report}{code-runner}
-\begin{figure}[!htbp]\centering
+\begin{figure}[H]\centering
 \resizebox{0.82\textwidth}{!}{\begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (request) {Coding or testing request};
 \node[logicstep, below=of request] (generate) {Generate standalone Python script};
@@ -420,7 +419,6 @@ The code-generation, sandbox-execution, and repair logic is shown in Figure~\ref
 \label{fig:code-runner-logic}
 \end{figure}
 
-\clearpage
 \section{Data Analysis Agent}
 
 The Data Analysis Agent is a lightweight structured-data agent for CSV, JSON,
@@ -431,7 +429,7 @@ assumptions, preserve the source data, and report only evidence-supported
 findings. It does not use a retry loop or modify data by default.
 The data-analysis flow is shown in Figure~\ref{fig:data-analysis-logic}.
 \AgentArchitecture{Data Analysis Agent}{structured-data request and source context}{inspect data, calculate requested measures, and explain findings}{file tools and bounded Python tool}{concise findings with assumptions}{data-analysis}
-\begin{figure}[!htbp]\centering
+\begin{figure}[H]\centering
 \begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (request) {Structured-data request};
 \node[logicstep, below=of request] (inspect) {Locate and read the source data};
@@ -450,7 +448,6 @@ The data-analysis flow is shown in Figure~\ref{fig:data-analysis-logic}.
 \label{fig:data-analysis-logic}
 \end{figure}
 
-\clearpage
 \section{Decision Support Agent}
 
 The Decision Support Agent is a lightweight, tool-free synthesis agent. It
@@ -461,7 +458,7 @@ reasons and next action. It does not retrieve external evidence or invent
 facts that are not present in the supplied context.
 The decision-support flow is shown in Figure~\ref{fig:decision-support-logic}.
 \AgentArchitecture{Decision Support Agent}{decision request and prior results}{separate facts, assumptions, constraints, and trade-offs}{single tool-free model call}{recommendation and practical next action}{decision-support}
-\begin{figure}[!htbp]\centering
+\begin{figure}[H]\centering
 \begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (request) {Decision request and prior results};
 \node[logicdata, below=of request] (evidence) {Extract facts, constraints, and uncertainty};
@@ -477,7 +474,6 @@ The decision-support flow is shown in Figure~\ref{fig:decision-support-logic}.
 \label{fig:decision-support-logic}
 \end{figure}
 
-\clearpage
 \section{Summarizer Agent}
 
 The Summarizer Agent is a lightweight, tool-free agent for supplied text,
@@ -487,7 +483,7 @@ items while removing repetition. The prompt explicitly prohibits adding facts
 that are absent from the supplied material and returns a concise summary.
 The summarization flow is shown in Figure~\ref{fig:summarizer-logic}.
 \AgentArchitecture{Summarizer Agent}{text or prior-result context}{identify important facts, decisions, risks, and actions}{single tool-free model call}{concise faithful summary}{summarizer}
-\begin{figure}[!htbp]\centering
+\begin{figure}[H]\centering
 \begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (input) {Supplied text or prior results};
 \node[logicdata, below=of input] (select) {Select facts, decisions, dates, risks, and actions};
@@ -501,7 +497,6 @@ The summarization flow is shown in Figure~\ref{fig:summarizer-logic}.
 \label{fig:summarizer-logic}
 \end{figure}
 
-\clearpage
 \section{Translator Agent}
 
 The Translator Agent is a lightweight, tool-free agent for translation and
@@ -511,7 +506,7 @@ tone. It returns only the transformed text unless the user explicitly asks
 for an explanation.
 The translation flow is shown in Figure~\ref{fig:translator-logic}.
 \AgentArchitecture{Translator Agent}{source text, target language, and tone request}{translate or rewrite while preserving meaning and formatting}{single tool-free model call}{requested translated or transformed text}{translator}
-\begin{figure}[!htbp]\centering
+\begin{figure}[H]\centering
 \begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (input) {Source text and transformation request};
 \node[logicdata, below=of input] (interpret) {Identify target language, audience, and tone};
@@ -525,7 +520,6 @@ The translation flow is shown in Figure~\ref{fig:translator-logic}.
 \label{fig:translator-logic}
 \end{figure}
 
-\clearpage
 \section{Checklist Agent}
 
 The Checklist Agent is a lightweight, tool-free agent that converts a goal,
@@ -535,7 +529,7 @@ avoiding unnecessary steps or invented requirements. The result is designed
 to be directly actionable by a user or a downstream agent.
 The checklist flow is shown in Figure~\ref{fig:checklist-logic}.
 \AgentArchitecture{Checklist Agent}{goal, requirements, or plan}{extract actions, dependencies, and acceptance criteria}{single tool-free model call}{ordered actionable checklist}{checklist}
-\begin{figure}[!htbp]\centering
+\begin{figure}[H]\centering
 \begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (input) {Goal or requirements};
 \node[logicdata, below=of input] (extract) {Extract concrete actions and dependencies};
@@ -549,19 +543,18 @@ The checklist flow is shown in Figure~\ref{fig:checklist-logic}.
 \label{fig:checklist-logic}
 \end{figure}
 
-\clearpage
 \section{Agent Creator}
 
-The Agent Creator implementation is responsible for unsupported capabilities.
-\texttt{save\_tool\_file} parses generated source with the Python AST before
-writing and registering it. \texttt{create\_and\_register\_agent} generates
-the agent module, updates the agent registry and planner constants, validates
-the changes, and rolls them back on failure. \texttt{run\_generated\_agent}
-then loads and executes the new agent. The implementation is present in the
-source directory but is commented out of the default registry.
+The Agent Creator is registered for tasks that need a new specialised
+capability. \texttt{save\_tool\_file} parses generated tool code with Python's
+AST and registers the validated tool module. \texttt{create\_and\_register\_agent}
+writes an agent module, updates the agent registry, and indexes its description
+for retrieval; those agent-registration changes are rolled back if registration
+fails. A tool module registered in the earlier step is not part of that later
+rollback. \texttt{run\_generated\_agent} loads and executes the new agent.
 The dynamic agent-creation and registration logic is shown in Figure~\ref{fig:agent-creator-logic}.
 \AgentArchitecture{Agent Creator}{unsupported specialised task}{design capability, create files, and register new components}{tool-file, agent-file, and registry tools}{result from the generated agent}{agent-creator}
-\begin{figure}[!htbp]\centering
+\begin{figure}[H]\centering
 \begin{tikzpicture}[node distance=9mm and 13mm, logiclabel]
 \node[logicstep] (request) {Unsupported specialised capability};
 \node[logicstep, below=of request] (tool) {Generate tool source, AST-validate, save, and register};

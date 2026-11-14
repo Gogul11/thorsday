@@ -30,7 +30,7 @@ The synthetic evaluation checks whether the implementation can page out older me
 \small
 \caption{Synthetic context-paging evaluation}
 \label{tab:context-synthetic-results}
-\begin{tabular}{|>{\raggedright\arraybackslash}p{0.29\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|}
+\begin{tabular}{|>{\centering\arraybackslash}p{0.29\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|}
 \hline
 Configuration & Success (\%) & Recall@10 (\%) & MRR@10 (\%) & Token reduction (\%) \\ \hline
 Full context control & 100.0 & -- & -- & 0.0 \\ \hline
@@ -50,7 +50,7 @@ The LoCoMo pilot introduces longer conversations, natural-language questions, an
 \small
 \caption{LoCoMo pilot context-retrieval evaluation}
 \label{tab:context-locomo-results}
-\begin{tabular}{|>{\raggedright\arraybackslash}p{0.29\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|}
+\begin{tabular}{|>{\centering\arraybackslash}p{0.29\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|}
 \hline
 Configuration & Success (\%) & Recall@10 (\%) & MRR@10 (\%) & Token reduction (\%) \\ \hline
 Full context control & 100.0 & -- & -- & 0.0 \\ \hline
@@ -64,23 +64,27 @@ On the more difficult conversational data, AgentOS paging improves retrieval suc
 
 \subsection{Graphical analysis}
 
-Figure~\ref{fig:context-comparison} compares the two datasets. The complete-context control is intentionally strong, while recent truncation illustrates the cost of aggressive context reduction. The external pilot produces a more challenging separation between the two retrieval systems than the synthetic fixture, which is evidence that the external benchmark is exercising genuine retrieval difficulty.
+Figure~\ref{fig:context-comparison} compares retrieval and context visibility on the synthetic smoke set and the LoCoMo pilot.
 
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.98\textwidth]{5/figures/context_engine_comparison.png}
+\includegraphics[width=\textwidth]{5/figures/context_engine_comparison.png}
 \caption{Success and evidence-recall comparison for the synthetic and LoCoMo pilot evaluations}
 \label{fig:context-comparison}
 \end{figure}
 
-Figure~\ref{fig:context-thresholds} presents the threshold sensitivity study. The synthetic set favours a higher threshold because its facts are short and lexically distinctive. The LoCoMo pilot favours the lower threshold region, where semantically related but differently worded historical turns are less likely to be rejected. This supports using threshold tuning as a documented validation step rather than treating the default threshold as a universal constant.
+In Figure~\ref{fig:context-comparison}, the horizontal axes identify the dataset and the vertical axes show success or evidence recall as a percentage. The left panel groups success bars by dataset: gray denotes the full-context control, light blue denotes Vector RAG, and dark blue denotes AgentOS paging. The right panel shows Recall@10 for the two retrieval methods; the full-context control has no recall value because it does not retrieve evidence. The labels above each bar give the measured percentage. On the synthetic set, Vector RAG and AgentOS paging each reach 98\% success and 97.5\% recall. On LoCoMo, AgentOS paging reaches 35\% success and 32.8\% recall, compared with 22\% and 18.2\% for Vector RAG. The full-context control is 100\% on both datasets. Recent truncation is reported in the tables but is not plotted in this figure.
 
-\begin{figure}[!htbp]
+Figure~\ref{fig:context-thresholds} presents the threshold sensitivity study for the synthetic set and LoCoMo pilot.
+
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.98\textwidth]{5/figures/context_engine_thresholds.png}
+\includegraphics[width=\textwidth]{5/figures/context_engine_thresholds.png}
 \caption{Similarity-threshold sensitivity for context retrieval}
 \label{fig:context-thresholds}
 \end{figure}
+
+Figure~\ref{fig:context-thresholds} shows how the similarity threshold $\tau$ affects retrieval. In both panels, the horizontal axis is the threshold and the vertical axis is the metric percentage. The left panel reports the synthetic set and the right panel reports LoCoMo. Circle markers and solid lines represent retrieval success; square markers represent Recall@10. Each marker is a measured value at the threshold shown on the horizontal axis, and the connecting lines guide comparison across thresholds. Synthetic success and Recall@10 are both 100\% at $\tau=0.20$, $0.25$, and $0.30$; at $0.35$ and $0.40$, they are 98\% and 97.5\%, respectively. LoCoMo success is 35\% from $0.20$ through $0.35$ and 32\% at $0.40$, while Recall@10 is 32.8\% through $0.30$, 32.3\% at $0.35$, and 29.2\% at $0.40$. This pattern shows that stricter filtering can discard useful historical evidence, especially in the more varied LoCoMo conversations. The threshold results are a sensitivity analysis; they do not establish one universally optimal threshold.
 \section{\uppercase{Planner and tool selection}}
 
 The planner evaluation measures whether the model selects the registered AgentOS functions required by a task. The model endpoint was Groq using \texttt{openai/gpt-oss-120b}. Each registered agent was exposed as an OpenAI-compatible function. The same catalogue and routing prompt were used for every trial, and required tool-call mode was enabled because every task required at least one registered agent.
@@ -93,7 +97,7 @@ Table~\ref{tab:planner-tool-results} summarises the 50-trial run. Thirty-eight t
 \centering
 \caption{AgentOS tool-selection adapter results}
 \label{tab:planner-tool-results}
-\begin{tabular}{|>{\raggedright\arraybackslash}p{7.2cm}|r|}
+\begin{tabular}{|>{\centering\arraybackslash}p{7.2cm}|>{\centering\arraybackslash}r|}
 \hline
 Measure & Result \\ \hline
 Total trials & 50 \\ \hline
@@ -107,21 +111,25 @@ Weighted mean latency & 1003.36 ms \\ \hline
 \end{tabular}
 \end{table}
 
-\begin{figure}[!htbp]
+Table~\ref{tab:planner-tool-results} shows that all 50 requests reached the API successfully, but only 38 produced the expected tool set, yielding 76\% exact-set accuracy and required-tool recall. The remaining 12 trials (24\%) failed during model tool-call generation; they were not provider or transport failures, which were zero. The equal exact-set accuracy and required-tool recall indicate that, in these trials, missing or malformed tool calls account for the unsuccessful cases rather than successful calls selecting an incorrect combination. The weighted mean latency of 1003.36 ms summarizes response time across categories, weighted by the number of trials in each category.
+
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.86\textwidth,height=0.48\textheight,keepaspectratio]{5/figures/planner_tool_selection_overall.png}
+\includegraphics[width=0.98\textwidth,height=0.56\textheight,keepaspectratio]{5/figures/planner_tool_selection_overall.png}
 \caption{Overall outcomes for the 50-trial AgentOS tool-selection evaluation}
 \label{fig:planner-tool-selection-overall}
 \end{figure}
 
-\begin{figure}[!htbp]
+Figure~\ref{fig:planner-tool-selection-overall} presents the 50 planner trials as a vertical bar chart. The horizontal axis lists the three outcomes, and the vertical axis gives the number of trials. The labels above the bars show both count and percentage: 38 trials (76\%) returned the correct tool set, 12 (24\%) ended in a tool-call failure, and none resulted in an incorrect selection. Thus the chart separates model tool-call failures from wrong tool choices and visually shows that the failures, rather than provider errors, account for the gap from 100\% accuracy.
+
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.86\textwidth,height=0.48\textheight,keepaspectratio]{5/figures/planner_tool_selection_category.png}
+\includegraphics[width=0.98\textwidth,height=0.56\textheight,keepaspectratio]{5/figures/planner_tool_selection_category.png}
 \caption{End-to-end exact-match accuracy by task category}
 \label{fig:planner-tool-selection-category}
 \end{figure}
 
-The category results indicate strong performance in code execution, with 100\% exact-match accuracy, followed by date and time, weather, system information, and financial calculation at 83.3\% each. Research achieved 80.0\%. Email delivery and document workflow achieved 60.0\% each, while multi-agent coordination was the weakest category at 40.0\%. These results suggest that the principal limitation is tool-call compliance and routing complexity rather than provider availability.
+Figure~\ref{fig:planner-tool-selection-category} is a horizontal bar chart of end-to-end exact-match accuracy by task category. The vertical axis lists the categories, and the horizontal axis gives accuracy as a percentage. Each bar represents one category, with its exact-match percentage printed at the bar end; a longer bar therefore indicates that a larger share of that category's trials selected the complete expected tool set. Code execution achieved 100\%, date and time, weather, system information, and financial calculation each achieved 83.3\%, and research achieved 80\%. Email delivery and document workflow reached 60\%, while multi-agent coordination was lowest at 40\%. These category differences point to tool-call compliance and coordination complexity as the main sources of error in this run; provider availability was not a recorded cause.
 
 Figures~\ref{fig:planner-tool-selection-overall} and~\ref{fig:planner-tool-selection-category} visualise the overall outcome distribution and the category-level exact-match results, respectively.
 
@@ -137,7 +145,7 @@ The workload benchmark compared the implemented priority-aging policy with an ad
 \small
 \caption{Priority-aging scheduler versus FIFO under steady-state workload}
 \label{tab:scheduler-steady-state}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.2cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{3.2cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
 \hline
 Policy & \shortstack{Throughput\\(jobs/s)} & \shortstack{Queue\\$P_{95}$ (ms)} & \shortstack{High-priority\\$P_{95}$ (ms)} & \shortstack{End-to-end\\$P_{95}$ (ms)} \\ \hline
 Priority aging & 254.27 & 218.06 & 65.18 & 233.44 \\ \hline
@@ -145,14 +153,14 @@ FIFO & 258.00 & 214.48 & 206.00 & 229.96 \\ \hline
 \end{tabularx}
 \end{table}
 
-Table~\ref{tab:scheduler-steady-state} shows that priority aging reduces the high-priority queue-wait percentile under steady-state load, while overall throughput remains close to FIFO. The corresponding queue-contention results are presented separately in Table~\ref{tab:scheduler-contention}.
+Table~\ref{tab:scheduler-steady-state} reports throughput in jobs per second and the 95th-percentile ($P_{95}$) queue and end-to-end latencies in milliseconds. Under steady-state load, priority aging achieves 254.27 jobs/s compared with FIFO's 258.00 jobs/s, a 1.45\% reduction. Overall queue-wait $P_{95}$ is similar (218.06 ms versus 214.48 ms), while high-priority queue-wait $P_{95}$ falls from 206.00 ms with FIFO to 65.18 ms with priority aging, a reduction of about 68\%. End-to-end $P_{95}$ differs by only 3.48 ms (233.44 ms versus 229.96 ms). The results indicate that priority aging improves high-priority responsiveness under this workload with a small throughput and latency trade-off. Table~\ref{tab:scheduler-contention} gives the corresponding results under queue contention.
 
 \begin{table}[!htbp]
 \centering
 \small
 \caption{Priority-aging scheduler versus FIFO under queue-contention workload}
 \label{tab:scheduler-contention}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.2cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{3.2cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
 \hline
 Policy & \shortstack{Throughput\\(jobs/s)} & \shortstack{Queue\\$P_{95}$ (ms)} & \shortstack{High-priority\\$P_{95}$ (ms)} & \shortstack{End-to-end\\$P_{95}$ (ms)} \\ \hline
 Priority aging & 85.92 & 511.92 & 101.41 & 537.25 \\ \hline
@@ -160,27 +168,27 @@ FIFO & 85.84 & 508.35 & 459.55 & 536.64 \\ \hline
 \end{tabularx}
 \end{table}
 
-Under contention, the separated results make the main scheduling trade-off explicit: priority aging substantially lowers high-priority waiting time while maintaining nearly identical throughput and end-to-end latency.
+Table~\ref{tab:scheduler-contention} uses the same measures under queue contention. Throughput remains effectively equal (85.92 jobs/s for priority aging and 85.84 jobs/s for FIFO). Queue-wait $P_{95}$ is also close (511.92 ms versus 508.35 ms), but high-priority queue-wait $P_{95}$ falls from 459.55 ms under FIFO to 101.41 ms under priority aging, about a 78\% reduction. End-to-end $P_{95}$ differs by 0.61 ms (537.25 ms versus 536.64 ms). Under this seeded workload, the policy substantially improves high-priority waiting without a measurable throughput penalty; lower-priority work can wait longer as a result.
 
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.86\textwidth]{5/figures/scheduler_throughput_baseline.png}
 \caption{Measured scheduler throughput under steady-state and queue-contention workloads}
 \label{fig:chapter-scheduler-throughput}
 \end{figure}
 
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.88\textwidth]{5/figures/scheduler_priority_latency.png}
+\includegraphics[width=0.98\textwidth,height=0.56\textheight,keepaspectratio]{5/figures/scheduler_priority_latency.png}
 \caption{High- and low-priority queue-wait $P_{95}$ under priority aging and FIFO}
 \label{fig:chapter-scheduler-latency}
 \end{figure}
 
 Priority aging reduced high-priority queue-wait $P_{95}$ by 140.82 ms in steady state and by 358.14 ms under contention, corresponding to approximate reductions of 68\% and 78\% relative to FIFO. Throughput remained effectively unchanged under contention (+0.10\%) and decreased by 1.45\% in steady state. Overall queue-wait $P_{95}$ increased by approximately 3.6 ms in both profiles because the policy protects urgent work by allowing lower-priority jobs to wait longer. No concurrency-limit violations or cross-task completion imbalance were observed. These measurements should be interpreted as a controlled same-host comparison, not as a production-capacity claim.
 
-Figures~\ref{fig:chapter-scheduler-throughput} and~\ref{fig:chapter-scheduler-latency} provide the corresponding throughput and queue-latency visualisations.
+Figure~\ref{fig:chapter-scheduler-latency} contains two grouped-bar panels, one for steady-state workload and one for queue contention. The horizontal axis compares the Priority-aging and FIFO policies, and the vertical scale gives queue-wait $P_{95}$ in milliseconds. The chart's metric label identifies this as queue-wait $P_{95}$ (ms). The legend distinguishes high-priority jobs (dark bars) from low-priority jobs (light bars), and the numbers above the bars give the measured percentile values. In the steady-state panel, the high- and low-priority bars are 65 and 218 ms for priority aging and 206 and 204 ms for FIFO. Under contention, they are 101 and 532 ms for priority aging and 460 and 500 ms for FIFO. The high-priority bars show the reductions reported in Tables~\ref{tab:scheduler-steady-state} and~\ref{tab:scheduler-contention}; the taller low-priority bars under priority aging show the corresponding waiting-time trade-off for lower-priority jobs. The chart values are rounded to whole milliseconds, while the tables retain two decimal places. Figure~\ref{fig:chapter-scheduler-throughput} provides the matching throughput comparison.
 
-\section{\uppercase{Integrated interpretation and limitations}}
+\section{\uppercase{Integrated interpretation}}
 
 The context engine demonstrates measurable active-context reduction and improved retrieval over direct vector RAG on the LoCoMo pilot, although the synthetic smoke set remains easier than the external conversational data. The planner achieves 76.0\% end-to-end exact tool-set accuracy and required-tool recall across 50 trials; its main failure mode is missing required tool calls rather than provider unavailability. The scheduler preserves throughput while substantially reducing high-priority queue waiting under contention.
 
