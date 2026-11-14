@@ -1,9 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.10.5)  14 NOV 2026 16:52
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.10.5)  15 NOV 2026 02:16
 entering extended mode
  restricted \write18 enabled.
+ file:line:error style messages enabled.
  %&-line parsing enabled.
-**./authesis.tex
-(authesis.tex
+**c:/Users/curvy/Documents/agentos/report/BTECH_2026/authesis.tex
+(c:/Users/curvy/Documents/agentos/report/BTECH_2026/authesis.tex
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
 (aureportm.cls
@@ -78,8 +79,7 @@ Package: natbib 2010/09/13 8.31b (PWD, AO)
 \bibsep=\skip53
 LaTeX Info: Redefining \cite on input line 694.
 \c@NAT@ctr=\count284
-)
-(bussproofs.sty
+) (bussproofs.sty
 Proof Tree (bussproofs) style macros. Version 1.1.
 \theLevel=\count285
 \myMaxLevel=\count286
@@ -105,14 +105,11 @@ Proof Tree (bussproofs) style macros. Version 1.1.
 \htRRRbox=\dimen162
 \htAbox=\dimen163
 \htCbox=\dimen164
-) (auphd.sty
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\times.sty
+) (auphd.sty (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\times.sty
 Package: times 2020/03/25 PSNFSS-v9.3 (SPQR) 
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\courier.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\courier.sty
 Package: courier 2020/03/25 PSNFSS-v9.3 (WaS) 
-))
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
+)) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
 Package: array 2025/09/25 v2.6n Tabular extension package (FMi)
 \col@sep=\dimen165
 \ar@mcellbox=\box59
@@ -121,8 +118,7 @@ Package: array 2025/09/25 v2.6n Tabular extension package (FMi)
 \extratabsurround=\skip54
 \backup@length=\skip55
 \ar@cellbox=\box60
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/tools\tabularx.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/tools\tabularx.sty
 Package: tabularx 2023/12/11 v2.12a `tabularx' package (DPC)
 \TX@col@width=\dimen167
 \TX@old@table=\dimen168
@@ -131,8 +127,7 @@ Package: tabularx 2023/12/11 v2.12a `tabularx' package (DPC)
 \TX@delta=\dimen171
 \TX@cols=\count287
 \TX@ftn=\toks18
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/ragged2e\ragged2e.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/ragged2e\ragged2e.sty
 Package: ragged2e 2023/06/22 v3.6 ragged2e Package
 \CenteringLeftskip=\skip56
 \RaggedLeftLeftskip=\skip57
@@ -148,8 +143,7 @@ Package: ragged2e 2023/06/22 v3.6 ragged2e Package
 \RaggedLeftParindent=\skip67
 \RaggedRightParindent=\skip68
 \JustifyingParindent=\skip69
-)
-(algorithm.sty
+) (algorithm.sty
 Package: algorithm 
 
 Document Style `algorithm' - floating environment
@@ -160,14 +154,12 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \float@box=\box61
 \@float@everytoks=\toks20
 \@floatcapt=\box62
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty
 Package: ifthen 2024/03/16 v1.1e Standard LaTeX ifthen package (DPC)
 )
 \@float@every@algorithm=\toks21
 \c@algorithm=\count289
-)
-(algpseudocode.sty
+) (algpseudocode.sty
 Package: algpseudocode 
  (algorithmicx.sty
 Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
@@ -261,8 +253,7 @@ Package: multicol 2025/10/21 v2.0b multicolumn formatting (FMi)
 \colbreak@box=\box108
 \mc@col@check@num=\count307
 \g__mc_curr_col_int=\count308
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
 Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \heavyrulewidth=\dimen182
 \lightrulewidth=\dimen183
@@ -281,25 +272,21 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \@thisruleclass=\count311
 \@lastruleclass=\count312
 \@thisrulewidth=\dimen194
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
 Package: amsmath 2025/07/09 v2.17z AMS math features
 \@mathmargin=\skip77
 
 For additional information on amsmath, use the `?' option.
 (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
 Package: amstext 2024/11/17 v2.01 AMS text
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
 \@emptytoks=\toks22
 \ex@=\dimen195
-))
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty
+)) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
 \pmbraise@=\dimen196
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty
 Package: amsopn 2022/04/08 v2.04 operator names
 )
 \inf@bad=\count313
@@ -349,11 +336,9 @@ LaTeX Info: Redefining \Relbar on input line 970.
 \mathdisplay@stack=\toks26
 LaTeX Info: Redefining \[ on input line 2950.
 LaTeX Info: Redefining \] on input line 2951.
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty
 Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \symAMSa=\mathgroup6
 \symAMSb=\mathgroup7
@@ -371,81 +356,50 @@ Package: amsthm 2020/05/29 v2.20.6
 \thm@postskip=\skip81
 \thm@headsep=\skip82
 \dth@everypar=\toks32
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/base\latexsym.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/base\latexsym.sty
 Package: latexsym 1998/08/17 v2.2e Standard LaTeX package (lasy symbols)
 \symlasy=\mathgroup8
 LaTeX Font Info:    Overwriting symbol font `lasy' in version `bold'
 (Font)                  U/lasy/m/n --> U/lasy/b/n on input line 52.
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/tools\verbatim.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/tools\verbatim.sty
 Package: verbatim 2024-01-22 v1.5x LaTeX2e package for verbatim enhancements
 \every@verbatim=\toks33
 \verbatim@line=\toks34
 \verbatim@in@stream=\read2
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
 Package: graphicx 2024/12/31 v1.2e Enhanced LaTeX Graphics (DPC,SPQR)
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
 Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
 \KV@toks@=\toks35
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
 Package: graphics 2024/08/06 v1.4g Standard LaTeX Graphics (DPC,SPQR)
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
 Package: trig 2023/12/02 v1.11 sin cos tan (DPC)
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.c
-fg
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.cfg
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 106.
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.def
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.def
 File: pdftex.def 2025/09/29 v1.2d Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen260
 \Gin@req@width=\dimen261
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendlayer\tikz.
-sty
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfrcs.st
-y
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil
--common.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendlayer\tikz.sty (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfrcs.sty (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil-common.tex
 \pgfutil@everybye=\toks36
 \pgfutil@tempdima=\dimen262
 \pgfutil@tempdimb=\dimen263
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil
--latex.def
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil-latex.def
 \pgfutil@abb=\box111
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfrcs.
-code.tex
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf\pgf.revision.tex)
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfrcs.code.tex (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf\pgf.revision.tex)
 Package: pgfrcs 2025-08-29 v3.1.11a (3.1.11a)
 ))
 Package: pgf 2025-08-29 v3.1.11a (3.1.11a)
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgfcore.
-sty
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/systemlayer\pgfsys.
-sty
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
-s.code.tex
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgfcore.sty (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/systemlayer\pgfsys.sty (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsys.code.tex
 Package: pgfsys 2025-08-29 v3.1.11a (3.1.11a)
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
-.code.tex
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys.code.tex
 \pgfkeys@pathtoks=\toks37
 \pgfkeys@temptoks=\toks38
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
-libraryfiltered.code.tex
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeyslibraryfiltered.code.tex
 \pgfkeys@tmptoks=\toks39
 ))
 \pgf@x=\dimen264
@@ -468,39 +422,27 @@ libraryfiltered.code.tex
 \t@pgf@tokb=\toks41
 \t@pgf@tokc=\toks42
 \pgf@sys@id@count=\count329
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.c
-fg
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.cfg
 File: pgf.cfg 2025-08-29 v3.1.11a (3.1.11a)
 )
 Driver file for pgf: pgfsys-pdftex.def
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
-s-pdftex.def
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsys-pdftex.def
 File: pgfsys-pdftex.def 2025-08-29 v3.1.11a (3.1.11a)
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
-s-common-pdf.def
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsys-common-pdf.def
 File: pgfsys-common-pdf.def 2025-08-29 v3.1.11a (3.1.11a)
-)))
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
-ssoftpath.code.tex
+))) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsyssoftpath.code.tex
 File: pgfsyssoftpath.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgfsyssoftpath@smallbuffer@items=\count330
 \pgfsyssoftpath@bigbuffer@items=\count331
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
-sprotocol.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsysprotocol.code.tex
 File: pgfsysprotocol.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-))
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
+)) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
 Package: xcolor 2024/09/29 v3.02 LaTeX color extensions (UK)
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
 File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
 Package xcolor Info: Driver file: pdftex.def on input line 274.
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx)
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx)
 Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1349.
 Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1353.
 Package xcolor Info: Model `RGB' extended on input line 1365.
@@ -510,52 +452,18 @@ Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1369.
 Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1370.
 Package xcolor Info: Model `Gray' substituted by `gray' on input line 1371.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1372.
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-e.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcore.code.tex
 Package: pgfcore 2025-08-29 v3.1.11a (3.1.11a)
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.code
-.tex
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathutil.
-code.tex)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathparse
-r.code.tex
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.code.tex (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathutil.code.tex) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathparser.code.tex
 \pgfmath@dimen=\dimen274
 \pgfmath@count=\count332
 \pgfmath@box=\box112
 \pgfmath@toks=\toks43
 \pgfmath@stack@operand=\toks44
 \pgfmath@stack@operation=\toks45
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
-ions.code.tex)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
-ions.basic.code.tex)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
-ions.trigonometric.code.tex)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
-ions.random.code.tex)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
-ions.comparison.code.tex)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
-ions.base.code.tex)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
-ions.round.code.tex)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
-ions.misc.code.tex)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
-ions.integerarithmetics.code.tex)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathcalc.
-code.tex)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfloat
-.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.code.tex) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.basic.code.tex) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.trigonometric.code.tex) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.random.code.tex) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.comparison.code.tex) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.base.code.tex) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.round.code.tex) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.misc.code.tex) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.integerarithmetics.code.tex) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathcalc.code.tex) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfloat.code.tex
 \c@pgfmathroundto@lastzeros=\count333
-))
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfint.code.
-tex)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-epoints.code.tex
+)) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfint.code.tex) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepoints.code.tex
 File: pgfcorepoints.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@picminx=\dimen275
 \pgf@picmaxx=\dimen276
@@ -571,130 +479,75 @@ File: pgfcorepoints.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@yy=\dimen286
 \pgf@zx=\dimen287
 \pgf@zy=\dimen288
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-epathconstruct.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepathconstruct.code.tex
 File: pgfcorepathconstruct.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@path@lastx=\dimen289
 \pgf@path@lasty=\dimen290
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-epathusage.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepathusage.code.tex
 File: pgfcorepathusage.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@shorten@end@additional=\dimen291
 \pgf@shorten@start@additional=\dimen292
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-escopes.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorescopes.code.tex
 File: pgfcorescopes.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgfpic=\box113
 \pgf@hbox=\box114
 \pgf@layerbox@main=\box115
 \pgf@picture@serial@count=\count334
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-egraphicstate.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoregraphicstate.code.tex
 File: pgfcoregraphicstate.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgflinewidth=\dimen293
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-etransformations.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoretransformations.code.tex
 File: pgfcoretransformations.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@pt@x=\dimen294
 \pgf@pt@y=\dimen295
 \pgf@pt@temp=\dimen296
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-equick.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorequick.code.tex
 File: pgfcorequick.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-eobjects.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreobjects.code.tex
 File: pgfcoreobjects.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-epathprocessing.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepathprocessing.code.tex
 File: pgfcorepathprocessing.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-earrows.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorearrows.code.tex
 File: pgfcorearrows.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgfarrowsep=\dimen297
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-eshade.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreshade.code.tex
 File: pgfcoreshade.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@max=\dimen298
 \pgf@sys@shading@range@num=\count335
 \pgf@shadingcount=\count336
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-eimage.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreimage.code.tex
 File: pgfcoreimage.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-eexternal.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreexternal.code.tex
 File: pgfcoreexternal.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgfexternal@startupbox=\box116
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-elayers.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorelayers.code.tex
 File: pgfcorelayers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-etransparency.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoretransparency.code.tex
 File: pgfcoretransparency.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-epatterns.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepatterns.code.tex
 File: pgfcorepatterns.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-erdf.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorerdf.code.tex
 File: pgfcorerdf.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)))
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
-shapes.code.tex
+))) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmoduleshapes.code.tex
 File: pgfmoduleshapes.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgfnodeparttextbox=\box117
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
-plot.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmoduleplot.code.tex
 File: pgfmoduleplot.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfco
-mp-version-0-65.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfcomp-version-0-65.sty
 Package: pgfcomp-version-0-65 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@nodesepstart=\dimen299
 \pgf@nodesepend=\dimen300
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfco
-mp-version-1-18.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfcomp-version-1-18.sty
 Package: pgfcomp-version-1-18 2025-08-29 v3.1.11a (3.1.11a)
-))
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgffor.st
-y
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfkeys.s
-ty
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
-.code.tex))
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/math\pgfmath.sty
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.code
-.tex))
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgffor.
-code.tex
+)) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgffor.sty (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfkeys.sty (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys.code.tex)) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pgf/math\pgfmath.sty (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.code.tex)) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgffor.code.tex
 Package: pgffor 2025-08-29 v3.1.11a (3.1.11a)
 \pgffor@iter=\dimen301
 \pgffor@skip=\dimen302
 \pgffor@stack=\toks46
 \pgffor@toks=\toks47
-))
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
-z\tikz.code.tex
+)) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz\tikz.code.tex
 Package: tikz 2025-08-29 v3.1.11a (3.1.11a)
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibr
-aryplothandlers.code.tex
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibraryplothandlers.code.tex
 File: pgflibraryplothandlers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@plot@mark@count=\count337
 \pgfplotmarksize=\dimen303
@@ -715,103 +568,66 @@ File: pgflibraryplothandlers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \tikznumberofchildren=\count339
 \tikznumberofcurrentchild=\count340
 \tikz@fig@count=\count341
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
-matrix.code.tex
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodulematrix.code.tex
 File: pgfmodulematrix.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgfmatrixcurrentrow=\count342
 \pgfmatrixcurrentcolumn=\count343
 \pgf@matrix@numberofcolumns=\count344
 )
 \tikz@expandcount=\count345
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
-z/libraries\tikzlibrarytopaths.code.tex
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/libraries\tikzlibrarytopaths.code.tex
 File: tikzlibrarytopaths.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)))
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibr
-aryarrows.meta.code.tex
+))) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibraryarrows.meta.code.tex
 File: pgflibraryarrows.meta.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgfarrowinset=\dimen312
 \pgfarrowlength=\dimen313
 \pgfarrowwidth=\dimen314
 \pgfarrowlinewidth=\dimen315
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
-z/libraries\tikzlibrarypositioning.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/libraries\tikzlibrarypositioning.code.tex
 File: tikzlibrarypositioning.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
-z/libraries\tikzlibraryshapes.geometric.code.tex
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/libraries\tikzlibraryshapes.geometric.code.tex
 File: tikzlibraryshapes.geometric.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries/shapes\
-pgflibraryshapes.geometric.code.tex
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries/shapes\pgflibraryshapes.geometric.code.tex
 File: pgflibraryshapes.geometric.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-))
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
-z/libraries\tikzlibraryfit.code.tex
+)) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/libraries\tikzlibraryfit.code.tex
 File: tikzlibraryfit.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
 Package: hyperref 2025-07-12 v7.01o Hypertext links for LaTeX
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
 Package: iftex 2024/12/12 v1.0g TeX engine tests
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty
 Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefine
-keys.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefinekeys.sty
 Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape.s
-ty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape.sty
 Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
 Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmds
-.sty
-Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
-)
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.s
-ty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmds.sty
+Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO)
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.sty
 Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
 )
 Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
 Package pdftexcmds Info: \pdfdraftmode found.
-))
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty
+)) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty
 Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
 Package: nameref 2025-06-21 v2.57 Cross-referencing by name of section
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty
 Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\gettit
-lestring.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.sty
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.sty
 Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
 ))
 \c@section@level=\count346
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty
 Package: etoolbox 2025/10/02 v2.5m e-TeX tools for LaTeX (JAW)
 \etb@tempcnta=\count347
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc.s
-ty
-Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO
-)
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc.sty
+Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO)
 )
 \@linkdim=\dimen316
 \Hy@linkcounter=\count348
@@ -837,21 +653,16 @@ Package hyperref Info: Backreferencing OFF on input line 4215.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4462.
 \c@Hy@tempcnt=\count351
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
 \Urlmuskip=\muskip18
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 4801.
 \XeTeXLinkMargin=\dimen317
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
 Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintcalc
-.sty
-Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
-)
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintcalc.sty
+Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO)
 ))
 \Fld@menulength=\count352
 \Field@Width=\dimen318
@@ -868,22 +679,16 @@ Package hyperref Info: PDF/A mode OFF on input line 6108.
 \c@Hfootnote=\count355
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
 File: hpdftex.def 2025-07-12 v7.01o Hyperref driver for pdfTeX
 \Fld@listcount=\count356
 \c@bookmark@seq@number=\count357
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfil
-echeck.sty
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfilecheck.sty
 Package: rerunfilecheck 2025-06-21 v1.11 Rerun checks for auxiliary files (HO)
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\uniquec
-ounter.sty
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\uniquecounter.sty
 Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 )
-Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
-84.
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 284.
 )
 \Hy@SectionHShift=\skip83
 )
@@ -891,11 +696,9 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 Package: epsfig 2024/01/14 v1.7b (e)psfig emulation (SPQR)
 \epsfxsize=\dimen320
 \epsfysize=\dimen321
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pslatex\pslatex.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/pslatex\pslatex.sty
 Package: pslatex 2021/01/13 v1.3 pslatex emulation (DPC)
-LaTeX Encoding Info:    Redeclaring text command \textsterling (encoding ?) on 
-input line 51.
+LaTeX Encoding Info:    Redeclaring text command \textsterling (encoding ?) on input line 51.
 LaTeX Font Info:    Redeclaring symbol font `operators' on input line 66.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  OT1/ptmcm/m/n --> OT1/ptmcm/m/n on input line 66.
@@ -937,11 +740,9 @@ LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
 (Font)                  OT1/ptm/m/it --> OT1/ptm/m/it on input line 76.
 LaTeX Font Info:    Redeclaring math symbol \omicron on input line 80.
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/setspace\setspace.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/setspace\setspace.sty
 Package: setspace 2022/12/04 v6.7b set line spacing
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/titlesec\titlesec.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/titlesec\titlesec.sty
 Package: titlesec 2025/01/04 v2.17 Sectioning titles
 \ttl@box=\box122
 \beforetitleunit=\skip84
@@ -1007,8 +808,7 @@ Package tocloft Note: The document has chapter divisions.
 \cftbeforesubtabskip=\skip123
 \cftsubtabindent=\skip124
 \cftsubtabnumwidth=\skip125
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/subfigure\subfigure.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/subfigure\subfigure.sty
 Package: subfigure 2002/07/30 v2.1.4 subfigure package
 \subfigtopskip=\skip126
 \subfigcapskip=\skip127
@@ -1020,12 +820,11 @@ Package: subfigure 2002/07/30 v2.1.4 subfigure package
 \c@lofdepth=\count359
 \c@subtable=\count360
 \c@lotdepth=\count361
+
 ****************************************
 * Local config file subfigure.cfg used *
 ****************************************
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/subfigure\subfigure.cfg
-)
+(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/subfigure\subfigure.cfg)
 \subfig@top=\skip130
 \subfig@bottom=\skip131
 ) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/tools\longtable.sty
@@ -1049,14 +848,11 @@ Package: longtable 2025-10-13 v4.24 Multi-page Table package (DPC)
 ) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/tools\enumerate.sty
 Package: enumerate 2023/07/04 v3.00 enumerate extensions (DPC)
 \@enLab=\toks50
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics\lscape.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/graphics\lscape.sty
 Package: lscape 2020/05/28 v3.02 Landscape Pages (DPC)
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption.sty
 Package: caption 2023/08/05 v3.6o Customizing captions (AR)
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption3.sty
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption3.sty
 Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
 \caption@tempdima=\dimen330
 \captionmargin=\dimen331
@@ -1073,8 +869,7 @@ Package caption Info: Standard document class detected.
 Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: longtable package is loaded.
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/caption\ltcaption.sty
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/caption\ltcaption.sty
 Package: ltcaption 2021/01/08 v1.4c longtable captions (AR)
 )
 Package caption Info: subfigure package is loaded.
@@ -1091,45 +886,35 @@ LaTeX Info: Redefining \em on input line 57.
 \c@definition=\count371
 \c@example=\count372
 \c@proposition=\count373
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdf
-tex.def
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count374
-) (authesis.aux (Abstract/abstract.aux) (acknowl.aux)
-(Acronyms/acronyms.aux) (1/Chapter1.aux) (2/Chapter2.aux) (3/Chapter3.aux)
-(4/Chapter4.aux) (5/Chapter5.aux) (Conclusion/conclusion.aux)
-(declaration_ai.aux) (Appendix/agents.aux) (Appendix/ai_prompts.aux)
-(References/references.aux))
+) (authesis.aux (Abstract/abstract.aux) (acknowl.aux) (Acronyms/acronyms.aux) (1/Chapter1.aux) (2/Chapter2.aux) (3/Chapter3.aux) (4/Chapter4.aux) (5/Chapter5.aux) (Appendix/agents.aux) (Appendix/ai_prompts.aux) (References/references.aux))
 \openout1 = `authesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 160.
-LaTeX Font Info:    ... okay on input line 160.
-LaTeX Font Info:    Checking defaults for OMS/pzccm/m/n on input line 160.
-LaTeX Font Info:    Trying to load font information for OMS+pzccm on input line
- 160.
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omspzccm.fd
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 161.
+LaTeX Font Info:    ... okay on input line 161.
+LaTeX Font Info:    Checking defaults for OMS/pzccm/m/n on input line 161.
+LaTeX Font Info:    Trying to load font information for OMS+pzccm on input line 161.
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omspzccm.fd
 File: omspzccm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/pzccm.
 )
-LaTeX Font Info:    ... okay on input line 160.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 160.
-LaTeX Font Info:    ... okay on input line 160.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 160.
-LaTeX Font Info:    ... okay on input line 160.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 160.
-LaTeX Font Info:    ... okay on input line 160.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 160.
-LaTeX Font Info:    ... okay on input line 160.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 160.
-LaTeX Font Info:    ... okay on input line 160.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 160.
-LaTeX Font Info:    ... okay on input line 160.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 160.
-LaTeX Font Info:    ... okay on input line 160.
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
-ii
+LaTeX Font Info:    ... okay on input line 161.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 161.
+LaTeX Font Info:    ... okay on input line 161.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 161.
+LaTeX Font Info:    ... okay on input line 161.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 161.
+LaTeX Font Info:    ... okay on input line 161.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 161.
+LaTeX Font Info:    ... okay on input line 161.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 161.
+LaTeX Font Info:    ... okay on input line 161.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 161.
+LaTeX Font Info:    ... okay on input line 161.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 161.
+LaTeX Font Info:    ... okay on input line 161.
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count375
 \scratchdimen=\dimen338
@@ -1142,33 +927,27 @@ ii
 \MPnumerator=\count379
 \makeMPintoPDFobject=\count380
 \everyMPtoPDFconversion=\toks53
-)
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-b
-ase.sty
+) (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
-Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
-85.
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.c
-fg
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-Package hyperref Info: Link coloring OFF on input line 160.
+Package hyperref Info: Link coloring OFF on input line 161.
  (authesis.out) (authesis.out)
 \@outlinefile=\write4
 \openout4 = `authesis.out'.
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-<auemblem.pdf, id=337, 120.45pt x 118.4425pt>
+<auemblem.pdf, id=333, 120.45pt x 118.4425pt>
 File: auemblem.pdf Graphic file (type pdf)
 <use auemblem.pdf>
-Package pdftex.def Info: auemblem.pdf  used on input line 200.
+Package pdftex.def Info: auemblem.pdf  used on input line 201.
 (pdftex.def)             Requested size: 38.54477pt x 37.90236pt.
  [1
 
-{C:/Users/curvy/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/curv
-y/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc} <./auemblem.pdf>]
+{C:/Users/curvy/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc} <./auemblem.pdf>]
 \aulength=\skip137
 \datewidth=\skip138
  [2
@@ -1194,22 +973,16 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 
 ] (authesis.toc
 LaTeX Font Info:    Calculating math sizes for size <13> on input line 1.
-LaTeX Font Info:    Trying to load font information for OT1+ptmcm on input line
- 1.
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1ptmcm.fd
+LaTeX Font Info:    Trying to load font information for OT1+ptmcm on input line 1.
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1ptmcm.fd
 File: ot1ptmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ptmcm.
 )
-LaTeX Font Info:    Trying to load font information for OML+ptmcm on input line
- 1.
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omlptmcm.fd
+LaTeX Font Info:    Trying to load font information for OML+ptmcm on input line 1.
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omlptmcm.fd
 File: omlptmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ptmcm.
 )
-LaTeX Font Info:    Trying to load font information for OMX+psycm on input line
- 1.
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omxpsycm.fd
+LaTeX Font Info:    Trying to load font information for OMX+psycm on input line 1.
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omxpsycm.fd
 File: omxpsycm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/psycm.
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <13> not available
@@ -1219,19 +992,15 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9.09996> not available
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6.5> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1.
 LaTeX Font Info:    Trying to load font information for U+msa on input line 1.
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
 LaTeX Font Info:    Trying to load font information for U+msb on input line 1.
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Trying to load font information for U+lasy on input line 1.
-
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/base\ulasy.fd
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/base\ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
 
@@ -1268,7 +1037,7 @@ Underfull \hbox (badness 1062) in paragraph at lines 12--12
 \openout2 = `Acronyms/acronyms.aux'.
 
  (Acronyms/acronyms.tex
-Overfull \hbox (25.19997pt too wide) in alignment at lines 4--21
+Overfull \hbox (25.19997pt too wide) in alignment at lines 4--23
  [] [] 
  []
 
@@ -1292,39 +1061,39 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 4.
 
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\uppercase' on input line 9.
+
 [1
 
 
 
 
-] [2] [3]
+]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 23.
+(hyperref)                removing `\uppercase' on input line 16.
 
-[4]
+[2]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 28.
+(hyperref)                removing `\uppercase' on input line 21.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 31.
 
-[5]
+[3]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 41.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 44.
+(hyperref)                removing `\uppercase' on input line 36.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 47.
+(hyperref)                removing `\uppercase' on input line 39.
 
-[6]) [7]
+) [4] [5]
 \openout2 = `2/Chapter2.aux'.
 
  (2/Chapter2.tex
@@ -1341,7 +1110,7 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 7.
 
-[8
+[6
 
 
 
@@ -1351,31 +1120,35 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 14.
 
-[9]
+[7]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 23.
 
-[10]
+[8]
+Underfull \hbox (badness 1117) in paragraph at lines 30--31
+[]\OT1/ptm/m/n/13 The Trans-former ar-chi-tec-ture in-tro-duced an attention-based ap-
+ []
+
+[9]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 32.
 
-[11]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 37.
 
+[10]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 40.
 
-[12]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 43.
 
-) [13]
+) [11]
 \openout2 = `3/Chapter3.aux'.
 
  (3/Chapter3.tex
@@ -1392,127 +1165,121 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 7.
 
-[14
+[12
 
 
 
 
-]
-<3/figures/agentos_architecture.jpeg, id=699, 1541.76pt x 1027.84pt>
+] [13]
+<3/figures/agentos_architecture.jpeg, id=702, 1541.76pt x 1027.84pt>
 File: 3/figures/agentos_architecture.jpeg Graphic file (type jpg)
 <use 3/figures/agentos_architecture.jpeg>
-Package pdftex.def Info: 3/figures/agentos_architecture.jpeg  used on input lin
-e 12.
-(pdftex.def)             Requested size: 600.29591pt x 400.19728pt.
+Package pdftex.def Info: 3/figures/agentos_architecture.jpeg  used on input line 24.
+(pdftex.def)             Requested size: 631.23174pt x 420.82115pt.
+ [14
 
+]
+Overfull \vbox (32.75618pt too high) has occurred while \output is active []
 
-LaTeX Warning: Float too large for page by 12.13231pt on input line 15.
-
-[15 <./3/figures/agentos_architecture.jpeg>]
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 18.
-
+ [15 <./3/figures/agentos_architecture.jpeg>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 25.
+(hyperref)                removing `\uppercase' on input line 30.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\uppercase' on input line 37.
 
 [16
 
-
 ]
 
-pdfTeX warning: pdflatex.exe (file ./3/figures/redis-flow-readable.pdf): PDF in
-clusion: found PDF version <1.7>, but at most version <1.5> allowed
-<3/figures/redis-flow-readable.pdf, id=710, 645.41125pt x 664.4825pt>
+pdfTeX warning: pdflatex (file ./3/figures/redis-flow-readable.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<3/figures/redis-flow-readable.pdf, id=718, 645.41125pt x 664.4825pt>
 File: 3/figures/redis-flow-readable.pdf Graphic file (type pdf)
 <use 3/figures/redis-flow-readable.pdf>
-Package pdftex.def Info: 3/figures/redis-flow-readable.pdf  used on input line 
-29.
+Package pdftex.def Info: 3/figures/redis-flow-readable.pdf  used on input line 41.
 (pdftex.def)             Requested size: 394.09422pt x 405.73929pt.
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 34.
+(hyperref)                removing `\uppercase' on input line 46.
 
 [17 <./3/figures/redis-flow-readable.pdf>]
 
-pdfTeX warning: pdflatex.exe (file ./3/figures/dag-readable.pdf): PDF inclusion
-: found PDF version <1.7>, but at most version <1.5> allowed
-<3/figures/dag-readable.pdf, id=730, 513.92pt x 1099.10625pt>
+pdfTeX warning: pdflatex (file ./3/figures/dag-readable.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<3/figures/dag-readable.pdf, id=738, 513.92pt x 1099.10625pt>
 File: 3/figures/dag-readable.pdf Graphic file (type pdf)
 <use 3/figures/dag-readable.pdf>
-Package pdftex.def Info: 3/figures/dag-readable.pdf  used on input line 38.
-(pdftex.def)             Requested size: 177.4751pt x 379.56102pt.
+Package pdftex.def Info: 3/figures/dag-readable.pdf  used on input line 50.
+(pdftex.def)             Requested size: 198.89099pt x 425.3626pt.
+[18]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 43.
+(hyperref)                removing `\uppercase' on input line 55.
 
-[18 <./3/figures/dag-readable.pdf>]
 <3/figures/context_paging.png, id=744, 1541.76pt x 1027.84pt>
 File: 3/figures/context_paging.png Graphic file (type png)
 <use 3/figures/context_paging.png>
-Package pdftex.def Info: 3/figures/context_paging.png  used on input line 47.
+Package pdftex.def Info: 3/figures/context_paging.png  used on input line 59.
 (pdftex.def)             Requested size: 412.56496pt x 275.04251pt.
-
+[19 <./3/figures/dag-readable.pdf>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 52.
+(hyperref)                removing `\uppercase' on input line 64.
 
-<3/figures/agent_scheduler.png, id=747, 1541.76pt x 1027.84pt>
+<3/figures/agent_scheduler.png, id=761, 1541.76pt x 1027.84pt>
 File: 3/figures/agent_scheduler.png Graphic file (type png)
 <use 3/figures/agent_scheduler.png>
-Package pdftex.def Info: 3/figures/agent_scheduler.png  used on input line 56.
+Package pdftex.def Info: 3/figures/agent_scheduler.png  used on input line 68.
 (pdftex.def)             Requested size: 412.56496pt x 275.04251pt.
-[19 <./3/figures/context_paging.png>]
+[20 <./3/figures/context_paging.png>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 61.
+(hyperref)                removing `\uppercase' on input line 73.
 
-<3/figures/resource_manager.png, id=756, 1541.76pt x 1027.84pt>
+[21 <./3/figures/agent_scheduler.png>]
+<3/figures/resource_manager.png, id=774, 1541.76pt x 1027.84pt>
 File: 3/figures/resource_manager.png Graphic file (type png)
 <use 3/figures/resource_manager.png>
-Package pdftex.def Info: 3/figures/resource_manager.png  used on input line 65.
-
+Package pdftex.def Info: 3/figures/resource_manager.png  used on input line 79.
 (pdftex.def)             Requested size: 412.56496pt x 275.04251pt.
 
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 70.
 
-[20 <./3/figures/agent_scheduler.png>]
-<3/figures/tool_manager.png, id=764, 1541.76pt x 1027.84pt>
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\uppercase' on input line 84.
+
+<3/figures/tool_manager.png, id=776, 1541.76pt x 1027.84pt>
 File: 3/figures/tool_manager.png Graphic file (type png)
 <use 3/figures/tool_manager.png>
-Package pdftex.def Info: 3/figures/tool_manager.png  used on input line 74.
+Package pdftex.def Info: 3/figures/tool_manager.png  used on input line 88.
 (pdftex.def)             Requested size: 412.56496pt x 275.04251pt.
-
+[22 <./3/figures/resource_manager.png>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 79.
+(hyperref)                removing `\uppercase' on input line 93.
 
 
 
-pdfTeX warning: pdflatex.exe (file ./3/figures/lifecycle.pdf): PDF inclusion: f
-ound PDF version <1.7>, but at most version <1.5> allowed
-<3/figures/lifecycle.pdf, id=766, 449.68pt x 279.0425pt>
+pdfTeX warning: pdflatex (file ./3/figures/lifecycle.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<3/figures/lifecycle.pdf, id=783, 449.68pt x 279.0425pt>
 File: 3/figures/lifecycle.pdf Graphic file (type pdf)
 <use 3/figures/lifecycle.pdf>
-Package pdftex.def Info: 3/figures/lifecycle.pdf  used on input line 83.
+Package pdftex.def Info: 3/figures/lifecycle.pdf  used on input line 97.
 (pdftex.def)             Requested size: 371.30594pt x 230.41727pt.
-[21 <./3/figures/resource_manager.png>]
+[23 <./3/figures/tool_manager.png>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 88.
+(hyperref)                removing `\uppercase' on input line 102.
 
-[22 <./3/figures/tool_manager.png> <./3/figures/lifecycle.pdf>]
 
-pdfTeX warning: pdflatex.exe (file ./3/figures/runner.pdf): PDF inclusion: foun
-d PDF version <1.7>, but at most version <1.5> allowed
-<3/figures/runner.pdf, id=785, 689.57625pt x 191.71625pt>
+
+pdfTeX warning: pdflatex (file ./3/figures/runner.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<3/figures/runner.pdf, id=790, 689.57625pt x 191.71625pt>
 File: 3/figures/runner.pdf Graphic file (type pdf)
 <use 3/figures/runner.pdf>
-Package pdftex.def Info: 3/figures/runner.pdf  used on input line 92.
+Package pdftex.def Info: 3/figures/runner.pdf  used on input line 106.
 (pdftex.def)             Requested size: 412.57204pt x 96.44203pt.
-) [23 <./3/figures/runner.pdf>]
+[24 <./3/figures/lifecycle.pdf>]) [25 <./3/figures/runner.pdf>]
 \openout2 = `4/Chapter4.aux'.
 
  (4/Chapter4.tex
@@ -1529,9 +1296,8 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 7.
 
-Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 11.
-[24
+Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on input line 11.
+[26
 
 
 
@@ -1541,13 +1307,12 @@ put line 11.
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 24.
 
-<4/figures/optimized_planner.png, id=813, 1541.76pt x 1027.84pt>
+<4/figures/optimized_planner.png, id=831, 1541.76pt x 1027.84pt>
 File: 4/figures/optimized_planner.png Graphic file (type png)
 <use 4/figures/optimized_planner.png>
-Package pdftex.def Info: 4/figures/optimized_planner.png  used on input line 30
-.
+Package pdftex.def Info: 4/figures/optimized_planner.png  used on input line 30.
 (pdftex.def)             Requested size: 404.31189pt x 269.53758pt.
-[25]
+[27]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 36.
@@ -1559,21 +1324,20 @@ Underfull \hbox (badness 10000) in paragraph at lines 37--38
 
 
 Underfull \hbox (badness 3049) in paragraph at lines 37--38
-\OT1/pcr/m/n/13 kernel/models/model.py\OT1/ptm/m/n/13 . \OT1/pcr/m/n/13 HybridC
-hatModel \OT1/ptm/m/n/13 wraps a \OT1/pcr/m/n/13 ChatGroq \OT1/ptm/m/n/13 in-
+\OT1/pcr/m/n/13 kernel/models/model.py\OT1/ptm/m/n/13 . \OT1/pcr/m/n/13 HybridChatModel \OT1/ptm/m/n/13 wraps a \OT1/pcr/m/n/13 ChatGroq \OT1/ptm/m/n/13 in-
  []
 
-[26 <./4/figures/optimized_planner.png>]
+[28 <./4/figures/optimized_planner.png>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 64.
 
-[27]
+[29]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 86.
 
-[28]
+[30]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 116.
@@ -1584,23 +1348,20 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 
 
 Underfull \hbox (badness 1127) in paragraph at lines 121--123
-[]\OT1/ptm/m/n/13 Events are JSON records con-tain-ing task iden-ti-fier, step 
-iden-
+[]\OT1/ptm/m/n/13 Events are JSON records con-tain-ing task iden-ti-fier, step iden-
  []
 
 
 Underfull \hbox (badness 1533) in paragraph at lines 121--123
-\OT1/ptm/m/n/13 tive pri-or-ity, queue wait, and at-tempt. The ker-nel pub-lish
-es them on
+\OT1/ptm/m/n/13 tive pri-or-ity, queue wait, and at-tempt. The ker-nel pub-lishes them on
  []
 
 
 Underfull \hbox (badness 1881) in paragraph at lines 121--123
-\OT1/pcr/m/n/13 kernel[]events\OT1/ptm/m/n/13 ; the back-end sub-scribes and fo
-r-wards them over Web-
+\OT1/pcr/m/n/13 kernel[]events\OT1/ptm/m/n/13 ; the back-end sub-scribes and for-wards them over Web-
  []
 
-[29]
+[31]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 139.
@@ -1609,7 +1370,7 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 142.
 
-[30]
+[32]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 145.
@@ -1618,48 +1379,41 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 148.
 
-
-Overfull \hbox (9.1472pt too wide) in paragraph at lines 154--169
+[33]
+Overfull \hbox (9.1472pt too wide) in paragraph at lines 156--171
  [][] 
  []
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 171.
+(hyperref)                removing `\uppercase' on input line 173.
 
-[31] [32]
-Overfull \hbox (39.67043pt too wide) in paragraph at lines 188--189
-[] $\OML/ptmcm/m/it/13 runtime[]store\OT1/ptmcm/m/n/13 [\OML/ptmcm/m/it/13 agen
-t[]id\OT1/ptmcm/m/n/13 ] \OMS/pzccm/m/n/13   \OT1/ptmcm/m/n/13 (\OML/ptmcm/m/it
-/13 agent[]id; agent[]type; task[]id; run[]fn; []\OT1/ptmcm/m/n/13 )$ 
+[34] [35]
+Overfull \hbox (39.67043pt too wide) in paragraph at lines 190--191
+[] $\OML/ptmcm/m/it/13 runtime[]store\OT1/ptmcm/m/n/13 [\OML/ptmcm/m/it/13 agent[]id\OT1/ptmcm/m/n/13 ] \OMS/pzccm/m/n/13   \OT1/ptmcm/m/n/13 (\OML/ptmcm/m/it/13 agent[]id; agent[]type; task[]id; run[]fn; []\OT1/ptmcm/m/n/13 )$ 
  []
 
-[33] [34]
-Underfull \hbox (badness 10000) in paragraph at lines 261--262
-[] $\OML/ptmcm/m/it/13 start[]time \OMS/pzccm/m/n/13   []$\OT1/ptm/m/n/13 ; \OT
-1/ptm/m/sc/13 Se-tA-gentSta-
+[36] [37]
+Underfull \hbox (badness 10000) in paragraph at lines 263--264
+[] $\OML/ptmcm/m/it/13 start[]time \OMS/pzccm/m/n/13   []$\OT1/ptm/m/n/13 ; \OT1/ptm/m/sc/13 Se-tA-gentSta-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 270--271
-[] \OT1/ptm/m/sc/13 Save-Ex-e-cu-tion-Con-text\OT1/ptm/m/n/13 ($\OML/ptmcm/m/it
-/13 A[]; runtime$\OT1/ptm/m/n/13 ); \OT1/ptm/m/sc/13 Sus-pendA-gen-
+Underfull \hbox (badness 10000) in paragraph at lines 272--273
+[] \OT1/ptm/m/sc/13 Save-Ex-e-cu-tion-Con-text\OT1/ptm/m/n/13 ($\OML/ptmcm/m/it/13 A[]; runtime$\OT1/ptm/m/n/13 ); \OT1/ptm/m/sc/13 Sus-pendA-gen-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 274--275
-[] $\OML/ptmcm/m/it/13 A[]:result \OMS/pzccm/m/n/13   []\OT1/ptmcm/m/n/13 (\OML
-/ptmcm/m/it/13 runtime\OT1/ptmcm/m/n/13 )$\OT1/ptm/m/n/13 ; \OT1/ptm/m/sc/13 De
--
+Underfull \hbox (badness 10000) in paragraph at lines 276--277
+[] $\OML/ptmcm/m/it/13 A[]:result \OMS/pzccm/m/n/13   []\OT1/ptmcm/m/n/13 (\OML/ptmcm/m/it/13 runtime\OT1/ptmcm/m/n/13 )$\OT1/ptm/m/n/13 ; \OT1/ptm/m/sc/13 De-
  []
 
-[35] [36]
-Underfull \hbox (badness 3792) in paragraph at lines 364--365
-[] \OT1/ptm/m/n/13 Mark READY, up-date $\OML/ptmcm/m/it/13 ready[]time$\OT1/ptm
-/m/n/13 , rein-sert into $\OML/ptmcm/m/it/13 Q$\OT1/ptm/m/n/13 , pub-lish
+[38] [39]
+Underfull \hbox (badness 3792) in paragraph at lines 366--367
+[] \OT1/ptm/m/n/13 Mark READY, up-date $\OML/ptmcm/m/it/13 ready[]time$\OT1/ptm/m/n/13 , rein-sert into $\OML/ptmcm/m/it/13 Q$\OT1/ptm/m/n/13 , pub-lish
  []
 
-[37]) [38] [39]
+[40]) [41] [42]
 \openout2 = `5/Chapter5.aux'.
 
  (5/Chapter5.tex
@@ -1676,127 +1430,83 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 12.
 
-[40
+[43
 
 
 
 
-] [41]
+] [44]
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 33.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 33.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 33.
- [42]
-<5/figures/context_engine_comparison.png, id=929, 766.96538pt x 333.34537pt>
+ [45]
+<5/figures/context_engine_comparison.png, id=949, 766.96538pt x 333.34537pt>
 File: 5/figures/context_engine_comparison.png Graphic file (type png)
 <use 5/figures/context_engine_comparison.png>
-Package pdftex.def Info: 5/figures/context_engine_comparison.png  used on input
- line 71.
-(pdftex.def)             Requested size: 404.31189pt x 175.7312pt.
- [43]
-<5/figures/context_engine_thresholds.png, id=935, 766.96538pt x 318.89137pt>
+Package pdftex.def Info: 5/figures/context_engine_comparison.png  used on input line 71.
+(pdftex.def)             Requested size: 412.56496pt x 179.31714pt.
+ [46]
+<5/figures/context_engine_thresholds.png, id=956, 766.96538pt x 318.89137pt>
 File: 5/figures/context_engine_thresholds.png Graphic file (type png)
 <use 5/figures/context_engine_thresholds.png>
-Package pdftex.def Info: 5/figures/context_engine_thresholds.png  used on input
- line 80.
-(pdftex.def)             Requested size: 404.31189pt x 168.11142pt.
-
+Package pdftex.def Info: 5/figures/context_engine_thresholds.png  used on input line 82.
+(pdftex.def)             Requested size: 412.56496pt x 171.54187pt.
+ [47 <./5/figures/context_engine_comparison.png>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 84.
+(hyperref)                removing `\uppercase' on input line 88.
 
-[44 <./5/figures/context_engine_comparison.png> <./5/figures/context_engine_thr
-esholds.png>]
-<5/figures/planner_tool_selection_overall.png, id=945, 639.89063pt x 587.19376p
-t>
+[48 <./5/figures/context_engine_thresholds.png>]
+<5/figures/planner_tool_selection_overall.png, id=970, 639.89063pt x 587.19376pt>
 File: 5/figures/planner_tool_selection_overall.png Graphic file (type png)
 <use 5/figures/planner_tool_selection_overall.png>
-Package pdftex.def Info: 5/figures/planner_tool_selection_overall.png  used on 
-input line 112.
-(pdftex.def)             Requested size: 342.30392pt x 314.1142pt.
-<5/figures/planner_tool_selection_category.png, id=946, 1008.76875pt x 587.1937
-6pt>
+Package pdftex.def Info: 5/figures/planner_tool_selection_overall.png  used on input line 118.
+(pdftex.def)             Requested size: 399.35458pt x 366.46657pt.
+ [49]
+<5/figures/planner_tool_selection_category.png, id=976, 1008.76875pt x 587.19376pt>
 File: 5/figures/planner_tool_selection_category.png Graphic file (type png)
 <use 5/figures/planner_tool_selection_category.png>
-Package pdftex.def Info: 5/figures/planner_tool_selection_category.png  used on
- input line 119.
-(pdftex.def)             Requested size: 354.79832pt x 206.5244pt.
- [45] [46 <./5/figures/planner_tool_selection_overall.png> <./5/figures/planner
-_tool_selection_category.png>]
+Package pdftex.def Info: 5/figures/planner_tool_selection_category.png  used on input line 127.
+(pdftex.def)             Requested size: 404.31616pt x 235.3482pt.
+ [50 <./5/figures/planner_tool_selection_overall.png>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 128.
+(hyperref)                removing `\uppercase' on input line 136.
 
-[47]
-<5/figures/scheduler_throughput_baseline.png, id=970, 513.117pt x 296.307pt>
+[51 <./5/figures/planner_tool_selection_category.png>] [52]
+<5/figures/scheduler_throughput_baseline.png, id=1000, 513.117pt x 296.307pt>
 File: 5/figures/scheduler_throughput_baseline.png Graphic file (type png)
 <use 5/figures/scheduler_throughput_baseline.png>
-Package pdftex.def Info: 5/figures/scheduler_throughput_baseline.png  used on i
-nput line 167.
+Package pdftex.def Info: 5/figures/scheduler_throughput_baseline.png  used on input line 175.
 (pdftex.def)             Requested size: 354.8061pt x 204.89513pt.
-
-Underfull \hbox (badness 1014) in paragraph at lines 168--168
-[][]|\OT1/ptm/m/n/13 Mea-sured sched-uler through-put un-der steady-state and q
-ueue-
- []
-
-<5/figures/scheduler_priority_latency.png, id=971, 1129.21875pt x 602.25pt>
+<5/figures/scheduler_priority_latency.png, id=1001, 1129.21875pt x 602.25pt>
 File: 5/figures/scheduler_priority_latency.png Graphic file (type png)
 <use 5/figures/scheduler_priority_latency.png>
-Package pdftex.def Info: 5/figures/scheduler_priority_latency.png  used on inpu
-t line 174.
-(pdftex.def)             Requested size: 363.05917pt x 193.6337pt.
-[48 <./5/figures/scheduler_throughput_baseline.png> <./5/figures/scheduler_prio
-rity_latency.png>]
+Package pdftex.def Info: 5/figures/scheduler_priority_latency.png  used on input line 182.
+(pdftex.def)             Requested size: 404.31294pt x 215.63356pt.
+ [53 <./5/figures/scheduler_throughput_baseline.png>] [54 <./5/figures/scheduler_priority_latency.png>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\uppercase' on input line 183.
+(hyperref)                removing `\uppercase' on input line 191.
 
-) [49] [50]
-\openout2 = `Conclusion/conclusion.aux'.
-
- (Conclusion/conclusion.tex
+) [55] (Conclusion/conclusion.tex
 CHAPTER 6.
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 1.
 
-
-Underfull \hbox (badness 1028) in paragraph at lines 6--7
-[]\OT1/ptm/m/n/13 The im-ple-men-ta-tion demon-strates that operating-system-in
-spired
- []
-
-
-Underfull \hbox (badness 1590) in paragraph at lines 6--7
-\OT1/ptm/m/n/13 ser-vices can be com-posed around het-ero-ge-neous agents with-
-out plac-ing
- []
-
-[51
+) [56
 
 
 
-
-]) [52]
-\openout2 = `declaration_ai.aux'.
-
- (declaration_ai.tex
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 1
-0.
-
-(C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
+] (declaration_ai.tex
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 10.
+ (C:\Users\curvy\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-)
-[53
-
-
-
-
-
-]) [54]
+) [57]) [58]
 \openout2 = `Appendix/agents.aux'.
 
  (Appendix/agents.tex
@@ -1805,76 +1515,34 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\uppercase' on input line 16.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 20--27
+Underfull \hbox (badness 10000) in paragraph at lines 21--30
 []\OT1/ptm/m/n/13 This ap-pendix doc-u-ments the agent im-ple-men-ta-tions in
  []
 
 
-Underfull \hbox (badness 2486) in paragraph at lines 20--27
-\OT1/pcr/m/n/13 server/kernel/Agents/agents/\OT1/ptm/m/n/13 . The di-a-grams de
--scribe the in-ter-nal
+Underfull \hbox (badness 2486) in paragraph at lines 21--30
+\OT1/pcr/m/n/13 server/kernel/Agents/agents/\OT1/ptm/m/n/13 . The di-a-grams de-scribe the in-ter-nal
  []
 
-[55
+[59
 
-
-
-
-] [56] [57
 
 ]
-Overfull \hbox (52.92764pt too wide) in paragraph at lines 169--170
+Overfull \hbox (52.92764pt too wide) in paragraph at lines 175--176
  [][] 
  []
 
-[58
-
-] [59
-
-]
-Underfull \hbox (badness 1019) in paragraph at lines 209--238
-[]\OT1/ptm/m/n/13 The A4 im-ple-men-ta-tion ex-poses file dis-cov-ery, bounded 
-doc-u-
+[60]
+Underfull \hbox (badness 1383) in paragraph at lines 213--241
+\OT1/ptm/m/n/13 doc-u-ment read-ing, TXT/DOCX cre-ation, ap-pend and ex-act re-place-ment,
  []
 
-
-Underfull \hbox (badness 1577) in paragraph at lines 209--238
-\OT1/ptm/m/n/13 cre-ation, re-name, move, meta-data, di-rec-tory list-ing, doc-
-u-ment com-par-i-
- []
-
-[60
-
-] [61
-
-] [62
-
-]
-Underfull \hbox (badness 10000) in paragraph at lines 305--310
+[61] [62] [63]
+Underfull \hbox (badness 10000) in paragraph at lines 306--311
 []\OT1/ptm/m/n/13 The Weather Agent uses Open-Meteo through
  []
 
-[63
-
-] [64
-
-] [65
-
-] [66
-
-] [67
-
-] [68
-
-] [69
-
-] [70
-
-] [71
-
-]) [72
-
-]
+[64] [65] [66] [67] [68] [69] [70] [71] [72] [73]) [74]
 \openout2 = `Appendix/ai_prompts.aux'.
 
  (Appendix/ai_prompts.tex
@@ -1891,7 +1559,7 @@ Overfull \hbox (2.30016pt too wide) in paragraph at lines 31--31
  [] 
  []
 
-[73
+[75
 
 
 
@@ -1901,32 +1569,27 @@ Overfull \hbox (2.30016pt too wide) in paragraph at lines 46--46
  [] 
  []
 
-[74]
+[76]
 Overfull \hbox (2.30016pt too wide) in paragraph at lines 66--66
  [] 
  []
 
-) [75
+) [77
 
 ]
 \openout2 = `References/references.aux'.
 
  (References/references.tex
 Underfull \hbox (badness 1817) in paragraph at lines 19--20
-[]\OT1/ptm/m/n/10.95 LangChain, ``Lang-Graph Doc-u-men-ta-tion,'' 2026. [On-lin
-e]. Avail-able: []$\OT1/pcr/m/n/10.95 https : / /
+[]\OT1/ptm/m/n/10.95 LangChain, ``Lang-Graph Doc-u-men-ta-tion,'' 2026. [On-line]. Avail-able: []$\OT1/pcr/m/n/10.95 https : / /
  []
 
-[76
+[78
 
 
 
 
-] [77]) [78] (authesis.aux (Abstract/abstract.aux) (acknowl.aux)
-(Acronyms/acronyms.aux) (1/Chapter1.aux) (2/Chapter2.aux) (3/Chapter3.aux)
-(4/Chapter4.aux) (5/Chapter5.aux) (Conclusion/conclusion.aux)
-(declaration_ai.aux) (Appendix/agents.aux) (Appendix/ai_prompts.aux)
-(References/references.aux))
+] [79]) [80] (authesis.aux (Abstract/abstract.aux) (acknowl.aux) (Acronyms/acronyms.aux) (1/Chapter1.aux) (2/Chapter2.aux) (3/Chapter3.aux) (4/Chapter4.aux) (5/Chapter5.aux) (Appendix/agents.aux) (Appendix/ai_prompts.aux) (References/references.aux))
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
@@ -1936,85 +1599,21 @@ L3 programming layer <2025-12-24>
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 1.0pt have occurred.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-
-Package rerunfilecheck Warning: File `authesis.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `authesis.out':
-(rerunfilecheck)             Before: 9144AE6BBFD7214B053C8C559369FF52;14902
-(rerunfilecheck)             After:  1F0345BD02BB2C929F5E2716018C1AB9;14697.
+Package rerunfilecheck Info: File `authesis.out' has not changed.
+(rerunfilecheck)             Checksum: FB7A0816C24224158E8D9E78B40FF193;14895.
  ) 
 Here is how much of TeX's memory you used:
- 27361 strings out of 467871
- 514311 string characters out of 5418376
- 895909 words of memory out of 5000000
- 55343 multiletter control sequences out of 15000+600000
- 688500 words of font info for 158 fonts, out of 8000000 for 9000
+ 27342 strings out of 467871
+ 513146 string characters out of 5418376
+ 895539 words of memory out of 5000000
+ 55328 multiletter control sequences out of 15000+600000
+ 692205 words of font info for 168 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 88i,17n,104p,1540b,835s stack positions out of 10000i,1000n,20000p,200000b,200000s
-
-pdfTeX warning (dest): name{figure.caption.48} has been referenced but does not
- exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{figure.caption.28} has been referenced but does not
- exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{figure.caption.24} has been referenced but does not
- exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{figure.caption.21} has been referenced but does not
- exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{figure.caption.15} has been referenced but does not
- exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{table.caption.26} has been referenced but does not 
-exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{table.caption.22} has been referenced but does not 
-exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{table.caption.19} has been referenced but does not 
-exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{section*.49} has been referenced but does not exist
-, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{chapter*.30} has been referenced but does not exist
-, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{section.3.12} has been referenced but does not exis
-t, replaced by a fixed one
-
-<C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cm
-mi10.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfo
-nts/cm/cmr10.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/publ
-ic/amsfonts/cm/cmsy10.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/t
-ype1/urw/courier/ucrr8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts
-/type1/urw/helvetic/uhvr8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fo
-nts/type1/urw/helvetic/uhvro8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTe
-X/fonts/type1/urw/symbol/usyr.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX
-/fonts/type1/urw/times/utmb8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX
-/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTe
-X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTe
-X/fonts/type1/urw/times/utmri8a.pfb>
-Output written on authesis.pdf (89 pages, 9559300 bytes).
+ 88i,17n,104p,1589b,854s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/urw/courier/ucrr8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvro8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/urw/symbol/usyr.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/curvy/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
+Output written on authesis.pdf (91 pages, 9566305 bytes).
 PDF statistics:
- 1277 PDF objects out of 1440 (max. 8388607)
- 277 named destinations out of 1000 (max. 500000)
- 768 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1291 PDF objects out of 1440 (max. 8388607)
+ 276 named destinations out of 1000 (max. 500000)
+ 760 words of extra memory for PDF output out of 10000 (max. 10000000)
 
