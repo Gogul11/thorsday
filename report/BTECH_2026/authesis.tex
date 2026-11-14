@@ -63,6 +63,7 @@
 \usepackage{lscape}
 
 \usepackage[format=hang,labelfont=bf,textfont=normalfont]{caption}
+\captionsetup[figure]{labelfont=bf,textfont=bf}
 \PassOptionsToPackage{linktocpage}{hyperref}
 \tocloftpagestyle{myheadings}
 \newcommand{\PreserveBackslash}[1]{\let\temp=\\#1\let\\=\temp}
@@ -325,10 +326,10 @@ LIST OF FIGURES} \listoffigures
 \include{3/Chapter3}
 \include{4/Chapter4}
 \include{5/Chapter5}
-\include{Conclusion/conclusion}
-\cleardoublepage
-\phantomsection 
-\include{declaration_ai}
+\input{Conclusion/conclusion}
+\par\addvspace{\baselineskip}
+\phantomsection
+\input{declaration_ai}
 \appendix
 \include{Appendix/agents}
 \include{Appendix/ai_prompts}
