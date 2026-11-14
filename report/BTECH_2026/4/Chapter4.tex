@@ -21,7 +21,6 @@ Agent descriptions are embedded in a persistent ChromaDB collection. A task desc
 \State \Return top candidates
 \end{algorithmic}
 \end{algorithm}
-
 \section{\uppercase{Planner and Fallback}}
 The planner asks the configured LLM for a structured execution plan. The response is parsed into steps and normalised against the agent registry. If the LLM request fails, exceeds quota, or produces invalid structure, a deterministic fallback creates a usable plan from the best retrieved agent(s). This maintains task execution and observability without pretending that the fallback has the same reasoning quality as the provider.
 
@@ -62,7 +61,6 @@ Sensitivity is currently implemented as a conservative deterministic classifier 
 \State \Return $y$
 \end{algorithmic}
 \end{algorithm}
-
 \section{\uppercase{DAG Validation}}
 Every step has a unique identifier and a list of prerequisite identifiers. Validation rejects duplicate identifiers, unknown agents, unknown dependencies, and cycles. A Kahn-style topological pass counts nodes removed from the ready set. If the count is smaller than the number of steps, the dependency graph contains a cycle and is rejected. The same validated dependency lists are used to generate Mermaid edges. Algorithm~\ref{alg:dependency-validation} specifies the cycle-detection procedure.
 
@@ -119,7 +117,6 @@ where $W$ is queue waiting time. The implementation uses an in-process pending s
 The resource manager checks active global slots, active slots for the task, and the cumulative estimated token reservation for the task. A temporary denial leaves work waiting; an exhausted task budget is converted into a blocked/failed outcome rather than leaving the task silently pending. Actual provider usage, when available, is recorded separately from estimated admission tokens. This distinction explains why a provider such as Groq may display zero usage metadata even while the scheduler correctly enforces its configured estimate.
 
 
-\clearpage
 \section{\uppercase{Redis Events and Backend Forwarding}}
 Events are JSON records containing task identifier, step identifier, agent name, execution identifier, status, timestamp, priority, effective priority, queue wait, and attempt. The kernel publishes them on \texttt{kernel\_events}; the backend subscribes and forwards them over WebSocket. Scheduler records use keys such as \texttt{agentos:scheduler:ready} and \texttt{agentos:scheduler:job:<execution\_id>}. MongoDB persists task history and event records for later inspection.
 Table~\ref{tab:rediskeys} summarises the Redis channels and scheduler keys used for task transport, lifecycle events, queue persistence, and recovery.
@@ -142,7 +139,6 @@ Name & Purpose & Durability role \\ \hline
 \section{\uppercase{Context Page-Out and Page-In}}
 The pager moves messages from the active conversation state to a persistent ChromaDB collection after a configured window is exceeded. Each page stores message content, task metadata, and an embedding. On a later turn, the current query is embedded and the collection is searched; selected messages are reintroduced in relevance order. The implementation emits page-out and page-in metrics, allowing the UI or logs to verify that paging occurred.
 
-\clearpage
 \section{\uppercase{Sandboxed Execution and Self-Healing}}
 The code runner creates a scoped temporary script, launches it with \texttt{asyncio.create\_subprocess\_exec}, captures stdout/stderr, and terminates the subprocess after a strict timeout. Output size is limited to prevent unbounded memory use. On a traceback, the error is supplied to the coder/tester agent and a revised script is attempted, up to three times. The runner publishes line-oriented output and final status as kernel events. No claim is made that an ordinary subprocess is equivalent to a container or microVM security boundary.
 
@@ -200,6 +196,7 @@ Algorithms~\ref{alg:semantic-agent-retrieval}, \ref{alg:dependency-validation}, 
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
+Algorithm~\ref{alg:lifecycle} creates a runtime record for each agent and rejects duplicate identifiers. The stored record associates the agent with its type, task, run function, and status; the helper operations update that status or remove the record when the runtime is destroyed.
 
 \begin{algorithm}[H]
 \caption{Virtual Memory Context Paging}
@@ -247,6 +244,7 @@ Algorithms~\ref{alg:semantic-agent-retrieval}, \ref{alg:dependency-validation}, 
 \State \Return $C_{final}$
 \end{algorithmic}
 \end{algorithm}
+Algorithm~\ref{alg:vm-context-paging} moves messages older than the active window into the vector store and keeps the most recent messages in the working context. It retrieves stored pages only when the query is non-empty, filters them by cosine similarity, emits page-in/page-out events, and inserts qualifying memory before the active conversation.
 
 \begin{algorithm}[H]
 \caption{Cooperative Time-Sliced Agent Execution}
@@ -283,8 +281,8 @@ Algorithms~\ref{alg:semantic-agent-retrieval}, \ref{alg:dependency-validation}, 
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
+Algorithm~\ref{alg:execute-agent} describes cooperative execution within a time quantum. It restores or initializes the runtime, saves its context when execution waits, fails, or reaches the quantum, and destroys the context after completion. Full suspension and restoration remain design specifications rather than guarantees of the current implementation.
 
-\clearpage
 \begin{algorithm}[H]
 \caption{Semantic Dependency-Aware Agent Planning}
 \label{alg:semantic-agent-planning}
@@ -315,6 +313,7 @@ Algorithms~\ref{alg:semantic-agent-retrieval}, \ref{alg:dependency-validation}, 
 \State \Return $G$
 \end{algorithmic}
 \end{algorithm}
+Algorithm~\ref{alg:semantic-agent-planning} embeds agent capabilities and the user task to select a bounded candidate set before asking the planner for structured steps. It normalises the response, removes unknown or duplicate agents and invalid dependencies, checks for cycles, then persists the resulting graph and emits a planning event. Invalid or unavailable structured output falls back to a sequential plan.
 
 \begin{algorithm}[H]
 \caption{Dependency-Aware Agent DAG Execution}
@@ -337,6 +336,7 @@ Algorithms~\ref{alg:semantic-agent-retrieval}, \ref{alg:dependency-validation}, 
 \State \Return all results
 \end{algorithmic}
 \end{algorithm}
+Algorithm~\ref{alg:execute-plan-dag} repeatedly finds steps whose dependencies have completed and dispatches a ready step through the scheduler. It stores each result and stops with an invalid-cycle error if unfinished work remains but no step is ready.
 
 \begin{algorithm}[H]
 \caption{Global Priority-Aging Cooperative Agent Scheduler}
@@ -368,3 +368,4 @@ Algorithms~\ref{alg:semantic-agent-retrieval}, \ref{alg:dependency-validation}, 
 \EndWhile
 \end{algorithmic}
 \end{algorithm}
+Algorithm~\ref{alg:global-priority-aging-scheduler} updates each ready agent's effective priority using its wait time, capped at the configured maximum, then requests resources for the highest-priority agent. Temporary denials return work to the queue; permanent denials fail it. After dispatch, the scheduler updates lifecycle events, releases resources, and records metrics. This is a cooperative scheduler specification.

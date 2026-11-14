@@ -41,7 +41,6 @@ AgentOS paging ($\tau=0.40$) & 98.0 & 97.5 & 86.3 & 21.0 \\ \hline
 \end{table}
 
 The synthetic results confirm that paging is operational and that the active context is reduced relative to complete-context access. Vector RAG provides the highest retrieval score on this deliberately simple dataset, whereas AgentOS uses fewer active-context tokens and records separate page-out and page-in telemetry. The lower score for recent truncation demonstrates that retaining only the newest messages is insufficient when the answer depends on an older fact.
-\clearpage
 \subsection{LoCoMo pilot evaluation}
 
 The LoCoMo pilot introduces longer conversations, natural-language questions, and human-provided evidence annotations. Table~\ref{tab:context-locomo-results} shows the retrieval results. The reported AgentOS operating point uses the best observed region of the threshold sweep ($\tau=0.20$--$0.30$); the result is presented as a pilot observation and not as a threshold selected from a held-out development set.
@@ -82,7 +81,6 @@ Figure~\ref{fig:context-thresholds} presents the threshold sensitivity study. Th
 \caption{Similarity-threshold sensitivity for context retrieval}
 \label{fig:context-thresholds}
 \end{figure}
-\clearpage
 \section{\uppercase{Planner and tool selection}}
 
 The planner evaluation measures whether the model selects the registered AgentOS functions required by a task. The model endpoint was Groq using \texttt{openai/gpt-oss-120b}. Each registered agent was exposed as an OpenAI-compatible function. The same catalogue and routing prompt were used for every trial, and required tool-call mode was enabled because every task required at least one registered agent.

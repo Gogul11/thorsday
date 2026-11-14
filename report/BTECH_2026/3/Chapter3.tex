@@ -5,11 +5,11 @@
 AgentOS is designed as a modular runtime. The gateway handles external requests, the orchestrator converts a prompt into a structured plan, and the kernel owns execution concerns. Redis is used for low-latency coordination and event transport, while MongoDB stores task history. ChromaDB stores embeddings used for semantic agent retrieval and context swap. The design keeps the current dependency truth in the DAG executor and treats scheduler decisions as admission and dispatch decisions.
 
 \section{\uppercase{Overall Architecture}}
-As shown in Figure~\ref{fig:architecture}, AgentOS is organised as an overall runtime architecture connecting the user interface, gateway, planner, kernel, storage, tools, agents, and model engines. The figure combines implemented runtime components with architectural modules that are planned or only partially implemented; their implementation status is documented separately in Section~\ref{sec:implementation-status}. A user submits a task through the Next.js interface. The FastAPI gateway creates or retrieves task state and communicates with the kernel. The planner selects agents and creates steps; the kernel validates and executes those steps while publishing activity events.
+As shown in Figure~\ref{fig:architecture}, AgentOS is organised as an overall runtime architecture connecting the user interface, gateway, planner, kernel, storage, tools, agents, and model engines. The figure combines implemented runtime components with architectural modules that are planned or only partially implemented. A user submits a task through the Next.js interface. The FastAPI gateway creates or retrieves task state and communicates with the kernel. The planner selects agents and creates steps; the kernel validates and executes those steps while publishing activity events.
 \begin{landscape}
 \begin{figure}[p]
 \centering
-\includegraphics[width=0.99\linewidth,height=0.80\textheight,keepaspectratio]{3/figures/agentos_architecture.jpeg}
+\includegraphics[width=\linewidth,height=0.97\textheight,keepaspectratio]{3/figures/agentos_architecture.jpeg}
 \caption{Overall AgentOS system architecture}
 \label{fig:architecture}
 \end{figure}
@@ -40,7 +40,6 @@ The planner retrieves relevant agent descriptions, requests a structured executi
 \label{fig:dag}
 \end{figure}
 
-\clearpage
 \section{\uppercase{Context Paging}}
 The context pager keeps a bounded active message window. When the window is exceeded, older or less relevant messages are embedded and stored in the ChromaDB swap collection. A later query retrieves semantically related pages and injects them into the active context. ChromaDB's cosine space returns distance; the implementation converts it as $s=1-d$, where $d$ is the returned cosine distance. Figure~\ref{fig:context} presents the page-out and page-in flow. This mechanism reduces active prompt growth but does not guarantee perfect recall.
 \begin{figure}[!htbp]
@@ -95,27 +94,3 @@ The code runner receives generated Python, writes it into a scoped working direc
 \label{fig:runner}
 \end{figure}
 
-\section{\uppercase{Implemented AgentOS Modules}}
-\label{sec:implementation-status}
-Table~\ref{tab:boundary} summarises the principal modules implemented and exercised in the current AgentOS runtime.
-\begin{table}[!htbp]
-\centering
-\caption{Implemented AgentOS modules}
-\label{tab:boundary}
-\normalsize
-\renewcommand{\arraystretch}{1.2}
-\setlength{\tabcolsep}{5pt}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.1cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{3.0cm}|}
-\hline
-Module & Principal responsibility & Status \\ \hline
-Frontend and gateway & User interface, task API, and live activity stream & Implemented \\ \hline
-Planner and DAG execution & Structured plans, agent selection, and dependency validation & Implemented \\ \hline
-Hybrid model router & Local/cloud model selection and provider fallback & Implemented \\ \hline
-Agent and tool registry & Capability descriptions, function schemas, and candidate retrieval & Implemented \\ \hline
-Context paging & ChromaDB swap, semantic retrieval, and bounded context & Implemented \\ \hline
-Scheduler and resource admission & Priority aging, concurrency limits, and token budgets & Implemented; cooperative dispatch \\ \hline
-Persistence and events & MongoDB task history and Redis lifecycle transport & Implemented \\ \hline
-Code runner & Bounded subprocess execution and repair retries & Implemented; not microVM isolation \\ \hline
-Observability & Lifecycle, queue, priority, and resource activity & Implemented \\ \hline
-\end{tabularx}
-\end{table}

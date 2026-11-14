@@ -31,7 +31,6 @@
 \contentsline {section}{\numberline {3.9} \uppercase {Tool Management}}{16}{section.3.9}%
 \contentsline {section}{\numberline {3.10} \uppercase {Agent Lifecycle and Events}}{17}{section.3.10}%
 \contentsline {section}{\numberline {3.11} \uppercase {Sandboxed Code Runner}}{18}{section.3.11}%
-\contentsline {section}{\numberline {3.12} \uppercase {Implemented AgentOS Modules}}{19}{section.3.12}%
 \contentsline {chapter}{\numberline {4}\uppercase {Implementation}}{21}{chapter.4}%
 \contentsline {section}{\numberline {4.1} \uppercase {Implementation Environment}}{21}{section.4.1}%
 \contentsline {section}{\numberline {4.2} \uppercase {Semantic Agent Retrieval}}{21}{section.4.2}%
