@@ -114,8 +114,8 @@ where $W$ is queue waiting time. The implementation uses an in-process pending s
 
 \section{\uppercase{Resource Admission and Token Budgets}}
 The resource manager checks active global slots, active slots for the task, and the cumulative estimated token reservation for the task. A temporary denial leaves work waiting; an exhausted task budget is converted into a blocked/failed outcome rather than leaving the task silently pending. Actual provider usage, when available, is recorded separately from estimated admission tokens. This distinction explains why a provider such as Groq may display zero usage metadata even while the scheduler correctly enforces its configured estimate.
-
-
+\vspace{\baselineskip}
+\vspace{\baselineskip}
 \section{\uppercase{Redis Events and Backend Forwarding}}
 Events are JSON records containing task identifier, step identifier, agent name, execution identifier, status, timestamp, priority, effective priority, queue wait, and attempt. The kernel publishes them on \texttt{kernel\_events}; the backend subscribes and forwards them over WebSocket. Scheduler records use keys such as \texttt{agentos:scheduler:ready} and \texttt{agentos:scheduler:job:<execution\_id>}. MongoDB persists task history and event records for later inspection.
 Table~\ref{tab:rediskeys} summarises the Redis channels and scheduler keys used for task transport, lifecycle events, queue persistence, and recovery.
@@ -134,6 +134,7 @@ Name & Purpose & Durability role \\ \hline
 \texttt{agentos:\allowbreak task:\allowbreak <id>} & Task-level scheduler state & Inspection/recovery \\ \hline
 \end{tabularx}
 \end{table}
+
 
 \section{\uppercase{Context Page-Out and Page-In}}
 The pager moves messages from the active conversation state to a persistent ChromaDB collection after a configured window is exceeded. Each page stores message content, task metadata, and an embedding. On a later turn, the current query is embedded and the collection is searched; selected messages are reintroduced in relevance order. The implementation emits page-out and page-in metrics, allowing the UI or logs to verify that paging occurred.
@@ -169,6 +170,7 @@ Ollama timeout & 120 seconds & Maximum local provider request duration \\ \hline
 \end{tabularx}
 \end{table}
 
+\FloatBarrier
 \section{\uppercase{AgentOS Algorithmic Specification}}
 The following algorithm sheets define the AgentOS execution design. Together they specify the relationship between the planner, executor, lifecycle manager, context pager, dependency-aware DAG executor, scheduler, and priority-aging model. They complement the executable implementation described above, but should be read as algorithmic specifications rather than as evidence that every operation is fully realised in the current runtime. In particular, the sheets that describe full execution-context restoration, hard time-slice suspension, permission stores, or preemption represent planned extensions where the current implementation remains cooperative or partial.
 Algorithms~\ref{alg:semantic-agent-retrieval}, \ref{alg:dependency-validation}, and \ref{alg:priority-aging-scheduler} describe the implemented retrieval, validation, and scheduler procedures. Algorithms~\ref{alg:lifecycle}, \ref{alg:vm-context-paging}, \ref{alg:execute-agent}, \ref{alg:semantic-agent-planning}, \ref{alg:execute-plan-dag}, and \ref{alg:global-priority-aging-scheduler} present the lifecycle, context-paging, cooperative execution, semantic planning, DAG, and global scheduling specifications in that order. The separate priority-aging/time-slice model previously shown as Figure 4.7 has been removed; the implemented priority equation and scheduler procedure are documented earlier in this chapter.
@@ -342,6 +344,8 @@ Algorithm~\ref{alg:execute-plan-dag} repeatedly finds steps whose dependencies h
 
 \begin{algorithm}[H]
 \caption{Global Priority-Aging Cooperative Agent Scheduler}
+Algorithm~\ref{alg:global-priority-aging-scheduler} updates each ready agent's effective priority using its wait time, capped at the configured maximum, then requests resources for the highest-priority agent. Temporary denials return work to the queue; permanent denials fail it. After dispatch, the scheduler updates lifecycle events, releases resources, and records metrics. This is a cooperative scheduler specification.
+
 \label{alg:global-priority-aging-scheduler}
 \begin{algorithmic}[1]
 \Require Redis ready queue $Q$, aging factor $\alpha$, maximum priority $P_{max}$, quantum $T_q$, resource manager $R$
@@ -370,4 +374,3 @@ Algorithm~\ref{alg:execute-plan-dag} repeatedly finds steps whose dependencies h
 \EndWhile
 \end{algorithmic}
 \end{algorithm}
-Algorithm~\ref{alg:global-priority-aging-scheduler} updates each ready agent's effective priority using its wait time, capped at the configured maximum, then requests resources for the highest-priority agent. Temporary denials return work to the queue; permanent denials fail it. After dispatch, the scheduler updates lifecycle events, releases resources, and records metrics. This is a cooperative scheduler specification.
