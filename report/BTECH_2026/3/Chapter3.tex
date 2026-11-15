@@ -21,7 +21,7 @@ In a typical workflow, the user submits a task through the frontend, and the gat
 \begin{landscape}
 \begin{figure}
 \centering
-\includegraphics[width=0.98\linewidth,height=0.90\textheight,keepaspectratio]{3/figures/agentos_architecture.jpeg}
+\includegraphics[width=1.10\linewidth,height=0.90\textheight,keepaspectratio]{3/figures/agentos_architecture.jpeg}
 \caption{Overall AgentOS system architecture}
 \label{fig:architecture}
 \end{figure}
@@ -95,6 +95,7 @@ Figure~\ref{fig:tool-manager} shows the intended tool-manager boundary between a
 \caption{Tool selection, permission checking, invocation, and result return}
 \label{fig:tool-manager}
 \end{figure}
+Figure~\ref{fig:tool-manager} explains the intended control path for an agent tool request. The agent first identifies a required capability and submits the request to the tool registry, which resolves the corresponding local or external service. Before invocation, the permission policy checks whether the agent, task, and requested operation are authorised; a denied request is rejected without contacting the service. An approved request is executed with the applicable input, timeout, and output restrictions, after which the result or error is returned to the agent and recorded as runtime evidence. This boundary keeps tool discovery, permission checking, invocation, and result handling separate from the agent's reasoning. In the current implementation, bounded runtime tools and the sandboxed code runner provide the available execution paths, while a complete permission store and MCP-compatible tool manager remain proposed extensions.
 
 \section{\uppercase{Agent Lifecycle and Events}}
 An agent step progresses from CREATED to READY, RUNNING, and COMPLETED. It can move to WAITING when a resource or dependency is unavailable, or to BLOCKED/FAILED when execution cannot proceed. The scheduler and runtime publish structured lifecycle events containing task, step, agent, execution, status, priority, queue wait, and attempt information. Figure~\ref{fig:lifecycle} shows the state model. Complete RBAC and comprehensive state-machine enforcement remain extensions beyond the current implementation boundary.
@@ -113,4 +114,5 @@ The code runner receives generated Python, writes it into a scoped working direc
 \caption{Sandboxed Python execution and bounded self-healing loop}
 \label{fig:runner}
 \end{figure}
+Figure~\ref{fig:runner} illustrates the complete path followed by a generated Python program. The coder/tester agent first submits the program to the code runner, which creates an isolated working directory and launches the program as an asynchronous subprocess. During execution, the runner captures the standard output and error streams, applies the configured timeout and output limits, and publishes available output as runtime events. A successful process returns its result to the agent, whereas a timeout, non-zero exit code, or traceback is converted into structured failure feedback. The agent can use this feedback to revise the program and retry it, but the bounded loop stops after three attempts to prevent uncontrolled execution and repeated resource consumption. This design provides observable and recoverable code execution while keeping the current isolation boundary limited to process and directory scoping.
 

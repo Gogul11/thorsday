@@ -25,6 +25,7 @@ Agent descriptions are embedded in a persistent ChromaDB collection. A task desc
 The planner asks the configured LLM for a structured execution plan. The response is parsed into steps and normalised against the agent registry. If the LLM request fails, exceeds quota, or produces invalid structure, a deterministic fallback creates a usable plan from the best retrieved agent(s). This maintains task execution and observability without pretending that the fallback has the same reasoning quality as the provider.
 
 Figure~\ref{fig:optimized-planner} illustrates the complete optimised planning path, from semantic candidate retrieval through structured plan validation, fallback routing, DAG construction, scheduling, and runtime execution.
+It shows how a user request is converted into executable work. The planner first embeds the task and retrieves candidate agents whose capability descriptions are semantically related to the request. These candidates are supplied to the language model, which proposes structured steps with agent names, descriptions, and dependencies. The runtime then normalises the response and validates the step identifiers, selected agents, and dependency edges before constructing the execution DAG. If the model is unavailable or returns malformed output, the fallback path selects the best retrieved agent or agents and creates a deterministic sequential plan. The validated graph is passed to the scheduler, which dispatches ready steps and sends lifecycle updates to the runtime and frontend. Thus, the figure separates model-based planning from deterministic validation and execution, allowing a task to remain observable and executable even when planning quality or provider availability is uncertain.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.98\textwidth]{4/figures/optimized_planner.png}
@@ -111,10 +112,15 @@ where $W$ is queue waiting time. The implementation uses an in-process pending s
 \EndWhile
 \end{algorithmic}
 \end{algorithm}
-
+Algorithm~\ref{alg:priority-aging-scheduler} implements cooperative priority aging for the ready queue. It first persists newly ready records and waits when no executable work is available. For each ready record, the scheduler increases the base priority according to its queue waiting time and applies the maximum-priority cap from Equation~\ref{eq:priority}. The record with the greatest effective priority is selected, but dispatch is allowed only after the resource manager approves its slot and token requirements. A temporary denial returns the work to the queue in the WAITING state, while a permanent denial produces a FAILED event. After cooperative dispatch, the scheduler records the resulting completion, requeue, waiting, or failure state, releases reservations, and updates metrics. This procedure improves fairness for older work without forcibly interrupting an active remote model call.
+\vspace{\baselineskip}
+\vspace{\baselineskip}
 \section{\uppercase{Resource Admission and Token Budgets}}
 The resource manager checks active global slots, active slots for the task, and the cumulative estimated token reservation for the task. A temporary denial leaves work waiting; an exhausted task budget is converted into a blocked/failed outcome rather than leaving the task silently pending. Actual provider usage, when available, is recorded separately from estimated admission tokens. This distinction explains why a provider such as Groq may display zero usage metadata even while the scheduler correctly enforces its configured estimate.
+<<<<<<< HEAD
 Admission is performed before dispatch and released after completion, failure, or cancellation. The scheduler therefore distinguishes capacity denial from execution failure: a job that cannot currently obtain a slot remains visible as waiting, while a job that exceeds its token budget is rejected according to policy. Global and per-task counters are updated together so that one task cannot consume all available capacity, and the recorded reservation is carried into lifecycle events for later analysis. These checks provide a simple admission boundary between planning and execution while keeping the policy observable and configurable.
+=======
+>>>>>>> d270b522b75341684e6892f6c63931be2ea7fa6a
 
 \section{\uppercase{Redis Events and Backend Forwarding}}
 Events are JSON records containing task identifier, step identifier, agent name, execution identifier, status, timestamp, priority, effective priority, queue wait, and attempt. The kernel publishes them on \texttt{kernel\_events}; the backend subscribes and forwards them over WebSocket. Scheduler records use keys such as \texttt{agentos:scheduler:ready} and \texttt{agentos:scheduler:job:<execution\_id>}. MongoDB persists task history and event records for later inspection.
@@ -147,12 +153,14 @@ The task activity panel displays lifecycle events, scheduler state, queue positi
 
 \section{\uppercase{Configuration and Verification}}
 Table~\ref{tab:config} lists the important policy values and their defaults. The scheduler limits allow several independent steps to run concurrently while keeping any one task from using all available slots; the token budget provides a finite per-task admission bound. The priority ceiling limits how far queue aging can raise a job's priority, and the 20-message context window bounds active conversation history while allowing older messages to be paged out. Three repair attempts give the code runner a bounded opportunity to recover from execution errors without allowing retries to continue indefinitely.
-
 The model defaults are intended to support local development with privacy-aware routing: hybrid mode can use a cloud provider for eligible requests while retaining a local Ollama path, and 	exttt{llama3.2} is the configured local model. The local endpoint uses Ollama's host-local service address. The 512-token output limit and 120-second timeout bound the size and duration of local model calls. These values provide operational starting points rather than empirically optimal settings; environment-controlled settings can be adjusted for the available hardware and workload. Verification for this phase consists of Python compilation, TypeScript type checking, scheduler/resource smoke tests, DAG validation checks, the seeded priority-versus-FIFO scheduler workload benchmark reported in Chapter~\ref{chap5}, and manual event/graph inspection. The benchmark is a same-host scheduler comparison with stubbed persistence; it is not a production capacity or model-quality claim.
-\begin{table}[!htbp]
+
+\begin{table}[H]
 \centering
 \caption{Selected AgentOS configuration values}
 \label{tab:config}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.10}
 \begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{0.32\textwidth}|>{\centering\arraybackslash}p{0.18\textwidth}|>{\centering\arraybackslash}X|}
 \hline
 Configuration & Default & Role \\ \hline
@@ -170,10 +178,10 @@ Ollama timeout & 120 seconds & Maximum local provider request duration \\ \hline
 \end{tabularx}
 \end{table}
 
-\FloatBarrier
 \section{\uppercase{AgentOS Algorithmic Specification}}
-The following algorithm sheets define the AgentOS execution design. Together they specify the relationship between the planner, executor, lifecycle manager, context pager, dependency-aware DAG executor, scheduler, and priority-aging model. They complement the executable implementation described above, but should be read as algorithmic specifications rather than as evidence that every operation is fully realised in the current runtime. In particular, the sheets that describe full execution-context restoration, hard time-slice suspension, permission stores, or preemption represent planned extensions where the current implementation remains cooperative or partial.
-Algorithms~\ref{alg:semantic-agent-retrieval}, \ref{alg:dependency-validation}, and \ref{alg:priority-aging-scheduler} describe the implemented retrieval, validation, and scheduler procedures. Algorithms~\ref{alg:lifecycle}, \ref{alg:vm-context-paging}, \ref{alg:execute-agent}, \ref{alg:semantic-agent-planning}, \ref{alg:execute-plan-dag}, and \ref{alg:global-priority-aging-scheduler} present the lifecycle, context-paging, cooperative execution, semantic planning, DAG, and global scheduling specifications in that order. The separate priority-aging/time-slice model previously shown as Figure 4.7 has been removed; the implemented priority equation and scheduler procedure are documented earlier in this chapter.
+This section expresses the main AgentOS runtime operations as ordered algorithmic specifications. The algorithms show how an agent is registered and controlled, how context is paged, how a task is planned and validated, how dependency-ready work is executed, and how the global scheduler applies priority aging and resource admission. Taken together, they describe the flow from a user task and agent state to validated execution results and lifecycle evidence.
+
+These algorithms provide a formal view of the runtime, but they should be interpreted together with the implementation boundaries described earlier. Algorithms~\ref{alg:semantic-agent-retrieval}, \ref{alg:dependency-validation}, and \ref{alg:priority-aging-scheduler} correspond directly to the implemented retrieval, graph-validation, and cooperative scheduling procedures. The remaining algorithms describe the intended coordination of lifecycle state, context paging, agent execution, semantic planning, DAG execution, and global scheduling. Full coroutine restoration, hard time-slice suspension, permission stores, and forced preemption are not yet complete runtime guarantees; they remain partial or proposed extensions.
 
 \begin{algorithm}[H]
 \caption{Agent Lifecycle Management}
@@ -200,7 +208,7 @@ Algorithms~\ref{alg:semantic-agent-retrieval}, \ref{alg:dependency-validation}, 
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
-Algorithm~\ref{alg:lifecycle} creates a runtime record for each agent and rejects duplicate identifiers. The stored record associates the agent with its type, task, run function, and status; the helper operations update that status or remove the record when the runtime is destroyed.
+Algorithm~\ref{alg:lifecycle} creates a runtime record for each agent and rejects duplicate identifiers. The record stores the agent type, owning task, run function, and lifecycle status, which can progress from CREATED to RUNNING, COMPLETED, or FAILED. Status updates and record deletion provide lightweight in-process tracking, while durable restart recovery and complete transition enforcement remain future extensions.
 
 \begin{algorithm}[H]
 \caption{Virtual Memory Context Paging}
@@ -340,11 +348,11 @@ Algorithm~\ref{alg:semantic-agent-planning} embeds agent capabilities and the us
 \State \Return all results
 \end{algorithmic}
 \end{algorithm}
-Algorithm~\ref{alg:execute-plan-dag} repeatedly finds steps whose dependencies have completed and dispatches a ready step through the scheduler. It stores each result and stops with an invalid-cycle error if unfinished work remains but no step is ready.
+Algorithm~\ref{alg:execute-plan-dag} executes the validated plan according to its dependency relationships rather than according to the order in which steps were generated. At each iteration, it scans the graph and places a step in the ready set only when every prerequisite appears in the completed set. This prevents a downstream agent from running with incomplete or stale inputs. The scheduler then chooses one ready step according to the active priority and resource policy, after which the executor stores the result and marks the step complete. The updated completed set may make additional dependent steps ready in the next iteration. If unfinished vertices remain but no vertex is eligible, the graph is inconsistent or cyclic, so the algorithm raises an invalid-plan error instead of waiting indefinitely. The returned result collection preserves the outputs required by later steps and by the final response generator.
 
+Algorithm~\ref{alg:global-priority-aging-scheduler} updates each ready agent's effective priority using its wait time, capped at the configured maximum, then requests resources for the highest-priority agent. Temporary denials return work to the queue; permanent denials fail it. After dispatch, the scheduler updates lifecycle events, releases resources, and records metrics. This is a cooperative scheduler specification.
 \begin{algorithm}[H]
 \caption{Global Priority-Aging Cooperative Agent Scheduler}
-Algorithm~\ref{alg:global-priority-aging-scheduler} updates each ready agent's effective priority using its wait time, capped at the configured maximum, then requests resources for the highest-priority agent. Temporary denials return work to the queue; permanent denials fail it. After dispatch, the scheduler updates lifecycle events, releases resources, and records metrics. This is a cooperative scheduler specification.
 
 \label{alg:global-priority-aging-scheduler}
 \begin{algorithmic}[1]

@@ -31,10 +31,10 @@ profiled in the following sections.
 \begin{figure}[H]
 \centering
 \begingroup
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\renewcommand{\arraystretch}{0.78}
-\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{0.24\textwidth}|>{\centering\arraybackslash}X|}
+\footnotesize
+\setlength{\tabcolsep}{4.5pt}
+\renewcommand{\arraystretch}{0.95}
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{0.24\textwidth}|>{\raggedright\arraybackslash}X|}
 \hline
 Agent & Implemented responsibility \\ \hline
 A1 & System information and resource inspection. \\ \hline
@@ -391,6 +391,9 @@ The cryptocurrency PnL and ROI logic is shown in Figure~\ref{fig:crypto-pnl-logi
 \label{fig:crypto-pnl-logic}
 \end{figure}
 
+% Keep the longer A.10--A.16 appendix headings on one line.
+\titleformat{\section}[hang]{\small\bfseries}{\makebox[14mm][l]{\thesection}}{0pt}{}
+
 \section{Code Runner Agent}
 
 The Code Runner Agent uses \texttt{build\_run\_python\_code\_tool}. It limits
@@ -423,6 +426,7 @@ The code-generation, sandbox-execution, and repair logic is shown in Figure~\ref
 \caption{Code generation, sandbox execution, and repair logic}
 \label{fig:code-runner-logic}
 \end{figure}
+The flow separates code generation from execution and treats the subprocess result as the basis for recovery. Successful code returns bounded output and duration information, while a timeout, non-zero exit status, or traceback is passed back as feedback for repair. If the retry limit is reached, the agent returns a controlled failure report instead of continuing to consume execution resources.
 
 \section{Data Analysis Agent}
 
@@ -452,6 +456,7 @@ The data-analysis flow is shown in Figure~\ref{fig:data-analysis-logic}.
 \caption{Data-analysis inspection and calculation logic}
 \label{fig:data-analysis-logic}
 \end{figure}
+The data-analysis path deliberately checks the source before performing calculations. This prevents unsupported conclusions when a file is missing or unreadable and keeps the original data unchanged. When the source is available, the bounded calculation step produces requested measures together with assumptions and evidence, making the result easier to reproduce and verify.
 
 \section{Decision Support Agent}
 
@@ -478,6 +483,7 @@ The decision-support flow is shown in Figure~\ref{fig:decision-support-logic}.
 \caption{Decision-support synthesis logic}
 \label{fig:decision-support-logic}
 \end{figure}
+The workflow keeps recommendation generation separate from fact extraction. The agent first identifies the available evidence, constraints, and uncertainty, then compares the alternatives before selecting a recommendation. Because it is tool-free, the quality of the result depends on the task context and preceding agent outputs; it does not independently verify external facts.
 
 \section{Summarizer Agent}
 
@@ -501,6 +507,7 @@ The summarization flow is shown in Figure~\ref{fig:summarizer-logic}.
 \caption{Summarization and fact-preservation logic}
 \label{fig:summarizer-logic}
 \end{figure}
+The summarizer reduces length by selecting information that is useful for later action or understanding, including decisions, dates, risks, and pending tasks. It removes repetition but preserves the meaning of the supplied material. The no-invention instruction is important because the agent operates only on the text and results already present in its context.
 
 \section{Translator Agent}
 
@@ -524,6 +531,7 @@ The translation flow is shown in Figure~\ref{fig:translator-logic}.
 \caption{Translation and tone-preserving transformation logic}
 \label{fig:translator-logic}
 \end{figure}
+The translation flow treats language, audience, and tone as separate constraints on the transformation. Names, numerical values, formatting markers, and placeholders are retained unless the request requires otherwise. The output is limited to the transformed text by default, which allows the result to be passed directly to a user or another agent.
 
 \section{Checklist Agent}
 
@@ -547,6 +555,7 @@ The checklist flow is shown in Figure~\ref{fig:checklist-logic}.
 \caption{Checklist construction logic}
 \label{fig:checklist-logic}
 \end{figure}
+The checklist agent converts broad requirements into concrete actions and orders them according to their dependencies. Acceptance checks and risks are included only when they are supported by the request. This makes the output useful as an execution guide while avoiding unnecessary steps or assumptions that were not supplied by the user.
 
 \section{Agent Creator}
 
@@ -578,4 +587,5 @@ The dynamic agent-creation and registration logic is shown in Figure~\ref{fig:ag
 \caption{Dynamic agent creation and registration logic}
 \label{fig:agent-creator-logic}
 \end{figure}
+The creation path treats generated components as changes to the runtime rather than as ordinary text output. Tool code is checked before registration, agent and registry files are updated together, and a failed registration restores the affected agent files and registry state. Only a successfully registered agent is loaded and executed, reducing the risk of leaving an incomplete capability in the catalogue.
 
