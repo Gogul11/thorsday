@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.11.15)  15 NOV 2026 08:08
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.11.15)  15 NOV 2026 08:12
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1279,11 +1279,7 @@ LaTeX Font Warning: Font shape `U/lasy/m/n' in size <6.5> not available
 \tf@toc=\write5
 \openout5 = `authesis.toc'.
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [7]
-(authesis.lot)
+ [7] (authesis.lot)
 \tf@lot=\write6
 \openout6 = `authesis.lot'.
 
@@ -1318,11 +1314,7 @@ CHAPTER 1.
 
 
 
-]
-Underfull \vbox (badness 1009) has occurred while \output is active []
-
- [2]
-[3]) [4]
+] [2] [3]) [4]
 \openout2 = `2/Chapter2.aux'.
 
  (2/Chapter2.tex
@@ -1338,11 +1330,7 @@ Underfull \hbox (badness 1117) in paragraph at lines 30--31
 sed ap-
  []
 
-
-Underfull \vbox (badness 8151) has occurred while \output is active []
-
- [8]
-[9]) [10]
+[8] [9]) [10]
 \openout2 = `3/Chapter3.aux'.
 
  (3/Chapter3.tex
@@ -1361,10 +1349,7 @@ e 24.
 (pdftex.def)             Requested size: 556.96227pt x 371.30817pt.
  [13
 
- <./3/figures/agentos_architecture.jpeg>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [14
+ <./3/figures/agentos_architecture.jpeg>] [14
 
 ]
 
@@ -1376,10 +1361,7 @@ File: 3/figures/redis-flow-readable.pdf Graphic file (type pdf)
 Package pdftex.def Info: 3/figures/redis-flow-readable.pdf  used on input line 
 41.
 (pdftex.def)             Requested size: 394.09422pt x 405.73929pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [15 <./3/figures/redis-flow-readable.pdf>]
+[15 <./3/figures/redis-flow-readable.pdf>]
 
 pdfTeX warning: pdflatex.exe (file ./3/figures/dag-readable.pdf): PDF inclusion
 : found PDF version <1.7>, but at most version <1.5> allowed
@@ -1388,26 +1370,20 @@ File: 3/figures/dag-readable.pdf Graphic file (type pdf)
 <use 3/figures/dag-readable.pdf>
 Package pdftex.def Info: 3/figures/dag-readable.pdf  used on input line 55.
 (pdftex.def)             Requested size: 198.89099pt x 425.3626pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [16]
+[16]
 <3/figures/context_paging.png, id=732, 1541.76pt x 1027.84pt>
 File: 3/figures/context_paging.png Graphic file (type png)
 <use 3/figures/context_paging.png>
 Package pdftex.def Info: 3/figures/context_paging.png  used on input line 64.
 (pdftex.def)             Requested size: 412.56496pt x 275.04251pt.
-
-[17 <./3/figures/dag-readable.pdf>]
+ [17 <./3/figures/dag-readable.pdf>]
 <3/figures/agent_scheduler.png, id=749, 1541.76pt x 1027.84pt>
 File: 3/figures/agent_scheduler.png Graphic file (type png)
 <use 3/figures/agent_scheduler.png>
 Package pdftex.def Info: 3/figures/agent_scheduler.png  used on input line 73.
 (pdftex.def)             Requested size: 412.56496pt x 275.04251pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [18 <./3/figures/context_paging.png>] [19 <./3/figures/agent_scheduler.png>]
+ [18 <./3/figures/context_paging.png>]
+[19 <./3/figures/agent_scheduler.png>]
 <3/figures/resource_manager.png, id=761, 1541.76pt x 1027.84pt>
 File: 3/figures/resource_manager.png Graphic file (type png)
 <use 3/figures/resource_manager.png>
@@ -1419,9 +1395,6 @@ File: 3/figures/tool_manager.png Graphic file (type png)
 <use 3/figures/tool_manager.png>
 Package pdftex.def Info: 3/figures/tool_manager.png  used on input line 93.
 (pdftex.def)             Requested size: 412.56496pt x 275.04251pt.
-
-Underfull \vbox (badness 1895) has occurred while \output is active []
-
  [20 <./3/figures/resource_manager.png>]
 
 pdfTeX warning: pdflatex.exe (file ./3/figures/lifecycle.pdf): PDF inclusion: f
@@ -1440,20 +1413,14 @@ File: 3/figures/runner.pdf Graphic file (type pdf)
 <use 3/figures/runner.pdf>
 Package pdftex.def Info: 3/figures/runner.pdf  used on input line 111.
 (pdftex.def)             Requested size: 412.57204pt x 96.44203pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [22 <./3/figures/lifecycle.pdf>]) [23 <./3/figures/runner.pdf>]
+[22 <./3/figures/lifecycle.pdf>]) [23 <./3/figures/runner.pdf>]
 \openout2 = `4/Chapter4.aux'.
 
  (4/Chapter4.tex
 CHAPTER 4.
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
 put line 11.
-
-Underfull \vbox (badness 1360) has occurred while \output is active []
-
- [24
+[24
 
 
 
@@ -1465,9 +1432,6 @@ File: 4/figures/optimized_planner.png Graphic file (type png)
 Package pdftex.def Info: 4/figures/optimized_planner.png  used on input line 30
 .
 (pdftex.def)             Requested size: 404.31189pt x 269.53758pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
  [25]
 Underfull \hbox (badness 10000) in paragraph at lines 36--37
 []\OT1/ptm/m/n/13 The hy-brid mod-el im-ple-men-ta-tion is cen-tred in
@@ -1479,13 +1443,7 @@ Underfull \hbox (badness 3049) in paragraph at lines 36--37
 hatModel \OT1/ptm/m/n/13 wrap-s a \OT1/pcr/m/n/13 ChatGroq \OT1/ptm/m/n/13 in-
  []
 
-[26 <./4/figures/optimized_planner.png>]
-Underfull \vbox (badness 2150) has occurred while \output is active []
-
- [27]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [28]
+[26 <./4/figures/optimized_planner.png>] [27] [28]
 Underfull \hbox (badness 1127) in paragraph at lines 120--122
 []\OT1/ptm/m/n/13 Events are J-SON record-s con-tain-ing task i-den-ti-fi-er, s
 tep i-den-
@@ -1497,17 +1455,7 @@ Underfull \hbox (badness 1533) in paragraph at lines 120--122
 ish-es them on
  []
 
-[29]
-Underfull \vbox (badness 2088) has occurred while \output is active []
-
- [30]
-[31] [32] [33]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [34]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [35]
+[29] [30] [31] [32] [33] [34] [35]
 Underfull \hbox (badness 10000) in paragraph at lines 263--264
 [] $\OML/ptmcm/m/it/13 start[]time \OMS/pzccm/m/n/13   []$\OT1/ptm/m/n/13 ; \OT
 1/ptm/m/sc/13 Se-tA-gentSta-
@@ -1526,26 +1474,13 @@ Underfull \hbox (badness 10000) in paragraph at lines 276--277
 -
  []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [36]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [37]
+[36] [37]
 Underfull \hbox (badness 3792) in paragraph at lines 366--367
 [] \OT1/ptm/m/n/13 Mark READY, up-date $\OML/ptmcm/m/it/13 ready[]time$\OT1/ptm
 /m/n/13 , rein-sert in-to $\OML/ptmcm/m/it/13 Q$\OT1/ptm/m/n/13 , pub-lish
  []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [38])
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [39]
-[40]
+[38]) [39] [40]
 \openout2 = `5/Chapter5.aux'.
 
  (5/Chapter5.tex
@@ -1569,9 +1504,6 @@ File: 5/figures/context_engine_comparison.png Graphic file (type png)
 Package pdftex.def Info: 5/figures/context_engine_comparison.png  used on input
  line 71.
 (pdftex.def)             Requested size: 412.56496pt x 179.31714pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
  [44]
 <5/figures/context_engine_thresholds.png, id=944, 766.96538pt x 318.89137pt>
 File: 5/figures/context_engine_thresholds.png Graphic file (type png)
@@ -1579,9 +1511,6 @@ File: 5/figures/context_engine_thresholds.png Graphic file (type png)
 Package pdftex.def Info: 5/figures/context_engine_thresholds.png  used on input
  line 82.
 (pdftex.def)             Requested size: 412.56496pt x 171.54187pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
  [45 <./5/figures/context_engine_comparison.png>] [46 <./5/figures/context_engi
 ne_thresholds.png>]
 <5/figures/planner_tool_selection_overall.png, id=958, 639.89063pt x 587.19376p
@@ -1591,9 +1520,6 @@ File: 5/figures/planner_tool_selection_overall.png Graphic file (type png)
 Package pdftex.def Info: 5/figures/planner_tool_selection_overall.png  used on 
 input line 118.
 (pdftex.def)             Requested size: 399.35458pt x 366.46657pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
  [47]
 <5/figures/planner_tool_selection_category.png, id=964, 1008.76875pt x 587.1937
 6pt>
@@ -1602,14 +1528,9 @@ File: 5/figures/planner_tool_selection_category.png Graphic file (type png)
 Package pdftex.def Info: 5/figures/planner_tool_selection_category.png  used on
  input line 127.
 (pdftex.def)             Requested size: 404.31616pt x 235.3482pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
  [48 <./5/figures/planner_tool_selection_overall.png>] [49 <./5/figures/planner
 _tool_selection_category.png>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [50]
+[50]
 <5/figures/scheduler_throughput_baseline.png, id=988, 513.117pt x 296.307pt>
 File: 5/figures/scheduler_throughput_baseline.png Graphic file (type png)
 <use 5/figures/scheduler_throughput_baseline.png>
@@ -1622,9 +1543,6 @@ File: 5/figures/scheduler_priority_latency.png Graphic file (type png)
 Package pdftex.def Info: 5/figures/scheduler_priority_latency.png  used on inpu
 t line 182.
 (pdftex.def)             Requested size: 404.31294pt x 215.63356pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
  [51 <./5/figures/scheduler_throughput_baseline.png>] [52 <./5/figures/schedule
 r_priority_latency.png>]) [53] (Conclusion/conclusion.tex
 CHAPTER 6.
@@ -1657,58 +1575,18 @@ e-scribe the in-ter-nal
 [57
 
 
-]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+] [58
 
- [58
-
-]
-[59]
-Underfull \vbox (badness 2213) has occurred while \output is active []
-
- [60]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [61]
+] [59] [60] [61]
 Underfull \hbox (badness 10000) in paragraph at lines 311--316
 []\OT1/ptm/m/n/13 The Weath-er A-gen-t us-es Open-Meteo through
  []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [62]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [63]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [64]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [65]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [66]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [67]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [68]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [69]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [70]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [71])
-[72]
+[62] [63] [64] [65] [66] [67] [68] [69] [70] [71]) [72]
 \openout2 = `Appendix/ai_prompts.aux'.
 
- (Appendix/ai_prompts.tex
+
+(Appendix/ai_prompts.tex
 APPENDIX B.
 \aipromptbox=\box129
 LaTeX Font Info:    Font shape `OT1/phv/m/n' will be
@@ -1738,14 +1616,10 @@ e]. Avail-able: []$\OT1/pcr/m/n/10.95 https : / /
 
 
 
-]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [77])
-[78] (authesis.aux (Abstract/abstract.aux) (acknowl.aux) (Acronyms/acronyms.aux
-) (1/Chapter1.aux) (2/Chapter2.aux) (3/Chapter3.aux) (4/Chapter4.aux)
-(5/Chapter5.aux) (Appendix/agents.aux) (Appendix/ai_prompts.aux)
-(References/references.aux))
+] [77]) [78] (authesis.aux (Abstract/abstract.aux) (acknowl.aux)
+(Acronyms/acronyms.aux) (1/Chapter1.aux) (2/Chapter2.aux) (3/Chapter3.aux)
+(4/Chapter4.aux) (5/Chapter5.aux) (Appendix/agents.aux)
+(Appendix/ai_prompts.aux) (References/references.aux))
  ***********
 LaTeX2e <2026-11-01>
 L3 programming layer <2026-09-09>
@@ -1779,7 +1653,7 @@ sers/curvy/Documents/agentos/.miktex-install/fonts/type1/urw/times/utmbi8a.pfb>
 <C:/Users/curvy/Documents/agentos/.miktex-install/fonts/type1/urw/times/utmr8a.
 pfb><C:/Users/curvy/Documents/agentos/.miktex-install/fonts/type1/urw/times/utm
 ri8a.pfb>
-Output written on authesis.pdf (89 pages, 9565022 bytes).
+Output written on authesis.pdf (89 pages, 9565036 bytes).
 PDF statistics:
  1278 PDF objects out of 1440 (max. 8388607)
  274 named destinations out of 1000 (max. 500000)
