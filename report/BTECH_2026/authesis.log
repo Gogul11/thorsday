@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.11.14)  15 NOV 2026 09:11
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.11.14)  15 NOV 2026 10:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1159,7 +1159,11 @@ fg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
 Package hyperref Info: Link coloring OFF on input line 180.
- (authesis.out) (authesis.out)
+ (authesis.out) (authesis.out
+! I can't write on file `authesis.pdf'.
+(Press Enter to retry, or Control-C to exit; default file extension is `.pdf')
+Please type another file name for output: authesis2
+)
 \@outlinefile=\write4
 \openout4 = `authesis.out'.
 
@@ -1187,8 +1191,7 @@ a/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc} <./auemblem.pdf>]
 ]
 \openout2 = `acknowl.aux'.
 
-
-(acknowl.tex) [4
+ (acknowl.tex) [4
 
 
 
@@ -1397,7 +1400,7 @@ put line 11.
 
 
 ]
-<4/figures/optimized_planner.png, id=818, 1541.76pt x 1027.84pt>
+<4/figures/optimized_planner.png, id=819, 1541.76pt x 1027.84pt>
 File: 4/figures/optimized_planner.png Graphic file (type png)
 <use 4/figures/optimized_planner.png>
 Package pdftex.def Info: 4/figures/optimized_planner.png  used on input line 30
@@ -1414,130 +1417,137 @@ Underfull \hbox (badness 3049) in paragraph at lines 36--37
 hatModel \OT1/ptm/m/n/13 wraps a \OT1/pcr/m/n/13 ChatGroq \OT1/ptm/m/n/13 in-
  []
 
-[26 <./4/figures/optimized_planner.png>] [27] [28]
-Underfull \hbox (badness 1127) in paragraph at lines 120--122
+[26 <./4/figures/optimized_planner.png>] [27] [28] [29]
+Underfull \hbox (badness 1127) in paragraph at lines 122--124
 []\OT1/ptm/m/n/13 Events are JSON records con-tain-ing task iden-ti-fier, step 
 iden-
  []
 
 
-Underfull \hbox (badness 1533) in paragraph at lines 120--122
+Underfull \hbox (badness 1533) in paragraph at lines 122--124
 \OT1/ptm/m/n/13 tive pri-or-ity, queue wait, and at-tempt. The ker-nel pub-lish
 es them on
  []
 
 
-Underfull \hbox (badness 1881) in paragraph at lines 120--122
+Underfull \hbox (badness 1881) in paragraph at lines 122--124
 \OT1/pcr/m/n/13 kernel[]events\OT1/ptm/m/n/13 ; the back-end sub-scribes and fo
 r-wards them over Web-
  []
 
-[29] [30] [31] [32] [33] [34] [35] [36]
-Underfull \hbox (badness 10000) in paragraph at lines 265--266
+[30] [31] [32] [33] [34] [35]
+Underfull \hbox (badness 10000) in paragraph at lines 268--269
 [] $\OML/ptmcm/m/it/13 start[]time \OMS/pzccm/m/n/13   []$\OT1/ptm/m/n/13 ; \OT
 1/ptm/m/sc/13 Se-tA-gentSta-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 274--275
+Underfull \hbox (badness 10000) in paragraph at lines 277--278
 [] \OT1/ptm/m/sc/13 Save-Ex-e-cu-tion-Con-text\OT1/ptm/m/n/13 ($\OML/ptmcm/m/it
 /13 A[]; runtime$\OT1/ptm/m/n/13 ); \OT1/ptm/m/sc/13 Sus-pendA-gen-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 278--279
+Underfull \hbox (badness 10000) in paragraph at lines 281--282
 [] $\OML/ptmcm/m/it/13 A[]:result \OMS/pzccm/m/n/13   []\OT1/ptmcm/m/n/13 (\OML
 /ptmcm/m/it/13 runtime\OT1/ptmcm/m/n/13 )$\OT1/ptm/m/n/13 ; \OT1/ptm/m/sc/13 De
 -
  []
 
-[37] [38]
-Underfull \hbox (badness 3792) in paragraph at lines 370--371
+[36] [37]
+Underfull \hbox (badness 3792) in paragraph at lines 373--374
 [] \OT1/ptm/m/n/13 Mark READY, up-date $\OML/ptmcm/m/it/13 ready[]time$\OT1/ptm
 /m/n/13 , rein-sert into $\OML/ptmcm/m/it/13 Q$\OT1/ptm/m/n/13 , pub-lish
  []
 
-) [39] [40]
+) [38] [39]
 \openout2 = `5/Chapter5.aux'.
 
  (5/Chapter5.tex
 CHAPTER 5.
-[41
+[40
 
 
 
 
-] [42]
+] [41]
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 33.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 33.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 33.
- [43]
-<5/figures/context_engine_comparison.png, id=936, 766.96538pt x 333.34537pt>
+ [42]
+<5/figures/context_engine_comparison.png, id=933, 766.96538pt x 333.34537pt>
 File: 5/figures/context_engine_comparison.png Graphic file (type png)
 <use 5/figures/context_engine_comparison.png>
 Package pdftex.def Info: 5/figures/context_engine_comparison.png  used on input
  line 71.
 (pdftex.def)             Requested size: 412.56496pt x 179.31714pt.
- [44]
-<5/figures/context_engine_thresholds.png, id=944, 766.96538pt x 318.89137pt>
+ [43]
+<5/figures/context_engine_thresholds.png, id=940, 766.96538pt x 318.89137pt>
 File: 5/figures/context_engine_thresholds.png Graphic file (type png)
 <use 5/figures/context_engine_thresholds.png>
 Package pdftex.def Info: 5/figures/context_engine_thresholds.png  used on input
  line 82.
 (pdftex.def)             Requested size: 412.56496pt x 171.54187pt.
- [45 <./5/figures/context_engine_comparison.png>] [46 <./5/figures/context_engi
+ [44 <./5/figures/context_engine_comparison.png>] [45 <./5/figures/context_engi
 ne_thresholds.png>]
-<5/figures/planner_tool_selection_overall.png, id=958, 639.89063pt x 587.19376p
+<5/figures/planner_tool_selection_overall.png, id=955, 639.89063pt x 587.19376p
 t>
 File: 5/figures/planner_tool_selection_overall.png Graphic file (type png)
 <use 5/figures/planner_tool_selection_overall.png>
 Package pdftex.def Info: 5/figures/planner_tool_selection_overall.png  used on 
 input line 118.
 (pdftex.def)             Requested size: 399.35458pt x 366.46657pt.
- [47]
-<5/figures/planner_tool_selection_category.png, id=964, 1008.76875pt x 587.1937
+ [46]
+<5/figures/planner_tool_selection_category.png, id=961, 1008.76875pt x 587.1937
 6pt>
 File: 5/figures/planner_tool_selection_category.png Graphic file (type png)
 <use 5/figures/planner_tool_selection_category.png>
 Package pdftex.def Info: 5/figures/planner_tool_selection_category.png  used on
  input line 127.
 (pdftex.def)             Requested size: 404.31616pt x 235.3482pt.
- [48 <./5/figures/planner_tool_selection_overall.png>] [49 <./5/figures/planner
+ [47 <./5/figures/planner_tool_selection_overall.png>] [48 <./5/figures/planner
 _tool_selection_category.png>]
-[50]
-<5/figures/scheduler_throughput_baseline.png, id=988, 513.117pt x 296.307pt>
+[49]
+<5/figures/scheduler_throughput_baseline.png, id=984, 513.117pt x 296.307pt>
 File: 5/figures/scheduler_throughput_baseline.png Graphic file (type png)
 <use 5/figures/scheduler_throughput_baseline.png>
 Package pdftex.def Info: 5/figures/scheduler_throughput_baseline.png  used on i
 nput line 176.
 (pdftex.def)             Requested size: 354.8061pt x 204.89513pt.
-<5/figures/scheduler_priority_latency.png, id=989, 1129.21875pt x 602.25pt>
+<5/figures/scheduler_priority_latency.png, id=985, 1129.21875pt x 602.25pt>
 File: 5/figures/scheduler_priority_latency.png Graphic file (type png)
 <use 5/figures/scheduler_priority_latency.png>
 Package pdftex.def Info: 5/figures/scheduler_priority_latency.png  used on inpu
 t line 183.
 (pdftex.def)             Requested size: 404.31294pt x 215.63356pt.
- [51 <./5/figures/scheduler_throughput_baseline.png>] [52 <./5/figures/schedule
-r_priority_latency.png>]) [53] (Conclusion/conclusion.tex
+ [50 <./5/figures/scheduler_throughput_baseline.png>] [51 <./5/figures/schedule
+r_priority_latency.png>]) [52] (Conclusion/conclusion.tex
 CHAPTER 6.
-) [54
+) (declaration_ai.tex [53
 
 
 
-] (declaration_ai.tex
+]
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 1
 2.
 
 (C:\Users\oviya\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-[55]) [56]
-\openout2 = `Appendix/agents.aux'.
+[54]) [55]
+! I can't write on file `Appendix/agents.aux'.
+\@include ...mmediate \openout \@partaux "#1.aux" 
+                                                  \immediate \write \@partau...
+l.354 \include{Appendix/agents}
+                               
+(Press Enter to retry, or Control-C to exit; default file extension is `.tex')
+Please type another output file name: authesis2
+\openout2 = `authesis2.tex'.
 
- (Appendix/agents.tex
+(Appendix/agents.tex
 Underfull \hbox (badness 10000) in paragraph at lines 21--30
 []\OT1/ptm/m/n/13 This ap-pendix doc-u-ments the agent im-ple-men-ta-tions in
  []
@@ -1548,10 +1558,10 @@ Underfull \hbox (badness 2486) in paragraph at lines 21--30
 -scribe the in-ter-nal
  []
 
-[57
+[56
 
 
-] [58
+] [57
 
 ]
 Underfull \hbox (badness 1383) in paragraph at lines 218--246
@@ -1559,12 +1569,12 @@ Underfull \hbox (badness 1383) in paragraph at lines 218--246
 place-ment,
  []
 
-[59] [60] [61]
+[58] [59] [60]
 Underfull \hbox (badness 10000) in paragraph at lines 311--316
 []\OT1/ptm/m/n/13 The Weather Agent uses Open-Meteo through
  []
 
-[62] [63] [64] [65] [66] [67] [68] [69] [70] [71]) [72]
+[61] [62] [63] [64] [65] [66] [67] [68] [69] [70]) [71]
 \openout2 = `Appendix/ai_prompts.aux'.
 
 
@@ -1577,12 +1587,12 @@ LaTeX Font Info:    Font shape `OT1/phv/m/it' in size <13> not available
 (Font)              Font shape `OT1/phv/m/sl' tried instead on input line 22.
 LaTeX Font Info:    Font shape `OT1/phv/m/sl' will be
 (Font)              scaled to size 11.69992pt on input line 22.
-[73
+[72
 
 
 
 
-] [74]) [75
+] [73]) [74
 
 ]
 \openout2 = `References/references.aux'.
@@ -1593,12 +1603,12 @@ Underfull \hbox (badness 1817) in paragraph at lines 19--20
 e]. Avail-able: []$\OT1/pcr/m/n/10.95 https : / /
  []
 
-[76
+[75
 
 
 
 
-] [77]) [78] (authesis.aux (Abstract/abstract.aux) (acknowl.aux)
+] [76]) [77] (authesis.aux (Abstract/abstract.aux) (acknowl.aux)
 (Acronyms/acronyms.aux) (1/Chapter1.aux) (2/Chapter2.aux) (3/Chapter3.aux)
 (4/Chapter4.aux) (5/Chapter5.aux) (Appendix/agents.aux)
 (Appendix/ai_prompts.aux) (References/references.aux))
@@ -1615,10 +1625,10 @@ Package rerunfilecheck Info: File `authesis.out' has not changed.
 (rerunfilecheck)             Checksum: FB7A0816C24224158E8D9E78B40FF193;14895.
  ) 
 Here is how much of TeX's memory you used:
- 27384 strings out of 467871
- 514368 string characters out of 5418375
+ 27385 strings out of 467871
+ 514380 string characters out of 5418375
  894905 words of memory out of 5000000
- 55367 multiletter control sequences out of 15000+600000
+ 55368 multiletter control sequences out of 15000+600000
  692205 words of font info for 168 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  88i,17n,104p,1540b,855s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1634,9 +1644,9 @@ eX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/oviya/AppData/Local/Programs/MiKT
 eX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/oviya/AppData/Local/Programs/MiK
 TeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/oviya/AppData/Local/Programs/MiK
 TeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on authesis.pdf (89 pages, 9564902 bytes).
+Output written on authesis2.pdf (88 pages, 9564746 bytes).
 PDF statistics:
- 1278 PDF objects out of 1440 (max. 8388607)
- 274 named destinations out of 1000 (max. 500000)
+ 1275 PDF objects out of 1440 (max. 8388607)
+ 273 named destinations out of 1000 (max. 500000)
  760 words of extra memory for PDF output out of 10000 (max. 10000000)
 

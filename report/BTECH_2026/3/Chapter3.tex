@@ -21,7 +21,7 @@ In a typical workflow, the user submits a task through the frontend, and the gat
 \begin{landscape}
 \begin{figure}
 \centering
-\includegraphics[width=0.98\linewidth,height=0.90\textheight,keepaspectratio]{3/figures/agentos_architecture.jpeg}
+\includegraphics[width=1.10\linewidth,height=0.90\textheight,keepaspectratio]{3/figures/agentos_architecture.jpeg}
 \caption{Overall AgentOS system architecture}
 \label{fig:architecture}
 \end{figure}
@@ -113,4 +113,5 @@ The code runner receives generated Python, writes it into a scoped working direc
 \caption{Sandboxed Python execution and bounded self-healing loop}
 \label{fig:runner}
 \end{figure}
+Figure~\ref{fig:runner} illustrates the complete path followed by a generated Python program. The coder/tester agent first submits the program to the code runner, which creates an isolated working directory and launches the program as an asynchronous subprocess. During execution, the runner captures the standard output and error streams, applies the configured timeout and output limits, and publishes available output as runtime events. A successful process returns its result to the agent, whereas a timeout, non-zero exit code, or traceback is converted into structured failure feedback. The agent can use this feedback to revise the program and retry it, but the bounded loop stops after three attempts to prevent uncontrolled execution and repeated resource consumption. This design provides observable and recoverable code execution while keeping the current isolation boundary limited to process and directory scoping.
 
