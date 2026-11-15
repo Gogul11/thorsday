@@ -125,6 +125,7 @@ Checklist & Ordered steps, dependencies, and acceptance checks. \\ \hline
   every picture/.style={scale=0.84, transform shape}
 }
 
+\clearpage
 \section{Agent A1: System Information Agent}
 
 The Agent A1 implementation creates a LangChain agent with the single registered
@@ -136,6 +137,7 @@ implemented by the current tool.
 The system-information processing logic is shown in Figure~\ref{fig:a1-logic}.
 \AgentArchitecture{Agent A1}{system-state question}{retrieve host platform and processor details}{\texttt{A1\_TOOLS}}{clear system report}{a1}
 \begin{figure}[H]\centering
+\resizebox{0.70\textwidth}{!}{%
 \begin{tikzpicture}[node distance=8mm, logiclabel]
 \node[logicstep] (request) {System information request};
 \node[logicstep, below=of request] (call) {Invoke \texttt{get\_system\_info}};
@@ -150,7 +152,8 @@ The system-information processing logic is shown in Figure~\ref{fig:a1-logic}.
 \draw[logicline] (os) |- (report);
 \draw[logicline] (arch) -- (report);
 \draw[logicline] (cpu) |- (report);
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \caption{A1 system-information logic}
 \label{fig:a1-logic}
 \end{figure}
@@ -164,6 +167,7 @@ represents the runtime host clock.
 The date-and-time processing logic is shown in Figure~\ref{fig:a2-logic}.
 \AgentArchitecture{Agent A2}{date, time, or timezone question}{read the runtime host clock}{\texttt{A2\_TOOLS}}{formatted host date/time}{a2}
 \begin{figure}[H]\centering
+\resizebox{0.96\textwidth}{!}{%
 \begin{tikzpicture}[node distance=10mm, logiclabel]
 \node[logicstep] (request) {Date or time request};
 \node[logicstep, right=of request] (invoke) {Invoke \texttt{get\_time}};
@@ -172,7 +176,8 @@ The date-and-time processing logic is shown in Figure~\ref{fig:a2-logic}.
 \draw[logicline] (request) -- (invoke);
 \draw[logicline] (invoke) -- (clock);
 \draw[logicline] (clock) -- (return);
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \caption{A2 date-and-time logic}
 \label{fig:a2-logic}
 \end{figure}

@@ -32,7 +32,6 @@ Figure~\ref{fig:optimized-planner} illustrates the complete optimised planning p
 \label{fig:optimized-planner}
 \end{figure}
 
-
 \section{\uppercase{Hybrid Provider Routing}}
 The hybrid model implementation is centred in \texttt{kernel/models/model.py}. \texttt{HybridChatModel} wraps a \texttt{ChatGroq} instance when \texttt{GROQ\_API\_KEY} is available and a \texttt{ChatOllama} instance configured with \texttt{OLLAMA\_MODEL} and \texttt{OLLAMA\_BASE\_URL}. The default mode is \texttt{hybrid}; \texttt{local} forces all calls to Ollama, while \texttt{cloud} permits Groq for non-sensitive calls. Sensitive input always overrides cloud selection. The Ollama client uses a configurable request timeout, bounded output length, and a short keep-alive interval so local failures do not remain indefinitely pending.
 
@@ -153,7 +152,7 @@ The model defaults are intended to support local development with privacy-aware 
 \centering
 \caption{Selected AgentOS configuration values}
 \label{tab:config}
-\begin{tabular}{|>{\centering\arraybackslash}p{5cm}|>{\centering\arraybackslash}p{3cm}|>{\centering\arraybackslash}p{5.5cm}|}
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{0.32\textwidth}|>{\centering\arraybackslash}p{0.18\textwidth}|>{\centering\arraybackslash}X|}
 \hline
 Configuration & Default & Role \\ \hline
 Global execution slots & 3 & Maximum simultaneously admitted jobs \\ \hline
@@ -167,7 +166,7 @@ Ollama model & \texttt{llama3.2} & Local model used for sensitive input and fall
 Ollama endpoint & \texttt{localhost} & Host-local Ollama service at port 11434 \\ \hline
 Ollama output limit & 512 tokens & Maximum generated tokens per local call \\ \hline
 Ollama timeout & 120 seconds & Maximum local provider request duration \\ \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \section{\uppercase{AgentOS Algorithmic Specification}}
@@ -187,7 +186,8 @@ Algorithms~\ref{alg:semantic-agent-retrieval}, \ref{alg:dependency-validation}, 
         \State \textbf{raise} ``Agent already exists''
     \EndIf
     \State $run\_fn \gets \Call{GetAgentRunFunction}{agent\_type}$
-    \State $runtime\_store[agent\_id] \gets (agent\_id,agent\_type,task\_id,run\_fn,\textsc{CREATED})$
+    \State $runtime\_store[agent\_id] \gets$
+    \Statex \hspace{\algorithmicindent}$(agent\_id,agent\_type,task\_id,run\_fn,\textsc{CREATED})$
     \State \Return $runtime\_store[agent\_id]$
 \EndFunction
 \Function{SetAgentStatus}{$agent\_id,status$}

@@ -1,0 +1,18 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{needspace}[2026/11/15 Keep headings with following content]
+\makeatletter
+\newcommand{\needspace}[1]{%
+  \par
+  \penalty-100
+  \begingroup
+    \@tempskipb\lastskip
+    \vskip-\lastskip
+    \setlength{\dimen@}{#1}%
+    \vskip\dimen@
+    \penalty9999
+    \vskip-\dimen@
+    \vskip\@tempskipb
+  \endgroup
+}
+\makeatother
+\endinput

@@ -1,11 +1,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Anna University sample latex thesis format for UG thesis
 %--------------------------------
-%%This is the main file that includes the front matter and other chapter links. 
-%%Chapters are placed within the folder named 1, 2,...  
-%%To compile, run the command `pdflatex authesis.tex' in the terminal. 
-%%Some packages may not be needed. Comment the ones, that are not needed. 
-%%Images can be saved in the format of *.png. 
+%%This is the main file that includes the front matter and other chapter links.
+%%Chapters are placed within the folder named 1, 2,...
+%%To compile, run the command `pdflatex authesis.tex' in the terminal.
+%%Some packages may not be needed. Comment the ones, that are not needed.
+%%Images can be saved in the format of *.png.
 %%------------------------------------------------------
 %% Authors:
 %%Originally used by Dr. Mary Anita Rajam and then modified by Dr. Bama Srinivasan according to the latest Anna University regulations. %%Please report changes to bama@annauniv.edu, chorse@gmail.com %%
@@ -15,7 +15,7 @@
 %%new file apalikem is added, which gives a neat reference list with 1, 2...
 %%aureportm has appendix starting with Arabic numbers
 %% Disclaimer: Check with the latest Anna University regulations before working with this format.
-%% Changes as on July 2016 
+%% Changes as on July 2016
 %% 1. Changed the appendix back to alpha mode in aureport.cls
 %% 2. Table of contents - reduced the top margin and spacing
 %% 3. Added the counter depth for sections to 4 in aureport.cls
@@ -30,7 +30,7 @@
 %\usepackage{aunatbib}
 %\usepackage{apalikem}
 \usepackage[numbers,sort&compress]{natbib}
-\usepackage{bussproofs} % for deduction rules 
+\usepackage{bussproofs} % for deduction rules
 \usepackage{auphd}
 \usepackage{array}
 \usepackage{tabularx}
@@ -52,9 +52,11 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit}
 \usepackage{hyperref}
+\pdfstringdefDisableCommands{\def\uppercase#1{#1}}
 \usepackage{epsfig}
 \usepackage{pslatex}
 \usepackage{setspace}
+\usepackage{needspace}
 \usepackage{titlesec}
 \usepackage[subfigure]{tocloft}
 \usepackage{subfigure}
@@ -83,6 +85,9 @@
 \floatstyle{ruled}
 \newfloat{algorithm}{htp}{loa}
 \floatname{algorithm}{Algorithm}
+\setlength{\intextsep}{0.25\baselineskip}
+\setlength{\floatsep}{0.25\baselineskip}
+\setlength{\textfloatsep}{0.25\baselineskip}
 
 
 \titleformat{\section}[hang]{\bfseries}{\makebox[20mm][l]{\thesection}}{0pt}{}{}
@@ -157,6 +162,14 @@
 \titleformat{\subsubsection}[hang]{\normalsize\bfseries}{\makebox[20mm][l]{\thesubsubsection}}{0pt}{}{}
 \titleformat{\paragraph}[hang]{\normalsize\bfseries}{\makebox[20mm][l]{\theparagraph}}{0pt}{}{}
 \titleformat{\subparagraph}[hang]{\normalsize\bfseries}{\makebox[20mm][l]{\thesubparagraph}}{0pt}{}{}
+\makeatletter
+\pretocmd{\section}{\needspace{4\baselineskip}}{}{}
+\pretocmd{\subsection}{\needspace{3\baselineskip}}{}{}
+\pretocmd{\subsubsection}{\needspace{3\baselineskip}}{}{}
+\makeatother
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=10000
 
 \begin{document}
 \justifying
@@ -189,7 +202,7 @@
   \vspace{0.5\baselineskip}
   \normalsize{\textbf{COMPUTER SCIENCE AND INFORMATION ENGINEERING}} \\
   \vspace{0.4\baselineskip}
-  \normalsize{\textit{in partial fulfillment  for the award of the degree}}\\
+  \normalsize{\textit{in partial fulfillment for the award of the degree}}\\
   \normalsize{\textit{\textbf{of}}}\\
 \vspace{.2\baselineskip}
   \bigsize{{\textbf{BACHELOR OF TECHNOLOGY}}}\\
@@ -202,7 +215,7 @@
   \normalsize{ \textbf{DEPARTMENT OF INFORMATION SCIENCE AND TECHNOLOGY }}\\
   \normalsize{\textbf{COLLEGE OF ENGINEERING, GUINDY}}\\
   \normalsize{\textbf{ANNA UNIVERSITY}}\\
-  \normalsize{\textbf{CHENNAI  600 025}}\\
+  \normalsize{\textbf{CHENNAI 600 025}}\\
   \vspace{0pt}
   \normalsize{\textbf{OCTOBER 2026}}
  \end{center}
@@ -233,19 +246,19 @@ BONA FIDE CERTIFICATE}
  \small{\textbf{PROJECT GUIDE}}\\
  \small{\textbf{DEPARTMENT OF IST, CEG}}\\
  \small{\textbf{ANNA UNIVERSITY}}   \\
- \small{\textbf{CHENNAI  600025}}
+ \small{\textbf{CHENNAI 600 025}}
  }
 \end{flushleft}
 %\vspace{0.5 cm}
 \begin{center}
- \small{\textbf{COUNTERSIGNED}}\\ 
+ \small{\textbf{COUNTERSIGNED}}\\
   \vspace{1.5 cm}
   \textbf{\small{Dr. P. YOGESH}}\\
   \small{\textbf{HEAD OF THE DEPARTMENT}}\\
  \small{\textbf{DEPARTMENT OF INFORMATION SCIENCE AND TECHNOLOGY}}\\
  \small{\textbf{COLLEGE OF ENGINEERING, GUINDY}}\\
  \small{\textbf{ANNA UNIVERSITY}}   \\
- \small{\textbf{CHENNAI  600025}}
+ \small{\textbf{CHENNAI 600 025}}
  
 \end{center}
 
@@ -268,7 +281,7 @@ BONA FIDE CERTIFICATE}
 
 \setlength\cftparskip{0pt}
 \setlength{\cftbeforetoctitleskip}{-3em} %Decrease the top margin of toc title
-%\setlength{\cftaftertoctitleskip}{0 em} 
+%\setlength{\cftaftertoctitleskip}{0 em}
 \setlength{\cftbeforelottitleskip}{-3em} % Decrease the top margin of lot
 \setlength{\cftbeforeloftitleskip}{-3em} % Decrease the top margin of lof
 \cftsetindents{chapter}{0 mm}{10 mm}
@@ -282,7 +295,7 @@ BONA FIDE CERTIFICATE}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Changes made as on June 2016
 %%%%%%%%ADD TOC with one half spacing%%%%%%%%%%%
-\begin{onehalfspacing} 
+\begin{onehalfspacing}
 \tableofcontents
 
 \pagebreak
