@@ -19,7 +19,7 @@ Figure~\ref{fig:architecture} presents AgentOS as a set of cooperating modules t
 \end{enumerate}
 In a typical workflow, the user submits a task through the frontend, and the gateway forwards it to the kernel. The planner prepares a structured plan and selects agents. The kernel validates the plan, schedules eligible steps, and coordinates their execution. During this process, the runtime manages context and model routing, records task state, and publishes events that the frontend uses to show progress. The figure includes both implemented components and proposed extensions; the related sections describe the implementation boundary for each module.
 \begin{landscape}
-\begin{figure}[H]
+\begin{figure}
 \centering
 \includegraphics[width=0.98\linewidth,height=0.90\textheight,keepaspectratio]{3/figures/agentos_architecture.jpeg}
 \caption{Overall AgentOS system architecture}
@@ -52,7 +52,7 @@ Once a plan passes validation, the dependency graph determines readiness: a step
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth,height=0.65\textheight,keepaspectratio]{3/figures/dag-readable.pdf}
+\includegraphics[width=1.08\textwidth,height=0.55\textheight,keepaspectratio]{3/figures/dag-readable.pdf}
 \caption{Planner, validation, and dependency-aware execution flow}
 \label{fig:dag}
 \end{figure}
@@ -85,7 +85,8 @@ The diagram represents the broader design, while the current implementation prov
 \caption{Resource-manager decision flow supplied for the AgentOS design}
 \label{fig:resource-manager}
 \end{figure}
-
+\vspace{\baselineskip}
+\vspace{\baselineskip}
 \section{\uppercase{Tool Management}}
 Figure~\ref{fig:tool-manager} shows the intended tool-manager boundary between an agent, a tool registry, permission policy, and local or external services. AgentOS currently exposes bounded tools through the runtime and code runner; a complete permission store and MCP-compatible tool manager remain proposed components.
 \begin{figure}[H]
