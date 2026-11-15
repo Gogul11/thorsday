@@ -114,8 +114,8 @@ where $W$ is queue waiting time. The implementation uses an in-process pending s
 
 \section{\uppercase{Resource Admission and Token Budgets}}
 The resource manager checks active global slots, active slots for the task, and the cumulative estimated token reservation for the task. A temporary denial leaves work waiting; an exhausted task budget is converted into a blocked/failed outcome rather than leaving the task silently pending. Actual provider usage, when available, is recorded separately from estimated admission tokens. This distinction explains why a provider such as Groq may display zero usage metadata even while the scheduler correctly enforces its configured estimate.
-\vspace{\baselineskip}
-\vspace{\baselineskip}
+Admission is performed before dispatch and released after completion, failure, or cancellation. The scheduler therefore distinguishes capacity denial from execution failure: a job that cannot currently obtain a slot remains visible as waiting, while a job that exceeds its token budget is rejected according to policy. Global and per-task counters are updated together so that one task cannot consume all available capacity, and the recorded reservation is carried into lifecycle events for later analysis. These checks provide a simple admission boundary between planning and execution while keeping the policy observable and configurable.
+
 \section{\uppercase{Redis Events and Backend Forwarding}}
 Events are JSON records containing task identifier, step identifier, agent name, execution identifier, status, timestamp, priority, effective priority, queue wait, and attempt. The kernel publishes them on \texttt{kernel\_events}; the backend subscribes and forwards them over WebSocket. Scheduler records use keys such as \texttt{agentos:scheduler:ready} and \texttt{agentos:scheduler:job:<execution\_id>}. MongoDB persists task history and event records for later inspection.
 Table~\ref{tab:rediskeys} summarises the Redis channels and scheduler keys used for task transport, lifecycle events, queue persistence, and recovery.
