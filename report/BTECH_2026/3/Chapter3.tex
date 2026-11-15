@@ -9,7 +9,7 @@ As shown in Figure~\ref{fig:architecture}, AgentOS is organised as an overall ru
 \begin{landscape}
 \begin{figure}[p]
 \centering
-\includegraphics[width=\linewidth,height=0.97\textheight,keepaspectratio]{3/figures/agentos_architecture.jpeg}
+\includegraphics[width=1.09\linewidth,height=1.09\textheight,keepaspectratio]{3/figures/agentos_architecture.jpeg}
 \caption{Overall AgentOS system architecture}
 \label{fig:architecture}
 \end{figure}
@@ -35,7 +35,7 @@ The frontend sends task prompts over HTTP and receives live activity over WebSoc
 The planner retrieves relevant agent descriptions, requests a structured execution plan, and applies a fallback plan when the provider is unavailable. Each step includes an identifier, agent name, description, and dependency list. The validator canonicalises identifiers, rejects unknown dependencies and cycles, and supplies a sequential fallback only when a plan omits dependencies. The executor runs only steps whose prerequisites are complete. Figure~\ref{fig:dag} summarises this path. The frontend uses the same validated plan to generate Mermaid source and draw the plan graph, ensuring that displayed edges represent dependencies rather than decorative links.
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.90\textwidth,height=0.58\textheight,keepaspectratio]{3/figures/dag-readable.pdf}
+\includegraphics[width=1.0\textwidth,height=0.48\textheight,keepaspectratio]{3/figures/dag-readable.pdf}
 \caption{Planner, validation, and dependency-aware execution flow}
 \label{fig:dag}
 \end{figure}
