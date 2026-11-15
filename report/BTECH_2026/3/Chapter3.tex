@@ -45,6 +45,11 @@ The frontend sends task prompts over HTTP and receives live activity over WebSoc
 
 \section{\uppercase{Planner and DAG Execution}}
 The planner retrieves relevant agent descriptions, requests a structured execution plan, and applies a fallback plan when the provider is unavailable. Each step includes an identifier, agent name, description, and dependency list. The validator canonicalises identifiers, rejects unknown dependencies and cycles, and supplies a sequential fallback only when a plan omits dependencies. The executor runs only steps whose prerequisites are complete. Figure~\ref{fig:dag} summarises this path. The frontend uses the same validated plan to generate Mermaid source and draw the plan graph, ensuring that displayed edges represent dependencies rather than decorative links.
+
+The planning boundary separates model output from executable runtime state. Candidate agents are first retrieved from their capability descriptions, after which the planner normalises the response into a bounded step schema. Missing or malformed fields are rejected before execution, and the deterministic fallback preserves a valid task path when the model cannot provide a usable plan. This separation keeps provider-specific reasoning outside the executor and makes failures observable as planning or validation events rather than silent execution errors.
+
+Once a plan passes validation, the dependency graph determines readiness: a step enters the runnable set only after every prerequisite has completed successfully. Independent steps can therefore be considered concurrently, while dependent steps remain blocked without occupying execution capacity. The scheduler selects from the ready set according to priority and resource policy, and each completion updates the graph before the next dispatch decision. The same validated dependency edges are sent to the frontend, so the visual plan and the runtime execution order describe one consistent graph.
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth,height=0.65\textheight,keepaspectratio]{3/figures/dag-readable.pdf}
