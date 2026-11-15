@@ -64,7 +64,7 @@ On the more difficult conversational data, AgentOS paging improves retrieval suc
 
 \subsection{Graphical analysis}
 
-Figure~\ref{fig:context-comparison} compares retrieval and context visibility on the synthetic smoke set and the LoCoMo pilot.
+Figure~\ref{fig:context-comparison} compares retrieval quality and evidence visibility on the synthetic smoke set and the LoCoMo pilot. The comparison places the two retrieval approaches beside the full-context control so that the effect of paging can be considered together with the cost of restricting the active context. Success measures whether the required evidence was recovered for the task, while Recall@10 measures how much of the annotated relevant evidence appeared among the first ten retrieved items. The synthetic set provides a controlled check of the implementation, whereas the LoCoMo pilot tests the same mechanism on longer and more varied conversations. The figure should therefore be read as both a performance comparison and a demonstration of the difference between an easy controlled workload and a more realistic memory-retrieval setting.
 
 \begin{figure}[H]
 \centering
@@ -75,7 +75,7 @@ Figure~\ref{fig:context-comparison} compares retrieval and context visibility on
 
 In Figure~\ref{fig:context-comparison}, the horizontal axes identify the dataset and the vertical axes show success or evidence recall as a percentage. The left panel groups success bars by dataset: gray denotes the full-context control, light blue denotes Vector RAG, and dark blue denotes AgentOS paging. The right panel shows Recall@10 for the two retrieval methods; the full-context control has no recall value because it does not retrieve evidence. The labels above each bar give the measured percentage. On the synthetic set, Vector RAG and AgentOS paging each reach 98\% success and 97.5\% recall. On LoCoMo, AgentOS paging reaches 35\% success and 32.8\% recall, compared with 22\% and 18.2\% for Vector RAG. The full-context control is 100\% on both datasets. Recent truncation is reported in the tables but is not plotted in this figure.
 
-Figure~\ref{fig:context-thresholds} presents the threshold sensitivity study for the synthetic set and LoCoMo pilot.
+Figure~\ref{fig:context-thresholds} presents the threshold sensitivity study for the synthetic set and LoCoMo pilot. The sweep examines whether the retrieval outcome is stable across plausible similarity cut-offs rather than depending on one selected value. Lower thresholds admit more candidate memories and may preserve weakly related evidence, while higher thresholds reject more results and may remove information needed to answer a later query. Success and Recall@10 are plotted together because a threshold can preserve the final task outcome while still changing the amount of relevant evidence returned. Comparing the two panels also shows whether a setting that works on the synthetic data remains suitable for the more diverse LoCoMo conversations.
 
 \begin{figure}[H]
 \centering
@@ -132,8 +132,7 @@ Figure~\ref{fig:planner-tool-selection-overall} presents the 50 planner trials a
 Figure~\ref{fig:planner-tool-selection-category} is a horizontal bar chart of end-to-end exact-match accuracy by task category. The vertical axis lists the categories, and the horizontal axis gives accuracy as a percentage. Each bar represents one category, with its exact-match percentage printed at the bar end; a longer bar therefore indicates that a larger share of that category's trials selected the complete expected tool set. Code execution achieved 100\%, date and time, weather, system information, and financial calculation each achieved 83.3\%, and research achieved 80\%. Email delivery and document workflow reached 60\%, while multi-agent coordination was lowest at 40\%. These category differences point to tool-call compliance and coordination complexity as the main sources of error in this run; provider availability was not a recorded cause.
 
 Figures~\ref{fig:planner-tool-selection-overall} and~\ref{fig:planner-tool-selection-category} visualise the overall outcome distribution and the category-level exact-match results, respectively.
-\vspace{\baselineskip}
-\vspace{\baselineskip}
+
 \section{\uppercase{Agent scheduler}}
 \label{sec:agent-scheduler-evaluation}
 

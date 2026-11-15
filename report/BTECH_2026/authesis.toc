@@ -4,79 +4,79 @@
 \contentsline {section}{\bfseries LIST OF SYMBOLS AND ABBREVIATIONS}{xi}{chapter*.4}%
 \contentsline {chapter}{\numberline {1}\uppercase {Introduction}}{1}{chapter.1}%
 \contentsline {section}{\numberline {1.1} \uppercase {From Operating Systems to AgentOS}}{1}{section.1.1}%
-\contentsline {section}{\numberline {1.2} \uppercase {Motivation}}{1}{section.1.2}%
-\contentsline {section}{\numberline {1.3} \uppercase {Problem Statement}}{2}{section.1.3}%
-\contentsline {section}{\numberline {1.4} \uppercase {Objectives}}{2}{section.1.4}%
-\contentsline {section}{\numberline {1.5} \uppercase {Scope}}{3}{section.1.5}%
-\contentsline {section}{\numberline {1.6} \uppercase {Contributions}}{4}{section.1.6}%
-\contentsline {section}{\numberline {1.7} \uppercase {Report Organization}}{4}{section.1.7}%
-\contentsline {chapter}{\numberline {2}\uppercase {Literature Survey}}{5}{chapter.2}%
-\contentsline {section}{\numberline {2.1} \uppercase {AgentOS and Autonomous Agent Runtimes}}{5}{section.2.1}%
-\contentsline {section}{\numberline {2.2} \uppercase {Agent Runtimes and Autonomous Agents}}{5}{section.2.2}%
-\contentsline {section}{\numberline {2.3} \uppercase {Memory and Context Management}}{6}{section.2.3}%
-\contentsline {section}{\numberline {2.4} \uppercase {Planning, Tool Use, and Reflection}}{7}{section.2.4}%
-\contentsline {section}{\numberline {2.5} \uppercase {Scheduling, Resources, and Reliability}}{9}{section.2.5}%
-\contentsline {section}{\numberline {2.6} \uppercase {Security and Sandboxed Execution}}{9}{section.2.6}%
-\contentsline {section}{\numberline {2.7} \uppercase {Event-Driven Infrastructure}}{10}{section.2.7}%
-\contentsline {section}{\numberline {2.8} \uppercase {Research Gap and Positioning}}{10}{section.2.8}%
-\contentsline {chapter}{\numberline {3}\uppercase {System Design}}{11}{chapter.3}%
-\contentsline {section}{\numberline {3.1} \uppercase {Design Principles}}{11}{section.3.1}%
-\contentsline {section}{\numberline {3.2} \uppercase {Overall Architecture}}{11}{section.3.2}%
-\contentsline {section}{\numberline {3.3} \uppercase {Hybrid LLM Reasoning Engine}}{14}{section.3.3}%
-\contentsline {section}{\numberline {3.4} \uppercase {Frontend, Gateway, and Event Flow}}{14}{section.3.4}%
-\contentsline {section}{\numberline {3.5} \uppercase {Planner and DAG Execution}}{15}{section.3.5}%
-\contentsline {section}{\numberline {3.6} \uppercase {Context Paging}}{17}{section.3.6}%
-\contentsline {section}{\numberline {3.7} \uppercase {Global Scheduler and Resource Manager}}{18}{section.3.7}%
-\contentsline {section}{\numberline {3.8} \uppercase {Resource Management}}{19}{section.3.8}%
-\contentsline {section}{\numberline {3.9} \uppercase {Tool Management}}{20}{section.3.9}%
-\contentsline {section}{\numberline {3.10} \uppercase {Agent Lifecycle and Events}}{21}{section.3.10}%
-\contentsline {section}{\numberline {3.11} \uppercase {Sandboxed Code Runner}}{22}{section.3.11}%
-\contentsline {chapter}{\numberline {4}\uppercase {Implementation}}{24}{chapter.4}%
-\contentsline {section}{\numberline {4.1} \uppercase {Implementation Environment}}{24}{section.4.1}%
-\contentsline {section}{\numberline {4.2} \uppercase {Semantic Agent Retrieval}}{24}{section.4.2}%
-\contentsline {section}{\numberline {4.3} \uppercase {Planner and Fallback}}{25}{section.4.3}%
-\contentsline {section}{\numberline {4.4} \uppercase {Hybrid Provider Routing}}{26}{section.4.4}%
-\contentsline {section}{\numberline {4.5} \uppercase {DAG Validation}}{27}{section.4.5}%
-\contentsline {section}{\numberline {4.6} \uppercase {Priority-Aging Scheduler}}{28}{section.4.6}%
-\contentsline {section}{\numberline {4.7} \uppercase {Resource Admission and Token Budgets}}{29}{section.4.7}%
-\contentsline {section}{\numberline {4.8} \uppercase {Redis Events and Backend Forwarding}}{29}{section.4.8}%
-\contentsline {section}{\numberline {4.9} \uppercase {Context Page-Out and Page-In}}{30}{section.4.9}%
-\contentsline {section}{\numberline {4.10} \uppercase {Sandboxed Execution and Self-Healing}}{30}{section.4.10}%
-\contentsline {section}{\numberline {4.11} \uppercase {Frontend Observability}}{31}{section.4.11}%
-\contentsline {section}{\numberline {4.12} \uppercase {Configuration and Verification}}{31}{section.4.12}%
-\contentsline {section}{\numberline {4.13} \uppercase {AgentOS Algorithmic Specification}}{34}{section.4.13}%
-\contentsline {chapter}{\numberline {5}\uppercase {Results and Performance Analysis}}{41}{chapter.5}%
-\contentsline {section}{\numberline {5.1} \uppercase {Reporting protocol}}{41}{section.5.1}%
-\contentsline {section}{\numberline {5.2} \uppercase {Context-paging engine}}{41}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1} Evaluation protocol}{42}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2} Synthetic smoke evaluation}{43}{subsection.5.2.2}%
-\contentsline {subsection}{\numberline {5.2.3} LoCoMo pilot evaluation}{43}{subsection.5.2.3}%
-\contentsline {subsection}{\numberline {5.2.4} Graphical analysis}{44}{subsection.5.2.4}%
-\contentsline {section}{\numberline {5.3} \uppercase {Planner and tool selection}}{46}{section.5.3}%
-\contentsline {section}{\numberline {5.4} \uppercase {Agent scheduler}}{49}{section.5.4}%
-\contentsline {section}{\numberline {5.5} \uppercase {Integrated interpretation}}{53}{section.5.5}%
-\contentsline {chapter}{\numberline {6}\uppercase {Conclusion and Future Work}}{54}{chapter.6}%
-\contentsline {chapter}{\bfseries DECLARATION ON THE USE OF AI TOOLS}{55}{section*.28}%
-\contentsline {chapter}{APPENDIX}{57}{appendix-heading}%
-\contentsline {chapter}{\numberline {A}\uppercase {Agent Catalogue and Internal Workflows}}{57}{appendix-a-heading}%
-\contentsline {section}{\numberline {A.1} Agent A1: System Information Agent}{58}{section.A.1}%
-\contentsline {section}{\numberline {A.2} Agent A2: Date and Time Agent}{58}{section.A.2}%
-\contentsline {section}{\numberline {A.3} Agent A3: Research Agent}{59}{section.A.3}%
-\contentsline {section}{\numberline {A.4} Agent A4: File and Document Agent}{59}{section.A.4}%
-\contentsline {section}{\numberline {A.5} Content Creator Agent}{60}{section.A.5}%
-\contentsline {section}{\numberline {A.6} Email Agent}{61}{section.A.6}%
-\contentsline {section}{\numberline {A.7} Weather Agent}{62}{section.A.7}%
-\contentsline {section}{\numberline {A.8} Loan EMI Calculator Agent}{63}{section.A.8}%
-\contentsline {section}{\numberline {A.9} Crypto PnL Agent}{64}{section.A.9}%
-\contentsline {section}{\numberline {A.10} Code Runner Agent}{65}{section.A.10}%
-\contentsline {section}{\numberline {A.11} Data Analysis Agent}{66}{section.A.11}%
-\contentsline {section}{\numberline {A.12} Decision Support Agent}{67}{section.A.12}%
-\contentsline {section}{\numberline {A.13} Summarizer Agent}{68}{section.A.13}%
-\contentsline {section}{\numberline {A.14} Translator Agent}{69}{section.A.14}%
-\contentsline {section}{\numberline {A.15} Checklist Agent}{70}{section.A.15}%
-\contentsline {section}{\numberline {A.16} Agent Creator}{71}{section.A.16}%
-\contentsline {chapter}{\numberline {B}\uppercase {AI-Assisted Prompts}}{73}{appendix.B}%
-\contentsline {section}{\numberline {B.1} \uppercase {Literature-Survey Support}}{73}{section.B.1}%
-\contentsline {section}{\numberline {B.2} \uppercase {Language and Editorial Support}}{73}{section.B.2}%
-\contentsline {section}{\numberline {B.3} \uppercase {Synthetic Test-Case Support}}{75}{section.B.3}%
-\contentsline {chapter}{REFERENCES}{76}{section*.47}%
+\contentsline {section}{\numberline {1.2} \uppercase {Motivation}}{3}{section.1.2}%
+\contentsline {section}{\numberline {1.3} \uppercase {Problem Statement}}{4}{section.1.3}%
+\contentsline {section}{\numberline {1.4} \uppercase {Objectives}}{5}{section.1.4}%
+\contentsline {section}{\numberline {1.5} \uppercase {Scope}}{5}{section.1.5}%
+\contentsline {section}{\numberline {1.6} \uppercase {Contributions}}{6}{section.1.6}%
+\contentsline {section}{\numberline {1.7} \uppercase {Report Organization}}{6}{section.1.7}%
+\contentsline {chapter}{\numberline {2}\uppercase {Literature Survey}}{7}{chapter.2}%
+\contentsline {section}{\numberline {2.1} \uppercase {AgentOS and Autonomous Agent Runtimes}}{7}{section.2.1}%
+\contentsline {section}{\numberline {2.2} \uppercase {Agent Runtimes and Autonomous Agents}}{7}{section.2.2}%
+\contentsline {section}{\numberline {2.3} \uppercase {Memory and Context Management}}{8}{section.2.3}%
+\contentsline {section}{\numberline {2.4} \uppercase {Planning, Tool Use, and Reflection}}{9}{section.2.4}%
+\contentsline {section}{\numberline {2.5} \uppercase {Scheduling, Resources, and Reliability}}{11}{section.2.5}%
+\contentsline {section}{\numberline {2.6} \uppercase {Security and Sandboxed Execution}}{11}{section.2.6}%
+\contentsline {section}{\numberline {2.7} \uppercase {Event-Driven Infrastructure}}{12}{section.2.7}%
+\contentsline {section}{\numberline {2.8} \uppercase {Research Gap and Positioning}}{12}{section.2.8}%
+\contentsline {chapter}{\numberline {3}\uppercase {System Design}}{13}{chapter.3}%
+\contentsline {section}{\numberline {3.1} \uppercase {Design Principles}}{13}{section.3.1}%
+\contentsline {section}{\numberline {3.2} \uppercase {Overall Architecture}}{13}{section.3.2}%
+\contentsline {section}{\numberline {3.3} \uppercase {Hybrid LLM Reasoning Engine}}{16}{section.3.3}%
+\contentsline {section}{\numberline {3.4} \uppercase {Frontend, Gateway, and Event Flow}}{16}{section.3.4}%
+\contentsline {section}{\numberline {3.5} \uppercase {Planner and DAG Execution}}{17}{section.3.5}%
+\contentsline {section}{\numberline {3.6} \uppercase {Context Paging}}{19}{section.3.6}%
+\contentsline {section}{\numberline {3.7} \uppercase {Global Scheduler and Resource Manager}}{20}{section.3.7}%
+\contentsline {section}{\numberline {3.8} \uppercase {Resource Management}}{21}{section.3.8}%
+\contentsline {section}{\numberline {3.9} \uppercase {Tool Management}}{22}{section.3.9}%
+\contentsline {section}{\numberline {3.10} \uppercase {Agent Lifecycle and Events}}{24}{section.3.10}%
+\contentsline {section}{\numberline {3.11} \uppercase {Sandboxed Code Runner}}{24}{section.3.11}%
+\contentsline {chapter}{\numberline {4}\uppercase {Implementation}}{26}{chapter.4}%
+\contentsline {section}{\numberline {4.1} \uppercase {Implementation Environment}}{26}{section.4.1}%
+\contentsline {section}{\numberline {4.2} \uppercase {Semantic Agent Retrieval}}{26}{section.4.2}%
+\contentsline {section}{\numberline {4.3} \uppercase {Planner and Fallback}}{27}{section.4.3}%
+\contentsline {section}{\numberline {4.4} \uppercase {Hybrid Provider Routing}}{28}{section.4.4}%
+\contentsline {section}{\numberline {4.5} \uppercase {DAG Validation}}{29}{section.4.5}%
+\contentsline {section}{\numberline {4.6} \uppercase {Priority-Aging Scheduler}}{30}{section.4.6}%
+\contentsline {section}{\numberline {4.7} \uppercase {Resource Admission and Token Budgets}}{31}{section.4.7}%
+\contentsline {section}{\numberline {4.8} \uppercase {Redis Events and Backend Forwarding}}{32}{section.4.8}%
+\contentsline {section}{\numberline {4.9} \uppercase {Context Page-Out and Page-In}}{32}{section.4.9}%
+\contentsline {section}{\numberline {4.10} \uppercase {Sandboxed Execution and Self-Healing}}{33}{section.4.10}%
+\contentsline {section}{\numberline {4.11} \uppercase {Frontend Observability}}{33}{section.4.11}%
+\contentsline {section}{\numberline {4.12} \uppercase {Configuration and Verification}}{34}{section.4.12}%
+\contentsline {section}{\numberline {4.13} \uppercase {AgentOS Algorithmic Specification}}{35}{section.4.13}%
+\contentsline {chapter}{\numberline {5}\uppercase {Results and Performance Analysis}}{42}{chapter.5}%
+\contentsline {section}{\numberline {5.1} \uppercase {Reporting protocol}}{42}{section.5.1}%
+\contentsline {section}{\numberline {5.2} \uppercase {Context-paging engine}}{42}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1} Evaluation protocol}{43}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2} Synthetic smoke evaluation}{44}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3} LoCoMo pilot evaluation}{44}{subsection.5.2.3}%
+\contentsline {subsection}{\numberline {5.2.4} Graphical analysis}{45}{subsection.5.2.4}%
+\contentsline {section}{\numberline {5.3} \uppercase {Planner and tool selection}}{47}{section.5.3}%
+\contentsline {section}{\numberline {5.4} \uppercase {Agent scheduler}}{51}{section.5.4}%
+\contentsline {section}{\numberline {5.5} \uppercase {Integrated interpretation}}{54}{section.5.5}%
+\contentsline {chapter}{\numberline {6}\uppercase {Conclusion and Future Work}}{55}{chapter.6}%
+\contentsline {chapter}{\bfseries DECLARATION ON THE USE OF AI TOOLS}{56}{section*.28}%
+\contentsline {chapter}{APPENDIX}{58}{appendix-heading}%
+\contentsline {chapter}{\numberline {A}\uppercase {Agent Catalogue and Internal Workflows}}{58}{appendix-a-heading}%
+\contentsline {section}{\numberline {A.1} Agent A1: System Information Agent}{59}{section.A.1}%
+\contentsline {section}{\numberline {A.2} Agent A2: Date and Time Agent}{59}{section.A.2}%
+\contentsline {section}{\numberline {A.3} Agent A3: Research Agent}{60}{section.A.3}%
+\contentsline {section}{\numberline {A.4} Agent A4: File and Document Agent}{60}{section.A.4}%
+\contentsline {section}{\numberline {A.5} Content Creator Agent}{61}{section.A.5}%
+\contentsline {section}{\numberline {A.6} Email Agent}{62}{section.A.6}%
+\contentsline {section}{\numberline {A.7} Weather Agent}{63}{section.A.7}%
+\contentsline {section}{\numberline {A.8} Loan EMI Calculator Agent}{64}{section.A.8}%
+\contentsline {section}{\numberline {A.9} Crypto PnL Agent}{65}{section.A.9}%
+\contentsline {section}{\numberline {A.10} Code Runner Agent}{66}{section.A.10}%
+\contentsline {section}{\numberline {A.11} Data Analysis Agent}{67}{section.A.11}%
+\contentsline {section}{\numberline {A.12} Decision Support Agent}{68}{section.A.12}%
+\contentsline {section}{\numberline {A.13} Summarizer Agent}{69}{section.A.13}%
+\contentsline {section}{\numberline {A.14} Translator Agent}{70}{section.A.14}%
+\contentsline {section}{\numberline {A.15} Checklist Agent}{71}{section.A.15}%
+\contentsline {section}{\numberline {A.16} Agent Creator}{72}{section.A.16}%
+\contentsline {chapter}{\numberline {B}\uppercase {AI-Assisted Prompts}}{74}{appendix.B}%
+\contentsline {section}{\numberline {B.1} \uppercase {Literature-Survey Support}}{74}{section.B.1}%
+\contentsline {section}{\numberline {B.2} \uppercase {Language and Editorial Support}}{74}{section.B.2}%
+\contentsline {section}{\numberline {B.3} \uppercase {Synthetic Test-Case Support}}{76}{section.B.3}%
+\contentsline {chapter}{REFERENCES}{77}{section*.47}%
