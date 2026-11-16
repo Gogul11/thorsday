@@ -32,7 +32,7 @@ The synthetic evaluation checks whether the implementation can page out older me
 \label{tab:context-synthetic-results}
 \begin{tabular}{|>{\centering\arraybackslash}p{0.29\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|}
 \hline
-Configuration & Success (\%) & Recall@10 (\%) & MRR@10 (\%) & Token reduction (\%) \\ \hline
+\textbf{Configuration} & \textbf{Success (\%)} & \textbf{Recall@10 (\%)} & \textbf{MRR@10 (\%)} & \textbf{Token reduction (\%)} \\ \hline
 Full context control & 100.0 & -- & -- & 0.0 \\ \hline
 Recent truncation & 20.0 & -- & -- & 31.8 \\ \hline
 Vector RAG & 98.0 & 97.5 & 84.2 & 5.0 \\ \hline
@@ -52,7 +52,7 @@ The LoCoMo pilot introduces longer conversations, natural-language questions, an
 \label{tab:context-locomo-results}
 \begin{tabular}{|>{\centering\arraybackslash}p{0.29\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|>{\centering\arraybackslash}p{0.125\textwidth}|}
 \hline
-Configuration & Success (\%) & Recall@10 (\%) & MRR@10 (\%) & Token reduction (\%) \\ \hline
+\textbf{Configuration} & \textbf{Success (\%)} & \textbf{Recall@10 (\%)} & \textbf{MRR@10 (\%)} & \textbf{Token reduction (\%)} \\ \hline
 Full context control & 100.0 & -- & -- & 0.0 \\ \hline
 Recent truncation & 6.0 & -- & -- & 95.0 \\ \hline
 Vector RAG & 22.0 & 18.2 & 7.1 & 93.1 \\ \hline
@@ -68,7 +68,39 @@ Figure~\ref{fig:context-comparison} compares retrieval quality and evidence visi
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{5/figures/context_engine_comparison.png}
+\begin{tikzpicture}
+\begin{axis}[
+  ybar, width=0.46\textwidth, height=0.31\textheight,
+  title={Retrieval / visibility success},
+  symbolic x coords={Synthetic,LoCoMo}, xtick=data,
+  xticklabels={Synthetic,LoCoMo},
+  ymin=0, ymax=108, ylabel={Success (\%)}, bar width=10pt,
+  enlarge x limits=0.25, grid=major,
+  legend style={font=\small, at={(0.5,1.50)}, anchor=south, legend columns=3, inner sep=2pt},
+  ticklabel style={font=\normalsize}, label style={font=\normalsize}, title style={font=\normalsize\bfseries},
+  nodes near coords, nodes near coords style={font=\scriptsize, fill=white, text=black, inner sep=1pt}
+]
+\addplot[fill=gray!65, bar shift=-8pt, nodes near coords style={font=\scriptsize, fill=white, text=black, inner sep=1pt, xshift=-5pt}] coordinates {(Synthetic,100) (LoCoMo,100)};
+\addlegendentry{Full context}
+\addplot[fill=blue!45, bar shift=0pt, nodes near coords style={font=\scriptsize, fill=white, text=black, inner sep=1pt}] coordinates {(Synthetic,98) (LoCoMo,22)};
+\addlegendentry{Vector RAG}
+\addplot[fill=blue!75, bar shift=8pt, nodes near coords style={font=\scriptsize, fill=white, text=black, inner sep=1pt, xshift=5pt}] coordinates {(Synthetic,98) (LoCoMo,35)};
+\addlegendentry{AgentOS paging}
+\end{axis}
+\begin{axis}[
+  xshift=0.50\textwidth, ybar, width=0.46\textwidth, height=0.31\textheight,
+  title={Evidence retrieval recall},
+  symbolic x coords={Synthetic,LoCoMo}, xtick=data,
+  xticklabels={Synthetic,LoCoMo},
+  ymin=0, ymax=108, ylabel={Recall (\%)}, bar width=12pt,
+  enlarge x limits=0.35, grid=major,
+  ticklabel style={font=\normalsize}, label style={font=\normalsize}, title style={font=\normalsize\bfseries},
+  nodes near coords, nodes near coords style={font=\scriptsize, fill=white, text=black, inner sep=1pt}
+]
+\addplot[fill=blue!45, bar shift=-5pt, nodes near coords style={font=\scriptsize, fill=white, text=black, inner sep=1pt, xshift=-4pt}] coordinates {(Synthetic,97.5) (LoCoMo,18.2)};
+\addplot[fill=blue!75, bar shift=5pt, nodes near coords style={font=\scriptsize, fill=white, text=black, inner sep=1pt, xshift=4pt}] coordinates {(Synthetic,97.5) (LoCoMo,32.8)};
+\end{axis}
+\end{tikzpicture}
 \caption{Success and evidence-recall comparison for the synthetic and LoCoMo pilot evaluations}
 \label{fig:context-comparison}
 \end{figure}
@@ -79,7 +111,31 @@ Figure~\ref{fig:context-thresholds} presents the threshold sensitivity study for
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{5/figures/context_engine_thresholds.png}
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.46\textwidth, height=0.34\textheight,
+  title={Synthetic smoke set}, xlabel={Similarity threshold $\tau$}, ylabel={Metric (\%)},
+  xmin=0.19, xmax=0.41, ymin=94, ymax=102,
+  xtick={0.20,0.25,0.30,0.35,0.40}, ytick={95,97.5,100},
+  grid=major, legend style={font=\normalsize, at={(0.5,-0.23)}, anchor=north, legend columns=2},
+  ticklabel style={font=\normalsize}, label style={font=\normalsize}, title style={font=\normalsize\bfseries}
+]
+\addplot+[mark=*, thick] coordinates {(0.20,100) (0.25,100) (0.30,100) (0.35,98) (0.40,98)};
+\addlegendentry{Success}
+\addplot+[mark=square*, thick] coordinates {(0.20,100) (0.25,100) (0.30,100) (0.35,97.5) (0.40,97.5)};
+\addlegendentry{Recall@10}
+\end{axis}
+\begin{axis}[
+  xshift=0.50\textwidth, width=0.46\textwidth, height=0.34\textheight,
+  title={LoCoMo pilot subset}, xlabel={Similarity threshold $\tau$}, ylabel={Metric (\%)},
+  xmin=0.19, xmax=0.41, ymin=25, ymax=40,
+  xtick={0.20,0.25,0.30,0.35,0.40}, ytick={25,30,35,40},
+  grid=major, ticklabel style={font=\normalsize}, label style={font=\normalsize}, title style={font=\normalsize\bfseries}
+]
+\addplot+[mark=*, thick] coordinates {(0.20,35) (0.25,35) (0.30,35) (0.35,35) (0.40,32)};
+\addplot+[mark=square*, thick] coordinates {(0.20,32.8) (0.25,32.8) (0.30,32.8) (0.35,32.3) (0.40,29.2)};
+\end{axis}
+\end{tikzpicture}
 \caption{Similarity-threshold sensitivity for context retrieval}
 \label{fig:context-thresholds}
 \end{figure}
@@ -99,7 +155,7 @@ Table~\ref{tab:planner-tool-results} summarises the 50-trial run. Thirty-eight t
 \label{tab:planner-tool-results}
 \begin{tabular}{|>{\centering\arraybackslash}p{7.2cm}|>{\centering\arraybackslash}r|}
 \hline
-Measure & Result \\ \hline
+\textbf{Measure} & \textbf{Result} \\ \hline
 Total trials & 50 \\ \hline
 Successful API trials & 50 \\ \hline
 Correct tool sets & 38/50 (76.0\%) \\ \hline
@@ -115,7 +171,20 @@ Table~\ref{tab:planner-tool-results} shows that all 50 requests reached the API 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.98\textwidth,height=0.56\textheight,keepaspectratio]{5/figures/planner_tool_selection_overall.png}
+\begin{tikzpicture}
+\begin{axis}[
+  ybar, width=0.82\textwidth, height=0.34\textheight,
+  symbolic x coords={Correct,Failure,Incorrect}, xtick={Correct,Failure,Incorrect},
+  xticklabels={Correct,Tool-call,Incorrect},
+  ymin=0, ymax=55, ylabel={Trials}, bar width=18pt, enlarge x limits=0.28,
+  grid=major, ticklabel style={font=\normalsize}, label style={font=\normalsize},
+  nodes near coords, nodes near coords style={font=\scriptsize\bfseries, fill=white, text=black, inner sep=1pt}
+]
+\addplot[fill=green!55!black, nodes near coords={38 (76\%)}, nodes near coords style={font=\scriptsize\bfseries, fill=white, text=black, inner sep=1pt, yshift=4pt}] coordinates {(Correct,38)};
+\addplot[fill=red!70, nodes near coords={12 (24\%)}, nodes near coords style={font=\scriptsize\bfseries, fill=white, text=black, inner sep=1pt, yshift=4pt}] coordinates {(Failure,12)};
+\addplot[fill=gray!65, nodes near coords={0 (0\%)}, nodes near coords style={font=\scriptsize\bfseries, fill=white, text=black, inner sep=1pt, yshift=4pt}] coordinates {(Incorrect,0)};
+\end{axis}
+\end{tikzpicture}
 \caption{Overall outcomes for the 50-trial AgentOS tool-selection evaluation}
 \label{fig:planner-tool-selection-overall}
 \end{figure}
@@ -124,7 +193,24 @@ Figure~\ref{fig:planner-tool-selection-overall} presents the 50 planner trials a
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.98\textwidth,height=0.56\textheight,keepaspectratio]{5/figures/planner_tool_selection_category.png}
+\begin{tikzpicture}
+\begin{axis}[
+  xbar, width=0.82\textwidth, height=0.48\textheight,
+  xmin=0, xmax=112, xlabel={Exact-match accuracy (\%)},
+  symbolic y coords={Multi-agent coordination,Document workflow,Email delivery,Research,Financial calculation,System information,Weather,Date and time,Code execution},
+  ytick=data, nodes near coords, nodes near coords align={horizontal},
+  enlarge y limits=0.08, bar width=5pt,
+  grid=major, ticklabel style={font=\normalsize}, label style={font=\normalsize},
+  nodes near coords style={font=\normalsize, fill=white, text=black, inner sep=1pt},
+  yticklabel style={font=\normalsize, text width=30mm, align=right}
+]
+\addplot[fill=blue!65] coordinates {
+  (40,Multi-agent coordination) (60,Document workflow) (60,Email delivery)
+  (80,Research) (83.3,Financial calculation) (83.3,System information)
+  (83.3,Weather) (83.3,Date and time) (100,Code execution)
+};
+\end{axis}
+\end{tikzpicture}
 \caption{End-to-end exact-match accuracy by task category}
 \label{fig:planner-tool-selection-category}
 \end{figure}
@@ -147,7 +233,7 @@ The workload benchmark compared the implemented priority-aging policy with an ad
 \label{tab:scheduler-steady-state}
 \begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{3.2cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
 \hline
-Policy & \shortstack{Throughput\\(jobs/s)} & \shortstack{Queue\\$P_{95}$ (ms)} & \shortstack{High-priority\\$P_{95}$ (ms)} & \shortstack{End-to-end\\$P_{95}$ (ms)} \\ \hline
+\textbf{Policy} & \textbf{\shortstack{Throughput\\(jobs/s)}} & \textbf{\shortstack{Queue\\$P_{95}$ (ms)}} & \textbf{\shortstack{High-priority\\$P_{95}$ (ms)}} & \textbf{\shortstack{End-to-end\\$P_{95}$ (ms)}} \\ \hline
 Priority aging & 254.27 & 218.06 & 65.18 & 233.44 \\ \hline
 FIFO & 258.00 & 214.48 & 206.00 & 229.96 \\ \hline
 \end{tabularx}
@@ -162,7 +248,7 @@ Table~\ref{tab:scheduler-steady-state} reports throughput in jobs per second and
 \label{tab:scheduler-contention}
 \begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{3.2cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
 \hline
-Policy & \shortstack{Throughput\\(jobs/s)} & \shortstack{Queue\\$P_{95}$ (ms)} & \shortstack{High-priority\\$P_{95}$ (ms)} & \shortstack{End-to-end\\$P_{95}$ (ms)} \\ \hline
+\textbf{Policy} & \textbf{\shortstack{Throughput\\(jobs/s)}} & \textbf{\shortstack{Queue\\$P_{95}$ (ms)}} & \textbf{\shortstack{High-priority\\$P_{95}$ (ms)}} & \textbf{\shortstack{End-to-end\\$P_{95}$ (ms)}} \\ \hline
 Priority aging & 85.92 & 511.92 & 101.41 & 537.25 \\ \hline
 FIFO & 85.84 & 508.35 & 459.55 & 536.64 \\ \hline
 \end{tabularx}
@@ -170,16 +256,60 @@ FIFO & 85.84 & 508.35 & 459.55 & 536.64 \\ \hline
 
 Table~\ref{tab:scheduler-contention} uses the same measures under queue contention. Throughput remains effectively equal (85.92 jobs/s for priority aging and 85.84 jobs/s for FIFO). Queue-wait $P_{95}$ is also close (511.92 ms versus 508.35 ms), but high-priority queue-wait $P_{95}$ falls from 459.55 ms under FIFO to 101.41 ms under priority aging, about a 78\% reduction. End-to-end $P_{95}$ differs by 0.61 ms (537.25 ms versus 536.64 ms). Under this seeded workload, the policy substantially improves high-priority waiting without a measurable throughput penalty; lower-priority work can wait longer as a result.
 
+The contention results show that priority aging changes service order more than overall capacity. Because both policies process nearly the same number of jobs per second, the improvement for urgent work comes from selecting aged high-priority records earlier rather than from increasing execution resources. The corresponding increase in waiting time for lower-priority work is therefore an expected fairness trade-off, which should be assessed against the service priorities of the target workload.
+
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.86\textwidth]{5/figures/scheduler_throughput_baseline.png}
+\begin{tikzpicture}
+\begin{axis}[
+  ybar, width=0.88\textwidth, height=0.32\textheight,
+  symbolic x coords={Steady,Contention}, xtick=data,
+  xticklabels={{Steady state},{Queue contention}},
+  ymin=0, ymax=280, ylabel={Throughput (jobs/s)}, bar width=22pt,
+  enlarge x limits=0.28, grid=major,
+  legend style={font=\normalsize, at={(0.5,1.02)}, anchor=south, legend columns=2},
+  ticklabel style={font=\normalsize}, label style={font=\normalsize},
+  nodes near coords, nodes near coords style={font=\scriptsize, fill=white, text=black, inner sep=1pt}
+]
+\addplot[fill=blue!65!black, bar shift=-9pt, nodes near coords style={font=\scriptsize, fill=white, text=black, inner sep=1pt, xshift=-5pt}] coordinates {(Steady,254.27) (Contention,85.92)};
+\addlegendentry{Priority aging}
+\addplot[fill=orange!80!black, bar shift=9pt, nodes near coords style={font=\scriptsize, fill=white, text=black, inner sep=1pt, xshift=5pt}] coordinates {(Steady,258.00) (Contention,85.84)};
+\addlegendentry{FIFO}
+\end{axis}
+\end{tikzpicture}
 \caption{Measured scheduler throughput under steady-state and queue-contention workloads}
 \label{fig:chapter-scheduler-throughput}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.98\textwidth,height=0.56\textheight,keepaspectratio]{5/figures/scheduler_priority_latency.png}
+\begin{tikzpicture}
+\begin{axis}[
+  ybar, width=0.46\textwidth, height=0.33\textheight,
+  title={Steady state}, symbolic x coords={Priority,FIFO}, xtick=data,
+  ymin=0, ymax=240, ylabel={Queue wait $P_{95}$ (ms)}, bar width=14pt,
+  enlarge x limits=0.35, grid=major,
+  legend style={font=\normalsize, at={(1.08,1.18)}, anchor=south east, legend columns=2},
+  ticklabel style={font=\normalsize}, label style={font=\normalsize}, title style={font=\normalsize\bfseries},
+  nodes near coords, nodes near coords style={font=\scriptsize, fill=white, text=black, inner sep=1pt}
+]
+\addplot[fill=blue!65!black, bar shift=-7pt, nodes near coords style={font=\scriptsize, fill=white, text=black, inner sep=1pt, xshift=-5pt}] coordinates {(Priority,65.18) (FIFO,206.00)};
+\addlegendentry{High priority}
+\addplot[fill=blue!20, bar shift=7pt, nodes near coords style={font=\scriptsize, fill=white, text=black, inner sep=1pt, xshift=5pt}] coordinates {(Priority,218.06) (FIFO,204.00)};
+\addlegendentry{Low priority}
+\end{axis}
+\begin{axis}[
+  xshift=0.51\textwidth, ybar, width=0.46\textwidth, height=0.33\textheight,
+  title={Queue contention}, symbolic x coords={Priority,FIFO}, xtick=data,
+  ymin=0, ymax=580, ylabel={Queue wait $P_{95}$ (ms)}, bar width=14pt,
+  enlarge x limits=0.35, grid=major,
+  ticklabel style={font=\normalsize}, label style={font=\normalsize}, title style={font=\normalsize\bfseries},
+  nodes near coords, nodes near coords style={font=\scriptsize, fill=white, text=black, inner sep=1pt}
+]
+\addplot[fill=blue!65!black, bar shift=-7pt, nodes near coords style={font=\scriptsize, fill=white, text=black, inner sep=1pt, xshift=-5pt}] coordinates {(Priority,101.41) (FIFO,459.55)};
+\addplot[fill=blue!20, bar shift=7pt, nodes near coords style={font=\scriptsize, fill=white, text=black, inner sep=1pt, xshift=5pt}] coordinates {(Priority,532.00) (FIFO,500.00)};
+\end{axis}
+\end{tikzpicture}
 \caption{High- and low-priority queue-wait $P_{95}$ under priority aging and FIFO}
 \label{fig:chapter-scheduler-latency}
 \end{figure}
@@ -193,3 +323,6 @@ Figure~\ref{fig:chapter-scheduler-latency} contains two grouped-bar panels, one 
 The context engine demonstrates measurable active-context reduction and improved retrieval over direct vector RAG on the LoCoMo pilot, although the synthetic smoke set remains easier than the external conversational data. The planner achieves 76.0\% end-to-end exact tool-set accuracy and required-tool recall across 50 trials; its main failure mode is missing required tool calls rather than provider unavailability. The scheduler preserves throughput while substantially reducing high-priority queue waiting under contention.
 
 These results have important limitations. The context experiments use a deterministic synthetic set and a fixed LoCoMo pilot rather than the complete benchmark; threshold selection is exploratory, and no answer-model judging or confidence intervals were enabled. The planner evaluation uses an AgentOS-specific task set and should not be generalized beyond that scope. The scheduler benchmark uses deterministic service times and stubbed persistence, so it is not a production-capacity claim. Accordingly, the findings establish implementation behaviour under the stated conditions, not universal superiority over alternative systems. Future work should evaluate held-out planner tasks and thresholds, add answer judging, replace stubbed persistence, and use production-like scheduler traces.
+
+Taken together, the measurements show that the prototype's main benefit is controlled coordination rather than one isolated performance maximum. Context paging reduces the amount of active conversation that must be supplied to later operations while preserving useful evidence on the evaluated tasks. The planner results show that the runtime can convert model output into a measurable tool-selection outcome, making failures visible instead of hiding them inside an end-to-end response. The scheduler results further show that application-level policy can change which work receives timely service without materially changing the total work completed under contention.
+

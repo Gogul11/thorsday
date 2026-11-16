@@ -31,12 +31,12 @@ profiled in the following sections.
 \begin{figure}[H]
 \centering
 \begingroup
-\footnotesize
-\setlength{\tabcolsep}{4.5pt}
-\renewcommand{\arraystretch}{0.95}
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.0}
 \begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{0.24\textwidth}|>{\raggedright\arraybackslash}X|}
 \hline
-Agent & Implemented responsibility \\ \hline
+\textbf{Agent} & \textbf{Implemented responsibility} \\ \hline
 A1 & System information and resource inspection. \\ \hline
 A2 & Date, time, and timezone queries. \\ \hline
 A3 & Factual and academic research with sources. \\ \hline
@@ -392,9 +392,16 @@ The cryptocurrency PnL and ROI logic is shown in Figure~\ref{fig:crypto-pnl-logi
 \end{figure}
 
 % Keep the longer A.10--A.16 appendix headings on one line.
-\titleformat{\section}[hang]{\small\bfseries}{\makebox[14mm][l]{\thesection}}{0pt}{}
+\newcommand{\agentsection}[1]{%
+  \needspace{3\baselineskip}%
+  \refstepcounter{section}%
+  \phantomsection%
+  \addcontentsline{toc}{section}{\protect\numberline{\thesection}#1}%
+  \noindent\mbox{\bfseries\thesection\hspace{0.5em}#1}\par
+  \vspace{0.5\baselineskip}%
+}
 
-\section{Code Runner Agent}
+\agentsection{Code Runner Agent}
 
 The Code Runner Agent uses \texttt{build\_run\_python\_code\_tool}. It limits
 source code to 20,000 characters, executes Python with isolated mode and a
@@ -428,7 +435,7 @@ The code-generation, sandbox-execution, and repair logic is shown in Figure~\ref
 \end{figure}
 The flow separates code generation from execution and treats the subprocess result as the basis for recovery. Successful code returns bounded output and duration information, while a timeout, non-zero exit status, or traceback is passed back as feedback for repair. If the retry limit is reached, the agent returns a controlled failure report instead of continuing to consume execution resources.
 
-\section{Data Analysis Agent}
+\agentsection{Data Analysis Agent}
 
 The Data Analysis Agent is a lightweight structured-data agent for CSV, JSON,
 TSV, and tabular text. It uses the file tools to locate and read the requested
@@ -458,7 +465,7 @@ The data-analysis flow is shown in Figure~\ref{fig:data-analysis-logic}.
 \end{figure}
 The data-analysis path deliberately checks the source before performing calculations. This prevents unsupported conclusions when a file is missing or unreadable and keeps the original data unchanged. When the source is available, the bounded calculation step produces requested measures together with assumptions and evidence, making the result easier to reproduce and verify.
 
-\section{Decision Support Agent}
+\agentsection{Decision Support Agent}
 
 The Decision Support Agent is a lightweight, tool-free synthesis agent. It
 operates on the task and results supplied by the planner and preceding agents.
@@ -485,7 +492,8 @@ The decision-support flow is shown in Figure~\ref{fig:decision-support-logic}.
 \end{figure}
 The workflow keeps recommendation generation separate from fact extraction. The agent first identifies the available evidence, constraints, and uncertainty, then compares the alternatives before selecting a recommendation. Because it is tool-free, the quality of the result depends on the task context and preceding agent outputs; it does not independently verify external facts.
 
-\section{Summarizer Agent}
+\clearpage
+\agentsection{Summarizer Agent}
 
 The Summarizer Agent is a lightweight, tool-free agent for supplied text,
 conversation excerpts, documents already loaded into context, and prior agent
@@ -509,7 +517,8 @@ The summarization flow is shown in Figure~\ref{fig:summarizer-logic}.
 \end{figure}
 The summarizer reduces length by selecting information that is useful for later action or understanding, including decisions, dates, risks, and pending tasks. It removes repetition but preserves the meaning of the supplied material. The no-invention instruction is important because the agent operates only on the text and results already present in its context.
 
-\section{Translator Agent}
+\clearpage
+\agentsection{Translator Agent}
 
 The Translator Agent is a lightweight, tool-free agent for translation and
 tone-preserving rewriting. It preserves meaning, names, numbers, formatting,
@@ -533,7 +542,8 @@ The translation flow is shown in Figure~\ref{fig:translator-logic}.
 \end{figure}
 The translation flow treats language, audience, and tone as separate constraints on the transformation. Names, numerical values, formatting markers, and placeholders are retained unless the request requires otherwise. The output is limited to the transformed text by default, which allows the result to be passed directly to a user or another agent.
 
-\section{Checklist Agent}
+\clearpage
+\agentsection{Checklist Agent}
 
 The Checklist Agent is a lightweight, tool-free agent that converts a goal,
 set of requirements, or plan into a short ordered checklist. It includes
@@ -557,7 +567,8 @@ The checklist flow is shown in Figure~\ref{fig:checklist-logic}.
 \end{figure}
 The checklist agent converts broad requirements into concrete actions and orders them according to their dependencies. Acceptance checks and risks are included only when they are supported by the request. This makes the output useful as an execution guide while avoiding unnecessary steps or assumptions that were not supplied by the user.
 
-\section{Agent Creator}
+\clearpage
+\agentsection{Agent Creator}
 
 The Agent Creator is registered for tasks that need a new specialised
 capability. \texttt{save\_tool\_file} parses generated tool code with Python's
@@ -588,4 +599,10 @@ The dynamic agent-creation and registration logic is shown in Figure~\ref{fig:ag
 \label{fig:agent-creator-logic}
 \end{figure}
 The creation path treats generated components as changes to the runtime rather than as ordinary text output. Tool code is checked before registration, agent and registry files are updated together, and a failed registration restores the affected agent files and registry state. Only a successfully registered agent is loaded and executed, reducing the risk of leaving an incomplete capability in the catalogue.
+
+The workflow therefore has three distinct responsibilities. First, the creator turns the requested capability into a tool or agent module with the expected interface and metadata. Second, the registration step makes the capability discoverable by updating the implementation file and the registry entry used by semantic retrieval. Finally, the execution step verifies that the newly registered agent can be loaded and invoked through the normal runtime path. Keeping these stages separate makes it possible to distinguish generation errors, registration errors, and execution errors when a request cannot be completed.
+
+The registry update also preserves the relationship between an agent name, its description, its implementation path, and its supported task type. A generated file that exists without a matching registry entry cannot be selected reliably, while a registry entry without a valid implementation can cause later loading failures. The validation and rollback steps are therefore important for maintaining catalogue consistency. In the current design, the rollback covers the agent-registration changes described above; tool-file changes made by the earlier tool-registration operation have a separate scope and are not automatically removed by a later agent-registration rollback.
+
+The creator returns results only after registration and loading succeed, while failures identify the rejected stage. Future work includes stronger sandboxing, versioned registry entries, explicit permissions, and transactional tool/agent updates while retaining the create--validate--register--run sequence shown in Figure~\ref{fig:agent-creator-logic}.
 

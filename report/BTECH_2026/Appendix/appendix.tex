@@ -20,7 +20,7 @@ Table~\ref{tab:planning-metrics} defines the planning-quality measures used to a
 \label{tab:planning-metrics}
 \begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{0.27\textwidth}|>{\centering\arraybackslash}X|}
 \hline
-Metric & Definition and formula \\ \hline
+\textbf{Metric} & \textbf{Definition and formula} \\ \hline
 Agent-selection accuracy & Fraction of tasks for which the planner selects the complete required agent set: $\frac{\text{tasks with correct agent set}}{N}$. \\ \hline
 Agent precision & Fraction of selected agents that are relevant: $\frac{TP}{TP+FP}$. \\ \hline
 Agent recall & Fraction of required agents that are selected: $\frac{TP}{TP+FN}$. \\ \hline
@@ -42,7 +42,7 @@ Table~\ref{tab:execution-metrics} defines the reliability measures used to asses
 \label{tab:execution-metrics}
 \begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{0.29\textwidth}|>{\centering\arraybackslash}X|}
 \hline
-Metric & Definition and formula \\ \hline
+\textbf{Metric} & \textbf{Definition and formula} \\ \hline
 Task success rate & $\frac{\text{tasks completed with the expected result}}{N}$. \\ \hline
 Step success rate & $\frac{\text{successfully completed steps}}{\text{dispatched steps}}$. \\ \hline
 Failure rate & $\frac{\text{tasks ending in FAILED}}{N}$, reported separately from temporary WAITING or BLOCKED states. \\ \hline
@@ -61,7 +61,7 @@ Table~\ref{tab:scheduler-metrics} defines the scheduler and resource measures us
 \label{tab:scheduler-metrics}
 \begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{0.30\textwidth}|>{\centering\arraybackslash}X|}
 \hline
-Metric & Definition and formula \\ \hline
+\textbf{Metric} & \textbf{Definition and formula} \\ \hline
 Mean queue waiting time & $\frac{1}{S}\sum_{i=1}^{S}(T_{start,i}-T_{ready,i})$. \\ \hline
 Scheduling response time & $T_{dispatch}-T_{ready}$ for each admitted step. \\ \hline
 Starvation rate & $\frac{\text{ready steps exceeding the starvation threshold}}{\text{ready steps}}$. \\ \hline

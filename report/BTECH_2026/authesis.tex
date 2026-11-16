@@ -3,7 +3,7 @@
 %--------------------------------
 %%This is the main file that includes the front matter and other chapter links.
 %%Chapters are placed within the folder named 1, 2,...
-%%To compile, run the command `pdflatex authesis.tex' in the terminal.
+%%To compile, run the command `xelatex authesis.tex' in the terminal (Tamil support).
 %%Some packages may not be needed. Comment the ones, that are not needed.
 %%Images can be saved in the format of *.png.
 %%------------------------------------------------------
@@ -25,6 +25,14 @@
 %$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 \documentclass[13 pt,a4paper]{aureportm}
+\usepackage{iftex}
+\ifPDFTeX
+  % The Tamil abstract requires compilation with XeLaTeX or LuaLaTeX.
+  \newcommand{\tamilfont}{}
+\else
+  \usepackage{fontspec}
+  \newfontfamily\tamilfont{Nirmala UI}[Script=Tamil]
+\fi
 \usepackage{mathptm}
 \renewcommand{\normalsize}{\fontsize{13 pt}{14.6 pt}\selectfont}
 %\usepackage{aunatbib}
@@ -50,9 +58,11 @@
 \usepackage{ifthen}
 \usepackage{graphicx}
 \usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
 \usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit}
 \usepackage{hyperref}
-\pdfstringdefDisableCommands{\def\uppercase#1{#1}}
+\pdfstringdefDisableCommands{\def\uppercase#1{#1}\def\tamilfont{}}
 \usepackage{epsfig}
 \usepackage{pslatex}
 \usepackage{setspace}
@@ -195,36 +205,36 @@
  \vspace{0.4\baselineskip}
 
   \normalsize{\textit{\textbf{Submitted by}}}\\
-  \vspace{0.5\baselineskip}
+  \vspace{0pt}
   {
-  \large \textbf{GOGUL A (2023115020)}}\\
+   \large \textbf{GOGUL A (2023115020)}}\\
   %\normalsize{\textbf{(Roll number)}}\\
-  \large{\textbf{MOHAN VISHNU KUMAR M (2023115026)}}\\
-  \large{\textbf{OVIYASHREE C J (2023115052)}} \\
-  \large{\textbf{KUDIMI GUNA SEKHAR (2023115126)}} \\
-   \vspace{0.3\baselineskip}
+    \large{\textbf{MOHAN VISHNU KUMAR M (2023115026)}}\\
+    \large{\textbf{OVIYASHREE C J (2023115052)}} \\
+    \large{\textbf{KUDIMI GUNA SEKHAR (2023115126)}} \\
+     \vspace{0.3\baselineskip}
   %\normalsize{\textit{A report for the phase-I of the project}}\\
   \vspace{-0.1\baselineskip}
   \normalsize{\textit{submitted to the Faculty of}} \\
-  \vspace{0.5\baselineskip}
+    \vspace{0.5\baselineskip}
   \normalsize{\textbf{COMPUTER SCIENCE AND INFORMATION ENGINEERING}} \\
-  \vspace{0.4\baselineskip}
+    \vspace{0.4\baselineskip}
   \normalsize{\textit{in partial fulfillment for the award of the degree}}\\
   \normalsize{\textit{\textbf{of}}}\\
-\vspace{.2\baselineskip}
+  \vspace{.2\baselineskip}
   \bigsize{{\textbf{BACHELOR OF TECHNOLOGY}}}\\
   \normalsize{\textit{\textbf{in}}}\\
   \bigsize{{\textbf{INFORMATION TECHNOLOGY}}}\\
 \end{center}
   \begin{center}
    %\includegraphics[width=26mm,height=25mm]{auemblem.pdf}   \\
-   \includegraphics[scale=0.32]{auemblem.pdf} \\
+    \includegraphics[scale=0.32]{auemblem.pdf} \\
   \normalsize{ \textbf{DEPARTMENT OF INFORMATION SCIENCE AND TECHNOLOGY }}\\
   \normalsize{\textbf{COLLEGE OF ENGINEERING, GUINDY}}\\
   \normalsize{\textbf{ANNA UNIVERSITY}}\\
   \normalsize{\textbf{CHENNAI 600 025}}\\
-  \vspace{0pt}
-  \normalsize{\textbf{OCTOBER 2026}}
+  \vspace{0.5\baselineskip}
+  \normalsize{\textbf{NOVEMBER 2026}}
  \end{center}
 \pagebreak
 
@@ -245,8 +255,8 @@ BONA FIDE CERTIFICATE}
 \end{spacing}
 \vspace{-0.3 cm}
 \begin{flushleft}
- \parbox[t]{\datewidth}{\small{\textbf{PLACE: Chennai}}\\
- \small{\textbf{DATE: 29/10/2026}}}
+ \parbox[t]{\datewidth}{\small{\textbf{PLACE: }}\\
+ \small{\textbf{DATE: }}}
  \hfill
  \parbox[t]{6 cm}{\small{\textbf{Dr. SELVI RAVINDRAN}} \\
  \small{\textbf{ASSOCIATE PROFESSOR}}\\
@@ -284,6 +294,7 @@ BONA FIDE CERTIFICATE}
 
 
 \include{Abstract/abstract}
+\include{Abstract/tamil_abstract}
 \include{acknowl}
 
 \setlength\cftparskip{0pt}
@@ -347,12 +358,11 @@ LIST OF FIGURES} \listoffigures
 \include{4/Chapter4}
 \include{5/Chapter5}
 \input{Conclusion/conclusion}
-\par\addvspace{\baselineskip}
+\clearpage
 \phantomsection
 \input{declaration_ai}
 \appendix
 \include{Appendix/agents}
-\include{Appendix/ai_prompts}
 
 
 %\bibliographystyle{auapalike}

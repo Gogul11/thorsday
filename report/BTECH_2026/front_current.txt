@@ -1,0 +1,444 @@
+AGENTOS - A HYBRID MULTI-AGENT RUNTIME
+    ENVIRONMENT FOR AUTONOMOUS AI
+                     APPLICATIONS
+
+                  A PROJECT REPORT
+
+                          Submitted by
+
+                  GOGUL A (2023115020)
+       MOHAN VISHNU KUMAR M (2023115026)
+             OVIYASHREE C J (2023115052)
+        KUDIMI GUNA SEKHAR (2023115126)
+                   submitted to the Faculty of
+
+  COMPUTER SCIENCE AND INFORMATION ENGINEERING
+
+         in partial fulfillment for the award of the degree
+                                of
+
+           BACHELOR OF TECHNOLOGY
+                                in
+
+           INFORMATION TECHNOLOGY
+
+
+
+
+DEPARTMENT OF INFORMATION SCIENCE AND TECHNOLOGY
+         COLLEGE OF ENGINEERING, GUINDY
+                     ANNA UNIVERSITY
+                       CHENNAI 600 025
+                        OCTOBER 2026
+                                                                               ii
+
+
+                        ANNA UNIVERSITY
+                         CHENNAI - 600 025
+                   BONA FIDE CERTIFICATE
+
+
+           Certified that this project report titled AgentOS - A Hybrid Multi-
+Agent Runtime Environment for Autonomous AI Applications is the bona
+fide work of Gogul A (2023115020), Mohan Vishnu Kumar M (2023115026),
+Oviyashree C J (2023115052), and Kudimi Guna Sekhar (2023115126), who
+carried out the project work under my supervision. Certified further that, to the
+best of my knowledge and belief, the work reported herein does not form part of
+any other thesis or dissertation on the basis of which a degree or an award was
+conferred on an earlier occasion on this or any other candidate.
+
+
+PLACE: Chennai                                 Dr. SELVI RAVINDRAN
+DATE: 29/10/2026                               ASSOCIATE PROFESSOR
+                                               PROJECT GUIDE
+                                               DEPARTMENT OF IST, CEG
+                                               ANNA UNIVERSITY
+                                               CHENNAI 600 025
+
+
+                               COUNTERSIGNED
+
+
+
+
+                                 Dr. P. YOGESH
+                         HEAD OF THE DEPARTMENT
+       DEPARTMENT OF INFORMATION SCIENCE AND TECHNOLOGY
+                    COLLEGE OF ENGINEERING, GUINDY
+                              ANNA UNIVERSITY
+                               CHENNAI 600 025
+                                                                                iii
+
+
+                                ABSTRACT
+
+
+             Large-language-model applications are evolving from single-turn
+chat interfaces into systems that plan, use tools, preserve context, and coordinate
+multiple specialised agents. However, application developers commonly re-
+build scheduling, memory, event propagation, execution monitoring, and failure
+handling for each project. This report presents AgentOS, a hybrid multi-agent
+runtime environment that provides these operating-system-style services around
+autonomous AI applications. The implemented system combines a Next.js user
+interface, a FastAPI gateway, a Redis-backed event path, MongoDB task history,
+ChromaDB semantic retrieval, structured LLM planning, dependency-aware di-
+rected acyclic graph execution, semantic context paging, a global priority-aging
+scheduler, hybrid local/cloud model routing, token and concurrency admission
+control, and a sandboxed Python code runner with bounded self-healing retries.
+The frontend exposes the generated plan graph and live scheduler and execution
+activity through WebSocket updates. The report distinguishes implemented fa-
+cilities from proposed components such as complete role-based access control
+and durable coroutine restoration after a kernel restart. Verification is based on
+repository compile checks, TypeScript checks, and focused smoke tests rather
+than unsubstantiated performance claims. AgentOS therefore provides a modu-
+lar foundation for studying reliable, observable, and resource-aware multi-agent
+execution.
+
+
+             Keywords: multi-agent runtime, semantic planning, DAG execution,
+context paging, priority scheduling.
+                                                                                iv
+
+
+                 ACKNOWLEDGEMENT
+
+
+   It is our privilege to express our deepest gratitude to our project guide,
+Dr. SELVI RAVINDRAN, Associate Professor, Department of Informa-
+tion Science and Technology, College of Engineering, Guindy, Anna U-
+niversity, for her constant supervision, encouragement, technical sugges-
+tions, and support throughout this project work.
+
+   We are grateful to Dr. P. YOGESH, Professor and Head, Department
+of Information Science and Technology, College of Engineering, Guindy,
+Anna University, for providing us with the opportunity and necessary re-
+sources to complete this project.
+
+   We also express our sincere gratitude to the members of the Project Re-
+view Committee: Dr. M. VIJAYALAKSHMI, Professor; Dr. ABIRAMI
+MURUGAPPAN, Professor; and Dr. N. THANGARAJ, Associate Pro-
+fessor, Department of Information Science and Technology, College of En-
+gineering, Guindy, Anna University, for their guidance, valuable feedback,
+and useful suggestions.
+
+   We thank the faculty members and non-teaching staff of the Depart-
+ment of Information Science and Technology, Anna University, Chennai,
+as well as our classmates, friends, and families, for their valuable support
+and encouragement.
+
+
+                                                   GOGUL A (2023115020)
+                           MOHAN VISHNU KUMAR M (2023115026)
+                                        OVIYASHREE C J (2023115052)
+                                KUDIMI GUNA SEKHAR (2023115126)
+                                                   v
+
+              TABLE OF CONTENTS
+
+
+    ABSTRACT                                      iii
+    LIST OF TABLES                               viii
+    LIST OF FIGURES                               ix
+    LIST OF SYMBOLS AND ABBREVIATIONS             xi
+
+1   INTRODUCTION                                   1
+    1.1 FROM OPERATING SYSTEMS TO AGENTOS          1
+    1.2 MOTIVATION                                 3
+    1.3 PROBLEM STATEMENT                          4
+    1.4 OBJECTIVES                                 5
+    1.5 SCOPE                                      5
+    1.6 CONTRIBUTIONS                              6
+    1.7 REPORT ORGANIZATION                        6
+
+2   LITERATURE SURVEY                              7
+    2.1 AGENTOS AND AUTONOMOUS AGENT RUNTIMES      7
+    2.2 AGENT RUNTIMES AND AUTONOMOUS AGENTS       7
+    2.3 MEMORY AND CONTEXT MANAGEMENT              8
+    2.4 PLANNING, TOOL USE, AND REFLECTION         9
+    2.5 SCHEDULING, RESOURCES, AND RELIABILITY    11
+    2.6 SECURITY AND SANDBOXED EXECUTION          11
+    2.7 EVENT-DRIVEN INFRASTRUCTURE               12
+    2.8 RESEARCH GAP AND POSITIONING              12
+
+3   SYSTEM DESIGN                                 13
+    3.1 DESIGN PRINCIPLES                         13
+    3.2 OVERALL ARCHITECTURE                      13
+    3.3 HYBRID LLM REASONING ENGINE               16
+    3.4 FRONTEND, GATEWAY, AND EVENT FLOW         16
+    3.5 PLANNER AND DAG EXECUTION                 17
+    3.6 CONTEXT PAGING                            19
+    3.7 GLOBAL SCHEDULER AND RESOURCE MANAGER     20
+    3.8 RESOURCE MANAGEMENT                       21
+    3.9 TOOL MANAGEMENT                           22
+                                                vi
+
+
+    3.10 AGENT LIFECYCLE AND EVENTS             24
+    3.11 SANDBOXED CODE RUNNER                  24
+
+4   IMPLEMENTATION                              26
+    4.1 IMPLEMENTATION ENVIRONMENT              26
+    4.2 SEMANTIC AGENT RETRIEVAL                26
+    4.3 PLANNER AND FALLBACK                    27
+    4.4 HYBRID PROVIDER ROUTING                 28
+    4.5 DAG VALIDATION                          29
+    4.6 PRIORITY-AGING SCHEDULER                30
+    4.7 RESOURCE ADMISSION AND TOKEN BUDGETS    31
+    4.8 REDIS EVENTS AND BACKEND FORWARDING     32
+    4.9 CONTEXT PAGE-OUT AND PAGE-IN            32
+    4.10 SANDBOXED EXECUTION AND SELF-HEALING   33
+    4.11 FRONTEND OBSERVABILITY                 33
+    4.12 CONFIGURATION AND VERIFICATION         34
+    4.13 AGENTOS ALGORITHMIC SPECIFICATION      35
+
+5   RESULTS AND PERFORMANCE ANALYSIS            43
+    5.1 REPORTING PROTOCOL                      43
+    5.2 CONTEXT-PAGING ENGINE                   43
+        5.2.1 Evaluation protocol               44
+        5.2.2 Synthetic smoke evaluation        45
+        5.2.3 LoCoMo pilot evaluation           45
+        5.2.4 Graphical analysis                46
+    5.3 PLANNER AND TOOL SELECTION              49
+    5.4 AGENT SCHEDULER                         52
+    5.5 INTEGRATED INTERPRETATION               55
+
+6   CONCLUSION AND FUTURE WORK                  57
+
+DECLARATION ON THE USE OF AI TOOLS              58
+
+APPENDIX                                        60
+
+A   AGENT CATALOGUE AND INTERNAL WORKFLOWS      60
+    A.1 Agent A1: System Information Agent      61
+    A.2 Agent A2: Date and Time Agent           61
+                                            vii
+
+
+    A.3 Agent A3: Research Agent            62
+    A.4 Agent A4: File and Document Agent   62
+    A.5 Content Creator Agent               63
+    A.6 Email Agent                         64
+    A.7 Weather Agent                       65
+    A.8 Loan EMI Calculator Agent           66
+    A.9 Crypto PnL Agent                    67
+    A.10 Code Runner Agent                  68
+    A.11 Data Analysis Agent                69
+    A.12 Decision Support Agent             70
+    A.13 Summarizer Agent                   72
+    A.14 Translator Agent                   73
+    A.15 Checklist Agent                    74
+    A.16 Agent Creator                      75
+
+B   AI-ASSISTED PROMPTS                     77
+    B.1 LITERATURE-SURVEY SUPPORT           77
+    B.2 LANGUAGE AND EDITORIAL SUPPORT      77
+    B.3 SYNTHETIC TEST-CASE SUPPORT         79
+
+REFERENCES                                  80
+                                                         viii
+
+                   LIST OF TABLES
+
+
+4.1 Principal Redis channels and keys                     33
+4.2 Selected AgentOS configuration values                 35
+
+5.1 Synthetic context-paging evaluation                   45
+5.2 LoCoMo pilot context-retrieval evaluation             46
+5.3 AgentOS tool-selection adapter results                50
+5.4 Priority-aging scheduler versus FIFO under steady-
+    state workload                                        52
+5.5 Priority-aging scheduler versus FIFO under queue-
+    contention workload                                   53
+                                                             ix
+
+                    LIST OF FIGURES
+
+
+3.1 Overall AgentOS system architecture                      15
+3.2 Frontend, FastAPI gateway, Redis channels, AI ker-
+    nel, and agent-workforce flow                            17
+3.3 Planner, validation, and dependency-aware execu-
+    tion flow                                                19
+3.4 Context page-out, vector-store retrieval, and seman-
+    tic page-in flow                                         20
+3.5 Global agent scheduler, lifecycle events, resource
+    checks, and runtime feedback                             21
+3.6 Resource-manager decision flow supplied for the A-
+    gentOS design                                            22
+3.7 Tool selection, permission checking, invocation,
+    and result return                                        23
+3.8 Agent lifecycle transitions                              24
+3.9 Sandboxed Python execution and bounded self-
+    healing loop                                             25
+
+4.1 Optimised semantic planner and DAG construction          28
+
+5.1 Success and evidence-recall comparison for the syn-
+    thetic and LoCoMo pilot evaluations                      47
+5.2 Similarity-threshold sensitivity for context retrieval   48
+5.3 Overall outcomes for the 50-trial AgentOS tool-
+    selection evaluation                                     50
+5.4 End-to-end exact-match accuracy by task category         51
+5.5 Measured scheduler throughput under steady-state
+    and queue-contention workloads                           54
+5.6 High- and low-priority queue-wait P95 under priority
+    aging and FIFO                                           54
+
+A.1   AgentOS agent catalogue                                60
+A.2   A1 system-information logic                            61
+A.3   A2 date-and-time logic                                 62
+A.4   A3 research and source-verification logic              62
+A.5   A4 file-operation and deletion-confirmation logic      63
+                                                             x
+
+
+A.6 Content Creator drafting logic                          64
+A.7 Email delivery and simulation-mode logic                65
+A.8 Weather retrieval and reporting logic                   66
+A.9 Loan EMI and amortisation logic                         67
+A.10 Cryptocurrency PnL and ROI logic                       68
+A.11 Code generation, sandbox execution, and repair logic   69
+A.12 Data-analysis inspection and calculation logic         70
+A.13 Decision-support synthesis logic                       71
+A.14 Summarization and fact-preservation logic              72
+A.15 Translation and tone-preserving transformation logic   73
+A.16 Checklist construction logic                           74
+A.17 Dynamic agent creation and registration logic          75
+                                                                       xi
+
+
+  LIST OF SYMBOLS AND ABBREVIATIONS
+
+ Symbol                            Meaning
+   AI                        Artificial Intelligence
+  API                 Application Programming Interface
+ ARES                 Automated RAG Evaluation System
+  DAG                       Directed Acyclic Graph
+  FSM                        Finite-State Machine
+  IPC                    Inter-Process Communication
+  LLM                       Large Language Model
+  MCP                       Model Context Protocol
+MongoDB      Document-oriented database used for task history and
+                                   metadata
+  RAG                  Retrieval-Augmented Generation
+ RAGAs           Retrieval-Augmented Generation Assessment
+ RBAC                     Role-Based Access Control
+  Redis     In-memory data store used for queues and event transport
+   UI                            User Interface
+WebSocket    Bidirectional communication protocol over a persistent
+                                  connection
+   α           Aging factor used in effective-priority calculation
+  Pmax                    Maximum effective priority
+   Tq                 Cooperative dispatch time quantum
+                                                                                    1
+
+
+                                CHAPTER 1
+
+                            INTRODUCTION
+
+
+1.1        FROM OPERATING SYSTEMS TO AGENTOS
+
+
+           Operating systems provide the shared software foundation between
+computer hardware and applications. They manage processor time, memory,
+files, input/output devices, and process execution while offering stable abstrac-
+tions and enforcing boundaries between competing programs [21]. This coordi-
+nation allows multiple applications to run on the same computer in a controlled
+and observable manner.
+
+
+           AI applications are increasingly moving beyond the conventional
+chatbot model. An agent can receive a goal, decide what information or ac-
+tion is required, call tools, inspect results, retain task-related context, and revise
+its plan across several steps [2]. More complex tasks can be divided among
+specialised agents, such as agents for information gathering, document analysis,
+and result checking. This makes the system modular, but also requires explicit
+agent selection, dependency management, execution tracking, and failure han-
+dling.
+
+
+           The coordination challenge becomes greater when agents share lim-
+ited resources. Language-model calls consume time, tokens, context capacity,
+and sometimes paid provider resources, while concurrent tasks may compete
+for execution slots, memory, and tools. The runtime must decide which work
+is ready, control resource access, preserve useful context, and explain why an
+action succeeded, failed, waited, or was retried. Context management is particu-
+larly important because retaining every previous message can exceed model lim-
+                                                                               2
+
+
+its, whereas removing older messages without retrieval may discard decisions or
+evidence needed by later steps. Research on long-term memory therefore em-
+phasises retrieving relevant evidence rather than simply storing large volumes
+of text [7, 8].
+
+
+            Execution must also remain understandable to users and developers.
+A final answer alone does not show which agents were selected, which steps
+are waiting on dependencies, whether a tool call failed, or how resources were
+consumed. Structured lifecycle events and task records provide this visibili-
+ty, supporting diagnosis, evaluation, and consistent policies for tool access and
+execution limits.
+
+
+            These requirements motivate an operating-system-inspired founda-
+tion for AI agents. In this analogy, agents and tasks resemble applications and
+processes, plans describe work and dependencies, scheduling selects executable
+tasks, and context services manage information needed by later model call-
+s. Resource-management services can enforce concurrency and token budgets,
+while event mechanisms expose state changes. AIOS applies this perspective
+to scheduling, memory, storage, and tool management, while MemGPT uses
+operating-system ideas to manage information within a limited context win-
+dow [1, 7]. However, AI runtimes must also account for probabilistic model
+behaviour, slow or remote calls, and incomplete provider usage or failure infor-
+mation.
+
+
+            An Agent Operating System, or AgentOS, adapts these principles
+into a runtime layer for planning and coordinating AI agents. It provides
+shared services for task representation, agent selection, dependency validation,
+scheduling, context management, resource admission, and execution-state re-
+porting. It does not replace a conventional operating system; instead, it applies
+selected operating-system concepts to applications that depend on language
+                                                                               3
+
+
+models, tools, and cooperating agents. This shared layer makes workflows
+explicit and provides a common place to observe task progress while leaving
+application goals and agent capabilities to the applications built on it.
+
+
+           This project develops and evaluates such a runtime through Agen-
+tOS. A user submits a task through a web interface, the planning layer converts
+it into steps and selects specialised agents, and the kernel validates dependen-
+cies before scheduling ready work. The system combines semantic agent re-
+trieval, dependency-aware graph execution, context paging, concurrency and
+token-budget admission, hybrid local/cloud model routing, and lifecycle events
+visible to the user. Its implementation connects a Next.js frontend, FastAPI
+gateway, Python kernel, Redis coordination and event transport, MongoDB task
+persistence, and ChromaDB vector retrieval. Together, these components pro-
+vide a reusable and observable runtime for applications in which agents plan,
+use tools, and cooperate on multi-step tasks.
+
+
+
+1.2       MOTIVATION
+
+
+           AI applications are moving from single-turn assistants toward agents
+that can plan, use tools, retain task context, and carry out work across multiple
+steps. As these applications become more capable, their infrastructure needs
+grow: developers must manage task state, choose suitable agents, coordinate
+dependent and independent work, control access to shared resources, and handle
+failures. When each application implements these mechanisms separately, the
+resulting integrations can be difficult to reuse, extend, and inspect.
+
+
+           The request-response model alone is also a poor fit for work that
+must continue across steps or involve several agents. Agent workflows need
+explicit lifecycle and dependency management so that work can be scheduled as
+it becomes ready and its progress can be observed. They also need a deliberate
+

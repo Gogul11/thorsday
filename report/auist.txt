@@ -1,0 +1,454 @@
+TYPESETTING REPORTS USING LATEX
+                           ∗
+          v2.0 (JULY 2016)
+
+
+
+
+         DEPARTMENT OF INFORMATION
+             SCIENCE AND TECHNOLOGY
+
+
+                               CEG CAMPUS
+
+
+              ANNA UNIVERSITY - 600 025
+
+
+
+
+∗
+    Maintained and documented by Dr. Bama Srinivasan, bama@auist.net
+Contents
+
+1   Changes from the previous version               . . . . . . . . . . . . . . . . . . . . .    2
+
+
+2   Prerequisites     . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      2
+
+
+3   Download and Installation         . . . . . . . . . . . . . . . . . . . . . . . . . . .      2
+
+
+4   Structure of `ausitreport'      . . . . . . . . . . . . . . . . . . . . . . . . . . . .      2
+
+
+5   Frontmatter     . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      3
+    5.1   Title Page . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .       3
+    5.2   Second Page . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .        3
+    5.3   Abstract, Acknowledgement and Acronyms . . . . . . . . . . . . . . . . .               4
+    5.4   Table of Contents . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .        6
+6   Bibliography    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .        6
+    6.1 Creating .bib le for references . . . . . . . . . . . . . . . . . . . . . . . .         7
+    6.2 List of Publications . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .         7
+7   Texts in Chapters       . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      8
+
+
+8   Figures, Tables and Equations         . . . . . . . . . . . . . . . . . . . . . . . .        9
+    8.1 Figures . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .        9
+    8.2 Tables . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .         9
+    8.3 Equations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .         11
+9   Frequently Asked Questions          . . . . . . . . . . . . . . . . . . . . . . . . . .     11
+
+
+
+
+                                                1
+   This document provides a few guidelines to typeset the reports using LaTex according
+to Anna University thesis format.
+
+
+1     Changes from the previous version
+
+    1. Changed the model of Table of Contents - Reduced the top margin and line spacing.
+       Removed the title Chapter no, title and page numbers.
+
+    2. Counter depth for sections is increased to 4.
+
+    3. Reduced the top margin for Chapter Titles.
+
+    4. Changed the references structure using natbib and unsrt bibliography style.
+
+    5. Appendices are named using A, B instead of Arabic numerals.
+
+
+2     Prerequisites
+
+The user is expected to be familiar with the LaTex typesetting system with the basic
+understanding of cls, tex and bibliography les.
+
+
+3     Download and Installation
+
+The required les are available in https://sites.google.com/a/auist.net/
+ist-report/. Make sure you have LaTex installed in your machine.
+
+    • Download auistreport.zip and extract it.
+
+    • To check whether the LaTex template works in your machine, go to the folder, where
+      you have extracted the les and execute the command pdflatex authesis.tex.
+      If everything goes well, you should be able to generate a pdf called authesis.pdf,
+      which would be residing in the same folder. (You might have already noticed a
+      similar le called authesis.pdf in the folder before executing the command. The
+      same le is rewritten once more on executing the command). If you notice errors
+      appearing in the terminal, you might have to install the necessary packages.
+
+
+4     Structure of `ausitreport'
+
+After extracting, the folder `auistreport' contains folders named 1,2,3,4,5,6, Abstract,
+Acknowledgement, Acronyms, Appendix, Conclusion and lpub. Along with these,
+there are some les with extension `*.sty', a few image les: auemblem.eps, auemblem.pdf,
+
+                                             2
+                           Figure 1: Structure of auistreport
+
+other les: size13.clo, authesis.cls and authesis.tex (Refer Figure 1). Do not
+modify *.sty, *.clo, *.cls and image les .
+    The main source le is `authesis.tex', which has the details of the packages, de-
+nitions, contents of rst and second page of thesis and link to all other chapters. There
+may be unwanted packages that are listed in this le. Comment the ones that are not
+needed.
+
+
+5    Frontmatter
+
+The rst two pages namely Title Page and Certicate can be edited in the main le.
+All other topics such as Abstract, Acknowledgement and Acronyms are to be edited in a
+separate le which are placed in the respective folders.
+
+5.1 Title Page
+The information for title page and second page of thesis can be found in the le `authesis.tex'.
+Details of title page such as `Title of the thesis', `Author', Course information and `Month
+and year' are to be lled in the relevant places (Figure 2).
+
+
+
+
+5.2 Second Page
+The second page contains the Certicate. You have to ll in the details of your name
+and the name of your guide. Replace
+
+``$<$NAME OF GUIDE$>$, $<$DESIGNATION$>$"
+
+appropriately.
+
+
+
+                                            3
+                                 Figure 2: Title Page
+
+\begin{flushleft}
+ \parbox[t]{\datewidth}{\small{\textbf{PLACE: }}\\
+ \small{\textbf{DATE: }}}
+ \hfill
+ \parbox[t]{6 cm}{\small{\textbf{$<$NAME OF GUIDE$>$}} \\
+ \small{\textbf{$<$DESIGNATION$>$}}\\
+ \small{\textbf{PROJECT GUIDE}}\\
+ \small{\textbf{DEPARTMENT OF IST, CEG}}\\
+ \small{\textbf{ANNA UNIVERSITY}} \\
+ \small{\textbf{CHENNAI 600025}}
+ }
+\end{flushleft}
+
+
+
+
+5.3 Abstract, Acknowledgement and Acronyms
+The third and fourth page contains the abstract and acknowledgement, respectively. The
+main le `authesis.tex' has the link to these les (Refer Figure 3).
+    Locate the le abstract.tex in the folder Abstract and open the le. The rst two
+lines appear as:
+
+                                          4
+       Figure 3: Link to Abstract and Acknowledgement pages in authesis.tex
+
+
+
+ \chapter*{\uppercase{ABSTRACT}}
+\addcontentsline{toc}{section}{\bfseries \uppercase{Abstract}}
+
+
+The rst line has a * mark after chapter, to indicate the omission of chapter number.
+The second line is needed to include this entry in the Table of Contents. Do not change
+these two lines. Enter the abstract text after:
+
+
+ \begin{sloppypar}
+
+                                                                                     .
+   Similarly, locate the folder Acknowledgement and open the le acknowledgement.tex.
+Enter the contents and in the last line, ll your name and initial.
+
+
+ \hfill \textbf{$<$NAME INITIAL$>$}
+
+
+
+
+    Link for Acronyms is ordered after Table of Contents in the main le authesis.tex.
+To enter Acronyms, locate the folder Acronyms and open the le Acronyms.tex. Enter the
+relevant Abbrevations/symbols and explanation after the following lines in Acronyms.tex.
+
+
+ \chapter*{LIST OF SYMBOLS AND ABBREVIATIONS}
+\addcontentsline{toc}{section}{\bfseries LIST OF SYMBOLS AND ABBREVIATIONS}
+
+\setlongtables
+\begin{longtable}
+  {>{\PBS\raggedright\hspace{0pt}}p{3cm}@{}%
+    >{\PBS\raggedright\hspace{0pt}}p{11.5cm}@{}}
+
+
+Refer to the sample le in the template for including symbols and the respective expla-
+nation using $ and & signs.
+
+                                           5
+5.4 Table of Contents
+This LaTex template automatically generates Table of Contents, List of Tables and List of
+Figures, using the package tocloft. The relevant script is given below. Unless specied,
+do not modify the settings.
+
+
+ \begin{onehalfspacing}
+\tableofcontents
+
+\pagebreak
+
+\addcontentsline{toc}{section}{\bfseries LIST OF TABLES}
+\listoftables
+
+ \clearpage \addcontentsline{toc}{section}{\bfseries
+LIST OF FIGURES} \listoffigures
+%\clearpage
+\end{onehalfspacing}
+
+
+
+
+6    Bibliography
+
+This LaTex template includes natbib type of model with the style unsrt. This means
+you have to rst create a *.bib le with all the references separately and then cite those
+in your texts. The references appear in the order they are cited. An example bib le
+namely, publication.bib is available in your folder. This le is linked to authesis.tex as
+indicated below.
+
+
+\bibliographystyle{unsrt}
+\nocite{*}
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{REFERENCES}
+\begin{spacing}{1}
+\bibliography{publication}
+\end{spacing}
+
+
+
+
+                                            6
+6.1 Creating .bib le for references
+To create a new le of references for your work, open any text editor and save it with
+an extension of bib in your working directory. In the main le authesis.tex, replace
+publication with the le you created. Follow the format strictly according to bibtex.
+For example, a book should be added as:
+
+
+  @BOOK{Aghion,
+title = {Handbook of Economic Growth},
+editor = {Aghion, Philippe and Durlauf, Steven},
+year = {2005},
+volume = {1},
+edition = {1},
+publisher = {Elsevier}
+}
+
+
+Note that the name of the reference is given after "@BOOK" as Aghion. This name
+should be used for citing inside the texts as:
+
+ \cite{Aghion}
+
+For more examples on creating a bibtex le, refer:
+https://verbosus.com/bibtex-style-examples.html. After linking the .bib le to
+authesis.tex, you have to compile the bib le rst. This can be done using the command
+bibtex authesis. After running this command, use pdflatex authesis.tex again for
+generating the references.
+
+6.2 List of Publications
+Your list of publications can be edited in the le lpub.tex residing in the folder lpub.
+The link for this le is available in authesis.tex as:
+
+
+ %%%%%%%%%%%%%-----------List of publications---
+\begin{spacing}{1}
+  \normalsize
+    \include{lpub/lpub}
+\end{spacing}
+
+
+
+
+                                           7
+7    Texts in Chapters
+
+As explained earlier in Section 4, this template partitions dierent chapters into folders
+named 1,2,3,etc. Within each folder, the respective chapter can be added and saved
+with an extension of *.tex. These les are linked in the main le authesis.tex as :
+
+
+ %%%%%%%%%%%%%------Chapters--------
+\pagenumbering{arabic}
+\ausection
+\include{1/Chapter1}
+\include{2/Chapter2}
+\include{3/Chapter3}
+\include{5/Chapter5}
+\include{6/Chapter6}
+\include{Conclusion/conclusion}
+\cleardoublepage
+\phantomsection
+\include{Appendix/appendix}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+    To add texts, open the respective folder and edit the *.tex le. To add more chap-
+ters, create new folders, add a le with the extension of *.tex and provide a link in
+authesis.tex. Chapters that are added automatically gets reected in the Table of
+Contents.
+    Note that the chapter name and section name have to be given in uppercase, as per
+the regulations. So, include the title within the command \uppercase { } . The title
+for chapter, section, subsection, subsubsections, etc., can be given as follows:
+
+
+ \chapter{\uppercase{EXPERIMENTAL TECHNIQUES AND THEORY}}
+ \section{\uppercase{Scope and objective}}
+ \subsection{Ultrasonic Interferometer Measurement}
+ \subsubsection{Description}
+ \paragraph{Measuring}
+ \subparagraph{Experimental Procedure}
+
+
+To avoid breaking of words between two lines, enclose the text within the command
+\begin{sloppypar}..\end{sloppypar}.
+
+                                            8
+8    Figures, Tables and Equations
+
+This LaTex template automates the numbering within the chapters for Figures, Tables
+and Equations. The numbers and titles for Figures and Tables are updated automatically
+in List of Figures and List of Tables, respectively.
+
+8.1 Figures
+Figures can be added using \includegraphics{}. An example is shown below:
+
+
+1. \begin{figure}
+2. \begin{center}
+3.    \includegraphics[scale=0.35]{2/inter1.png}
+4.     \caption{Experimental arrangement of ultrasonic velocity}
+5.     \label{fig:inter1}
+6. \end{center}
+7. \end{figure}
+
+
+The rst and seventh lines mark the environment for gures. Lines 2 and 6 specify the
+center alignment of gure. Line 3 indicates the image le that is to be placed in the
+document. The actual name of the le here is inter1.png and is stored in folder 2. This
+information is given in the third line along with the scaling factor within square brackets
+as 0.35. Line 4 species the caption of the gure and line 5 provides the label that could
+be linked to the document. The following line shows the relevant text with a link given
+by \ref{fig:inter1} to the above gure.
+
+
+ An ultrasonic interferometer (Figure \ref{fig:inter1} supplied
+ by M/s. Mittal Enterprises,
+
+
+
+
+8.2 Tables
+The tables can be added within the environment tabular. An example is given below.
+
+
+ \begin{table}[h]
+ \begin{center}
+ \caption{Ultrasonic velocity (U) in liquids at 303.15K}
+
+                                            9
+  \begin{tabular}{|c|c|c|c|c|}
+  \hline
+   \textbf{Sl. No} & \textbf{Liquid} & \multicolumn{3}{c|}{\textbf{Ultrasonic Velocity
+   \hline
+   ~&~ & \textbf{Value} & \textbf{Value} & \textbf{Reference} \\
+   \hline
+   1 & Cyclohexane & 1230.33 & 1230.30 & Vasantharani et al (2009) \\
+   \hline
+   2 & 1-Propanol & 1193.40 & 1194.00 & Thirumaran \\
+   \cline{1-4}
+     3 & 1-Butanol & 1230.15 & 1237.10 & \& Thenmozhi (2010) \\
+   \hline
+    4 & 1- Pentanol & 1252.90 & 1258.20 & Palani et al (2009) \\
+    \hline
+    5 & 1-Hexanol & 1288.49 & 1289.10 & Kannappan et al (2009) \\
+    \hline
+  \end{tabular}
+   \label{ta:table1}
+\end{center}
+ \end{table}
+
+
+Note here, that the caption is provided before \begin{tabular} as per the regulations.
+Similar to the gure, tables can also be referenced in the text with the name assigned in
+the label. The The output of the above table is shown in Figure 4.
+
+
+
+
+                           Figure 4: Sample output of table
+
+
+
+
+                                           10
+8.3 Equations
+To include equations, enclose it within the commands equation or eqnarray as shown
+below. The label command indictes the name of the equation, that can be used to refer
+in the text.
+
+
+    \begin{equation}
+    \label{eq:square}
+     d = \frac{n\lambda}{2}
+     \end{equation}
+
+
+
+
+9     Frequently Asked Questions
+
+    1. What are some good resources to learn LaTex?
+       There are plenty of resources available in the web. One of the place to start with
+       LaTex is the video tutorial from www.spokentutorial.org.
+
+    2. How to force the content to move to the next page?
+       Use the command \newpage to force the content to move to the next page.
+
+    3. How to add a longer table in Landscape mode spanning two pages?
+       Enclose the table within the environment landscape and longtable. These pack-
+       ages are already marked in this template.
+
+    4. How to force the table or gure to appear near the text?
+       Use \begin {table}[h] instead of \begin {table}.
+
+    5. How to add algorithms?
+       Algorithms can be written using algorithm and algorithmic packages. These
+       style les are available within the template.
+
+
+
+
+                                           11
+

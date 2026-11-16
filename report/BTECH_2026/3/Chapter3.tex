@@ -21,7 +21,7 @@ In a typical workflow, the user submits a task through the frontend, and the gat
 \begin{landscape}
 \begin{figure}
 \centering
-\includegraphics[width=1.10\linewidth,height=0.90\textheight,keepaspectratio]{3/figures/agentos_architecture.jpeg}
+\includegraphics[width=1.15\linewidth,height=0.93\textheight,keepaspectratio]{3/figures/agentos_architecture.jpeg}
 \caption{Overall AgentOS system architecture}
 \label{fig:architecture}
 \end{figure}
@@ -81,12 +81,11 @@ Figure~\ref{fig:resource-manager} details how resource admission is intended to 
 The diagram represents the broader design, while the current implementation provides a narrower admission mechanism. Its in-process resource manager checks a global limit of three active execution slots, a per-task limit of two slots, and a configurable task token budget that defaults to 50,000 tokens. A job waits in the scheduler queue when a slot is unavailable, and jobs that exceed the token budget are denied and reported through lifecycle events. The separate policy store, process monitor, and hard-preemption path shown in the figure are design extensions; an active remote model request cannot currently be forcibly terminated.
 \begin{figure}[H]
 \centering
-\includegraphics[width=1.0\textwidth]{3/figures/resource_manager.png}
+\makebox[\textwidth][c]{\includegraphics[width=1.08\textwidth,keepaspectratio]{3/figures/resource_manager.png}}
 \caption{Resource-manager decision flow supplied for the AgentOS design}
 \label{fig:resource-manager}
 \end{figure}
-\vspace{\baselineskip}
-\vspace{\baselineskip}
+\needspace{14\baselineskip}
 \section{\uppercase{Tool Management}}
 Figure~\ref{fig:tool-manager} shows the intended tool-manager boundary between an agent, a tool registry, permission policy, and local or external services. AgentOS currently exposes bounded tools through the runtime and code runner; a complete permission store and MCP-compatible tool manager remain proposed components.
 \begin{figure}[H]

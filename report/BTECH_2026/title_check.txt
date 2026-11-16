@@ -1,0 +1,73 @@
+ AGENTOS - A HYBRID MULTI-AGENT
+     RUNTIME ENVIRONMENT FOR
+   AUTONOMOUS AI APPLICATIONS
+
+                  A PROJECT REPORT
+
+                          Submitted by
+
+               GOGUL A (2023115020)
+    MOHAN VISHNU KUMAR M (2023115026)
+         OVIYASHREE C J (2023115052)
+     KUDIMI GUNA SEKHAR (2023115126)
+                   submitted to the Faculty of
+
+  COMPUTER SCIENCE AND INFORMATION ENGINEERING
+
+         in partial fulfillment for the award of the degree
+                                of
+
+           BACHELOR OF TECHNOLOGY
+                                in
+
+           INFORMATION TECHNOLOGY
+
+
+
+
+DEPARTMENT OF INFORMATION SCIENCE AND TECHNOLOGY
+         COLLEGE OF ENGINEERING, GUINDY
+                     ANNA UNIVERSITY
+                       CHENNAI 600 025
+               ii
+
+
+OCTOBER 2026
+                                                                              iii
+
+
+                        ANNA UNIVERSITY
+                         CHENNAI - 600 025
+                   BONA FIDE CERTIFICATE
+
+
+           Certified that this project report titled AgentOS - A Hybrid Multi-
+Agent Runtime Environment for Autonomous AI Applications is the bona
+fide work of Gogul A (2023115020), Mohan Vishnu Kumar M (2023115026),
+Oviyashree C J (2023115052), and Kudimi Guna Sekhar (2023115126), who
+carried out the project work under my supervision. Certified further that, to the
+best of my knowledge and belief, the work reported herein does not form part of
+any other thesis or dissertation on the basis of which a degree or an award was
+conferred on an earlier occasion on this or any other candidate.
+
+
+PLACE: Chennai                                 Dr. SELVI RAVINDRAN
+DATE: 29/10/2026                               ASSOCIATE PROFESSOR
+                                               PROJECT GUIDE
+                                               DEPARTMENT OF IST, CEG
+                                               ANNA UNIVERSITY
+                                               CHENNAI 600 025
+
+
+                               COUNTERSIGNED
+
+
+
+
+                                 Dr. P. YOGESH
+                         HEAD OF THE DEPARTMENT
+       DEPARTMENT OF INFORMATION SCIENCE AND TECHNOLOGY
+                    COLLEGE OF ENGINEERING, GUINDY
+                              ANNA UNIVERSITY
+                               CHENNAI 600 025
+
