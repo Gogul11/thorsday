@@ -1,0 +1,39 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Overall AgentOS system architecture}}{17}{figure.caption.6}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Frontend, FastAPI gateway, Redis channels, AI kernel, and agent-workforce flow}}{20}{figure.caption.7}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Planner, validation, and dependency-aware execution flow}}{22}{figure.caption.8}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Context page-out, vector-store retrieval, and semantic page-in flow}}{23}{figure.caption.9}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Global agent scheduler, lifecycle events, resource checks, and runtime feedback}}{24}{figure.caption.10}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Resource-manager decision flow supplied for the AgentOS design}}{25}{figure.caption.11}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Tool selection, permission checking, invocation, and result return}}{26}{figure.caption.12}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Agent lifecycle transitions}}{27}{figure.caption.13}%
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Sandboxed Python execution and bounded self-healing loop}}{28}{figure.caption.14}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Optimised semantic planner and DAG construction}}{31}{figure.caption.15}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Success and evidence-recall comparison for the synthetic and LoCoMo pilot evaluations}}{52}{figure.caption.20}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Similarity-threshold sensitivity for context retrieval}}{54}{figure.caption.21}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Overall outcomes for the 50-trial AgentOS tool-selection evaluation}}{56}{figure.caption.23}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces End-to-end exact-match accuracy by task category}}{57}{figure.caption.24}%
+\contentsline {figure}{\numberline {5.5}{\ignorespaces Measured scheduler throughput under steady-state and queue-contention workloads}}{60}{figure.caption.27}%
+\contentsline {figure}{\numberline {5.6}{\ignorespaces High- and low-priority queue-wait $P_{95}$ under priority aging and FIFO}}{60}{figure.caption.28}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {A.1}{\ignorespaces AgentOS agent catalogue}}{66}{figure.caption.31}%
+\contentsline {figure}{\numberline {A.2}{\ignorespaces A1 system-information logic}}{67}{figure.caption.32}%
+\contentsline {figure}{\numberline {A.3}{\ignorespaces A2 date-and-time logic}}{68}{figure.caption.33}%
+\contentsline {figure}{\numberline {A.4}{\ignorespaces A3 research and source-verification logic}}{68}{figure.caption.34}%
+\contentsline {figure}{\numberline {A.5}{\ignorespaces A4 file-operation and deletion-confirmation logic}}{69}{figure.caption.35}%
+\contentsline {figure}{\numberline {A.6}{\ignorespaces Content Creator drafting logic}}{70}{figure.caption.36}%
+\contentsline {figure}{\numberline {A.7}{\ignorespaces Email delivery and simulation-mode logic}}{71}{figure.caption.37}%
+\contentsline {figure}{\numberline {A.8}{\ignorespaces Weather retrieval and reporting logic}}{72}{figure.caption.38}%
+\contentsline {figure}{\numberline {A.9}{\ignorespaces Loan EMI and amortisation logic}}{73}{figure.caption.39}%
+\contentsline {figure}{\numberline {A.10}{\ignorespaces Cryptocurrency PnL and ROI logic}}{74}{figure.caption.40}%
+\contentsline {figure}{\numberline {A.11}{\ignorespaces Code generation, sandbox execution, and repair logic}}{75}{figure.caption.42}%
+\contentsline {figure}{\numberline {A.12}{\ignorespaces Data-analysis inspection and calculation logic}}{76}{figure.caption.44}%
+\contentsline {figure}{\numberline {A.13}{\ignorespaces Decision-support synthesis logic}}{77}{figure.caption.46}%
+\contentsline {figure}{\numberline {A.14}{\ignorespaces Summarization and fact-preservation logic}}{78}{figure.caption.48}%
+\contentsline {figure}{\numberline {A.15}{\ignorespaces Translation and tone-preserving transformation logic}}{79}{figure.caption.50}%
+\contentsline {figure}{\numberline {A.16}{\ignorespaces Checklist construction logic}}{80}{figure.caption.52}%
+\contentsline {figure}{\numberline {A.17}{\ignorespaces Dynamic agent creation and registration logic}}{81}{figure.caption.54}%
